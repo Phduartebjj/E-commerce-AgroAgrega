@@ -23,7 +23,7 @@ O **AgroAgrega** foi concebido como um trabalho acadêmico com o objetivo de apr
 - HTML5
 - CSS
 - Angular
-- JavaScript
+- TypeScript
 
 ---
 
@@ -72,9 +72,13 @@ agroagrega/
 | Nome | Função / Função no Projeto | GitHub |
 | :--- | :--- | :--- |
 | **Gustavo Mendonça** | Desenvolvedor / Integrante | [@integrante1]([https://github.com/](https://github.com/GustavoOMendonca)) |
-| **Integrante 2** | Desenvolvedor / Integrante | [@integrante2](https://github.com/) |
-| **Integrante 3** | Desenvolvedor / Integrante | [@integrante3](https://github.com/) |
-| **Integrante 4** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **Pedro Henrique Duarte** | Desenvolvedor / Integrante | [@integrante2]([https://github.com/](https://github.com/Phduartebjj)) |
+| **Lohan** | Desenvolvedor / Integrante | [@integrante3](https://github.com/) |
+| **Igor** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **Yuri** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **Gustavo Leite** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **João Saraiva** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **Nathan** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
 
 ---
 
