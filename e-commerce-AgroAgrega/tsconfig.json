@@ -9,6 +9,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/app/components/*"]
+    },
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
