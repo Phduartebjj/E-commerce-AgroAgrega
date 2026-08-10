@@ -73,12 +73,12 @@ agroagrega/
 | :--- | :--- | :--- |
 | **Gustavo Mendonça** | Desenvolvedor / Integrante | [@integrante1](https://github.com/GustavoOMendonca) |
 | **Pedro Henrique Duarte** | Desenvolvedor / Integrante | [@integrante2](https://github.com/Phduartebjj) |
-| **Lohan** | Desenvolvedor / Integrante | [@integrante3](https://github.com/) |
-| **Igor** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
-| **Yuri** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
-| **Gustavo Leite** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
-| **João Saraiva** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
-| **Nathan** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
+| **Lohan** | Desenvolvedor / Integrante | [@integrante3](https://github.com/Lorran-Ribeiro) |
+| **Igor** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Diaas2006) |
+| **Yuri** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Yuri-dev19) |
+| **Gustavo Leite** | Desenvolvedor / Integrante | [@integrante4]() |
+| **João Saraiva** | Desenvolvedor / Integrante | [@integrante4]() |
+| **Nathan** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Zaczin17) |
 
 ---
 
