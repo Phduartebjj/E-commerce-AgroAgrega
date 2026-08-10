@@ -71,8 +71,8 @@ agroagrega/
 
 | Nome | Função / Função no Projeto | GitHub |
 | :--- | :--- | :--- |
-| **Gustavo Mendonça** | Desenvolvedor / Integrante | [@integrante1]([https://github.com/](https://github.com/GustavoOMendonca)) |
-| **Pedro Henrique Duarte** | Desenvolvedor / Integrante | [@integrante2]([https://github.com/](https://github.com/Phduartebjj)) |
+| **Gustavo Mendonça** | Desenvolvedor / Integrante | [@integrante1](https://github.com/GustavoOMendonca) |
+| **Pedro Henrique Duarte** | Desenvolvedor / Integrante | [@integrante2](https://github.com/Phduartebjj) |
 | **Lohan** | Desenvolvedor / Integrante | [@integrante3](https://github.com/) |
 | **Igor** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
 | **Yuri** | Desenvolvedor / Integrante | [@integrante4](https://github.com/) |
