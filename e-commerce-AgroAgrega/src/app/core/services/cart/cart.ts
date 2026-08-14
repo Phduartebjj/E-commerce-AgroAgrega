@@ -75,4 +75,8 @@ export class Cart {
       return total + item.quantity;
     }, 0);
   });
+
+  isEmpty = computed(() => {
+    return this.cartItems().length === 0;
+  });
 }

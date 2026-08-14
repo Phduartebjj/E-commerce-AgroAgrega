@@ -102,4 +102,11 @@ describe.only('Cart', () => {
     service.removeCartItem(product1);
     expect(service.totalCartItens()).toBe(0);
   });
+
+  it('Deve mostrar que o carrinho está vazio', () => {
+    service.addCartItem(product1);
+    expect(service.isEmpty()).toBe(false);
+    service.removeCartItem(product1);
+    expect(service.isEmpty()).toBe(true);
+  });
 });
