@@ -63,7 +63,7 @@ export class Cart {
   cleanCartItem(): void {
     this.cartItems.set([]);
   }
-  
+  //calcula o valor total do carrinho
   total = computed(() => {
     return this.cartItems().reduce((total, item) => {
       return total + item.product.price * item.quantity;

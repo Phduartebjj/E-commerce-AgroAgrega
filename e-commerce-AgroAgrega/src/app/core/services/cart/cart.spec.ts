@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Cart } from './cart';
 import { Product } from '@models/product';
 
-describe('Cart', () => {
+describe.only('Cart', () => {
   let service: Cart;
 
   beforeEach(() => {
@@ -58,8 +58,31 @@ describe('Cart', () => {
 
   it('Deve deixar o carrinho vazio', () => {
     service.addCartItem(product1);
-    service.cleanCartItem()
-    const cartItems = service.getCartItems()()
+    service.cleanCartItem();
+    const cartItems = service.getCartItems()();
     expect(cartItems.length).toBe(0);
   });
+
+  it('Deve atualizar o total ao adicionar um produto', () => {
+    expect(service.total()).toBe(0);
+
+    service.addCartItem(product1);
+
+    expect(service.total()).toBe(10);
+
+    service.addCartItem(product1);
+
+    expect(service.total()).toBe(20);
+  });
+
+  (it('Deve atualizar o total ao remover um produto'),
+    () => {
+      service.addCartItem(product1);
+      service.addCartItem(product1);
+      expect(service.total()).toBe(20);
+      service.removeCartItem(product1);
+      expect(service.total()).toBe(10);
+      service.removeCartItem(product1);
+      expect(service.total()).toBe(0);
+    });
 });
