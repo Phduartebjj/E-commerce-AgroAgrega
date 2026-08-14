@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { CartItem } from '@models/cartItem';
 import { Product } from '@models/product';
 @Injectable({
@@ -58,9 +58,25 @@ export class Cart {
       }
     });
   }
-  
+
   //Por enquanto só joga os itens fora.
   cleanCartItem(): void {
     this.cartItems.set([]);
   }
+  //calcula o valor total do carrinho
+  total = computed(() => {
+    return this.cartItems().reduce((total, item) => {
+      return total + item.product.price * item.quantity;
+    }, 0);
+  });
+  //calcula o total de produtos do carrinho
+  totalCartItens = computed(() => {
+    return this.cartItems().reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
+  });
+
+  isEmpty = computed(() => {
+    return this.cartItems().length === 0;
+  });
 }
