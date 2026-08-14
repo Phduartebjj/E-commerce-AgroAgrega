@@ -22,7 +22,6 @@ describe('Cart', () => {
     category: 'teste',
     images: [],
   };
-
   it('deve adicionar um produto ao carrinho', () => {
     service.addCartItem(product1);
     const items = service.getCartItems()();
@@ -38,7 +37,7 @@ describe('Cart', () => {
     expect(cartItems.length).toBe(0);
   });
 
-  it('deve remover uma quantidade do produto', () => {
+  it('Deve remover uma quantidade do produto', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
     service.removeCartItem(product1);
@@ -47,13 +46,20 @@ describe('Cart', () => {
     expect(cartItems[0].product).toEqual(product1);
     expect(cartItems[0].quantity).toBe(1);
   });
-  
-  it('deve adicionar duas quantidades do produto', () => {
+
+  it('Deve adicionar duas quantidades do produto', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
     const cartItems = service.getCartItems()();
     expect(cartItems.length).toBe(1);
     expect(cartItems[0].product).toEqual(product1);
     expect(cartItems[0].quantity).toBe(2);
+  });
+
+  it('Deve deixar o carrinho vazio', () => {
+    service.addCartItem(product1);
+    service.cleanCartItem()
+    const cartItems = service.getCartItems()()
+    expect(cartItems.length).toBe(0);
   });
 });

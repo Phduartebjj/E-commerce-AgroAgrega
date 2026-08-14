@@ -53,10 +53,14 @@ export class Cart {
           if (product.id === item.product.id) {
             return { ...item, quantity: item.quantity - 1 };
           }
-
           return item;
         });
       }
     });
+  }
+  
+  //Por enquanto só joga os itens fora.
+  cleanCartItem(): void {
+    this.cartItems.set([]);
   }
 }
