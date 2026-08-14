@@ -1,1 +1,5 @@
-<p>cart works!</p>
+@if (isEmpty()) {
+  <p>Seu carrinho está vazio</p>
+}
+<p>Itens total do carrinho: {{ totalItens() }}</p>
+

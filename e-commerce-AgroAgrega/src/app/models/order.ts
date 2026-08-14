@@ -1,9 +1,9 @@
-import { CartItem } from './cartItem';
+import { CartItemModel } from './cartItem';
 
-export interface Order {
+export interface OrderInterface {
   id: string;
   userId: number;
-  items: CartItem;
+  items: CartItemModel;
   total: number;
   status: OrderStatus;
   createdAt: string;

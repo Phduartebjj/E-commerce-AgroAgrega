@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Cart } from './cart';
-import { Product } from '@models/product';
+import { ProductModel } from '@models/product';
 
 describe.only('Cart', () => {
   let service: Cart;
@@ -14,7 +14,7 @@ describe.only('Cart', () => {
     expect(service).toBeTruthy();
   });
 
-  const product1: Product = {
+  const product1: ProductModel = {
     id: '1',
     title: 'Produto Teste',
     price: 10,

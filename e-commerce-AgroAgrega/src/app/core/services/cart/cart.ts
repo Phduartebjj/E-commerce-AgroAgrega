@@ -1,12 +1,12 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { CartItem } from '@models/cartItem';
-import { Product } from '@models/product';
+import { CartItemModel } from '@models/cartItem';
+import { ProductModel } from '@models/product';
 @Injectable({
   providedIn: 'root',
 })
 export class Cart {
   //Estado inicial do carrinho, mutável apenas por ele mesmo.
-  private cartItems = signal<CartItem[]>([]);
+  private cartItems = signal<CartItemModel[]>([]);
 
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
@@ -14,7 +14,7 @@ export class Cart {
   }
 
   //Adiciona um produto ao carrinho
-  addCartItem(product: Product): void {
+  addCartItem(product: ProductModel): void {
     this.cartItems.update((items) => {
       //Encontra produto
       const productFind = items.find((p) => p.product.id === product.id);
@@ -34,7 +34,7 @@ export class Cart {
     });
   }
 
-  removeCartItem(product: Product): void {
+  removeCartItem(product: ProductModel): void {
     this.cartItems.update((items) => {
       //Procura produto que vai ser removido no array
       const productFind = items.find((p) => p.product.id === product.id);
