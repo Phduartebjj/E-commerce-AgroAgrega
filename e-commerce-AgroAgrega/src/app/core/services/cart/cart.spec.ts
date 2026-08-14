@@ -97,9 +97,9 @@ describe.only('Cart', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
     expect(service.totalCartItens()).toBe(2);
-    service.removeCartItem(product1)
+    service.removeCartItem(product1);
     expect(service.totalCartItens()).toBe(1);
-    service.removeCartItem(product1)
+    service.removeCartItem(product1);
     expect(service.totalCartItens()).toBe(0);
   });
 });
