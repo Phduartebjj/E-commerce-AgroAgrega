@@ -75,14 +75,31 @@ describe.only('Cart', () => {
     expect(service.total()).toBe(20);
   });
 
-  (it('Deve atualizar o total ao remover um produto'),
-    () => {
-      service.addCartItem(product1);
-      service.addCartItem(product1);
-      expect(service.total()).toBe(20);
-      service.removeCartItem(product1);
-      expect(service.total()).toBe(10);
-      service.removeCartItem(product1);
-      expect(service.total()).toBe(0);
-    });
+  it('Deve atualizar o total ao remover um produto', () => {
+    service.addCartItem(product1);
+    service.addCartItem(product1);
+    expect(service.total()).toBe(20);
+    service.removeCartItem(product1);
+    expect(service.total()).toBe(10);
+    service.removeCartItem(product1);
+    expect(service.total()).toBe(0);
+  });
+
+  it('Deve atualizar a quantidade total de itens no carrinho ao adicionar', () => {
+    expect(service.totalCartItens()).toBe(0);
+    service.addCartItem(product1);
+    expect(service.totalCartItens()).toBe(1);
+    service.addCartItem(product1);
+    expect(service.totalCartItens()).toBe(2);
+  });
+
+  it('Deve atualizar a quantidade total de itens no carrinho ao adicionar', () => {
+    service.addCartItem(product1);
+    service.addCartItem(product1);
+    expect(service.totalCartItens()).toBe(2);
+    service.removeCartItem(product1)
+    expect(service.totalCartItens()).toBe(1);
+    service.removeCartItem(product1)
+    expect(service.totalCartItens()).toBe(0);
+  });
 });

@@ -69,4 +69,10 @@ export class Cart {
       return total + item.product.price * item.quantity;
     }, 0);
   });
+  //calcula o total de produtos do carrinho
+  totalCartItens = computed(() => {
+    return this.cartItems().reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
+  });
 }
