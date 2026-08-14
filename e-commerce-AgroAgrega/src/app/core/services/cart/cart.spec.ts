@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Cart } from './cart';
-import { Product } from '../../../models/product';
+import { Product } from '@models/product';
 
 describe('Cart', () => {
   let service: Cart;
@@ -46,5 +46,14 @@ describe('Cart', () => {
     expect(cartItems.length).toBe(1);
     expect(cartItems[0].product).toEqual(product1);
     expect(cartItems[0].quantity).toBe(1);
+  });
+  
+  it('deve adicionar duas quantidades do produto', () => {
+    service.addCartItem(product1);
+    service.addCartItem(product1);
+    const cartItems = service.getCartItems()();
+    expect(cartItems.length).toBe(1);
+    expect(cartItems[0].product).toEqual(product1);
+    expect(cartItems[0].quantity).toBe(2);
   });
 });

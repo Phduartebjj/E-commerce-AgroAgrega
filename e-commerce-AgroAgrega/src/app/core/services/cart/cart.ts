@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { CartItem } from '../../../models/cartItem';
-import { Product } from '../../../models/product';
+import { CartItem } from '@models/cartItem';
+import { Product } from '@models/product';
 @Injectable({
   providedIn: 'root',
 })
@@ -34,9 +34,7 @@ export class Cart {
     });
   }
 
-
   removeCartItem(product: Product): void {
-
     this.cartItems.update((items) => {
       //Procura produto que vai ser removido no array
       const productFind = items.find((p) => p.product.id === product.id);
