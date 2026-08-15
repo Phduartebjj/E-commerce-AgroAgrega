@@ -22,6 +22,20 @@ export class CartComponent {
     this.cart.addCartItem(product);
   }
 
+  item: ProductModel = {
+    id: '1',
+    title: 'Produto 1',
+    price: 10.0,
+    description: 'Descrição do Produto 1',
+    images: ['https://via.placeholder.com/150'],
+    category: 'Categoria 1',
+  };
+
+  applyCoupon(couponCode: string): void {
+    this.cart.applyCoupon(couponCode);
+    console.log('Cupom aplicado:', couponCode);
+  }
+
   removeProduct(product: ProductModel): void {
     this.cart.removeCartItem(product);
   }

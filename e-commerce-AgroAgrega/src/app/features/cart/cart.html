@@ -23,9 +23,11 @@
 
   <section>
     <p>Tem um cupom?</p>
-    <input type="text" placeholder="Digite seu cupom">
-    <button>Aplicar</button>
+    <input #couponInput type="text" placeholder="Digite seu cupom" />
+    <button (click)="applyCoupon(couponInput.value)">Aplicar</button>
   </section>
+
+  <button (click)="addProduct(item)">Adicionar Produto</button>
 
   @if (isEmpty()) {
     <p>Seu carrinho está vazio</p>
