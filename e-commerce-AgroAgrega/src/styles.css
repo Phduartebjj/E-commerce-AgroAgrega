@@ -28,8 +28,7 @@ html {
   min-width: 100vw;
   font-family: 'Manrope', sans-serif;
 }
-
 @font-face {
   font-family: 'Manrope';
-  src: url(app/assets/fonts/Manrope-Regular.woff2) format('woff2');
+  src: url(/src/app/assets/fonts/Manrope-VariableFont_wght.ttf) format('ttf');
 }
