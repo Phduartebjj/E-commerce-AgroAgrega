@@ -15,7 +15,7 @@
     <h1>{{ product.title }}</h1>
 
     <p class="product-price">
-      R$ {{ product.price.toFixed(2) }}
+      {{ product.price | precoFormatado }}
     </p>
 
     <p class="product-description">

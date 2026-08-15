@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { Cart } from '@core/services/cart/cart';
-import { ProductModel } from '@models/product';
-import { PrecoFormatadoPipe } from 'src/app/shared/pipes/preco-formatado-pipe';
+import { Cart } from '../../core/services/cart/cart';
+import { ProductModel } from '../../models/product';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-cart',
-  imports: [],
+  imports: [PrecoFormatadoPipe],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
@@ -17,5 +17,11 @@ export class CartComponent {
   totalItens = this.cart.totalCartItens;
   isEmpty = this.cart.isEmpty;
 
-  addProduct = this.cart.addCartItem;
+  addProduct(product: ProductModel): void {
+    this.cart.addCartItem(product);
+  }
+
+  removeProduct(product: ProductModel): void {
+    this.cart.removeCartItem(product);
+  }
 }

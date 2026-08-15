@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { ProductModel } from '../../models/product';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-product-details',
-  imports: [],
+  imports: [PrecoFormatadoPipe],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css',
 })

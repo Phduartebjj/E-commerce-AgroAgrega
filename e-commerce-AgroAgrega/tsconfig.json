@@ -14,12 +14,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
-      "@core/*": ["src/app/core/*"],
-      "@features/*": ["src/app/features/*"],
-      "@mocks/*": ["src/app/mocks/*"],
-      "@models/*": ["src/app/models/*"]
+      "@core/*": ["./src/app/core/*"],
+      "@features/*": ["./src/app/features/*"],
+      "@mocks/*": ["./src/app/mocks/*"],
+      "@models/*": ["./src/app/models/*"]
     }
   },
   "angularCompilerOptions": {
