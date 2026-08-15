@@ -44,11 +44,11 @@
 
   <div>
     <h3>Resumo do Pedido</h3>
-    <p>Frete: </p>
-    <p>Descontos: </p>
-    <p>Total: {{ totalValue() | precoFormatado}}</p>
+    <p>Frete: R$0,00</p>
+    <p>Descontos:</p>
+    <p>Total: {{ totalValue() | precoFormatado }}</p>
 
-    <button> <a routerLink="/checkout">Ir para o checkout -> </a></button>
+    <button><a routerLink="/checkout">Ir para o checkout -> </a></button>
   </div>
 
   @if (isEmpty()) {
