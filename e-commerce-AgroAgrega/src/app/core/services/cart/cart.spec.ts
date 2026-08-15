@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Cart } from './cart';
+import { Cart } from './cart.service';
 import { ProductModel } from '../../../models/product';
 
 describe('Cart', () => {
