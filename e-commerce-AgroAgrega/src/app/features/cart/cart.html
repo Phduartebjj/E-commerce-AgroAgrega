@@ -25,9 +25,31 @@
     <p>Tem um cupom?</p>
     <input #couponInput type="text" placeholder="Digite seu cupom" />
     <button (click)="applyCoupon(couponInput.value)">Aplicar</button>
+    <button (click)="removeCoupon()">Remover Cupom</button>
   </section>
 
   <button (click)="addProduct(item)">Adicionar Produto</button>
+  <button (click)="clearCart()">Limpar Carrinho</button>
+
+  @for (item of cartItems(); track item.product.id) {
+    <div>
+      <p>{{ item.product.category }}</p>
+      <p>{{ item.product.title }}</p>
+      <p>{{ item.product.price | precoFormatado }}</p>
+      <p>{{ item.quantity }}</p>
+
+      <button (click)="removeProduct(item.product)">Remover Produto</button>
+    </div>
+  }
+
+  <div>
+    <h3>Resumo do Pedido</h3>
+    <p>Frete: </p>
+    <p>Descontos: </p>
+    <p>Total: {{ totalValue() | precoFormatado}}</p>
+
+    <button> <a routerLink="/checkout">Ir para o checkout -> </a></button>
+  </div>
 
   @if (isEmpty()) {
     <p>Seu carrinho está vazio</p>

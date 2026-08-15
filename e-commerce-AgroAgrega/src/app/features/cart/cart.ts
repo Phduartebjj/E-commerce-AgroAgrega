@@ -36,7 +36,15 @@ export class CartComponent {
     console.log('Cupom aplicado:', couponCode);
   }
 
+  removeCoupon(): void {
+    this.cart.removeCoupon();
+  }
+
   removeProduct(product: ProductModel): void {
     this.cart.removeCartItem(product);
+  }
+
+  clearCart(): void {
+    this.cart.cleanCartItem();
   }
 }
