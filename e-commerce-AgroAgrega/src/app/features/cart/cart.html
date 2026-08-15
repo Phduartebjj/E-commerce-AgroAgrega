@@ -1,6 +1,7 @@
+<p><a href="/">Home</a>> <a href="/cart">Carrinho</a></p>
+
 @if (isEmpty()) {
   <p>Seu carrinho está vazio</p>
 }
 <p>Itens total do carrinho: {{ totalItens() }}</p>
 <p>Valor total: {{ totalValue() | precoFormatado }}</p>
-
