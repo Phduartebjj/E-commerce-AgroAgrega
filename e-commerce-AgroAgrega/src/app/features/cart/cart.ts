@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Cart } from '../../core/services/cart/cart';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
-  imports: [PrecoFormatadoPipe],
+  imports: [RouterLink, PrecoFormatadoPipe],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })

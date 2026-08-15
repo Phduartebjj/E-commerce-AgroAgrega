@@ -1,7 +1,35 @@
-<p><a href="/">Home</a>> <a href="/cart">Carrinho</a></p>
+<main>
+  <p>
+    <a routerLink="/">Home</a> >
+    <a class="destaque" routerLink="/cart">Carrinho</a>
+  </p>
+  <section>
+    <div>
+      <span>SUA COMPRA</span>
 
-@if (isEmpty()) {
-  <p>Seu carrinho está vazio</p>
-}
-<p>Itens total do carrinho: {{ totalItens() }}</p>
-<p>Valor total: {{ totalValue() | precoFormatado }}</p>
+      <h2>Carrinho</h2>
+
+      <p>
+        {{ totalItens() }}
+        @if (totalItens() === 1) {
+          item reservado para você
+        } @else {
+          itens reservados para você
+        }
+      </p>
+    </div>
+    <a routerLink="/products">Continuar Comprando -></a>
+  </section>
+
+  <section>
+    <p>Tem um cupom?</p>
+    <input type="text" placeholder="Digite seu cupom">
+    <button>Aplicar</button>
+  </section>
+
+  @if (isEmpty()) {
+    <p>Seu carrinho está vazio</p>
+  } @else {
+    <p>Valor total: {{ totalValue() | precoFormatado }}</p>
+  }
+</main>
