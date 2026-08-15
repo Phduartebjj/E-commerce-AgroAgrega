@@ -1,6 +1,8 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { CartItemModel } from '../../../models/cartItem';
 import { ProductModel } from '../../../models/product';
+import { COUPONS } from '@core/data/coupons';
+import { CouponModel } from '@models/coupon';
 @Injectable({
   providedIn: 'root',
 })
@@ -11,6 +13,24 @@ export class Cart {
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
     return this.cartItems.asReadonly();
+  }
+
+  coupon = signal<CouponModel | null>(null);
+
+  applyCoupon(couponCode: string): void {
+    const coupon = couponCode.toUpperCase();
+    const couponFind = COUPONS.find((c) => c.code === coupon);
+
+    if (!couponFind) {
+      this.coupon.set(null);
+      return;
+    }
+
+    this.coupon.set(couponFind);
+  }
+
+  removeCoupon(): void {
+    this.coupon.set(null);
   }
 
   //Adiciona um produto ao carrinho
@@ -65,10 +85,18 @@ export class Cart {
   }
   //calcula o valor total do carrinho
   total = computed(() => {
-    return this.cartItems().reduce((total, item) => {
+    let valorTotal = this.cartItems().reduce((total, item) => {
       return total + item.product.price * item.quantity;
     }, 0);
+
+    const coupon = this.coupon();
+
+    if (coupon) {
+      valorTotal = valorTotal - (valorTotal * coupon!.discountPercentage) / 100;
+    }
+    return valorTotal;
   });
+
   //calcula o total de produtos do carrinho
   totalCartItens = computed(() => {
     return this.cartItems().reduce((total, item) => {
