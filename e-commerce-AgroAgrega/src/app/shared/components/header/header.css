@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+.site-header {
+  width: 100%;
+}
+.barra-anuncios {
+  min-height: 52px;
+  padding: 10px 10px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--green-dark);
+  color: var(--white);
+
+ 
+
+}
+.barra-anuncios-texto{
+    margin: 0;
+    font-size: clamp(0.75rem,1.2vw,1rem);
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+
+}
