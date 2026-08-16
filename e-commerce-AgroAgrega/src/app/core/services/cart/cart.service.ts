@@ -23,11 +23,14 @@ export class Cart {
 
     if (!couponFind) {
       this.coupon.set(null);
+      this.removeCoupon();
       return;
     }
 
     this.coupon.set(couponFind);
   }
+
+  
 
   removeCoupon(): void {
     this.coupon.set(null);
@@ -54,7 +57,7 @@ export class Cart {
     });
   }
 
-  removeCartItem(product: ProductModel): void {
+  decreaseQuantity(product: ProductModel): void {
     this.cartItems.update((items) => {
       //Procura produto que vai ser removido no array
       const productFind = items.find((p) => p.product.id === product.id);
@@ -64,21 +67,20 @@ export class Cart {
         return items;
       }
 
-      if (productFind.quantity <= 1) {
-        //Tira o produto do carrinho caso ele seja o removido
-        return items.filter((p) => p.product.id !== product.id);
-      } else {
-        //Se o produto for mais de um, cria um array novo em cima do antigo e remove a quantidade do produto.
-        return items.map((item) => {
-          if (product.id === item.product.id) {
-            return { ...item, quantity: item.quantity - 1 };
-          }
-          return item;
-        });
-      }
+      return items.map((item) => {
+        if (product.id === item.product.id) {
+          return { ...item, quantity: item.quantity - 1 };
+        }
+        return item;
+      });
     });
   }
 
+  removeCartItem(product: ProductModel): void {
+    this.cartItems.update((items) => {
+      return items.filter((item) => item.product.id !== product.id);
+    });
+  }
   //Por enquanto só joga os itens fora.
   cleanCartItem(): void {
     this.cartItems.set([]);

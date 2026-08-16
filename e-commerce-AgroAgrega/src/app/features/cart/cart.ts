@@ -24,11 +24,20 @@ export class CartComponent {
 
   item: ProductModel = {
     id: '1',
-    title: 'Produto 1',
-    price: 10.0,
-    description: 'Descrição do Produto 1',
-    images: ['https://via.placeholder.com/150'],
-    category: 'Categoria 1',
+    title: 'Kit Estação Meteorológica Inteligente AgroSense Pro',
+    price: 2899.9,
+    description: 'Kit completo • Wi-Fi + 4G',
+    images: ['https://placehold.co/80x80?font=roboto'],
+    category: 'AGRICULTURA DE PRECISÃO',
+  };
+
+  item2: ProductModel = {
+    id: '2',
+    title: 'Mangueira de gotejamento resistente 100 m',
+    price: 439.80,
+    description: 'Em estoque • envio imediato',
+    images: ['https://placehold.co/80x80?font=roboto'],
+    category: 'IRRIGAÇÃO',
   };
 
   applyCoupon(couponCode: string): void {
@@ -42,6 +51,14 @@ export class CartComponent {
 
   removeProduct(product: ProductModel): void {
     this.cart.removeCartItem(product);
+  }
+
+  decreaseProductQuantity(product: ProductModel): void {
+    this.cart.decreaseQuantity(product);
+  }
+
+  cleanInputValue(input: HTMLInputElement): void {
+    input.value = '';
   }
 
   clearCart(): void {
