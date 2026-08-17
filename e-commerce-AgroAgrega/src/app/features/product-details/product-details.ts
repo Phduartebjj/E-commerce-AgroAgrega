@@ -13,7 +13,6 @@ export class ProductDetails {
   private readonly route = inject(ActivatedRoute);
 
   readonly id = this.route.snapshot.paramMap.get('id');
-
   private readonly products: ProductModel[] = [
     {
       id: '1',
@@ -44,6 +43,7 @@ export class ProductDetails {
   readonly product: ProductModel | undefined = this.products.find(
     (product) => product.id === this.id
   );
+  readonly productNotFound = this.product === undefined;
 
   quantity = 1;
 
