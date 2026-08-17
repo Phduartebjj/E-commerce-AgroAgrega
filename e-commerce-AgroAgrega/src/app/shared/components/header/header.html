@@ -7,6 +7,30 @@
       <img class="logo-icone" src="assets/images/agroagrega-icon.png" alt="AgroAgrega ícone" />
       <img class="logo-nome" src="assets/images/logo-nome.png" alt="AgroAgrega" />
     </a>
+    <div class="area-busca">
+      <input
+        class="campo-busca"
+        type="search"
+        placeholder="Busque sementes, ferramentas e agroprodutos"
+        aria-label="Buscar produtos"
+      />
+      <button class="botao-busca" type="button">Buscar</button>
+    </div>
+    <div class="acoes-header">
+      <a class="conta-link" routerLink="/login">
+        <span class="icone-perfil"><img src="assets/images/profile.png" alt="Minha Conta" /></span>
+        <span class="conta-texto">
+          <small> Olá, usuário!</small>
+          <strong>Minha conta</strong>
+        </span>
+      </a>
+      <a class="icone-favoritos" routerLink="/favorites" aria-label="Ir para a página de favoritos">
+        <img src="assets/images/favorite.png" alt="Favoritos" />
+      </a>
+      <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
+        <img src="assets/images/cart.png" alt="Carrinho de Compras" />
+      </a>
+    </div>
   </div>
 </header>
 
