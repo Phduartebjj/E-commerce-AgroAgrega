@@ -30,7 +30,11 @@ export class Cart {
     this.coupon.set(couponFind);
   }
 
-  
+  subtotal = computed(() => {
+    return this.cartItems().reduce((total, item) => {
+      return total + item.product.price * item.quantity;
+    }, 0);
+  });
 
   removeCoupon(): void {
     this.coupon.set(null);

@@ -16,6 +16,7 @@ export class CartComponent {
   cartItems = this.cart.getCartItems();
   totalValue = this.cart.total;
   totalItens = this.cart.totalCartItens;
+  subTotal = this.cart.subtotal;
   isEmpty = this.cart.isEmpty;
 
   addProduct(product: ProductModel): void {
@@ -34,7 +35,7 @@ export class CartComponent {
   item2: ProductModel = {
     id: '2',
     title: 'Mangueira de gotejamento resistente 100 m',
-    price: 439.80,
+    price: 439.8,
     description: 'Em estoque • envio imediato',
     images: ['https://placehold.co/80x80?font=roboto'],
     category: 'IRRIGAÇÃO',
