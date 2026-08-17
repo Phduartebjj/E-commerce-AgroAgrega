@@ -1,10 +1,23 @@
+body {
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  background-color: #f6f8f7;
+}
+
 .cart-container {
   display: flex;
   gap: 16px;
   flex-direction: column;
   margin-top: 24px;
   padding: 5rem 2.5rem;
-  background-color: #f6f8f7;
+}
+
+.cart-header-values {
+  display: flex;
+  gap: clamp(0.75rem, 5vw, 2.5rem);
 }
 
 .cart-content {
@@ -49,7 +62,7 @@
   border-radius: 8px 8px 0px 0px;
 }
 
-.linkToCatalogy{
+.linkToCatalogy {
   text-decoration: none;
   color: #2e7d4f;
   font-weight: bold;
