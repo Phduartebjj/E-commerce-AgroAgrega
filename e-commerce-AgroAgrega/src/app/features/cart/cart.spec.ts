@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CartComponent } from './cart';
+import { provideRouter, RouterLink } from '@angular/router';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 describe('Cart', () => {
   let component: CartComponent;
@@ -8,7 +10,8 @@ describe('Cart', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CartComponent],
+      imports: [CartComponent, RouterLink, PrecoFormatadoPipe],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CartComponent);
