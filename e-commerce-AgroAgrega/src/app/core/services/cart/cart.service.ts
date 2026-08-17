@@ -41,7 +41,7 @@ export class Cart {
   }
 
   //Adiciona um produto ao carrinho
-  addCartItem(product: ProductModel): void {
+  addCartItem(product: ProductModel, quantity?: number): void {
     this.cartItems.update((items) => {
       //Encontra produto
       const productFind = items.find((p) => p.product.id === product.id);
