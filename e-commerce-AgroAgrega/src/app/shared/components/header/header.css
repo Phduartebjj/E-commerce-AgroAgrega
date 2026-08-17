@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+.site-header {
+  width: 100%;
+  background-color: var(--white);
+}
+.barra-anuncios {
+  min-height: 52px;
+  padding: 10px 10px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--green-dark);
+  color: var(--white);
+
+ 
+
+}
+.barra-anuncios-texto{
+    margin: 0;
+    font-size: clamp(0.75rem,1.2vw,1rem);
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+
+}
+
+.cabecalho-principal {
+  width: min(calc(100% - 32px), 1700px);
+  min-height: 124px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: autominmax(300px, 1fr) auto;
+    align-items: center;
+    gap: 32px;
+}
+
+
+.logo-marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  color: var(--green-dark);
+  font-size: clamp(1.5rem, 2vw, 2.5rem);
+  font-weight: 800;
+}
+
+.logo-nome{
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
+    font-weight: 800;
+    color: var(--green-dark);
+}
+
+.logo-icone{
+    width: 48px;
+    height: 48px;
+    object-fit:contain;
+}
+
+
