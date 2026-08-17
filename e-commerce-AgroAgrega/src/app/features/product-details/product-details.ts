@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'; // Serviço para acessar dados da URL
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
@@ -9,15 +9,16 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
   templateUrl: './product-details.html',
   styleUrl: './product-details.css',
 })
-export class ProductDetails {
+export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
-  readonly id = this.route.snapshot.paramMap.get('id');
+  id: string | null = null;
+
   private readonly products: ProductModel[] = [
     {
       id: '1',
       title: 'Produto de exemplo 1',
-      price: 199.90,
+      price: 199.9,
       description: 'Produto de exemplo para teste da página de detalhes.',
       category: 'Eletrônicos',
       images: ['https://placehold.co/600x600'],
@@ -25,7 +26,7 @@ export class ProductDetails {
     {
       id: '2',
       title: 'Produto de exemplo 2',
-      price: 299.90,
+      price: 299.9,
       description: 'Segundo produto utilizado para testar a navegação entre produtos.',
       category: 'Informática',
       images: ['https://placehold.co/600x600'],
@@ -33,19 +34,28 @@ export class ProductDetails {
     {
       id: '3',
       title: 'Produto de exemplo 3',
-      price: 99.90,
+      price: 99.9,
       description: 'Terceiro produto utilizado para testar a página de detalhes.',
       category: 'Acessórios',
       images: ['https://placehold.co/600x600'],
     },
   ];
 
-  readonly product: ProductModel | undefined = this.products.find(
-    (product) => product.id === this.id
-  );
-  readonly productNotFound = this.product === undefined;
+  product: ProductModel | undefined;
 
   quantity = 1;
+
+  get productNotFound(): boolean {
+    return this.product === undefined;
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id');
+
+      this.product = this.products.find((product) => product.id === this.id);
+    });
+  }
 
   increaseQuantity(): void {
     this.quantity += 1;
