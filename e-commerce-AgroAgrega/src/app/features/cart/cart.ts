@@ -18,6 +18,7 @@ export class CartComponent {
   totalItens = this.cart.totalCartItens;
   subTotal = this.cart.subtotal;
   isEmpty = this.cart.isEmpty;
+  discountValue = this.cart.discountValue;
 
   addProduct(product: ProductModel): void {
     this.cart.addCartItem(product);

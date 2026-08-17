@@ -56,22 +56,28 @@
     <div class="cart-summary">
       <h3>Resumo do Pedido</h3>
       <div class="summary-infos">
-        <p><span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span></p>
+        <p>
+          <span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span>
+        </p>
         <p><span>Frete</span> <span>Grátis</span></p>
-        <p><span>Descontos</span> <span style="color: #d84c4c;">{{ (isEmpty() ? 0 : (subTotal() - totalValue())) | precoFormatado }}</span></p>
+        <p>
+          <span>Descontos</span> <span class="redword">{{ discountValue() | precoFormatado }}</span>
+        </p>
       </div>
 
       <div class="summary-total">
         @if (isEmpty()) {
           <p>Seu carrinho está vazio</p>
         } @else {
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
             <span class="total-label">Total</span>
             <span class="total-value">{{ totalValue() | precoFormatado }}</span>
           </div>
           <p class="total-info">Inclui impostos</p>
           <a class="btn btn-checkout" routerLink="/checkout">Ir para o checkout → </a>
-          <p style="font-size: 12px; color: #666; text-align: center;">✓ Pagamento protegido e seguro</p>
+          <p style="font-size: 12px; color: #666; text-align: center">
+            ✓ Pagamento protegido e seguro
+          </p>
         }
       </div>
     </div>

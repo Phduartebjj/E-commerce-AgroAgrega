@@ -103,6 +103,11 @@ export class Cart {
     return valorTotal;
   });
 
+  discountValue = computed(() => {
+    const discount = this.subtotal() - this.total();
+    return discount > 0 ? discount : 0;
+  });
+
   //calcula o total de produtos do carrinho
   totalCartItens = computed(() => {
     return this.cartItems().reduce((total, item) => {
