@@ -49,6 +49,12 @@
   border-radius: 8px 8px 0px 0px;
 }
 
+.linkToCatalogy{
+  text-decoration: none;
+  color: #2e7d4f;
+  font-weight: bold;
+}
+
 .redword {
   color: #d84c4c;
   font-weight: bold;
