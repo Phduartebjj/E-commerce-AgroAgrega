@@ -14,32 +14,36 @@ export class ProductDetails {
 
   readonly id = this.route.snapshot.paramMap.get('id');
 
- private readonly products: ProductModel[] = [
-  {
-    id: '1',
-    title: 'Produto de exemplo 1',
-    price: 199.90,
-    description: 'Produto de exemplo para teste da página de detalhes.',
-    category: 'Eletrônicos',
-    images: ['https://placehold.co/600x600'],
-  },
-  {
-    id: '2',
-    title: 'Produto de exemplo 2',
-    price: 299.90,
-    description: 'Segundo produto utilizado para testar a navegação entre produtos.',
-    category: 'Informática',
-    images: ['https://placehold.co/600x600'],
-  },
-  {
-    id: '3',
-    title: 'Produto de exemplo 3',
-    price: 99.90,
-    description: 'Terceiro produto utilizado para testar a página de detalhes.',
-    category: 'Acessórios',
-    images: ['https://placehold.co/600x600'],
-  },
-];
+  private readonly products: ProductModel[] = [
+    {
+      id: '1',
+      title: 'Produto de exemplo 1',
+      price: 199.90,
+      description: 'Produto de exemplo para teste da página de detalhes.',
+      category: 'Eletrônicos',
+      images: ['https://placehold.co/600x600'],
+    },
+    {
+      id: '2',
+      title: 'Produto de exemplo 2',
+      price: 299.90,
+      description: 'Segundo produto utilizado para testar a navegação entre produtos.',
+      category: 'Informática',
+      images: ['https://placehold.co/600x600'],
+    },
+    {
+      id: '3',
+      title: 'Produto de exemplo 3',
+      price: 99.90,
+      description: 'Terceiro produto utilizado para testar a página de detalhes.',
+      category: 'Acessórios',
+      images: ['https://placehold.co/600x600'],
+    },
+  ];
+
+  readonly product: ProductModel | undefined = this.products.find(
+    (product) => product.id === this.id
+  );
 
   quantity = 1;
 
@@ -55,7 +59,7 @@ export class ProductDetails {
 
   addToCart(): void {
     console.log('Produto adicionado ao carrinho:', {
-      product: this.products,
+      product: this.product,
       quantity: this.quantity,
     });
   }
