@@ -16,7 +16,7 @@
   <div class="checkout-content">
     <section class="customer-infos">
       <div class="checkout-content-title">
-        <img class="icon" src="" alt="">
+        <img class="icon" src="" alt="" />
         <div class="checkout-content-details">
           <h4>Endereço de entrega</h4>
           <p>selecione onde deseja receber seu pedido.</p>
@@ -79,11 +79,17 @@
     <div class="checkout-summary">
       <h3>Resumo do Pedido</h3>
       <div class="summary-infos">
-        <p><span>Subtotal</span> <span>0</span></p>
+        <p>
+          <span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span>
+        </p>
         <p><span>Frete</span> <span>Grátis</span></p>
         <p>
           <span>Descontos</span>
-          <span class="">0</span>
+          <span class="">{{ discountValue() | precoFormatado }}</span>
+        </p>
+
+        <p>
+          <span>Total</span> <span>{{ totalValue() | precoFormatado }}</span>
         </p>
       </div>
 
