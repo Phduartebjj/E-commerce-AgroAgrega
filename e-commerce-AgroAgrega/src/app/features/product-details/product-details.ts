@@ -20,7 +20,7 @@ export class ProductDetails implements OnInit {
     {
       id: '1',
       title: 'Produto de exemplo 1',
-      price: 199.90,
+      price: 199.9,
       description: 'Produto de exemplo para teste da página de detalhes.',
       category: 'Eletrônicos',
       images: ['https://placehold.co/600x600'],
@@ -28,7 +28,7 @@ export class ProductDetails implements OnInit {
     {
       id: '2',
       title: 'Produto de exemplo 2',
-      price: 299.90,
+      price: 299.9,
       description: 'Segundo produto utilizado para testar a navegação entre produtos.',
       category: 'Informática',
       images: ['https://placehold.co/600x600'],
@@ -36,7 +36,7 @@ export class ProductDetails implements OnInit {
     {
       id: '3',
       title: 'Produto de exemplo 3',
-      price: 99.90,
+      price: 99.9,
       description: 'Terceiro produto utilizado para testar a página de detalhes.',
       category: 'Acessórios',
       images: ['https://placehold.co/600x600'],
@@ -60,9 +60,7 @@ export class ProductDetails implements OnInit {
   }
 
   private findProductById(id: string | null): void {
-    this.product = this.products.find(
-      (product) => product.id === id
-    );
+    this.product = this.products.find((product) => product.id === id);
   }
 
   increaseQuantity(): void {
@@ -81,11 +79,11 @@ export class ProductDetails implements OnInit {
       return;
     }
 
-    // Adicionar o produto ao carrinho quantidade vezes
-    // CartService.addCartItem() sempre adiciona/incrementa em 1,
-    // então chamamos N vezes para respeitar a quantidade selecionada
-    for (let i = 0; i < this.quantity; i++) {
-      this.cart.addCartItem(this.product);
-    }
+    this.cart.addCartItem(this.product, this.quantity);
+    console.log(this.cart.getCartItems()());
+    console.log('Produto adicionado ao carrinho:', {
+      product: this.product,
+      quantity: this.quantity,
+    });
   }
 }
