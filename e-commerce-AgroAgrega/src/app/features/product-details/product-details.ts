@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'; // Serviço para acessar dados da URL
-import { ActivatedRoute } from '@angular/router';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
