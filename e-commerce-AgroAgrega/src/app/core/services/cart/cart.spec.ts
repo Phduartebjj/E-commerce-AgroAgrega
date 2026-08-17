@@ -109,4 +109,22 @@ describe('Cart', () => {
     service.removeCartItem(product1);
     expect(service.isEmpty()).toBe(true);
   });
+
+  it('Deve aplicar um cupom de desconto', () => {
+    const couponCode = 'BEMVINDO10';
+    service.addCartItem(product1);
+    service.applyCoupon(couponCode);
+    expect(service.coupon()).toEqual({ code: couponCode, discountPercentage: 10 });
+    expect(service.total()).toBe(9);
+  });
+
+  it('Deve remover o cupom de desconto', () => {
+    const couponCode = 'BEMVINDO10';
+    service.addCartItem(product1);
+    service.applyCoupon(couponCode);
+    expect(service.coupon()).toEqual({ code: couponCode, discountPercentage: 10 });
+    service.removeCoupon();
+    expect(service.coupon()).toBeNull();
+    expect(service.total()).toBe(10);
+  });
 });
