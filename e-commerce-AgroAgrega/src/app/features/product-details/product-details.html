@@ -27,21 +27,15 @@
         <span>Quantidade:</span>
 
         <div class="quantity-control">
-          <button type="button" (click)="decreaseQuantity()" [disabled]="quantity === 1">
-            -
-          </button>
+          <button type="button" (click)="decreaseQuantity()" [disabled]="quantity === 1">-</button>
 
           <span>{{ quantity }}</span>
 
-          <button type="button" (click)="increaseQuantity()">
-            +
-          </button>
+          <button type="button" (click)="increaseQuantity()">+</button>
         </div>
       </div>
 
-      <button type="button" class="add-to-cart" (click)="addToCart()">
-        Adicionar ao carrinho
-      </button>
+      <button type="button" class="add-to-cart" (click)="addToCart()">Adicionar ao carrinho</button>
     </section>
   } @else {
     <div class="error-container">
