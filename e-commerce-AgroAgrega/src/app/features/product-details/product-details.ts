@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { Cart } from '../../core/services/cart/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -11,6 +12,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly cart = inject(Cart);
 
   id: string | null = null;
 
@@ -74,9 +76,16 @@ export class ProductDetails implements OnInit {
   }
 
   addToCart(): void {
-    console.log('Produto adicionado ao carrinho:', {
-      product: this.product,
-      quantity: this.quantity,
-    });
+    // Validar se o produto existe
+    if (!this.product) {
+      return;
+    }
+
+    // Adicionar o produto ao carrinho quantidade vezes
+    // CartService.addCartItem() sempre adiciona/incrementa em 1,
+    // então chamamos N vezes para respeitar a quantidade selecionada
+    for (let i = 0; i < this.quantity; i++) {
+      this.cart.addCartItem(this.product);
+    }
   }
 }
