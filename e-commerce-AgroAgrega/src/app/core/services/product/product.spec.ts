@@ -27,6 +27,6 @@ describe('ProductService', () => {
     const result = await firstValueFrom(service.getCatalog({ category: 'Frutas', pageSize: 12 }));
 
     expect(result.items.length).toBeGreaterThan(0);
-    expect(result.items.every((item) => item.category === 'Frutas')).toBeTrue();
+    expect(result.items.every((item) => item.category === 'Frutas')).toBe(true);
   });
 });
