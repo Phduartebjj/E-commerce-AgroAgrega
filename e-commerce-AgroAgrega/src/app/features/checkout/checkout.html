@@ -1,1 +1,69 @@
-<p>checkout works!</p>
+<main>
+  <nav class="breadcrumb">
+    <p>
+      <a routerLink="/">Home</a> > <a routerLink="/cart">Cart</a> >
+      <span class="destaque">Checkout</span>
+    </p>
+  </nav>
+  <section class="checkout-title">
+    <div>
+      <span>FINALIZAR COMPRA</span>
+
+      <h2>Checkout</h2>
+    </div>
+  </section>
+
+  <section class="customer-infos">
+    <form class="checkout-form">
+      <div class="form-group">
+        <label for="cep">CEP</label>
+        <input id="cep" name="cep" type="text" placeholder="CEP" />
+      </div>
+
+      <div class="form-group">
+        <label for="fullName">Nome completo</label>
+        <input id="fullName" name="fullName" type="text" placeholder="Nome completo" />
+      </div>
+
+      <div class="form-group">
+        <label for="cellPhone">Telefone</label>
+        <input id="cellPhone" name="cellPhone" type="tel" placeholder="Telefone" />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Endereço</label>
+        <input id="address" name="address" type="text" placeholder="Endereço" />
+      </div>
+
+      <div class="form-group">
+        <label for="number">Número</label>
+        <input id="number" name="number" type="text" placeholder="Número" />
+      </div>
+
+      <div class="form-group">
+        <label for="complement">Complemento</label>
+        <input id="complement" name="complement" type="text" placeholder="Complemento" />
+      </div>
+
+      <div class="form-group">
+        <label for="neighborhood">Bairro</label>
+        <input id="neighborhood" name="neighborhood" type="text" placeholder="Bairro" />
+      </div>
+
+      <div class="form-group">
+        <label for="city">Cidade</label>
+        <input id="city" name="city" type="text" placeholder="Cidade" />
+      </div>
+
+      <div class="form-group">
+        <label for="state">Estado</label>
+        <select id="state" name="state">
+          <option value="">Selecione</option>
+          <option value="RJ">RJ</option>
+          <option value="SP">SP</option>
+          <option value="MG">MG</option>
+        </select>
+      </div>
+    </form>
+  </section>
+</main>
