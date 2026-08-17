@@ -41,24 +41,30 @@
 
 
 .logo-marca {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 12px;
-  color: var(--green-dark);
-  font-size: clamp(1.5rem, 2vw, 2.5rem);
-  font-weight: 800;
-}
-
-.logo-nome{
-    font-size: clamp(1.5rem, 2vw, 2.5rem);
-    font-weight: 800;
     color: var(--green-dark);
+    text-decoration: none;
+    line-height: 1;
 }
 
-.logo-icone{
-    width: 48px;
-    height: 48px;
-    object-fit:contain;
+.logo-marca img {
+    display: block;
+}
+
+.logo-nome {
+    width: auto;
+    max-width: 220px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.logo-icone {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 
