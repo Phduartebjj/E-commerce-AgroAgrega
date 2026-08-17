@@ -21,16 +21,22 @@
 }
 
 .btn.btn-remove {
-  color: red;
+  color: #d84c4c;
   cursor: pointer;
-  padding: 0px;
+  padding: 0;
   font-size: 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  text-decoration: underline;
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 .cart-items {
   display: flex;
   flex-direction: column;
-  max-width: 830px;
+  width: clamp(200px, 70vw, 830px);
 }
 
 .cart-header {
@@ -38,7 +44,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #faf8f5;
+  background-color: white;
   border: 1px solid gray;
   border-radius: 8px 8px 0px 0px;
 }
@@ -59,6 +65,17 @@ img {
   border-radius: 8px;
 }
 
+.product-info img {
+  flex-shrink: 0;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
 .summary-infos {
   display: flex;
   flex-direction: column;
@@ -74,38 +91,79 @@ img {
 }
 
 .product-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
   padding: 24px;
   border: 1px solid gray;
-  justify-content: space-between;
-  width: clamp(25rem,50vw,830px);
-  max-height: 130px;
-  gap: 0.75rem;
+  gap: 24px;
+  width: 100%;
+  background-color: white;
+}
+
+.product-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex: 1;
 }
 
 .product-quantity {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid gray;
-  border-radius: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.product-quantity span {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
 }
 
 .product-quantity button {
   background-color: inherit;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+  min-width: 24px;
 }
 
 .product-category {
   font-size: 12px;
+  color: #666;
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.product-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 4px 0;
+  color: #333;
 }
 
 .product-description {
-  font-size: 10px;
-  color: gray;
+  font-size: 12px;
+  color: #999;
+  margin: 4px 0;
+}
+
+.product-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: right;
+  min-width: 100px;
 }
 
 .input {
@@ -138,7 +196,8 @@ img {
   padding: 24px 24px;
   background-color: white;
   border-radius: 16px;
-  max-width: 830px;
+
+  width: clamp(200px, 70vw, 830px);
 }
 
 .product-item:last-child {
@@ -161,7 +220,7 @@ img {
   gap: 12px;
 }
 
-.summary-total{
+.summary-total {
   border-top: 1px solid gray;
   display: flex;
   flex-direction: column;
@@ -194,7 +253,7 @@ img {
 }
 
 .btn.btn-checkout {
-  background-color: #2E7D4F;
+  background-color: #2e7d4f;
   color: white;
   border: none;
   padding: 14px 20px;

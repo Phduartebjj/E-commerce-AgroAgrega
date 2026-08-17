@@ -30,12 +30,14 @@
       </div>
       @for (item of cartItems(); track item.product.id) {
         <div class="product-item">
-          <img [src]="item.product.images" alt="{{ item.product.title }}" />
-          <div class="product-details">
-            <p class="product-category">{{ item.product.category }}</p>
-            <p>{{ item.product.title }}</p>
-            <p class="product-description">{{ item.product.description }}</p>
-            <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
+          <div class="product-info">
+            <img [src]="item.product.images" alt="{{ item.product.title }}" />
+            <div class="product-details">
+              <p class="product-category">{{ item.product.category }}</p>
+              <p class="product-title">{{ item.product.title }}</p>
+              <p class="product-description">{{ item.product.description }}</p>
+              <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
+            </div>
           </div>
           <div class="product-quantity">
             @if (item.quantity === 1) {
@@ -43,10 +45,10 @@
             } @else {
               <button (click)="decreaseProductQuantity(item.product)">-</button>
             }
-            <p>{{ item.quantity }}</p>
+            <span>{{ item.quantity }}</span>
             <button (click)="addProduct(item.product)">+</button>
           </div>
-          <p class="product-price">{{ item.product.price | precoFormatado }}</p>
+          <p class="product-price">{{ item.product.price * item.quantity | precoFormatado }}</p>
         </div>
       }
     </section>
