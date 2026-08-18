@@ -1,0 +1,49 @@
+<header class="site-header">
+  <div class="barra-anuncios">
+    <p class="barra-anuncios-texto">Entrega para todo Brasil e compra online com entrega rápida</p>
+  </div>
+  <div class="cabecalho-principal">
+    <a class="logo-marca" routerLink="/" aria-label="Ir para a página inicial">
+      <img class="logo-icone" src="assets/images/agroagrega-icon.png" alt="AgroAgrega ícone" />
+      <img class="logo-nome" src="assets/images/logo-nome.png" alt="AgroAgrega" />
+    </a>
+    <div class="area-busca">
+      <input
+        class="campo-busca"
+        type="search"
+        placeholder="Busque sementes, ferramentas e agroprodutos"
+        aria-label="Buscar produtos"
+      />
+      <button class="botao-busca" type="button">Buscar</button>
+    </div>
+    <div class="acoes-header">
+      <a class="conta-link" routerLink="/login">
+        <span class="icone-perfil"><img src="assets/images/profile.png" alt="Minha Conta" /></span>
+        <span class="conta-texto">
+          <small>Olá, usuário!</small>
+          <strong>Minha conta</strong>
+        </span>
+      </a>
+      <a class="icone-favoritos" routerLink="/favorites" aria-label="Ir para a página de favoritos">
+        <img src="assets/images/favorite.png" alt="Favoritos" />
+      </a>
+      <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
+        <img src="assets/images/cart.png" alt="Carrinho de Compras" />
+      </a>
+    </div>
+  </div>
+  <nav class="navegar-categorias" aria-label="Categorias de produtos">
+    <div class="conteudo-do-menu">
+      <a class="todas-categorias" routerLink="/products">
+        <span class="icone-categorias"><img src="assets/images/todas-categorias.svg" alt="Todas categorias" />Todas as Categorias</span>
+      </a>
+      <a routerLink="/products">Ofertas</a>
+      <a routerLink="/products">Agricultura de precisão</a>
+      <a routerLink="/products">Máquinas</a>
+      <a routerLink="/products">Irrigação</a>
+      <a routerLink="/products">Pecuária</a>
+      <a routerLink="/products">Insumos</a>
+      <a routerLink="/products">Ferramentas</a>
+    </div>
+  </nav>
+</header>
