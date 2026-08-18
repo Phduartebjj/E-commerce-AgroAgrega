@@ -1,3 +1,19 @@
-<h1>Detalhes do produto</h1>
+<section class="product-details-page">
+  @if (product(); as selectedProduct) {
+    <a routerLink="/products">← Voltar ao catálogo</a>
+    <h1>{{ selectedProduct.title }}</h1>
+    <img
+      [src]="selectedProduct.images[0] || 'https://via.placeholder.com/900x500?text=Sem+Imagem'"
+      [alt]="selectedProduct.title"
+    />
 
-<p>ID do produto: {{ id }}</p>
+    <p>{{ selectedProduct.description }}</p>
+    <p><strong>Categoria:</strong> {{ selectedProduct.category }}</p>
+    <p><strong>Estoque:</strong> {{ selectedProduct.stock }}</p>
+    <p class="price">R$ {{ selectedProduct.price.toFixed(2) }}</p>
+  } @else {
+    <h1>Produto não encontrado</h1>
+    <p>O item selecionado não existe mais no catálogo.</p>
+    <a routerLink="/products">Ir para o catálogo</a>
+  }
+</section>

@@ -1,0 +1,140 @@
+.catalog-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catalog-header h1 {
+  margin: 0;
+}
+
+.catalog-header p {
+  margin-top: 0.4rem;
+  color: #4a5568;
+}
+
+.catalog-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.catalog-controls label,
+.product-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+}
+
+.products-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.product-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.product-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.description {
+  color: #4b5563;
+}
+
+.price {
+  font-weight: 700;
+  color: #14632a;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card-actions a,
+.card-actions button,
+.form-actions button,
+.pagination button {
+  border: 1px solid #166534;
+  color: #166534;
+  background: #f0fdf4;
+  border-radius: 8px;
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.card-actions .danger {
+  border-color: #b91c1c;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.product-form {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.product-form form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #6b7280;
+}

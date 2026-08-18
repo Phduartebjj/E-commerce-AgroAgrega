@@ -1,1 +1,109 @@
-<p>products works!</p>
+<section class="catalog-page">
+  <header class="catalog-header">
+    <h1>Catálogo de produtos</h1>
+    <p>Gerencie produtos com busca, filtro, paginação e CRUD.</p>
+  </header>
+
+  <section class="catalog-controls">
+    <label>
+      Busca
+      <input
+        type="text"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="applySearchTerm($event)"
+        placeholder="Nome, descrição ou categoria"
+      />
+    </label>
+
+    <label>
+      Categoria
+      <select [ngModel]="selectedCategory()" (ngModelChange)="applyCategory($event)">
+        <option value="all">Todas</option>
+        @for (category of categories(); track category) {
+          <option [value]="category">{{ category }}</option>
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="catalog-content">
+    <div class="products-grid">
+      @for (product of paginatedProducts(); track product.id) {
+        <article class="product-card">
+          <img
+            [src]="product.images[0] || 'https://via.placeholder.com/640x420?text=Sem+Imagem'"
+            [alt]="product.title"
+          />
+          <h2>{{ product.title }}</h2>
+          <p class="description">{{ product.description }}</p>
+          <p><strong>Categoria:</strong> {{ product.category }}</p>
+          <p><strong>Estoque:</strong> {{ product.stock }}</p>
+          <p class="price">R$ {{ product.price.toFixed(2) }}</p>
+
+          <div class="card-actions">
+            <a [routerLink]="['/products', product.id]">Ver detalhes</a>
+            <button type="button" (click)="startEditing(product)">Editar</button>
+            <button type="button" class="danger" (click)="deleteProduct(product.id)">Excluir</button>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (!paginatedProducts().length) {
+      <p class="empty-state">Nenhum produto encontrado para os filtros atuais.</p>
+    }
+  </section>
+
+  <footer class="pagination">
+    <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">
+      Anterior
+    </button>
+    <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
+    <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() >= totalPages()">
+      Próxima
+    </button>
+  </footer>
+
+  <section class="product-form">
+    <h2>{{ editingProductId ? 'Editar produto' : 'Novo produto' }}</h2>
+
+    <form (ngSubmit)="saveProduct()">
+      <label>
+        Nome
+        <input name="title" required [(ngModel)]="form.title" />
+      </label>
+
+      <label>
+        Preço
+        <input name="price" required type="number" min="0" step="0.01" [(ngModel)]="form.price" />
+      </label>
+
+      <label>
+        Descrição
+        <textarea name="description" required rows="3" [(ngModel)]="form.description"></textarea>
+      </label>
+
+      <label>
+        Categoria
+        <input name="category" required [(ngModel)]="form.category" />
+      </label>
+
+      <label>
+        Estoque
+        <input name="stock" required type="number" min="0" step="1" [(ngModel)]="form.stock" />
+      </label>
+
+      <label>
+        Imagens (URLs separadas por vírgula)
+        <input name="images" [(ngModel)]="form.images" />
+      </label>
+
+      <div class="form-actions">
+        <button type="submit">{{ editingProductId ? 'Salvar alterações' : 'Criar produto' }}</button>
+        @if (editingProductId) {
+          <button type="button" (click)="cancelEditing()">Cancelar</button>
+        }
+      </div>
+    </form>
+  </section>
+</section>

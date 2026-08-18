@@ -1,0 +1,26 @@
+.product-details-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.product-details-page a {
+  color: #166534;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.product-details-page img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #166534;
+}
