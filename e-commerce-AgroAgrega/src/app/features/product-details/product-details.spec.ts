@@ -96,6 +96,66 @@ describe('ProductDetails', () => {
     expect(component.product?.id).toBe('1');
     expect(component.product?.title).toBe('Produto de exemplo 1');
   });
+  it('should move to the next image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should return to the first image after the last image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(2);
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
+  });
+  it('should move to the previous image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(2);
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should return to the last image when moving previous from the first image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(2);
+    expect(component.selectedImage).toBe('image-3.jpg');
+  });
+  it('should not change image when product has no images', () => {
+    component.product = {
+      ...component.product!,
+      images: [],
+    };
+
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(0);
+
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(0);
+  });
 
   it('should increase and decrease quantity within valid range', () => {
     expect(component.quantity).toBe(1);

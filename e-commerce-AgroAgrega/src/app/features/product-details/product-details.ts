@@ -95,4 +95,21 @@ export class ProductDetails implements OnInit {
 
     this.cart.addCartItem(this.product, this.quantity);
   }
+  nextImage(): void {
+  if (!this.product || this.product.images.length === 0) {
+    return;
+  }
+
+  this.selectedImageIndex =
+    (this.selectedImageIndex + 1) % this.product.images.length;
+}
+previousImage(): void {
+  if (!this.product || this.product.images.length === 0) {
+    return;
+  }
+
+  this.selectedImageIndex =
+    (this.selectedImageIndex - 1 + this.product.images.length) %
+    this.product.images.length;
+}
 }
