@@ -15,7 +15,14 @@ export class Auth {
   }
 
   async register(name: string, email: string, password: string){
-     
+      if(name === "" || !name.match("^[a-zA-Z]{3,16}$)")) throw new Error()
+    
+      // this.Storage.setUser({
+      //   id: randomUUID(),
+      //   name,
+      //   email,
+      //   password
+      // })
   }
 
   logout(){
