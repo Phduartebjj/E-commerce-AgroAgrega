@@ -1,4 +1,4 @@
-<main class="checkout-container">
+<main>
   <nav class="breadcrumb">
     <p>
       <a routerLink="/">Home</a> > <a routerLink="/cart">Cart</a> >
@@ -13,111 +13,120 @@
     </div>
   </section>
 
-  <div class="checkout-content">
+  <section class="checkout-container">
     <section class="customer-infos">
-      <div class="checkout-content-title">
-        <img class="icon" src="" alt="" />
-        <div class="checkout-content-details">
-          <h4>Endereço de entrega</h4>
-          <p>selecione onde deseja receber seu pedido.</p>
+      <div class="address-header">
+        <span class="icon"></span>
+        <div>
+          <h3>Endereço de entrega</h3>
+          <p>Informe onde deseja receber sua pesquisa</p>
         </div>
       </div>
 
       <form class="checkout-form">
-        <div class="form-group">
-          <label for="cep">CEP</label>
-          <input id="cep" name="cep" type="text" placeholder="CEP" />
+        <div class="form-row form-row-long">
+          <div class="form-group">
+            <label for="cep">CEP</label>
+            <div class="cep-input">
+              <input id="cep" name="cep" type="text" placeholder="01310-100" />
+              <button type="button" class="btn-buscar-cep">Buscar CEP</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fullName">Nome completo</label>
+            <input id="fullName" name="fullName" type="text" placeholder="Lucas Andrade" />
+          </div>
+          <div class="form-group">
+            <label for="cellPhone">Telefone</label>
+            <input id="cellPhone" name="cellPhone" type="tel" placeholder="(11) 99999-8421" />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="fullName">Nome completo</label>
-          <input id="fullName" name="fullName" type="text" placeholder="Nome completo" />
+        <div class="form-row form-row-middle">
+          <div class="form-group">
+            <label for="address">Endereço</label>
+            <input id="address" name="address" type="text" placeholder="Avenida Paulista" />
+          </div>
+          <div class="form-group">
+            <label for="number">Número</label>
+            <input id="number" name="number" type="text" placeholder="1578" />
+          </div>
+          <div class="form-group">
+            <label for="complement">Complemento</label>
+            <input id="complement" name="complement" type="text" placeholder="Opcional" />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="cellPhone">Telefone</label>
-          <input id="cellPhone" name="cellPhone" type="tel" placeholder="Telefone" />
+        <div class="form-row form-row-middle">
+          <div class="form-group">
+            <label for="neighborhood">Bairro</label>
+            <input id="neighborhood" name="neighborhood" type="text" placeholder="Bela Vista" />
+          </div>
+          <div class="form-group">
+            <label for="city">Cidade</label>
+            <input id="city" name="city" type="text" placeholder="São Paulo" />
+          </div>
+          <div class="form-group">
+            <label for="state">Estado</label>
+            <select id="state" name="state">
+              <option value="">Selecione</option>
+              <option value="RJ">RJ</option>
+              <option value="SP">SP</option>
+              <option value="MG">MG</option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="address">Endereço</label>
-          <input id="address" name="address" type="text" placeholder="Endereço" />
-        </div>
-
-        <div class="form-group">
-          <label for="number">Número</label>
-          <input id="number" name="number" type="text" placeholder="Número" />
-        </div>
-
-        <div class="form-group">
-          <label for="complement">Complemento</label>
-          <input id="complement" name="complement" type="text" placeholder="Complemento" />
-        </div>
-
-        <div class="form-group">
-          <label for="neighborhood">Bairro</label>
-          <input id="neighborhood" name="neighborhood" type="text" placeholder="Bairro" />
-        </div>
-
-        <div class="form-group">
-          <label for="city">Cidade</label>
-          <input id="city" name="city" type="text" placeholder="Cidade" />
-        </div>
-
-        <div class="form-group">
-          <label for="state">Estado</label>
-          <select id="state" name="state">
-            <option value="">Selecione</option>
-            <option value="RJ">RJ</option>
-            <option value="SP">SP</option>
-            <option value="MG">MG</option>
-          </select>
+        <div class="form-checkbox">
+          <input type="checkbox" id="saveAddress" name="saveAddress" checked />
+          <label for="saveAddress">Salvar este endereço para próximas compras</label>
         </div>
       </form>
     </section>
 
-    <div class="checkout-summary">
-      <h3>Resumo do Pedido</h3>
-      <div class="summary-infos">
-        <p>
-          <span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span>
-        </p>
-        <p><span>Frete</span> <span>Grátis</span></p>
-        <p>
+    <section class="order-summary">
+      <div class="order-summary-background">
+        <h3>Resumo do pedido</h3>
+
+        <div class="summary-item">
+          <span>Subtotal</span>
+          <span class="value">R$ 3.659,60</span>
+        </div>
+
+        <div class="summary-item">
+          <span>Frete</span>
+          <span class="value free">Grátis</span>
+        </div>
+
+        <div class="summary-item">
           <span>Descontos</span>
-          <span class="">{{ discountValue() | precoFormatado }}</span>
-        </p>
+          <span class="value discount">- R$ 145,00</span>
+        </div>
 
-        <p>
-          <span>Total</span> <span>{{ totalValue() | precoFormatado }}</span>
-        </p>
+        <div class="summary-total">
+          <div>
+            <h4>Total</h4>
+            <p>inclui impostos</p>
+          </div>
+          <div>
+            <span class="total-value">R$ 3.514,60</span>
+            <p class="installment">ou 10x de R$ 351,46 sem juros</p>
+          </div>
+        </div>
+
+        <div class="payment-safe">
+          <span class="icon-lock">🔒</span>
+          <span>Pagamento protegido e seguro</span>
+        </div>
       </div>
-
-      <div class="summary-total"></div>
-    </div>
-  </div>
-  <section class="delivery-section">
-    <h4>Forma de entrega</h4>
-    <p>Escolha a melhor opção para você</p>
-
-    <div class="frete-option">
-      <input type="checkbox" name="frete-option" id="" />
-      <img class="icon" src="" alt="" />
-      <div class="delivery-info">
-        <h4>Entrega padrão</h4>
-        <p>receba entra 18 a 22 de agosto</p>
+      <div class="support-section">
+        <span class="icon-chat">💬</span>
+        <div>
+          <h4>Precisa de ajuda?</h4>
+          <p>Nosso time acompanha você durante a compra.</p>
+          <a href="#">Falar com especialista</a>
+        </div>
       </div>
-      <span class="frete-value">Grátis</span>
-    </div>
-    <div class="frete-option">
-      <input type="checkbox" name="frete-option" id="" />
-      <img class="icon" src="" alt="" />
-      <div class="delivery-info">
-        <h4>Entrega expressa</h4>
-        <p>receba entra 14 a 15 de agosto</p>
-      </div>
-
-      <span class="frete-value">Grátis</span>
-    </div>
+    </section>
   </section>
 </main>
