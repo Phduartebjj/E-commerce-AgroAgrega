@@ -1,5 +1,6 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
 import { CartItemModel } from '../../../models/cartItem';
+import { isPlatformBrowser } from '@angular/common';
 import { ProductModel } from '../../../models/product';
 import { COUPONS } from '@core/data/coupons';
 import { CouponModel } from '@models/coupon';
@@ -8,11 +9,34 @@ import { CouponModel } from '@models/coupon';
 })
 export class Cart {
   //Estado inicial do carrinho, mutável apenas por ele mesmo.
-  private cartItems = signal<CartItemModel[]>([]);
-
+  private platformId = inject(PLATFORM_ID);
+  private readonly chaveStorage = 'my-storage-cart';
+  private cartItems = signal<CartItemModel[]>(this.getStorageCart());
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
     return this.cartItems.asReadonly();
+  }
+
+  getStorageCart() {
+    if (!this.isBrowser()) {
+      return [];
+    }
+    const cartItems = localStorage.getItem(this.chaveStorage);
+    if (!cartItems) {
+      return [];
+    }
+    try {
+      return JSON.parse(cartItems) as CartItemModel[];
+    } catch {
+      return [];
+    }
+  }
+
+  updateStorageCart() {
+    if (!this.isBrowser()) {
+      return;
+    }
+    localStorage.setItem(this.chaveStorage, JSON.stringify(this.cartItems()));
   }
 
   coupon = signal<CouponModel | null>(null);
@@ -118,4 +142,17 @@ export class Cart {
   isEmpty = computed(() => {
     return this.cartItems().length === 0;
   });
+
+  constructor() {
+    effect(() => {
+      if (!this.isBrowser()) {
+        return;
+      }
+      this.updateStorageCart();
+    });
+  }
+
+  private isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 }
