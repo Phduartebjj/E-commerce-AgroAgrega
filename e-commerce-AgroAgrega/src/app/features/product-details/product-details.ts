@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { ProductModel } from '../../models/product';
-import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { Cart } from '../../core/services/cart/cart.service';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-product-details',
@@ -20,24 +21,27 @@ export class ProductDetails implements OnInit {
     {
       id: '1',
       title: 'Produto de exemplo 1',
-      price: 199.9,
-      description: 'Produto de exemplo para teste da página de detalhes.',
+      price: 199.90,
+      description:
+        'Produto de exemplo para teste da página de detalhes.',
       category: 'Eletrônicos',
       images: ['https://placehold.co/600x600'],
     },
     {
       id: '2',
       title: 'Produto de exemplo 2',
-      price: 299.9,
-      description: 'Segundo produto utilizado para testar a navegação entre produtos.',
+      price: 299.90,
+      description:
+        'Segundo produto utilizado para testar a navegação entre produtos.',
       category: 'Informática',
       images: ['https://placehold.co/600x600'],
     },
     {
       id: '3',
       title: 'Produto de exemplo 3',
-      price: 99.9,
-      description: 'Terceiro produto utilizado para testar a página de detalhes.',
+      price: 99.90,
+      description:
+        'Terceiro produto utilizado para testar a página de detalhes.',
       category: 'Acessórios',
       images: ['https://placehold.co/600x600'],
     },
@@ -55,12 +59,10 @@ export class ProductDetails implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
 
-      this.findProductById(this.id);
+      this.product = this.products.find(
+        (product) => product.id === this.id,
+      );
     });
-  }
-
-  private findProductById(id: string | null): void {
-    this.product = this.products.find((product) => product.id === id);
   }
 
   increaseQuantity(): void {
@@ -74,16 +76,10 @@ export class ProductDetails implements OnInit {
   }
 
   addToCart(): void {
-    // Validar se o produto existe
-    if (!this.product) {
+    if (!this.product || this.quantity < 1) {
       return;
     }
 
     this.cart.addCartItem(this.product, this.quantity);
-    console.log(this.cart.getCartItems()());
-    console.log('Produto adicionado ao carrinho:', {
-      product: this.product,
-      quantity: this.quantity,
-    });
   }
 }
