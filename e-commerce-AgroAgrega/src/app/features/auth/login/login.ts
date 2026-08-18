@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './login.html',
   styleUrls: ['./login.css'],
 })
-export class LoginComponent {
+export class Login {
   email = '';
   password = '';
   remember = true;
