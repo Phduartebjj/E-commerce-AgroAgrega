@@ -41,7 +41,7 @@ export class Cart {
   }
 
   //Adiciona um produto ao carrinho
-  addCartItem(product: ProductModel): void {
+  addCartItem(product: ProductModel, quantity: number = 1): void {
     this.cartItems.update((items) => {
       //Encontra produto
       const productFind = items.find((p) => p.product.id === product.id);
@@ -50,13 +50,13 @@ export class Cart {
         //retorna um novo array baseado no carrinho, procura o produto e adiciona a quantidade
         return items.map((item) => {
           if (item.product.id === product.id) {
-            return { ...item, quantity: item.quantity + 1 };
+            return { ...item, quantity: item.quantity + quantity };
           }
           return item;
         });
       } else {
         //Se não encontrar, cria o produto.
-        return [...items, { product: product, quantity: 1 }];
+        return [...items, { product: product, quantity: quantity }];
       }
     });
   }
