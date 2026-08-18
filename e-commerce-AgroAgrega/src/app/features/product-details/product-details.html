@@ -4,11 +4,51 @@
   @if (product) {
     <section class="product-gallery">
       <div class="main-image">
-        <img [src]="product.images[0]" [alt]="product.title" />
+        @if (product.images.length > 1) {
+          <button
+            type="button"
+            class="image-navigation previous"
+            (click)="previousImage()"
+            aria-label="Imagem anterior"
+          >
+            ‹
+          </button>
+        }
+
+        <img [src]="selectedImage" [alt]="product.title" />
+
+        @if (product.images.length > 1) {
+          <button
+            type="button"
+            class="image-navigation next"
+            (click)="nextImage()"
+            aria-label="Próxima imagem"
+          >
+            ›
+          </button>
+        }
       </div>
+
+      @if (product.images.length > 1) {
+        <div class="image-thumbnails">
+          @for (image of product.images; track image; let i = $index) {
+            <button
+              type="button"
+              class="thumbnail"
+              [class.selected]="selectedImageIndex === i"
+              (click)="selectImage(i)"
+              [attr.aria-label]="'Selecionar imagem ' + (i + 1)"
+            >
+              <img [src]="image" [alt]="product.title + ' - imagem ' + (i + 1)" />
+            </button>
+          }
+        </div>
+      }
     </section>
 
     <section class="product-info">
+      <a routerLink="/products" class="back-to-products"> ← Voltar para produtos </a>
+
       <p class="product-id">ID do produto: {{ id }}</p>
 
       <span class="product-category">
@@ -29,22 +69,34 @@
         <span>Quantidade:</span>
 
         <div class="quantity-control">
-          <button type="button" (click)="decreaseQuantity()" [disabled]="quantity === 1">-</button>
+          <button
+            type="button"
+            (click)="decreaseQuantity()"
+            [disabled]="quantity === 1"
+            aria-label="Diminuir quantidade"
+          >
+            -
+          </button>
 
           <span>{{ quantity }}</span>
 
-          <button type="button" (click)="increaseQuantity()">+</button>
+          <button type="button" (click)="increaseQuantity()" aria-label="Aumentar quantidade">
+            +
+          </button>
         </div>
       </div>
 
       <button type="button" class="add-to-cart" (click)="addToCart()">Adicionar ao carrinho</button>
+
+      <a routerLink="/cart" class="go-to-cart"> Ver carrinho → </a>
     </section>
   } @else {
     <div class="error-container">
       <h2>Produto não encontrado</h2>
+
       <p>O produto com ID {{ id }} não existe.</p>
-      <a href="/products">Voltar para produtos</a>
+
+      <a routerLink="/products"> Voltar para produtos </a>
     </div>
   }
-  <a routerLink="/cart">link to cart </a>
 </main>
