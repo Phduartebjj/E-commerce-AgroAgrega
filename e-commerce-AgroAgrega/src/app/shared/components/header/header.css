@@ -50,14 +50,14 @@
 
 .logo-nome {
   width: auto;
-  max-width: 220px;
-  height: 36px;
+  max-width: 240px;
+  height: 42px;
   object-fit: contain;
 }
 
 .logo-icone {
-  width: 52px;
-  height: 52px;
+  width: 59px;
+  height: 59px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -94,6 +94,7 @@
   background-color: var(--green-dark);
   color: var(--white);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .acoes-header {
@@ -166,7 +167,7 @@
 .icone-carrinho {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   width: 40px;
   height: 40px;
   padding: 0px;
@@ -196,13 +197,16 @@
 }
 
 .conteudo-do-menu {
-  width: min(calc(100% - 32px), 1700px);
+  width: min(calc(100% - 32px), 1240px);
   min-height: 42px;
   margin: 0 auto;
 
   display: flex;
+  justify-content: flex-start;
   align-items: center;
   gap: 32px;
+  
+
 }
 
 .conteudo-do-menu a {
