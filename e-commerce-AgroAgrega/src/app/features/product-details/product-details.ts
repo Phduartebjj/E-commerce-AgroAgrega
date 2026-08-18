@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { Cart } from '../../core/services/cart/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -11,6 +12,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly cart = inject(Cart);
 
   id: string | null = null;
 
@@ -53,8 +55,12 @@ export class ProductDetails implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
 
-      this.product = this.products.find((product) => product.id === this.id);
+      this.findProductById(this.id);
     });
+  }
+
+  private findProductById(id: string | null): void {
+    this.product = this.products.find((product) => product.id === id);
   }
 
   increaseQuantity(): void {
@@ -68,6 +74,13 @@ export class ProductDetails implements OnInit {
   }
 
   addToCart(): void {
+    // Validar se o produto existe
+    if (!this.product) {
+      return;
+    }
+
+    this.cart.addCartItem(this.product, this.quantity);
+    console.log(this.cart.getCartItems()());
     console.log('Produto adicionado ao carrinho:', {
       product: this.product,
       quantity: this.quantity,
