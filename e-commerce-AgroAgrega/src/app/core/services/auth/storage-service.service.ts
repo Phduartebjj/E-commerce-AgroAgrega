@@ -5,33 +5,37 @@ import { UserModel } from '@models/user';
   providedIn: 'root'
 })
 export class StorageService{
-
-  setUser(data: UserModel): void {
+  //Seta os usúarios se baseando no modelo User.
+  setUser(data: UserModel): any {
     try{
         const dtLocal = localStorage.getItem('db');
-
-        console.log(data.email);
-
+        // Se não existir usuário, ele sobe o valor como primeiro item de um vetor.
         if(!dtLocal){
-            localStorage.setItem('db', JSON.stringify([data]));   
+            localStorage.setItem('db', JSON.stringify([data]));
+            return;
         }
+
+        //Utiliza do método getUser para checar se já existe algum usuário.
         if(!this.getUser(data.email)){
-          const users: UserModel[] = JSON.parse(dtLocal ?? "");
-          localStorage.setItem('db', JSON.stringify(users));
+          const users: UserModel[] = JSON.parse(dtLocal ?? ""); // 'dtLocal ?? "" ' se o dtLocal retornar undefined/null ele usa o outro valor. 
           users.push(data);
+          localStorage.setItem('db', JSON.stringify(users));
+        }else{
+          return "Já existe um usuário com essas credênciais";
         }
     }catch(e){
         console.error('Erro ao salvar no localStorage', e);
     }
   }
 
+  //Busca usuário pelo email | poderia ser pelo ID
   getUser(email: string): UserModel | null {
     try{
-      const item = localStorage.getItem('db');
-      if(!item){
+      const data = localStorage.getItem('db');
+      if(!data){
         return null;
       }
-      const users: UserModel[] = JSON.parse(item);
+      const users: UserModel[] = JSON.parse(data);
 
       return users.find(user => user.email === email) ?? null;
     }catch(e){
@@ -40,15 +44,25 @@ export class StorageService{
     }
   }
 
-  getAllUsers<T>(){
-    return localStorage.getItem('db') ?? null;
+  // Retorna todos os usuários
+  getAllUsers(): UserModel[] | string{
+    const data = localStorage.getItem('db');
+    if(!data) return [];
+
+    return data;
   }
 
-  updateUser(email: string, newPassword: string): void {
-    let data = this.getUser(email);
-    if(data) data.password = newPassword;
+  // Atualiza usuário
+  updateUser(email: string, newPassword: string): any {
+    try{
+      let data = this.getUser(email);
+      if(data == null) return "Usuário Inexistente."
+      if(data) data.password = newPassword;
 
-    localStorage.setItem("db", JSON.stringify(data));
+      localStorage.setItem("db", JSON.stringify(data));
+    }catch(err){
+      console.error("Erro ao tentar modificar campo de update", err);
+    }
   }
 
   removeUser(key: string): void {
