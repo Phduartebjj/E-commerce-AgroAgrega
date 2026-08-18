@@ -8,13 +8,7 @@ import { Cart } from '../../core/services/cart/cart.service';
 function createActivatedRoute(id: string) {
   return {
     paramMap: {
-      subscribe: (
-        callback: (
-          params: {
-            get: (key: string) => string | null;
-          },
-        ) => void,
-      ) => {
+      subscribe: (callback: (params: { get: (key: string) => string | null }) => void) => {
         callback({
           get: (key: string) => (key === 'id' ? id : null),
         });
@@ -55,6 +49,39 @@ describe('ProductDetails', () => {
 
     fixture.detectChanges();
   });
+  it('should select a valid product image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(1);
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should ignore an invalid image index', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg'],
+    };
+
+    component.selectImage(10);
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
+  });
+  it('should ignore a negative image index', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg'],
+    };
+
+    component.selectImage(-1);
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -94,25 +121,16 @@ describe('ProductDetails', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('ID do produto: 1');
-    expect(compiled.textContent).toContain(
-      'Produto de exemplo 1',
-    );
-    expect(compiled.textContent).toContain(
-      'Adicionar ao carrinho',
-    );
+    expect(compiled.textContent).toContain('Produto de exemplo 1');
+    expect(compiled.textContent).toContain('Adicionar ao carrinho');
   });
 
   it('should call addCartItem with current product and quantity', () => {
     component.addToCart();
 
-    expect(mockCartService.addCartItem).toHaveBeenCalledWith(
-      component.product,
-      component.quantity,
-    );
+    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product, component.quantity);
 
-    expect(
-      mockCartService.addCartItem,
-    ).toHaveBeenCalledTimes(1);
+    expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
   it('should call addCartItem once with the selected quantity', () => {
@@ -120,14 +138,9 @@ describe('ProductDetails', () => {
 
     component.addToCart();
 
-    expect(mockCartService.addCartItem).toHaveBeenCalledWith(
-      component.product,
-      3,
-    );
+    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product, 3);
 
-    expect(
-      mockCartService.addCartItem,
-    ).toHaveBeenCalledTimes(1);
+    expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
   it('should not call addCartItem when product does not exist', () => {
@@ -135,9 +148,7 @@ describe('ProductDetails', () => {
 
     component.addToCart();
 
-    expect(
-      mockCartService.addCartItem,
-    ).not.toHaveBeenCalled();
+    expect(mockCartService.addCartItem).not.toHaveBeenCalled();
   });
 
   it('should not add product when quantity is invalid', () => {
@@ -145,9 +156,7 @@ describe('ProductDetails', () => {
 
     component.addToCart();
 
-    expect(
-      mockCartService.addCartItem,
-    ).not.toHaveBeenCalled();
+    expect(mockCartService.addCartItem).not.toHaveBeenCalled();
   });
 
   it('should identify when product does not exist', async () => {
@@ -171,11 +180,9 @@ describe('ProductDetails', () => {
       ],
     }).compileComponents();
 
-    const notFoundFixture =
-      TestBed.createComponent(ProductDetails);
+    const notFoundFixture = TestBed.createComponent(ProductDetails);
 
-    const notFoundComponent =
-      notFoundFixture.componentInstance;
+    const notFoundComponent = notFoundFixture.componentInstance;
 
     notFoundFixture.detectChanges();
 

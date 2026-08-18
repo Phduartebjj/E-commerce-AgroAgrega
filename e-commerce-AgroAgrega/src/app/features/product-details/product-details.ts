@@ -21,27 +21,24 @@ export class ProductDetails implements OnInit {
     {
       id: '1',
       title: 'Produto de exemplo 1',
-      price: 199.90,
-      description:
-        'Produto de exemplo para teste da página de detalhes.',
+      price: 199.9,
+      description: 'Produto de exemplo para teste da página de detalhes.',
       category: 'Eletrônicos',
       images: ['https://placehold.co/600x600'],
     },
     {
       id: '2',
       title: 'Produto de exemplo 2',
-      price: 299.90,
-      description:
-        'Segundo produto utilizado para testar a navegação entre produtos.',
+      price: 299.9,
+      description: 'Segundo produto utilizado para testar a navegação entre produtos.',
       category: 'Informática',
       images: ['https://placehold.co/600x600'],
     },
     {
       id: '3',
       title: 'Produto de exemplo 3',
-      price: 99.90,
-      description:
-        'Terceiro produto utilizado para testar a página de detalhes.',
+      price: 99.9,
+      description: 'Terceiro produto utilizado para testar a página de detalhes.',
       category: 'Acessórios',
       images: ['https://placehold.co/600x600'],
     },
@@ -51,6 +48,24 @@ export class ProductDetails implements OnInit {
 
   quantity = 1;
 
+  selectedImageIndex = 0;
+
+  get selectedImage(): string | undefined {
+    return this.product?.images[this.selectedImageIndex];
+  }
+
+  selectImage(index: number): void {
+    if (!this.product) {
+      return;
+    }
+
+    if (index < 0 || index >= this.product.images.length) {
+      return;
+    }
+
+    this.selectedImageIndex = index;
+  }
+
   get productNotFound(): boolean {
     return this.product === undefined;
   }
@@ -59,9 +74,7 @@ export class ProductDetails implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
 
-      this.product = this.products.find(
-        (product) => product.id === this.id,
-      );
+      this.product = this.products.find((product) => product.id === this.id);
     });
   }
 
