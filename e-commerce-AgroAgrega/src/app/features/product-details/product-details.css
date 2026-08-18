@@ -138,6 +138,10 @@
   .product-info h1 {
     font-size: 2rem;
   }
+
+  .back-to-products {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .error-container {
