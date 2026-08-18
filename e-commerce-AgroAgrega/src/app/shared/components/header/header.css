@@ -94,7 +94,6 @@
   background-color: var(--green-dark);
   color: var(--white);
   font-weight: 600;
-  
 }
 
 .acoes-header {
@@ -117,13 +116,9 @@
 
 .icone-perfil {
   font-size: 1.6rem;
-  
 }
 
-
-
-
-.icone-perfil img{
+.icone-perfil img {
   width: 36px;
   height: 36px;
   object-fit: contain;
@@ -144,7 +139,7 @@
 }
 
 .icone-favoritos {
-   display: inline-flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -168,7 +163,6 @@
   object-fit: contain;
 }
 
-
 .icone-carrinho {
   display: inline-flex;
   align-items: center;
@@ -188,21 +182,20 @@
   opacity: 0.6;
 }
 
-
 .icone-carrinho img {
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
-.navegar-categorias{
+.navegar-categorias {
   width: 100%;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   background-color: var(--white);
 }
 
-.conteudo-do-menu{
+.conteudo-do-menu {
   width: min(calc(100% - 32px), 1700px);
   min-height: 42px;
   margin: 0 auto;
@@ -219,28 +212,27 @@
   font-weight: 600;
   white-space: nowrap;
 
-  transition: opacity 0.5s
-
+  transition: opacity 0.5s;
 }
 
-.conteudo-do-menu a:hover{
+.conteudo-do-menu a:hover {
   opacity: 0.5;
 }
 
-.todas-categorias{
+.todas-categorias {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  
 }
 
-.icone-categorias{
+.icone-categorias {
   font-size: 1.1rem;
-  
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-
-
-
-
-
+.icone-categorias img {
+  width: 15px;
+  height: 15px;
+}

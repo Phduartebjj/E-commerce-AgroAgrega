@@ -16,4 +16,6 @@ export class Checkout {
   totalValue = this.cart.total;
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
+
+  
 }
