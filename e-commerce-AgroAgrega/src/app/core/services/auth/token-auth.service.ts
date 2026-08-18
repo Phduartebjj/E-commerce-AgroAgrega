@@ -1,5 +1,11 @@
+import { Injectable } from "@angular/core";
+import { UserModel } from "@models/user";
+
+@Injectable({
+  providedIn: 'root'
+})
 export class TokenAuth{
-    createToken(payload: string): string{
+    private createToken(payload: UserModel): string{
         const header = {
             alg: "none",
             typ: "JWT"
@@ -8,11 +14,15 @@ export class TokenAuth{
         return `${btoa(JSON.stringify(header))}.${JSON.stringify(payload)}.picles`
     }
 
-    setToken(token: string){
-        document.cookie = `cookie_user=${token}`;
+    setToken(userPayload: UserModel){
+        document.cookie = `cookie_user=${this.createToken(userPayload)}`;
     }
 
-    deleteToken(): void{
+    getToken(){
+        return document.cookie;
+    }
+
+    deleteToken(): void {
         document.cookie = `cookie_user=""`;
     }
 
