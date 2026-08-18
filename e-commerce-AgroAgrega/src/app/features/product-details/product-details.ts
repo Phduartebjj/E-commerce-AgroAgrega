@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { ProductModel } from '../../models/product';
-import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { Cart } from '../../core/services/cart/cart.service';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-product-details',
@@ -47,6 +48,24 @@ export class ProductDetails implements OnInit {
 
   quantity = 1;
 
+  selectedImageIndex = 0;
+
+  get selectedImage(): string | undefined {
+    return this.product?.images[this.selectedImageIndex];
+  }
+
+  selectImage(index: number): void {
+    if (!this.product) {
+      return;
+    }
+
+    if (index < 0 || index >= this.product.images.length) {
+      return;
+    }
+
+    this.selectedImageIndex = index;
+  }
+
   get productNotFound(): boolean {
     return this.product === undefined;
   }
@@ -55,12 +74,8 @@ export class ProductDetails implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
 
-      this.findProductById(this.id);
+      this.product = this.products.find((product) => product.id === this.id);
     });
-  }
-
-  private findProductById(id: string | null): void {
-    this.product = this.products.find((product) => product.id === id);
   }
 
   increaseQuantity(): void {
@@ -74,16 +89,27 @@ export class ProductDetails implements OnInit {
   }
 
   addToCart(): void {
-    // Validar se o produto existe
-    if (!this.product) {
+    if (!this.product || this.quantity < 1) {
       return;
     }
 
     this.cart.addCartItem(this.product, this.quantity);
-    console.log(this.cart.getCartItems()());
-    console.log('Produto adicionado ao carrinho:', {
-      product: this.product,
-      quantity: this.quantity,
-    });
   }
+  nextImage(): void {
+  if (!this.product || this.product.images.length === 0) {
+    return;
+  }
+
+  this.selectedImageIndex =
+    (this.selectedImageIndex + 1) % this.product.images.length;
+}
+previousImage(): void {
+  if (!this.product || this.product.images.length === 0) {
+    return;
+  }
+
+  this.selectedImageIndex =
+    (this.selectedImageIndex - 1 + this.product.images.length) %
+    this.product.images.length;
+}
 }
