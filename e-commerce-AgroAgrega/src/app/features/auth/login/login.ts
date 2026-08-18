@@ -2,8 +2,24 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-login',
-  imports: [],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrls: ['./login.css'],
 })
-export class Login {}
+export class LoginComponent {
+  email = '';
+  password = '';
+  remember = true;
+  showPassword = false;
+
+  onSubmit(): void {
+    console.log({
+      email: this.email,
+      password: this.password,
+      remember: this.remember,
+    });
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+}
