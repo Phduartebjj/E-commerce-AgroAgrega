@@ -1,1 +1,32 @@
-<p>home works!</p>
+<section class="home-page">
+  <header class="hero">
+    <p class="kicker">AgroAgrega</p>
+    <h1>Catálogo de produtos do campo para a sua mesa</h1>
+    <p>
+      Encontre hortifruti, laticínios, mercearia e bebidas de produtores locais com qualidade e frescor.
+    </p>
+    <a routerLink="/products">Ver catálogo completo</a>
+  </header>
+
+  <section class="catalog-preview">
+    <div class="section-title">
+      <h2>Produtos em destaque</h2>
+      <a routerLink="/products">Ir para produtos</a>
+    </div>
+
+    <div class="products-grid">
+      @for (product of highlightedProducts(); track product.id) {
+        <article class="product-card">
+          <img
+            [src]="product.images[0] || 'https://via.placeholder.com/640x420?text=Sem+Imagem'"
+            [alt]="product.title"
+          />
+          <h3>{{ product.title }}</h3>
+          <p class="category">{{ product.category }}</p>
+          <p class="description">{{ product.description }}</p>
+          <p class="price">R$ {{ product.price.toFixed(2) }}</p>
+        </article>
+      }
+    </div>
+  </section>
+</section>
