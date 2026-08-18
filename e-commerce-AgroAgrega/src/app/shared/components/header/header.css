@@ -25,7 +25,7 @@
 }
 
 .cabecalho-principal {
-  width: min(calc(100% - 32px), 1700px);
+  width: min(calc(100% - 32px), 1240px);
   min-height: 124px;
   margin: 0 auto;
 
