@@ -80,6 +80,7 @@
 
   font-size: 0.95rem;
   outline: none;
+  cursor: auto;
 }
 
 .campo-busca:focus {
@@ -93,7 +94,7 @@
   background-color: var(--green-dark);
   color: var(--white);
   font-weight: 600;
-  cursor: pointer;
+  
 }
 
 .acoes-header {
@@ -192,6 +193,50 @@
   width: 32px;
   height: 32px;
   object-fit: contain;
+}
+
+.navegar-categorias{
+  width: 100%;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background-color: var(--white);
+}
+
+.conteudo-do-menu{
+  width: min(calc(100% - 32px), 1700px);
+  min-height: 42px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.conteudo-do-menu a {
+  color: var(--green-dark);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  transition: opacity 0.5s
+
+}
+
+.conteudo-do-menu a:hover{
+  opacity: 0.5;
+}
+
+.todas-categorias{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  
+}
+
+.icone-categorias{
+  font-size: 1.1rem;
+  
 }
 
 
