@@ -90,7 +90,7 @@
 
         <div class="summary-item">
           <span>Subtotal</span>
-          <span class="value">R$ 3.659,60</span>
+          <span class="value">{{ subTotal() | precoFormatado }}</span>
         </div>
 
         <div class="summary-item">
@@ -100,7 +100,7 @@
 
         <div class="summary-item">
           <span>Descontos</span>
-          <span class="value discount">- R$ 145,00</span>
+          <span class="value discount">{{ discountValue() | precoFormatado }}</span>
         </div>
 
         <div class="summary-total">
@@ -109,8 +109,7 @@
             <p>inclui impostos</p>
           </div>
           <div>
-            <span class="total-value">R$ 3.514,60</span>
-            <p class="installment">ou 10x de R$ 351,46 sem juros</p>
+            <span class="total-value">{{ totalValue() | precoFormatado }}</span>
           </div>
         </div>
 
