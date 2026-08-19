@@ -18,10 +18,10 @@ export class StorageService{
         //Utiliza do método getUser para checar se já existe algum usuário.        
         if(this.getUser(data.email)) return false
         
-        const users: UserModel[] = JSON.parse(dtLocal); // 'dtLocal ?? "" ' se o dtLocal retornar undefined/null ele usa o outro valor. 
+        const users: UserModel[] = JSON.parse(dtLocal);
         users.push(data);
         localStorage.setItem('db', JSON.stringify(users));
-
+        
         return true;
     }catch(e){
         console.error('Erro ao salvar no localStorage', e);
