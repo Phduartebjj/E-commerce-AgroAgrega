@@ -54,16 +54,22 @@ export class StorageService{
   }
 
   // Atualiza usuário
-  updateUser(email: string, newPassword: string): any {
-    try{
-      let data = this.getUser(email);
-      if(data == null) return "Usuário Inexistente."
-      if(data) data.password = newPassword;
+  updateUser(email: string, newPassword: string): boolean {
+      try {
+        const data = localStorage.getItem('db');
+        if(!data) return false;
+          const users: UserModel[] = JSON.parse(data);
+          const user = users.find(user => user.email === email);
 
-      localStorage.setItem("db", JSON.stringify(data));
-    }catch(err){
-      console.error("Erro ao tentar modificar campo de update", err);
-    }
+          if(!user) return false;
+          user.password = newPassword;
+
+          localStorage.setItem('db', JSON.stringify(users));
+          return true;
+      } catch (err) {
+          console.error('Erro ao atualizar usuário', err);
+          return false;
+      }
   }
 
   // removeUser(key: string): void {
