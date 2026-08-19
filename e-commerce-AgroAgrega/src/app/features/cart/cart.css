@@ -1,3 +1,26 @@
+.breadcrumb {
+  margin-bottom: 30px;
+}
+
+.breadcrumb p {
+  font-size: 14px;
+  color: #666;
+}
+
+.breadcrumb a {
+  color: #666;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb .destaque {
+  color: #333;
+  font-weight: bold;
+}
+
 .cart-container {
   display: flex;
   gap: 16px;
@@ -67,15 +90,6 @@
   font-weight: bold;
 }
 
-a {
-  color: gray;
-  display: inline;
-  width: fit-content;
-}
-
-.destaque {
-  color: black;
-}
 
 img {
   width: 80px;
