@@ -25,7 +25,13 @@ export class CheckoutComponent {
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
 
-  
+  checkoutForm = new FormGroup({
+    fullName: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      nameNoSpecialChars,
+    ]),
+  });
 }
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
