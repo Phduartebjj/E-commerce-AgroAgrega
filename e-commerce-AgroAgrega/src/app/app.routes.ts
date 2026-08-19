@@ -10,7 +10,7 @@ import { Register } from './features/auth/register/register';
 import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
 import { ResetPassword } from './features/auth/reset-password/reset-password';
 
-import { Checkout } from './features/checkout/checkout';
+import { CheckoutComponent } from './features/checkout/checkout';
 
 import { Orders } from './features/orders/orders/orders';
 import { OrderDetails } from './features/orders/order-details/order-details';
@@ -50,7 +50,7 @@ export const routes: Routes = [
   },
   {
     path: 'checkout',
-    component: Checkout,
+    component: CheckoutComponent,
   },
   {
     path: 'orders',
