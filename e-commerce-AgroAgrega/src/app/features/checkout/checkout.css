@@ -15,7 +15,7 @@ main {
 }
 
 .breadcrumb a {
-  color: #007bff;
+  color: #666;
   text-decoration: none;
 }
 
@@ -180,7 +180,7 @@ main {
   margin-top: 10px;
 }
 
-.form-checkbox input[type="checkbox"] {
+.form-checkbox input[type='checkbox'] {
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -305,8 +305,8 @@ main {
 }
 
 .support-section .icon-chat {
-  font-size: 20px;
   flex-shrink: 0;
+  width: 1.5rem;
 }
 
 .support-section h4 {

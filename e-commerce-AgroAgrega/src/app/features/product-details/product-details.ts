@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { ProductModel } from '../../models/product';
 import { Cart } from '../../core/services/cart/cart.service';
@@ -7,14 +7,14 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-product-details',
-  imports: [PrecoFormatadoPipe],
+  imports: [PrecoFormatadoPipe, RouterLink],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css',
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly cart = inject(Cart);
-
+  showCartNotification = false;
   id: string | null = null;
 
   private readonly products: ProductModel[] = [
@@ -89,27 +89,31 @@ export class ProductDetails implements OnInit {
   }
 
   addToCart(): void {
-    if (!this.product || this.quantity < 1) {
+  if (!this.product || this.quantity <= 0) {
+    return;
+  }
+
+  this.cart.addCartItem(this.product, this.quantity);
+
+  this.showCartNotification = true;
+
+  setTimeout(() => {
+    this.showCartNotification = false;
+  }, 3000);
+}
+  nextImage(): void {
+    if (!this.product || this.product.images.length === 0) {
       return;
     }
 
-    this.cart.addCartItem(this.product, this.quantity);
+    this.selectedImageIndex = (this.selectedImageIndex + 1) % this.product.images.length;
   }
-  nextImage(): void {
-  if (!this.product || this.product.images.length === 0) {
-    return;
-  }
+  previousImage(): void {
+    if (!this.product || this.product.images.length === 0) {
+      return;
+    }
 
-  this.selectedImageIndex =
-    (this.selectedImageIndex + 1) % this.product.images.length;
-}
-previousImage(): void {
-  if (!this.product || this.product.images.length === 0) {
-    return;
+    this.selectedImageIndex =
+      (this.selectedImageIndex - 1 + this.product.images.length) % this.product.images.length;
   }
-
-  this.selectedImageIndex =
-    (this.selectedImageIndex - 1 + this.product.images.length) %
-    this.product.images.length;
-}
 }
