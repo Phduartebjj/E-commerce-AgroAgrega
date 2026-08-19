@@ -334,13 +334,13 @@
   transition:
     background 0.2s ease,
     color 0.2s ease;
-    cursor: pointer;
+  cursor: pointer;
+  cursor: pointer;
 }
 
 .go-to-cart:hover {
   background: #2f7d32;
   color: white;
-  
 }
 .breadcrumb {
   grid-column: 1 / -1;

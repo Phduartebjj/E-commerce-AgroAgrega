@@ -7,7 +7,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-product-details',
-  imports: [PrecoFormatadoPipe],
+  imports: [PrecoFormatadoPipe, RouterLink],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css',
 })
