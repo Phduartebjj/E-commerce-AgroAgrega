@@ -190,10 +190,15 @@
 }
 
 .navegar-categorias {
+  overflow-x: auto;
+  scrollbar-width: none;
   width: 100%;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   background-color: var(--white);
+}
+.navegar-categorias::-webkit-scrollbar{
+  display: none;
 }
 
 .conteudo-do-menu {
@@ -205,8 +210,6 @@
   justify-content: flex-start;
   align-items: center;
   gap: 32px;
-  
-
 }
 
 .conteudo-do-menu a {
@@ -239,4 +242,60 @@
 .icone-categorias img {
   width: 15px;
   height: 15px;
+}
+
+@media (max-width: 768px) {
+  .cabecalho-principal {
+    min-height: auto;
+    padding: 24px 16px;
+
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .logo-marca {
+    order: 1;
+  }
+
+  .acoes-header {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .area-busca {
+    order: 3;
+
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .navegar-categorias {
+    overflow-x: auto;
+  }
+
+  .conteudo-do-menu {
+    width: max-content;
+    min-width: 100%;
+
+    padding: 0 16px;
+    gap: 24px;
+
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .conta-texto {
+    display: none;
+  }
+  .acoes-header {
+    gap: 12px;
+  }
+  .logo-icone {
+    width: 44px;
+    height: 44px;
+  }
+  .logo-nome {
+    height: 30px;
+  }
 }
