@@ -99,6 +99,90 @@
 
       <a routerLink="/cart" class="go-to-cart"> Ver carrinho → </a>
     </section>
+    <section class="product-extra">
+      <nav class="product-tabs">
+        <button type="button" class="product-tab active">Detalhes</button>
+
+        <button type="button" class="product-tab">Avaliações</button>
+
+        <button type="button" class="product-tab">Discussão</button>
+      </nav>
+
+      <section class="product-details-content">
+        <h2>Detalhes do produto</h2>
+
+        <p>
+          {{ product.description }}
+        </p>
+
+        <div class="product-details-grid">
+          <div class="detail-item">
+            <span>Categoria</span>
+            <strong>{{ product.category }}</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>ID do produto</span>
+            <strong>{{ product.id }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="product-reviews">
+        <div class="reviews-header">
+          <div class="reviews-summary">
+            <h2>Avaliações</h2>
+
+            <div class="rating-score">
+              <strong>—</strong>
+              <span>Sem avaliações</span>
+            </div>
+          </div>
+
+          <div class="rating-bars">
+            <div class="rating-row">
+              <span>5</span>
+              <div class="rating-bar">
+                <div class="rating-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <span>4</span>
+              <div class="rating-bar">
+                <div class="rating-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <span>3</span>
+              <div class="rating-bar">
+                <div class="rating-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <span>2</span>
+              <div class="rating-bar">
+                <div class="rating-fill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <span>1</span>
+              <div class="rating-bar">
+                <div class="rating-fill" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reviews-empty">
+          <h3>Ainda não há avaliações</h3>
+          <p>Este produto ainda não recebeu nenhuma avaliação.</p>
+        </div>
+      </section>
+    </section>
   } @else {
     <div class="error-container">
       <h2>Produto não encontrado</h2>
@@ -106,6 +190,16 @@
       <p>O produto com ID {{ id }} não existe.</p>
 
       <a routerLink="/products"> Voltar para produtos </a>
+    </div>
+  }
+  @if (showCartNotification) {
+    <div class="cart-notification" role="status" aria-live="polite">
+      <span class="cart-notification-icon">✓</span>
+
+      <div>
+        <strong>Produto adicionado</strong>
+        <p>Produto adicionado ao carrinho com sucesso.</p>
+      </div>
     </div>
   }
 </main>
