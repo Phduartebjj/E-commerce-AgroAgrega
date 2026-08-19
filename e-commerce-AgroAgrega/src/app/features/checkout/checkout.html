@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <form class="checkout-form">
+      <form class="checkout-form" [formGroup]="checkoutForm">
         <div class="form-row form-row-long">
           <div class="form-group">
             <label for="cep">CEP</label>
@@ -34,7 +34,19 @@
           </div>
           <div class="form-group">
             <label for="fullName">Nome completo</label>
-            <input id="fullName" name="fullName" type="text" placeholder="Lucas Andrade" />
+            <input
+              id="fullName"
+              formControlName="fullName"
+              name="fullName"
+              type="text"
+              placeholder="Lucas Andrade"
+            />
+
+            @if (getErrorMessage('fullName')) {
+              <small class="erroMessage">
+                {{ getErrorMessage('fullName') }}
+              </small>
+            }
           </div>
           <div class="form-group">
             <label for="cellPhone">Telefone</label>
@@ -123,7 +135,9 @@
         <div>
           <h4>Precisa de ajuda?</h4>
           <p>Nosso time acompanha você durante a compra.</p>
-          <a href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/" target="_blank">Falar com especialista</a>
+          <a href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/" target="_blank"
+            >Falar com especialista</a
+          >
         </div>
       </div>
     </section>

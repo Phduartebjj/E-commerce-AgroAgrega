@@ -32,6 +32,12 @@ main {
   margin-bottom: 40px;
 }
 
+.erroMessage {
+  color: red;
+  position: absolute;
+  transform: translateY(65px);
+}
+
 .checkout-title span {
   font-size: 12px;
   color: #999;
