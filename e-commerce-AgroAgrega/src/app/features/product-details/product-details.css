@@ -533,3 +533,36 @@
 .reviews-empty p {
   color: #777;
 }
+.cart-notification {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+
+  padding: 1rem 1.25rem;
+
+  background: #ffffff;
+  border: 2px solid #2f7d32;
+  border-radius: 10px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  color: #333;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.notification-cart-link {
+  color: #2f7d32;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.notification-cart-link:hover {
+  text-decoration: underline;
+}
