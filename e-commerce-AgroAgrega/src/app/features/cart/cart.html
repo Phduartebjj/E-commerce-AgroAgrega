@@ -35,7 +35,8 @@
             <img [src]="item.product.images" alt="{{ item.product.title }}" />
             <div class="product-details">
               <p class="product-category">{{ item.product.category }}</p>
-              <p class="product-title">{{ item.product.title }}</p>
+              <a [routerLink]="['/products', item.product.id]"> {{ item.product.title }}</a>
+
               <p class="product-description">{{ item.product.description }}</p>
               <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
             </div>
