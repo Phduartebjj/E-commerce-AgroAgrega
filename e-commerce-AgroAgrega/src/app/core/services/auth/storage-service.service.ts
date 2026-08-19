@@ -6,25 +6,26 @@ import { UserModel } from '@models/user';
 })
 export class StorageService{
   //Seta os usúarios se baseando no modelo User.
-  setUser(data: UserModel): any {
+  setUser(data: UserModel): boolean {
     try{
         const dtLocal = localStorage.getItem('db');
         // Se não existir usuário, ele sobe o valor como primeiro item de um vetor.
         if(!dtLocal){
             localStorage.setItem('db', JSON.stringify([data]));
-            return;
+            return true;
         }
 
-        //Utiliza do método getUser para checar se já existe algum usuário.
-        if(!this.getUser(data.email)){
-          const users: UserModel[] = JSON.parse(dtLocal ?? ""); // 'dtLocal ?? "" ' se o dtLocal retornar undefined/null ele usa o outro valor. 
-          users.push(data);
-          localStorage.setItem('db', JSON.stringify(users));
-        }else{
-          return "Já existe um usuário com essas credênciais";
-        }
+        //Utiliza do método getUser para checar se já existe algum usuário.        
+        if(this.getUser(data.email)) return false
+        
+        const users: UserModel[] = JSON.parse(dtLocal); // 'dtLocal ?? "" ' se o dtLocal retornar undefined/null ele usa o outro valor. 
+        users.push(data);
+        localStorage.setItem('db', JSON.stringify(users));
+
+        return true;
     }catch(e){
         console.error('Erro ao salvar no localStorage', e);
+        return false;
     }
   }
 
@@ -65,9 +66,9 @@ export class StorageService{
     }
   }
 
-  removeUser(key: string): void {
-    localStorage.removeItem(key);
-  }
+  // removeUser(key: string): void {
+  //   localStorage.removeItem(key);
+  // }
 
   clear(): void {
     localStorage.clear();
