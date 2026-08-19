@@ -327,3 +327,26 @@
   background: #2f7d32;
   color: white;
 }
+.breadcrumb {
+  grid-column: 1 / -1;
+  margin-bottom: 30px;
+}
+
+.breadcrumb p {
+  font-size: 14px;
+  color: #666;
+}
+
+.breadcrumb a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb .destaque {
+  color: #333;
+  font-weight: bold;
+}

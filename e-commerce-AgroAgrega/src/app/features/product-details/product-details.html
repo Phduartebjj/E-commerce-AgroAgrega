@@ -1,6 +1,12 @@
 <!-- Adicionar header aqui acima -->
 
 <main class="product-details">
+   <nav class="breadcrumb">
+    <p>
+      <a routerLink="/">Home</a> > <a routerLink="/cart">Cart</a> >
+      <span class="destaque">Checkout</span>
+    </p>
+  </nav>
   @if (product) {
     <section class="product-gallery">
       <div class="main-image">
