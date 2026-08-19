@@ -1,13 +1,16 @@
 <!-- Adicionar header aqui acima -->
 
 <main class="product-details">
-   <nav class="breadcrumb">
-    <p>
-      <a routerLink="/">Home</a> > <a routerLink="/cart">Cart</a> >
-      <span class="destaque">Checkout</span>
-    </p>
-  </nav>
   @if (product) {
+    <nav class="breadcrumb">
+      <p>
+        <a routerLink="/">Home</a>
+        >
+        <a routerLink="/products">Produtos</a>
+        >
+        <span class="destaque">{{ product.title }}</span>
+      </p>
+    </nav>
     <section class="product-gallery">
       <div class="main-image">
         @if (product.images.length > 1) {
