@@ -32,6 +32,32 @@ export class CheckoutComponent {
       nameNoSpecialChars,
     ]),
   });
+
+  getErrorMessage(controlName: string): string {
+    const control = this.checkoutForm.get(controlName);
+
+    if (!control?.touched || !control.errors) {
+      return '';
+    }
+
+    if (control.errors['required']) {
+      return 'Campo obrigatório';
+    }
+
+    if (control.errors['minlength']) {
+      return 'Campo muito curto';
+    }
+
+    if (control.errors['numberInvalid']) {
+      return 'Não pode conter números ';
+    }
+
+    if (control.errors['charsInvalid']) {
+      return 'Não pode conter caracteres especiais';
+    }
+
+    return '';
+  }
 }
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {

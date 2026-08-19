@@ -41,19 +41,11 @@
               type="text"
               placeholder="Lucas Andrade"
             />
-            @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid) {
-              @if (checkoutForm.get('fullName')?.errors?.['required']) {
-                <small class="erroMessage">Nome é obrigatório</small>
 
-              } @else if (checkoutForm.get('fullName')?.errors?.['minlength']) {
-                <small class="erroMessage">Nome deve ter pelo menos 3 caracteres</small>
-
-              } @else if (checkoutForm.get('fullName')?.errors?.['numberInvalid']) {
-                <small class="erroMessage">Nome não pode conter números</small>
-
-              } @else if (checkoutForm.get('fullName')?.errors?.['charsInvalid']) {
-                <small class="erroMessage">Nome não pode conter caracteres especiais</small>
-              }
+            @if (getErrorMessage('fullName')) {
+              <small class="erroMessage">
+                {{ getErrorMessage('fullName') }}
+              </small>
             }
           </div>
           <div class="form-group">
