@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 * {
   margin: 0;
   padding: 0;
@@ -6,4 +7,1308 @@
 
 body {
   background-color: aliceblue   ;
+=======
+:root {
+  --green-700: #1a6e35;
+  --green-600: #1f8040;
+  --green-100: #edf7f0;
+  --green-50: #f4fbf6;
+  --gray-900: #0f1a12;
+  --gray-700: #374151;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --white: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #edf2ef;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--gray-700);
+  -webkit-font-smoothing: antialiased;
+}
+
+:host {
+  display: block;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--gray-700);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+}
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+input {
+  font-family: inherit;
+}
+
+/* O LAYOUT DA PARADA */
+.page {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1.06fr 0.94fr;
+  border: none;
+  background: #f6f6f6;
+  overflow: hidden;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 22px 16px;
+  background-image: url('https://images.unsplash.com/photo-1564868480822-32f714a0e763?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080&q=80');
+  background-size: cover;
+  background-position: center;
+  color: var(--white);
+  overflow: hidden;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 33, 16, 0.5) 0%,
+    rgba(9, 33, 16, 0.28) 32%,
+    rgba(9, 33, 16, 0.6) 62%,
+    rgba(9, 33, 16, 0.75) 100%
+  );
+  pointer-events: none;
+}
+
+.hero__back {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color 0.18s;
+  margin-top: 8px;
+}
+.hero__back:hover {
+  color: var(--white);
+}
+
+.hero__body {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding: 0 0 12px 2px;
+}
+
+.hero__logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(22, 112, 62, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.hero__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.95);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+.hero__headline {
+  font-size: clamp(38px, 3.9vw, 64px);
+  font-weight: 800;
+  line-height: 0.95;
+  margin-bottom: 18px;
+  letter-spacing: -0.05em;
+}
+
+.hero__sub {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 360px;
+  margin-bottom: 32px;
+}
+
+.hero__badges {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero__footer {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  margin-top: 18px;
+  padding-left: 2px;
+}
+
+/* Form panel */
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f7f6;
+  padding: 26px 28px;
+  overflow-y: auto;
+}
+
+.form-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 42px;
+}
+
+.brand__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--green-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand__icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.brand__name {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--gray-900);
+  letter-spacing: -0.03em;
+}
+.brand__name strong {
+  font-weight: 700;
+}
+
+/* Headings */
+.area-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--green-700);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.form-heading {
+  font-size: clamp(28px, 3vw, 48px);
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1.1;
+  margin-bottom: 8px;
+  letter-spacing: -0.05em;
+}
+
+.form-sub {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.field__wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field__icon {
+  position: absolute;
+  left: 14px;
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+.field__input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px 0 42px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--gray-900);
+  background: var(--white);
+  outline: none;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+
+.field__input:focus {
+  border-color: #1c7a47;
+  box-shadow: none;
+}
+.field__input::placeholder {
+  color: var(--gray-400);
+}
+.field__input:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(31, 128, 64, 0.12);
+}
+.field__input--password {
+  padding-right: 76px;
+}
+
+.field__toggle {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2a2a;
+  padding: 0;
+}
+.field__toggle:hover {
+  color: var(--green-600);
+}
+
+/* Row */
+.form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -2px;
+  gap: 12px;
+}
+
+.checkbox-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  cursor: pointer;
+
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Demais navegadores */
+}
+
+.checkbox__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox__box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #c9d1ce;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: var(--white);
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox__input:checked + .checkbox__box {
+  background: var(--green-700);
+  border-color: var(--green-700);
+}
+
+.checkbox__box svg {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.checkbox__input:checked + .checkbox__box svg {
+  opacity: 1;
+}
+
+/* Botão principal */
+.btn-primary {
+  height: 54px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #1f7d48 0%, #1b6d3d 100%);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  transition:
+    background 0.18s,
+    transform 0.12s;
+  margin-top: 2px;
+  box-shadow: 0 4px 10px rgba(31, 128, 64, 0.18);
+}
+.btn-primary:hover {
+  background: var(--green-600);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gray-400);
+  font-size: 12.5px;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+/* Social */
+.social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-social {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid #dfe3e2;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2b2b2b;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+}
+.btn-social:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-400);
+}
+
+/* Register */
+.register-line {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--gray-500);
+}
+
+/* Links */
+.link {
+  color: var(--green-700);
+  transition: color 0.15s;
+}
+.link:hover {
+  color: var(--green-600);
+  text-decoration: underline;
+}
+.link--bold {
+  font-weight: 700;
+}
+.link--small {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Empresa card */
+.empresa-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid #dfeae1;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+}
+.empresa-card:hover {
+  border-color: #b6dfc3;
+  background: #eaf6ef;
+}
+
+.empresa-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d4eedc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.empresa-card__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.empresa-card__text strong {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.empresa-card__text span {
+  font-size: 12px;
+  color: var(--gray-500);
+  line-height: 1.4;
+}
+
+/* Terms */
+.terms {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--gray-400);
+  line-height: 1.6;
+}
+
+/* ===== RESPONSIVIDADE NESSA PARADA 🤔​ ===== */
+
+@media (max-width: 1024px) {
+  .page {
+    height: auto;
+    min-height: 100vh;
+  }
+  .hero__headline {
+    font-size: clamp(28px, 2.5vw, 48px);
+  }
+  .form-wrap {
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+  .hero {
+    padding: 24px 20px 18px;
+    min-height: 280px;
+    justify-content: flex-end;
+  }
+  .hero__back {
+    margin-bottom: auto;
+    font-size: 12px;
+  }
+  .hero__body {
+    margin-top: 12px;
+  }
+  .hero__logo-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 18px;
+  }
+  .hero__label {
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .hero__headline {
+    font-size: clamp(24px, 5vw, 38px);
+    margin-bottom: 14px;
+  }
+  .hero__sub {
+    font-size: 13px;
+    display: none;
+  }
+  .hero__badge {
+    font-size: 12px;
+  }
+  .hero__footer {
+    font-size: 9px;
+    margin-top: 14px;
+  }
+  .form-panel {
+    padding: 32px 24px;
+  }
+  .form-wrap {
+    max-width: 420px;
+  }
+  .brand {
+    margin-bottom: 32px;
+  }
+  .brand__icon {
+    width: 30px;
+    height: 30px;
+  }
+  .brand__name {
+    font-size: 16px;
+  }
+  .form-heading {
+    font-size: clamp(24px, 4vw, 38px);
+  }
+  .field__label {
+    font-size: 13px;
+  }
+  .btn-primary {
+    height: 50px;
+    font-size: 14px;
+  }
+  .btn-social {
+    height: 44px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    height: auto;
+  }
+  .hero {
+    padding: 20px 16px;
+    min-height: 240px;
+  }
+  .hero__back {
+    font-size: 11px;
+    gap: 6px;
+  }
+  .hero__logo-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 14px;
+  }
+  .hero__logo-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .hero__label {
+    font-size: 9px;
+    margin-bottom: 10px;
+  }
+  .hero__headline {
+    font-size: clamp(20px, 4.5vw, 32px);
+  }
+  .hero__sub {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .hero__badge {
+    font-size: 11px;
+    gap: 6px;
+  }
+  .hero__badge svg {
+    width: 14px;
+    height: 14px;
+  }
+  .hero__footer {
+    font-size: 8px;
+  }
+  .form-panel {
+    padding: 24px 16px;
+  }
+  .form-wrap {
+    max-width: 100%;
+  }
+  .brand {
+    margin-bottom: 28px;
+    gap: 8px;
+  }
+  .brand__icon {
+    width: 28px;
+    height: 28px;
+  }
+  .brand__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .brand__name {
+    font-size: 15px;
+  }
+  .area-label {
+    font-size: 10px;
+  }
+  .form-heading {
+    font-size: clamp(20px, 3.5vw, 32px);
+  }
+  .form-sub {
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .form {
+    gap: 14px;
+  }
+  .field__label {
+    font-size: 12.5px;
+  }
+  .field__input {
+    height: 44px;
+    font-size: 13px;
+    padding: 0 12px 0 38px;
+  }
+  .field__icon {
+    left: 12px;
+    width: 15px;
+    height: 15px;
+  }
+  .field__input--password {
+    padding-right: 68px;
+  }
+  .field__toggle {
+    right: 12px;
+    font-size: 12px;
+  }
+  .checkbox-label {
+    font-size: 12.5px;
+    gap: 8px;
+  }
+  .checkbox__box {
+    width: 16px;
+    height: 16px;
+  }
+  .btn-primary {
+    height: 48px;
+    font-size: 13px;
+    gap: 6px;
+    border-radius: 8px;
+  }
+  .btn-primary svg {
+    width: 15px;
+    height: 15px;
+  }
+  .divider {
+    font-size: 11.5px;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .social-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .btn-social {
+    height: 42px;
+    font-size: 13px;
+    gap: 6px;
+    border-radius: 6px;
+  }
+  .btn-social svg {
+    width: 16px;
+    height: 16px;
+  }
+  .register-line {
+    font-size: 12.5px;
+    margin-top: 12px;
+  }
+  .empresa-card {
+    gap: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+  .empresa-card__icon {
+    width: 36px;
+    height: 36px;
+  }
+  .empresa-card__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .empresa-card__text strong {
+    font-size: 12.5px;
+  }
+  .empresa-card__text span {
+    font-size: 11px;
+  }
+  .empresa-card svg:last-child {
+    width: 14px;
+    height: 14px;
+  }
+  .terms {
+    margin-top: 14px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+  .hero {
+    padding: 16px 12px;
+    min-height: 200px;
+  }
+  .hero__back {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .hero__back svg {
+    width: 12px;
+    height: 12px;
+  }
+  .hero__logo-icon {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 12px;
+  }
+  .hero__logo-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .hero__label {
+    font-size: 8px;
+    margin-bottom: 8px;
+  }
+  .hero__headline {
+    font-size: clamp(18px, 4vw, 26px);
+    line-height: 1.1;
+  }
+  .hero__headline br {
+    display: none;
+  }
+  .hero__sub {
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .hero__badges {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hero__badge {
+    font-size: 10px;
+    gap: 5px;
+  }
+  .hero__badge svg {
+    width: 12px;
+    height: 12px;
+  }
+  .hero__footer {
+    font-size: 7px;
+    display: none;
+  }
+  .form-panel {
+    padding: 20px 12px;
+  }
+  .form-wrap {
+    max-width: 100%;
+  }
+  .brand {
+    margin-bottom: 24px;
+    gap: 6px;
+  }
+  .brand__icon {
+    width: 24px;
+    height: 24px;
+  }
+  .brand__icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  .brand__name {
+    font-size: 13px;
+  }
+  .area-label {
+    font-size: 8.5px;
+    margin-bottom: 8px;
+  }
+  .form-heading {
+    font-size: clamp(18px, 3vw, 24px);
+  }
+  .form-sub {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+  .form {
+    gap: 12px;
+  }
+  .field__label {
+    font-size: 12px;
+  }
+  .field__input {
+    height: 40px;
+    font-size: 12px;
+    padding: 0 10px 0 34px;
+    border-radius: 6px;
+  }
+  .field__icon {
+    left: 10px;
+    width: 14px;
+    height: 14px;
+  }
+  .field__input--password {
+    padding-right: 60px;
+  }
+  .field__toggle {
+    right: 10px;
+    font-size: 11px;
+  }
+  .form__row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .checkbox-label {
+    font-size: 12px;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 140px;
+  }
+  .checkbox__box {
+    width: 14px;
+    height: 14px;
+  }
+  .checkbox__box svg {
+    width: 8px;
+    height: 7px;
+  }
+  .form__row .link {
+    font-size: 11px;
+    flex: 1 1 auto;
+    text-align: right;
+  }
+  .btn-primary {
+    height: 44px;
+    font-size: 12px;
+    gap: 5px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(31, 128, 64, 0.14);
+  }
+  .btn-primary svg {
+    width: 14px;
+    height: 14px;
+  }
+  .divider {
+    font-size: 11px;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .social-row {
+    gap: 8px;
+  }
+  .btn-social {
+    height: 40px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .btn-social svg {
+    width: 14px;
+    height: 14px;
+  }
+  .register-line {
+    font-size: 11px;
+    margin-top: 10px;
+  }
+  .link {
+    font-size: 12px;
+  }
+  .link--small {
+    font-size: 11px;
+  }
+  .empresa-card {
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  .empresa-card__icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  .empresa-card__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .empresa-card__text strong {
+    font-size: 12px;
+  }
+  .empresa-card__text span {
+    font-size: 10px;
+  }
+  .empresa-card svg:last-child {
+    width: 12px;
+    height: 12px;
+  }
+  .terms {
+    margin-top: 10px;
+    font-size: 9px;
+  }
+  .terms .link {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero {
+    padding: 12px 10px;
+    min-height: 160px;
+  }
+  .hero__headline {
+    font-size: clamp(16px, 3.5vw, 22px);
+    margin-bottom: 6px;
+  }
+  .hero__sub {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  .form-panel {
+    padding: 16px 10px;
+  }
+  .brand {
+    margin-bottom: 20px;
+  }
+  .brand__name {
+    font-size: 12px;
+  }
+  .form-heading {
+    font-size: clamp(16px, 2.5vw, 20px);
+  }
+  .form-sub {
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+  .field__input {
+    height: 38px;
+    font-size: 11px;
+  }
+  .checkbox-label {
+    font-size: 11px;
+  }
+  .btn-primary {
+    height: 42px;
+    font-size: 11px;
+  }
+  .btn-social {
+    height: 38px;
+    font-size: 11px;
+  }
+  .empresa-card {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .empresa-card__text strong {
+    font-size: 11px;
+  }
+  .empresa-card__text span {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 2200px) {
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .hero {
+    padding: 32px 24px 24px;
+    min-height: 35vh;
+    max-height: 40vh;
+    justify-content: space-between;
+  }
+  .hero__back {
+    font-size: 14px;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .hero__back svg {
+    width: 16px;
+    height: 16px;
+  }
+  .hero__body {
+    margin-top: auto;
+    padding: 0 0 20px 0;
+  }
+  .hero__logo-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 24px;
+  }
+  .hero__logo-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .hero__label {
+    font-size: 12px;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .hero__headline {
+    font-size: clamp(36px, 5vw, 56px);
+    margin-bottom: 20px;
+    line-height: 1.15;
+    font-weight: 800;
+  }
+  .hero__sub {
+    font-size: 16px;
+    max-width: 600px;
+    margin-bottom: 24px;
+    display: block;
+  }
+  .hero__badges {
+    gap: 20px;
+  }
+  .hero__badge {
+    font-size: 14px;
+    gap: 10px;
+  }
+  .hero__badge svg {
+    width: 18px;
+    height: 18px;
+  }
+  .hero__footer {
+    font-size: 11px;
+    margin-top: 24px;
+    font-weight: 600;
+    display: block;
+  }
+  .form-panel {
+    padding: 48px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .form-wrap {
+    max-width: 550px;
+    width: 100%;
+  }
+  .brand {
+    margin-bottom: 48px;
+    gap: 12px;
+    align-items: center;
+  }
+  .brand__icon {
+    width: 40px;
+    height: 40px;
+  }
+  .brand__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .brand__name {
+    font-size: 20px;
+  }
+  .area-label {
+    font-size: 12px;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .form-heading {
+    font-size: clamp(32px, 4vw, 48px);
+    margin-bottom: 12px;
+    font-weight: 800;
+  }
+  .form-sub {
+    font-size: 16px;
+    margin-bottom: 36px;
+  }
+  .form {
+    gap: 24px;
+  }
+  .field {
+    gap: 8px;
+  }
+  .field__label {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .field__input {
+    height: 56px;
+    font-size: 16px;
+    padding: 0 16px 0 48px;
+    border-radius: 10px;
+  }
+  .field__icon {
+    left: 16px;
+    width: 20px;
+    height: 20px;
+  }
+  .field__input--password {
+    padding-right: 88px;
+  }
+  .field__toggle {
+    right: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .form__row {
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+  .checkbox-label {
+    font-size: 15px;
+    gap: 10px;
+  }
+  .checkbox__box {
+    width: 20px;
+    height: 20px;
+  }
+  .checkbox__box svg {
+    width: 12px;
+    height: 12px;
+  }
+  .link--small {
+    font-size: 14px;
+  }
+  .btn-primary {
+    height: 56px;
+    font-size: 16px;
+    gap: 10px;
+    margin-top: 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(31, 128, 64, 0.2);
+  }
+  .btn-primary svg {
+    width: 18px;
+    height: 18px;
+  }
+  .divider {
+    font-size: 14px;
+    gap: 16px;
+    margin: 28px 0;
+    font-weight: 500;
+  }
+  .divider::before,
+  .divider::after {
+    height: 1.5px;
+  }
+  .social-row {
+    gap: 16px;
+  }
+  .btn-social {
+    height: 52px;
+    font-size: 15px;
+    gap: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  .btn-social svg {
+    width: 18px;
+    height: 18px;
+  }
+  .register-line {
+    font-size: 15px;
+    margin-top: 24px;
+  }
+  .link {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .link--bold {
+    font-weight: 700;
+  }
+  .empresa-card {
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: 12px;
+    margin-top: 24px;
+  }
+  .empresa-card__icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+  .empresa-card__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .empresa-card__text {
+    gap: 4px;
+  }
+  .empresa-card__text strong {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .empresa-card__text span {
+    font-size: 13px;
+  }
+  .empresa-card svg:last-child {
+    width: 16px;
+    height: 16px;
+  }
+  .terms {
+    margin-top: 24px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .terms .link {
+    font-size: 12px;
+  }
+>>>>>>> feature/tela-login
 }

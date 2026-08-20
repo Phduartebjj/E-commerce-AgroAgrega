@@ -7,6 +7,7 @@ import { Header } from './shared/components/header/header';
   imports: [RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.css'
+
 })
 export class App {
   protected readonly title = signal('e-commerce-AgroAgrega');
