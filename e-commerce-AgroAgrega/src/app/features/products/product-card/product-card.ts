@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
-
+import { Component, input } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
+import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
+import { ProductModel } from '@models/product';
 @Component({
   selector: 'app-product-card',
-  imports: [],
+  imports: [UpperCasePipe, PrecoFormatadoPipe],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })
-export class ProductCard {}
+export class ProductCardComponent {
+  product = input.required<ProductModel>()
+
+}

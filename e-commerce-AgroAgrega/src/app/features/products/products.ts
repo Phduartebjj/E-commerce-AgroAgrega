@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 
 import { ProductService } from '../../core/services/product/product.service';
-import { UpperCasePipe } from '@angular/common';
-import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { ProductCardComponent } from './product-card/product-card';
 
 @Component({
   selector: 'app-products',
-  imports: [UpperCasePipe, PrecoFormatadoPipe],
+  imports: [ProductCardComponent],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })

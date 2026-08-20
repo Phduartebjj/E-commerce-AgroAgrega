@@ -1,52 +1,5 @@
 <section class="product-page">
   @for (product of products; track product.id) {
-    <article class="product-card">
-      <div class="product-card__top">
-        <span class="product-card__tag">12% OFF</span>
-
-        <button class="product-card__favorite" type="button" aria-label="Adicionar aos favoritos">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 20.25s-7.5-4.35-9.75-8.33C.76 9.31 2.4 4.5 6.9 4.5c2.43 0 3.77 1.31 4.2 2.2.43-.89 1.77-2.2 4.2-2.2 4.5 0 6.14 4.81 4.65 7.42C19.5 15.9 12 20.25 12 20.25Z"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <div class="product-card__visual">
-        <span class="product-card__orbit product-card__orbit--large"></span>
-        <span class="product-card__orbit product-card__orbit--small"></span>
-        <img class="product-card__figure" [src]="product.images[0]" [alt]="product.title" />
-      </div>
-
-      <div class="product-card__content">
-        <p class="product-card__category">{{ product.category | uppercase }}</p>
-        <h2 class="product-card__title">{{ product.title }}</h2>
-
-        <div class="product-card__rating" aria-label="Avaliação do produto">
-          <span class="stars">★★★★★</span>
-          <span class="review">4.8 (127)</span>
-        </div>
-
-        <div class="product-card__price">
-          <div class="product-card__amount">
-            <span>R$</span>
-            <strong>{{ product.price | precoFormatado }}</strong>
-          </div>
-        </div>
-
-        <small class="product-card__installment">ou em até 10x sem juros</small>
-
-        <button class="product-card__button" type="button">Adicionar</button>
-      </div>
-    </article>
+    <app-product-card [product]="product"></app-product-card>
   }
 </section>
