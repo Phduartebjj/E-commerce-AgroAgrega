@@ -6,3 +6,6 @@ export interface ProductModel {
   category: string;
   images: string[];
 }
+
+export type ProductCategory =
+  'Agricultura de Precisão' | 'Irrigação' | 'Pecuária' | 'Ferramentas' | 'Insumos';

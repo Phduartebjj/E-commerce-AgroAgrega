@@ -1,9 +1,19 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.css',
+  styleUrls: ['./forgot-password.css'],
+  imports: [FormsModule, RouterLink],
 })
-export class ForgotPassword {}
+export class ForgotPassword {
+  email = '';
+  submitted = false;
+
+  onSubmit(): void {
+    console.log({ email: this.email });
+    this.submitted = true;
+  }
+}
