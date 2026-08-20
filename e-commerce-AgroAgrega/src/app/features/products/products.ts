@@ -10,7 +10,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
-export class Products {
+export class ProductsComponent {
   private readonly productService = inject(ProductService);
 
   readonly products = this.productService.getProducts();
