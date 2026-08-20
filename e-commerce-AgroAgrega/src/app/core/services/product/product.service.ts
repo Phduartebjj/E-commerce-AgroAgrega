@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { productsItems } from '../../data/products';
-import { ProductModel } from '../../../models/product';
+import { ProductCategory, ProductModel } from '../../../models/product';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class ProductService {
     return this.products();
   }
 
-  getProductCategories(): string[] {
+  getProductCategories(): ProductCategory[] {
     return ['Agricultura de Precisão', 'Irrigação', 'Pecuária', 'Ferramentas', 'Insumos'];
   }
 }
