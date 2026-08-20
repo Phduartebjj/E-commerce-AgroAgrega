@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { ProductModel } from '@models/product';
@@ -10,5 +10,5 @@ import { ProductModel } from '@models/product';
 })
 export class ProductCardComponent {
   product = input.required<ProductModel>()
-
+  addToCart = output<ProductModel>()
 }
