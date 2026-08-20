@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: aliceblue   ;
-=======
 :root {
   --green-700: #1a6e35;
   --green-600: #1f8040;
@@ -1310,5 +1300,4 @@ input {
   .terms .link {
     font-size: 12px;
   }
->>>>>>> feature/tela-login
 }
