@@ -32,7 +32,7 @@ main {
   margin-bottom: 40px;
 }
 
-.erroMessage {
+.errorMessage {
   color: red;
   position: absolute;
   transform: translateY(65px);

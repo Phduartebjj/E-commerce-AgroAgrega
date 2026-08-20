@@ -28,9 +28,20 @@
           <div class="form-group">
             <label for="cep">CEP</label>
             <div class="cep-input">
-              <input id="cep" name="cep" type="text" placeholder="01310-100" />
+              <input
+                formControlName="cep"
+                id="cep"
+                name="cep"
+                type="text"
+                placeholder="01310-100"
+              />
               <button type="button" class="btn-buscar-cep">Buscar CEP</button>
             </div>
+            @if (checkoutForm.get('cep')?.touched && checkoutForm.get('cep')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('cep')!) }}
+              </small>
+            }
           </div>
           <div class="form-group">
             <label for="fullName">Nome completo</label>
@@ -41,30 +52,62 @@
               type="text"
               placeholder="Lucas Andrade"
             />
-
-            @if (getErrorMessage('fullName')) {
-              <small class="erroMessage">
-                {{ getErrorMessage('fullName') }}
+            @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('fullName')!) }}
               </small>
             }
           </div>
           <div class="form-group">
             <label for="cellPhone">Telefone</label>
-            <input id="cellPhone" name="cellPhone" type="tel" placeholder="(11) 99999-8421" />
+            <input
+              formControlName="cellPhone"
+              id="cellPhone"
+              name="cellPhone"
+              type="tel"
+              placeholder="(11) 99999-8421"
+            />
+            @if (checkoutForm.get('cellPhone')?.touched && checkoutForm.get('cellPhone')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('cellPhone')!) }}
+              </small>
+            }
           </div>
         </div>
 
         <div class="form-row form-row-middle">
           <div class="form-group">
             <label for="address">Endereço</label>
-            <input id="address" name="address" type="text" placeholder="Avenida Paulista" />
+            <input
+              formControlName="address"
+              id="address"
+              name="address"
+              type="text"
+              placeholder="Avenida Paulista"
+            />
+            @if (checkoutForm.get('address')?.touched && checkoutForm.get('address')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('address')!) }}
+              </small>
+            }
           </div>
           <div class="form-group">
             <label for="number">Número</label>
-            <input id="number" name="number" type="text" placeholder="1578" />
+            <input
+              formControlName="number"
+              id="number"
+              name="number"
+              type="text"
+              placeholder="1578"
+            />
           </div>
+          @if (checkoutForm.get('number')?.touched && checkoutForm.get('number')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(checkoutForm.get('number')!) }}
+            </small>
+          }
           <div class="form-group">
-            <label for="complement">Complemento</label>
+            <label formControlName="complement" for="complement">Complemento</label>
             <input id="complement" name="complement" type="text" placeholder="Opcional" />
           </div>
         </div>
@@ -72,20 +115,49 @@
         <div class="form-row form-row-middle">
           <div class="form-group">
             <label for="neighborhood">Bairro</label>
-            <input id="neighborhood" name="neighborhood" type="text" placeholder="Bela Vista" />
+            <input
+              formControlName="neighborhood"
+              id="neighborhood"
+              name="neighborhood"
+              type="text"
+              placeholder="Bela Vista"
+            />
+            @if (
+              checkoutForm.get('neighborhood')?.touched && checkoutForm.get('neighborhood')?.invalid
+            ) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('neighborhood')!) }}
+              </small>
+            }
           </div>
           <div class="form-group">
             <label for="city">Cidade</label>
-            <input id="city" name="city" type="text" placeholder="São Paulo" />
+            <input
+              formControlName="city"
+              id="city"
+              name="city"
+              type="text"
+              placeholder="São Paulo"
+            />
+            @if (checkoutForm.get('city')?.touched && checkoutForm.get('city')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('city')!) }}
+              </small>
+            }
           </div>
           <div class="form-group">
             <label for="state">Estado</label>
-            <select id="state" name="state">
+            <select formControlName="state" id="state" name="state">
               <option value="">Selecione</option>
-              <option value="RJ">RJ</option>
-              <option value="SP">SP</option>
-              <option value="MG">MG</option>
+              @for (state of states; track state) {
+                <option [value]="state">{{ state }}</option>
+              }
             </select>
+            @if (checkoutForm.get('state')?.touched && checkoutForm.get('state')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('state')!) }}
+              </small>
+            }
           </div>
         </div>
 
