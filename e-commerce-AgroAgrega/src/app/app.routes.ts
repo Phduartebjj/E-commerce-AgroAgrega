@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { Home } from './features/home/home';
-import { Products } from './features/products/products';
+import { ProductsComponent } from './features/products/products';
 import { ProductDetails } from './features/product-details/product-details';
 import { CartComponent } from './features/cart/cart';
 
@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'products',
-    component: Products,
+    component: ProductsComponent,
   },
   {
     path: 'products/:id',
