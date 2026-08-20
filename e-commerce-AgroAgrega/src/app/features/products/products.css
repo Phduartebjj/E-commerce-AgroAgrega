@@ -95,11 +95,14 @@
 .product-card__figure {
   position: relative;
   z-index: 1;
+  display: block;
   width: 100%;
-  max-width: 310px;
+  max-width: 300px;
   height: 210px;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 16px;
   filter: drop-shadow(0 8px 14px rgba(28, 54, 35, 0.15));
+  background: #dfe9df;
 }
 
 .product-card__content {
@@ -201,11 +204,14 @@
   }
 
   .product-list {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    align-items: start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
   }
 
   .product-card {
-    width: 100%;
+    width: 312px;
+    min-width: 312px;
   }
 }
