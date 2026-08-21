@@ -14,6 +14,7 @@ import { CheckoutComponent } from './features/checkout/checkout';
 
 import { Orders } from './features/orders/orders/orders';
 import { OrderDetails } from './features/orders/order-details/order-details';
+import { AboutUsComponent } from '@features/about-us/about-us';
 
 export const routes: Routes = [
   {
@@ -59,6 +60,10 @@ export const routes: Routes = [
   {
     path: 'orders',
     component: Orders,
+  },
+  {
+    path: 'about',
+    component: AboutUsComponent,
   },
   {
     path: 'orders/:id',
