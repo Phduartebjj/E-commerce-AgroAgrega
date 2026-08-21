@@ -41,20 +41,23 @@ Antes de começar, certifique-se de possuir as seguintes ferramentas instaladas:
    git clone
    ```
 
-2. Entre no diretório do projeto:
+2. Entre no diretório raiz do repositório:
    ```bash
-   cd agroagrega
+   cd E-commerce-AgroAgrega
    ```
 
 3. Instale as dependências:
    ```bash
-   npm install
+   npm --prefix e-commerce-AgroAgrega install
    ```
 
 4. Inicie o servidor de desenvolvimento:
    ```bash
    npm start
    ```
+
+   O script da raiz encaminha o comando para o projeto Angular em
+   `e-commerce-AgroAgrega`. O servidor estará disponível em `http://localhost:4200/`.
 
 ---
 
