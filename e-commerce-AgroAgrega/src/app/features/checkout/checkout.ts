@@ -31,7 +31,7 @@ export class CheckoutComponent {
       Validators.minLength(3),
       nameNoSpecialChars,
     ]),
-    cep: new FormControl('', [Validators.required, validCep]),
+    cep: new FormControl('', [Validators.required, validCep, Validators.maxLength(8)]),
     cellPhone: new FormControl('', [Validators.required, validPhone]),
     address: new FormControl('', [Validators.required, validAddressNumber]),
     number: new FormControl('', [Validators.required]),
