@@ -31,7 +31,7 @@ export class CheckoutComponent {
       Validators.minLength(3),
       nameNoSpecialChars,
     ]),
-    cep: new FormControl('', [Validators.required, validCep, Validators.maxLength(8)]),
+    cep: new FormControl('', [Validators.required, validCep]),
     cellPhone: new FormControl('', [Validators.required, validPhone]),
     address: new FormControl('', [Validators.required, validAddressNumber]),
     number: new FormControl('', [Validators.required]),
@@ -117,6 +117,7 @@ function validCep(control: AbstractControl): ValidationErrors | null {
 
 function validPhone(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
+
   if (!value) return null;
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
