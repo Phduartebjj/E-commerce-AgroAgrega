@@ -35,8 +35,8 @@ export class CheckoutComponent {
     cellPhone: new FormControl('', [Validators.required, validPhone]),
     address: new FormControl('', [Validators.required, validAddressNumber]),
     number: new FormControl('', [Validators.required]),
-    neighborhood: new FormControl('', [Validators.required]),
-    city: new FormControl('', [Validators.required]),
+    neighborhood: new FormControl('', [Validators.required, nameNoNumbers]),
+    city: new FormControl('', [Validators.required, nameNoNumbers]),
     state: new FormControl('', [Validators.required]),
     complement: new FormControl(''),
   });
@@ -135,5 +135,16 @@ function validAddressNumber(control: AbstractControl): ValidationErrors | null {
     return { invalidAddressNumber: true };
   }
 
+  return null;
+}
+
+function nameNoNumbers(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) return null;
+
+  if (/\d/.test(value)) {
+    return { numberInvalid: true };
+  }
   return null;
 }
