@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
+import { ProductService } from '../../core/services/product/product.service';
 import { ProductModel } from '../../models/product';
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+
 
 interface ProductReview {
   stars: number;
@@ -19,40 +20,13 @@ interface ProductReview {
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+  
 
   showCartNotification = false;
 
   id: string | null = null;
-
-  private readonly products: ProductModel[] = [
-    {
-      id: '1',
-      title: 'Produto de exemplo 1',
-      price: 199.9,
-      description: 'Produto de exemplo para teste da página de detalhes.',
-      category: 'Eletrônicos',
-      images: ['https://placehold.co/600x600'],
-    },
-    {
-      id: '2',
-      title: 'Produto de exemplo 2',
-      price: 299.9,
-      description:
-        'Segundo produto utilizado para testar a navegação entre produtos.',
-      category: 'Informática',
-      images: ['https://placehold.co/600x600'],
-    },
-    {
-      id: '3',
-      title: 'Produto de exemplo 3',
-      price: 99.9,
-      description:
-        'Terceiro produto utilizado para testar a página de detalhes.',
-      category: 'Acessórios',
-      images: ['https://placehold.co/600x600'],
-    },
-  ];
 
   product: ProductModel | undefined;
 
@@ -147,17 +121,19 @@ submitReview(): void {
     return this.product === undefined;
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.id = params.get('id');
+ngOnInit(): void {
+  this.route.paramMap.subscribe((params) => {
+    this.id = params.get('id');
 
-      this.product = this.products.find(
-        (product) => product.id === this.id,
-      );
+    const products = this.productService.getProducts();
 
-      this.selectedImageIndex = 0;
-    });
-  }
+    this.product = products.find(
+      (product) => product.id === this.id,
+    );
+
+    this.selectedImageIndex = 0;
+  });
+}
 
   // =========================
   // QUANTIDADE
