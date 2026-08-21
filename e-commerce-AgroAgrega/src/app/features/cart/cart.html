@@ -1,1 +1,104 @@
-<p>cart works!</p>
+<main class="cart-container">
+  <p class="breadcrumb">
+    <a routerLink="/">Home</a> >
+    <a class="destaque" routerLink="/cart">Carrinho</a>
+  </p>
+  <section class="cart-title">
+    <div>
+      <span>SUA COMPRA</span>
+
+      <h2>Carrinho</h2>
+
+      <p>
+        {{ totalItens() }}
+        @if (totalItens() === 1) {
+          item reservado para você
+        } @else {
+          itens reservados para você
+        }
+      </p>
+    </div>
+  </section>
+  <a class="linkToCatalogy" routerLink="/products">Continuar Comprando -></a>
+
+  <div class="cart-content">
+    <section class="cart-items">
+      <div class="cart-header">
+        <span>PRODUTOS</span>
+        <div class="cart-header-values">
+          <span>QUANTIDADE</span>
+          <span>SUBTOTAL</span>
+        </div>
+      </div>
+      @for (item of cartItems(); track item.product.id) {
+        <div class="product-item">
+          <div class="product-info">
+            <img [src]="item.product.images" alt="{{ item.product.title }}" />
+            <div class="product-details">
+              <p class="product-category">{{ item.product.category }}</p>
+              <p class="product-title">{{ item.product.title }}</p>
+              <p class="product-description">{{ item.product.description }}</p>
+              <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
+            </div>
+          </div>
+          <div class="product-quantity">
+            @if (item.quantity === 1) {
+              <button (click)="removeProduct(item.product)">-</button>
+            } @else {
+              <button (click)="decreaseProductQuantity(item.product)">-</button>
+            }
+            <span>{{ item.quantity }}</span>
+            <button (click)="addProduct(item.product)">+</button>
+          </div>
+          <p class="product-price">{{ item.product.price * item.quantity | precoFormatado }}</p>
+        </div>
+      }
+    </section>
+
+    <div class="cart-summary">
+      <h3>Resumo do Pedido</h3>
+      <div class="summary-infos">
+        <p>
+          <span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span>
+        </p>
+        <p><span>Frete</span> <span>Grátis</span></p>
+        <p>
+          <span>Descontos</span>
+          <span class="redword">{{ discountValue() | precoFormatado }}</span>
+        </p>
+      </div>
+
+      <div class="summary-total">
+        @if (isEmpty()) {
+          <p>Seu carrinho está vazio</p>
+        } @else {
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <span class="total-label">Total</span>
+            <span class="total-value">{{ totalValue() | precoFormatado }}</span>
+          </div>
+          <p class="total-info">Inclui impostos</p>
+          <a class="btn btn-checkout" routerLink="/checkout">Ir para o checkout → </a>
+          <p style="font-size: 12px; color: #666; text-align: center">
+            ✓ Pagamento protegido e seguro
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+  <section class="coupon-section">
+    <p>Tem um cupom?</p>
+    <div class="coupon-action">
+      <input class="inpu2t" #couponInput type="text" placeholder="Digite seu cupom" />
+
+      <button
+        class="btn btn-ApplyCoupon"
+        (click)="applyCoupon(couponInput.value); cleanInputValue(couponInput)"
+      >
+        Aplicar
+      </button>
+    </div>
+  </section>
+  <button (click)="addProduct(item)">Adicionar Produto</button>
+  <button (click)="addProduct(item2)">Adicionar Produto 2</button>
+  <button (click)="clearCart()">Limpar Carrinho</button>
+</main>

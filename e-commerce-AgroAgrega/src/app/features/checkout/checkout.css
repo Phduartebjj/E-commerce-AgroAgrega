@@ -1,0 +1,33 @@
+.destaque {
+  color: black;
+}
+
+a {
+  color: gray;
+  display: inline;
+  width: fit-content;
+}
+
+.checkout-form {
+  display: flex;
+  width: clamp(300px, 70vw, 940px);
+  max-width: 940px;
+  max-height: 364px;
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  input {
+    height: 42px;
+    border-radius: 0.5rem;
+    border: 1px solid gray;
+    padding: 0.75rem;
+  }
+}

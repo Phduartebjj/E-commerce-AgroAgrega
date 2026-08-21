@@ -1,0 +1,287 @@
+.cart-container {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  margin-top: 24px;
+  padding: 5rem 2.5rem;
+  max-width: fit-content;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cart-header-values {
+  display: flex;
+  gap: clamp(0.75rem, 5vw, 2.5rem);
+}
+
+.cart-content {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.btn {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+.btn.btn-remove {
+  color: #d84c4c;
+  cursor: pointer;
+  padding: 0;
+  font-size: 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  text-decoration: underline;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  width: clamp(200px, 70vw, 830px);
+}
+
+.cart-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 8px 8px 0px 0px;
+}
+
+.linkToCatalogy {
+  text-decoration: none;
+  color: #2e7d4f;
+  font-weight: bold;
+}
+
+.redword {
+  color: #d84c4c;
+  font-weight: bold;
+}
+
+a {
+  color: gray;
+  display: inline;
+  width: fit-content;
+}
+
+.destaque {
+  color: black;
+}
+
+img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+}
+
+.product-info img {
+  flex-shrink: 0;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.summary-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-infos p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.product-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid gray;
+  gap: 24px;
+  width: 100%;
+  background-color: white;
+}
+
+.product-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.product-quantity span {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.product-quantity button {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+  min-width: 24px;
+}
+
+.product-category {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.product-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 4px 0;
+  color: #333;
+}
+
+.product-description {
+  font-size: 12px;
+  color: #999;
+  margin: 4px 0;
+}
+
+.product-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: right;
+  min-width: 100px;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #e6ede9;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  button {
+    display: inline;
+    max-width: 20px;
+  }
+}
+
+.btn.btn-ApplyCoupon {
+  background-color: #082f22;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.coupon-section {
+  padding: 24px 24px;
+  background-color: white;
+  border-radius: 16px;
+
+  width: clamp(200px, 70vw, 830px);
+}
+
+.product-item:last-child {
+  border-radius: 0px 0px 8px 8px;
+}
+
+.coupon-action {
+  display: flex;
+  gap: 8px;
+}
+
+.cart-summary {
+  padding: 24px 24px;
+  background-color: white;
+  border-radius: 16px;
+  width: clamp(200px, 50vw, 420px);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid gray;
+}
+
+.summary-total {
+  border-top: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.summary-total p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-total .total-label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.summary-total .total-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #082f22;
+}
+
+.summary-total .total-info {
+  font-size: 12px;
+  color: gray;
+}
+
+.btn.btn-checkout {
+  background-color: #2e7d4f;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}

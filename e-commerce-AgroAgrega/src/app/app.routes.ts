@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
 import { Products } from './features/products/products';
 import { ProductDetails } from './features/product-details/product-details';
-import { Cart } from './features/cart/cart';
+import { CartComponent } from './features/cart/cart';
 
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
@@ -30,7 +30,7 @@ export const routes: Routes = [
   },
   {
     path: 'cart',
-    component: Cart,
+    component: CartComponent,
   },
   {
     path: 'login',
