@@ -341,7 +341,6 @@ input {
   gap: 12px;
 }
 
-/* Checkbox */
 .checkbox-label {
   position: relative;
   display: inline-flex;
@@ -351,7 +350,9 @@ input {
   font-weight: 500;
   color: var(--gray-700);
   cursor: pointer;
-  user-select: none;
+
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Demais navegadores */
 }
 
 .checkbox__input {
