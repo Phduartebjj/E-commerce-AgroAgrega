@@ -35,18 +35,22 @@ export const routes: Routes = [
   {
     path: 'login',
     component: Login,
+    data: { hideFooter: true, hideHeader: true },
   },
   {
     path: 'register',
     component: Register,
+    data: { hideHeader: true },
   },
   {
     path: 'forgot-password',
     component: ForgotPassword,
+    data: { hideHeader: true },
   },
   {
     path: 'reset-password',
     component: ResetPassword,
+    data: { hideHeader: true },
   },
   {
     path: 'checkout',

@@ -1,5 +1,13 @@
-<app-header></app-header>
+
+@if (mostrarHeader()) {
+    <app-header></app-header>
+}
 <router-outlet></router-outlet>
-<app-footer></app-footer>
+@if (mostrarFooter()) {
+    <app-footer></app-footer>
+}
+
+
+
 
 
