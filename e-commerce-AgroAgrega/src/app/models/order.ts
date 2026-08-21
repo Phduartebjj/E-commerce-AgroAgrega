@@ -1,6 +1,6 @@
 export interface OrderModel {
   id: string;
-  userId: number;
+  userId: string;
   items: OrderItemModel[];
   subtotal: number;
   discount: number;

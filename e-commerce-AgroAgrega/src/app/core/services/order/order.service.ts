@@ -14,7 +14,7 @@ export class OrderService {
 
   createOrder(
     cartItem: CartItemModel[],
-    userId: number,
+    userId: string,
     subtotal: number,
     discount: number,
     shipping: number,
@@ -39,6 +39,4 @@ export class OrderService {
     };
     this.orders.update((orders) => [...orders, newOrder]);
   }
-
-
 }

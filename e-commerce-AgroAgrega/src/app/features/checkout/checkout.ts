@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Cart } from '../../core/services/cart/cart.service';
 import { inject } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
@@ -11,6 +11,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
+import { OrderService } from '@core/services/order/order.service';
 
 @Component({
   selector: 'app-checkout',
@@ -20,6 +21,8 @@ import {
 })
 export class CheckoutComponent {
   private cart = inject(Cart);
+  private orderService = inject(OrderService);
+  router = inject(Router);
 
   totalValue = this.cart.total;
   subTotal = this.cart.subtotal;
@@ -78,6 +81,20 @@ export class CheckoutComponent {
     const errorKey = Object.keys(control.errors)[0];
 
     return errorMessages[errorKey as keyof typeof errorMessages] ?? '';
+  }
+
+  finishOrder() {
+    const order = this.orderService.createOrder(
+      this.cart.getCartItems()(),
+      crypto.randomUUID(),
+      this.cart.subtotal(),
+      this.cart.discountValue(),
+      0,
+    );
+
+    this.cart.cleanCartItem();
+
+    this.router.navigate(['/orders']);
   }
 }
 
