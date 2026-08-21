@@ -100,11 +100,11 @@
               type="text"
               placeholder="1578"
             />
-            @if (checkoutForm.get('number')?.touched && checkoutForm.get('number')?.invalid) {
-              <small class="errorMessage">
-                {{ getErrorMessage(checkoutForm.get('number')!) }}
-              </small>
-            }
+          @if (checkoutForm.get('number')?.touched && checkoutForm.get('number')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(checkoutForm.get('number')!) }}
+            </small>
+          }
           </div>
           <div class="form-group">
             <label for="complement">Complemento</label>
@@ -234,15 +234,14 @@
           <span>Pagamento protegido e seguro</span>
         </div>
       </div>
-      <div class="checkout-button">
-        <a routerLink="/orders">Finalizar compra</a>
-      </div>
       <div class="support-section">
         <span class="icon-chat"><img src="../../assets/icones/chat.svg" alt="" /></span>
         <div>
           <h4>Precisa de ajuda?</h4>
           <p>Nosso time acompanha você durante a compra.</p>
-          <a href="" target="_blank">Falar com especialista</a>
+          <a href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/" target="_blank"
+            >Falar com especialista</a
+          >
         </div>
       </div>
     </section>
