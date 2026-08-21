@@ -1,3 +1,17 @@
-<h1>Detalhes do produto</h1>
+<section class="details-container">
+  <a routerLink="/products" class="back-link">← Voltar para o catálogo</a>
 
-<p>ID do produto: {{ id }}</p>
+  <p *ngIf="isLoading">Carregando detalhes do produto...</p>
+  <p *ngIf="!isLoading && errorMessage" class="error">{{ errorMessage }}</p>
+
+  <article *ngIf="!isLoading && product" class="details-card">
+    <img [src]="product.images[0]" [alt]="product.title" />
+    <div>
+      <h1>{{ product.title }}</h1>
+      <p class="category">{{ product.category }}</p>
+      <p class="description">{{ product.description }}</p>
+      <p class="price">{{ product.price | currency: 'BRL' }}</p>
+      <p class="id">Código: {{ product.id }}</p>
+    </div>
+  </article>
+</section>

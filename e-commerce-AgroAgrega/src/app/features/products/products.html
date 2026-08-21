@@ -1,1 +1,79 @@
-<p>products works!</p>
+<section class="catalog-container">
+  <header class="catalog-header">
+    <h1>Catálogo de Produtos</h1>
+    <p>Encontre produtos frescos e selecionados.</p>
+  </header>
+
+  <section class="catalog-filters">
+    <label>
+      Buscar
+      <input
+        type="text"
+        [ngModel]="query.search"
+        (ngModelChange)="query.search = $event; onFiltersChange()"
+        placeholder="Nome, descrição ou categoria"
+      />
+    </label>
+
+    <label>
+      Categoria
+      <select [ngModel]="query.category" (ngModelChange)="query.category = $event; onFiltersChange()">
+        <option value="all">Todas</option>
+        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+      </select>
+    </label>
+
+    <label>
+      Ordenar por
+      <select [ngModel]="query.sortBy" (ngModelChange)="query.sortBy = $event; onFiltersChange()">
+        <option value="title">Nome</option>
+        <option value="price">Preço</option>
+        <option value="category">Categoria</option>
+      </select>
+    </label>
+
+    <label>
+      Ordem
+      <select [ngModel]="query.sortDirection" (ngModelChange)="query.sortDirection = $event; onFiltersChange()">
+        <option value="asc">Crescente</option>
+        <option value="desc">Decrescente</option>
+      </select>
+    </label>
+
+    <label>
+      Itens por página
+      <select [ngModel]="query.pageSize" (ngModelChange)="query.pageSize = +$event; onFiltersChange()">
+        <option [value]="6">6</option>
+        <option [value]="9">9</option>
+        <option [value]="12">12</option>
+      </select>
+    </label>
+  </section>
+
+  <p *ngIf="isLoading" class="catalog-feedback">Carregando produtos...</p>
+  <p *ngIf="!isLoading && errorMessage" class="catalog-feedback error">{{ errorMessage }}</p>
+  <p *ngIf="!isLoading && !errorMessage && !products.length" class="catalog-feedback">
+    Nenhum produto encontrado para os filtros selecionados.
+  </p>
+
+  <section class="catalog-grid" *ngIf="!isLoading && !errorMessage && products.length">
+    <article class="product-card" *ngFor="let product of products; trackBy: trackById">
+      <img [src]="product.images[0]" [alt]="product.title" />
+      <h2>{{ product.title }}</h2>
+      <p class="category">{{ product.category }}</p>
+      <p class="description">{{ product.description }}</p>
+      <p class="price">{{ product.price | currency: 'BRL' }}</p>
+      <a [routerLink]="['/products', product.id]">Ver detalhes</a>
+    </article>
+  </section>
+
+  <footer class="catalog-pagination" *ngIf="!isLoading && !errorMessage && totalItems > 0">
+    <button type="button" (click)="onPageChange(query.page - 1)" [disabled]="query.page <= 1">
+      Anterior
+    </button>
+    <span>Página {{ query.page }} de {{ totalPages }} • {{ totalItems }} produto(s)</span>
+    <button type="button" (click)="onPageChange(query.page + 1)" [disabled]="query.page >= totalPages">
+      Próxima
+    </button>
+  </footer>
+</section>
