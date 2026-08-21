@@ -38,6 +38,7 @@ export class CheckoutComponent {
     neighborhood: new FormControl('', [Validators.required]),
     city: new FormControl('', [Validators.required]),
     state: new FormControl('', [Validators.required]),
+    complement: new FormControl(''),
   });
   states = [
     'AC',

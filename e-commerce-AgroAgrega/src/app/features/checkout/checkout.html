@@ -107,8 +107,14 @@
             </small>
           }
           <div class="form-group">
-            <label formControlName="complement" for="complement">Complemento</label>
-            <input id="complement" name="complement" type="text" placeholder="Opcional" />
+            <label for="complement">Complemento</label>
+            <input
+              formControlName="complement"
+              id="complement"
+              name="complement"
+              type="text"
+              placeholder="Opcional"
+            />
           </div>
         </div>
 
@@ -164,6 +170,32 @@
         <div class="form-checkbox">
           <input type="checkbox" id="saveAddress" name="saveAddress" checked />
           <label for="saveAddress">Salvar este endereço para próximas compras</label>
+        </div>
+
+        <div class="delivery-section">
+          <div class="delivery-header">
+            <div class="delivery-icon" aria-hidden="true">📦</div>
+            <div>
+              <h3>Forma de entrega</h3>
+              <p>Escolha a melhor opção para você.</p>
+            </div>
+          </div>
+
+          <div class="delivery-option">
+            <div class="delivery-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="deliveryMethod" checked />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="delivery-text">
+                <span class="delivery-name">Entrega padrão</span>
+                <small>Receba em casa até 22 de agosto</small>
+              </div>
+            </div>
+
+            <span class="delivery-price">Grátis</span>
+          </div>
         </div>
       </form>
     </section>
