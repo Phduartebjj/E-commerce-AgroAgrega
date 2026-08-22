@@ -168,6 +168,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
   width: 40px;
   height: 40px;
   padding: 0px;
@@ -178,6 +179,7 @@
   font-size: 1.6rem;
   cursor: pointer;
   transition: opacity 0.5s;
+  position: relative;
 }
 .icone-carrinho:hover {
   opacity: 0.6;
@@ -187,6 +189,31 @@
   width: 32px;
   height: 32px;
   object-fit: contain;
+}
+
+.contador-carrinho{
+position: absolute;
+top: -3px;
+right: -5px;
+
+min-width: 18px;
+height: 18px;
+padding: 0 5px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+border-radius: 999px;
+background-color: #9bd52b;
+color: var(--green-dark);
+
+font-size: 0.65rem;
+font-weight: 700;
+line-height: 1;
+
+box-shadow: 0 0 0 2px var(--white);
+pointer-events: none;
 }
 
 .navegar-categorias {

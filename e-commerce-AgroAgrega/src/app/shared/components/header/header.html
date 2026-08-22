@@ -29,12 +29,13 @@
       </a>
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
         <img src="assets/images/cart.png" alt="Carrinho de Compras" />
-      </a>
-      @if (totalItens()>0) {
+        @if (totalItens()>0) {
         <span class="contador-carrinho">
           {{totalItens()}}
         </span>
       }
+      </a>
+      
     </div>
   </div>
   <nav class="navegar-categorias" aria-label="Categorias de produtos">
