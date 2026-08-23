@@ -277,6 +277,7 @@ button {
   color: var(--gray-900);
 
   font-size: 14px;
+  cursor: auto;
 }
 
 .field__input:focus {

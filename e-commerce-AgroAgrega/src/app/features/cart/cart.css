@@ -205,6 +205,10 @@ img {
   border: 1px solid #e6ede9;
 }
 
+.inpu2t{
+  cursor: auto;
+}
+
 .product-details {
   display: flex;
   flex-direction: column;
