@@ -53,6 +53,12 @@ export class Auth {
       return {res: user.res, message: user.message};
   }
 
+  resetPassword(email: string, newPassword: string): ServiceResponse{
+      newPassword = crypt.SHA256(newPassword).toString();
+      const resetPassword = this.Storage.updateUser(email, newPassword);
+      return resetPassword;
+  }
+
   getId(): string{
     return this.Token.getId();
   }
