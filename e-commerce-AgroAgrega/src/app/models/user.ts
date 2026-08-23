@@ -4,3 +4,9 @@ export interface UserModel {
   email: string;
   password: string;
 }
+
+export interface UserTokenModel {
+  id: string;
+  name: string;
+  email: string;
+}
