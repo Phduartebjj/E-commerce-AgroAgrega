@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ServiceResponse } from '@models/serviceResponse';
 import { UserModel } from '@models/user';
 
 @Injectable({
@@ -6,26 +7,26 @@ import { UserModel } from '@models/user';
 })
 export class StorageService{
   //Seta os usúarios se baseando no modelo User.
-  setUser(data: UserModel): boolean {
+  setUser(data: UserModel): ServiceResponse{
     try{
         const dtLocal = localStorage.getItem('db');
         // Se não existir usuário, ele sobe o valor como primeiro item de um vetor.
         if(!dtLocal){
             localStorage.setItem('db', JSON.stringify([data]));
-            return true;
+            return {res: true, message: ''};
         }
 
         //Utiliza do método getUser para checar se já existe algum usuário.        
-        if(this.getUser(data.email)) return false
+        if(this.getUser(data.email)) return {res: false, message: 'Email Já Cadastrado!'};
         
         const users: UserModel[] = JSON.parse(dtLocal);
         users.push(data);
         localStorage.setItem('db', JSON.stringify(users));
         
-        return true;
+        return {res: true, message: ''};
     }catch(e){
         console.error('Erro ao salvar no localStorage', e);
-        return false;
+        return {res: false, message: ''};
     }
   }
 
@@ -33,9 +34,8 @@ export class StorageService{
   getUser(email: string): UserModel | null {
     try{
       const data = localStorage.getItem('db');
-      if(!data){
-        return null;
-      }
+      if(!data) return null;
+
       const users: UserModel[] = JSON.parse(data);
 
       return users.find(user => user.email === email) ?? null;
@@ -54,21 +54,23 @@ export class StorageService{
   }
 
   // Atualiza usuário
-  updateUser(email: string, newPassword: string): boolean {
+  updateUser(email: string, newPassword: string): ServiceResponse {
       try {
-        const data = localStorage.getItem('db');
-        if(!data) return false;
+          const data = localStorage.getItem('db');
+          if(!data) return {res: false, message: 'Database not found'};
+        
           const users: UserModel[] = JSON.parse(data);
           const user = users.find(user => user.email === email);
 
-          if(!user) return false;
+          if(!user) return {res: false, message: 'User not found'};
           user.password = newPassword;
 
           localStorage.setItem('db', JSON.stringify(users));
-          return true;
+          return {res: true, message: ''};
+      
       } catch (err) {
           console.error('Erro ao atualizar usuário', err);
-          return false;
+          return {res: false, message: ''};
       }
   }
 

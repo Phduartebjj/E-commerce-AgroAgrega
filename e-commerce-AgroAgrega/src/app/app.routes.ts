@@ -15,6 +15,7 @@ import { CheckoutComponent } from './features/checkout/checkout';
 import { Orders } from './features/orders/orders/orders';
 import { OrderDetails } from './features/orders/order-details/order-details';
 import { AboutUsComponent } from '@features/about-us/about-us';
+import { authGuard, guestGuard } from '@core/services/auth/guards/';
 
 export const routes: Routes = [
   {
@@ -32,30 +33,35 @@ export const routes: Routes = [
   {
     path: 'cart',
     component: CartComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'login',
     component: Login,
+    canActivate: [guestGuard],
     data: { hideFooter: true, hideHeader: true },
   },
   {
     path: 'register',
     component: Register,
-    data: { hideHeader: true },
+    canActivate: [guestGuard],
+    data: { hideFooter: true, hideHeader: true },
   },
   {
     path: 'forgot-password',
     component: ForgotPassword,
-    data: { hideHeader: true },
+    canActivate: [guestGuard],
+    data: { hideFooter: true, hideHeader: true },
   },
   {
     path: 'reset-password',
     component: ResetPassword,
-    data: { hideHeader: true },
+    data: { hideFooter: true, hideHeader: true },
   },
   {
     path: 'checkout',
     component: CheckoutComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'orders',
