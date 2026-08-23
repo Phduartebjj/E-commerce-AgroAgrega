@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { StorageService } from './storage-service.service';
-import { TokenAuth } from './token-auth.service';
-// import { randomUUID } from 'crypto';
+import { StorageService } from './storage.service';
+import { TokenAuth } from './token.service';
+import * as crypt from 'crypto-js';
+import { ServiceResponse } from '@models/serviceResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -9,41 +10,57 @@ import { TokenAuth } from './token-auth.service';
 export class Auth {
   private Storage = inject(StorageService);
   private Token = inject(TokenAuth);
-  public isLoggedIn: boolean = false; 
 
-  // public validInput = (name: string, email: string, password: string): boolean => {
-  //     const inpt = {name, email, password};
-  //     const rgx = {
-  //         name: /^[a-zA-Z]{3,16}$/,
-  //         email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  //         password: /^.{8,}$/
-  //     }
-
-  //     return false;
-  // }
-
-  async login(email: string, password: string){
-    
+  public isLoggedIn(): boolean{
+    return this.Token.checkToken();
   }
 
-  async register(name: string, email: string, password: string){
-      const user = {
-        id: self.crypto.randomUUID(),
+  login(email: string, password: string): boolean{
+    const user = this.Storage.getUser(email); 
+    if(!user) return false;
+
+    password = crypt.SHA256(password).toString();
+    if(user.password !== password) return false
+    
+    this.Token.setToken({
+      id: user.id,
+      name: user.name,
+      email: user.email
+    });
+       
+    return true;
+  }
+
+  register(name: string, email: string, password: string): ServiceResponse{
+      password = crypt.SHA256(password).toString();
+      const id = crypto.randomUUID();
+
+      const user = this.Storage.setUser({
+        id,
         name,
         email,
-        password,
-      };
+        password
+      });
 
-      const userHasCreated = this.Storage.setUser(user);
+      if(!user.res) return {res: user.res, message: user.message};
 
-      if(userHasCreated){
-        this.Token.setToken(user);
-        this.isLoggedIn = true;
-      }
+      this.Token.setToken({
+        id,
+        name,
+        email
+      });
+
+      return {res: user.res, message: user.message};
+  }
+
+  getId(): string{
+    return this.Token.getId();
+  }
+  getName(): string{
+    return this.Token.getName();
   }
 
   logout(){
     this.Token.deleteToken();
-    this.isLoggedIn = false;
   }
 }
