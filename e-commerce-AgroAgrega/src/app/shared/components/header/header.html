@@ -18,10 +18,10 @@
     </div>
     <div class="acoes-header">
       <a class="conta-link" routerLink="/login">
-        <span class="icone-perfil"><img src="assets/images/profile.png" alt="Minha Conta" /></span>
+        @if(loggedIn()){<span class="icone-perfil"><img src="assets/images/profile.png" alt="Minha Conta" /></span>}
         <span class="conta-texto">
-          <small>Olá, usuário!</small>
-          <strong>Minha conta</strong>
+          <small>{{name()}}</small>
+          @if(loggedIn()){ <strong>Minha conta</strong> }
         </span>
       </a>
       <a class="icone-favoritos" routerLink="/favorites" aria-label="Ir para a página de favoritos">
@@ -29,7 +29,7 @@
       </a>
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
         <img src="assets/images/cart.png" alt="Carrinho de Compras" />
-        @if (totalItens()>0) {
+        @if (totalItens()>0 && loggedIn()) {
         <span class="contador-carrinho">
           {{totalItens()}}
         </span>
