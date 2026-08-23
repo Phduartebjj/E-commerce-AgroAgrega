@@ -1,0 +1,29 @@
+<section class="product-carousel">
+  <div class="carousel-header">
+    <div>
+      <span class="carousel-label">SELEÇÃO AGROAGREGA</span>
+      <h2>Produtos em destaque</h2>
+    </div>
+
+    <a routerLink="/products"> Ver todos </a>
+  </div>
+
+  <div class="products-list">
+    @for (produto of produtos; track produto.id) {
+      <article class="product-card">
+        <div class="product-image">
+          <img [src]="produto.images[0]" [alt]="produto.title" />
+        </div>
+
+        <span class="product-category">
+          {{ produto.category }}
+        </span>
+        <h3>{{ produto.title }}</h3>
+        <strong class="product-price">{{ produto.price |precoFormatado}}</strong>
+        <button class="add-cart-button"ttype="button" (click)="adicionarAoCarrinho(produto)">
+            Adicionar ao carrinho
+        </button>
+      </article>
+    }
+  </div>
+</section>
