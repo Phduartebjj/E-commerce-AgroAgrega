@@ -22,10 +22,11 @@
     <div class="products-list" #productsList (scroll)="atualizarSetas()">
       @for (produto of produtos; track produto.id) {
         <article class="product-card">
-          <div class="product-image">
-            <img [src]="produto.images[0]" [alt]="produto.title" />
-          </div>
-
+          <a [routerLink]="['/products', produto.id]">
+            <div class="product-image">
+              <img [src]="produto.images[0]" [alt]="produto.title" />
+            </div>
+          </a>
           <span class="product-category">
             {{ produto.category }}
           </span>
