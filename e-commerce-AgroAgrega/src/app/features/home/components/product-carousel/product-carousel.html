@@ -30,9 +30,9 @@
           <span class="product-category">
             {{ produto.category }}
           </span>
-
-          <h3>{{ produto.title }}</h3>
-
+          <a [routerLink]="['/products', produto.id]">
+            <h3>{{ produto.title }}</h3>
+          </a>
           <strong class="product-price">
             {{ produto.price | precoFormatado }}
           </strong>
