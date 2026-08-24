@@ -52,7 +52,7 @@
               type="text"
               placeholder="Lucas Andrade"
             />
-            @if (checkoutForm.get('fullN  ame')?.touched && checkoutForm.get('fullName')?.invalid) {
+            @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid) {
               <small class="errorMessage">
                 {{ getErrorMessage(checkoutForm.get('fullName')!) }}
               </small>

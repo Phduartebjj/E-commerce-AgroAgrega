@@ -36,7 +36,7 @@ export class CheckoutComponent {
     ]),
     cep: new FormControl('', [Validators.required, validCep]),
     cellPhone: new FormControl('', [Validators.required, validPhone]),
-    address: new FormControl('', [Validators.required, validAddressNumber]),
+    address: new FormControl('', [Validators.required]),
     number: new FormControl('', [Validators.required]),
     neighborhood: new FormControl('', [Validators.required, nameNoNumbers]),
     city: new FormControl('', [Validators.required, nameNoNumbers]),
@@ -84,6 +84,11 @@ export class CheckoutComponent {
   }
 
   finishOrder() {
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      return;
+    }
+
     const order = this.orderService.createOrder(
       this.cart.getCartItems()(),
       crypto.randomUUID(),
@@ -104,7 +109,6 @@ const errorMessages = {
   charsInvalid: 'Não pode conter caracteres especiais',
   invalidCep: 'CEP inválido',
   invalidPhone: 'Telefone inválido',
-  invalidAddressNumber: 'Número do endereço inválido',
 };
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
@@ -138,18 +142,6 @@ function validPhone(control: AbstractControl): ValidationErrors | null {
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
     return { invalidPhone: true };
-  }
-
-  return null;
-}
-
-function validAddressNumber(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-
-  if (!value) return null;
-
-  if (!/^\d+$/.test(value)) {
-    return { invalidAddressNumber: true };
   }
 
   return null;
