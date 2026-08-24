@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,8 +12,16 @@ export class ForgotPassword {
   email = '';
   submitted = false;
 
+  private router = inject(Router);
+
   onSubmit(): void {
-    console.log({ email: this.email });
+    if(!this.email) return;
+    
     this.submitted = true;
+    this.router.navigate(['/reset-password'], {
+      queryParams: {
+        email: this.email,
+      },
+    });
   }
 }
