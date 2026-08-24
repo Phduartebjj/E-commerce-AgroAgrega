@@ -82,6 +82,11 @@ agroagrega/
 
 ---
 
+## Link do Projeto no gitPages
+
+[Git-Pages](https://phduartebjj.github.io/E-commerce-AgroAgrega/)
+
+
 ## 📄 Licença
 
 Este projeto foi desenvolvido para fins estritamente acadêmicos.
