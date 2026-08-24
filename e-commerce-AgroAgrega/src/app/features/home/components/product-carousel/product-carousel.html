@@ -9,26 +9,21 @@
   </div>
 
   <div class="carousel-wrapper">
-
-    @if(podeRolarEsquerda()){
-    <button
-      class="carousel-button carousel-button-left"
-      type="button"
-      aria-label="Ver produtos anteriores"
-      (click)="rolarEsquerda()"
-    >
-      ←
-    </button>
-}
+    @if (podeRolarEsquerda()) {
+      <button
+        class="carousel-button carousel-button-left"
+        type="button"
+        aria-label="Ver produtos anteriores"
+        (click)="rolarEsquerda()"
+      >
+        ←
+      </button>
+    }
     <div class="products-list" #productsList (scroll)="atualizarSetas()">
       @for (produto of produtos; track produto.id) {
-
         <article class="product-card">
           <div class="product-image">
-            <img
-              [src]="produto.images[0]"
-              [alt]="produto.title"
-            />
+            <img [src]="produto.images[0]" [alt]="produto.title" />
           </div>
 
           <span class="product-category">
@@ -43,26 +38,29 @@
 
           <button
             class="add-cart-button"
+            [class.product-added]="produtoAdicionadoId() === produto.id"
             type="button"
             (click)="adicionarAoCarrinho(produto)"
           >
-            Adicionar ao carrinho
+            @if (produtoAdicionadoId() === produto.id) {
+              Adicionado ✓
+            } @else {
+              Adicicionar ao Carrinho
+            }
           </button>
         </article>
-
       }
     </div>
 
     @if (podeRolarDireita()) {
-    <button
-      class="carousel-button carousel-button-right"
-      type="button"
-      aria-label="Ver próximos produtos"
-      (click)="rolarDireita()"
-    >
-      →
-    </button>
+      <button
+        class="carousel-button carousel-button-right"
+        type="button"
+        aria-label="Ver próximos produtos"
+        (click)="rolarDireita()"
+      >
+        →
+      </button>
     }
-
   </div>
 </section>

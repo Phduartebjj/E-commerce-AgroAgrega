@@ -12,6 +12,7 @@ import { ProductModel } from '@models/product';
   styleUrl: './product-carousel.css',
 })
 export class ProductCarousel implements AfterViewInit {
+  produtoAdicionadoId = signal<ProductModel['id'] | null>(null);;
 
   ngAfterViewInit(): void {
     this.atualizarSetas();
@@ -33,6 +34,16 @@ export class ProductCarousel implements AfterViewInit {
   private productService = inject(ProductService);
   adicionarAoCarrinho(produto: ProductModel): void {
     this.cart.addCartItem(produto);
+
+  this.produtoAdicionadoId.set(produto.id);
+
+  setTimeout(() => {
+    this.produtoAdicionadoId.set(null);
+    }, 2000);
+
+  
+  
+
   }
 
   produtos = this.productService.getProducts();

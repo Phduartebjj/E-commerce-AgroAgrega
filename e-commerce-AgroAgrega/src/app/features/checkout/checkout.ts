@@ -91,10 +91,9 @@ export class CheckoutComponent {
       this.cart.discountValue(),
       0,
     );
-
     this.cart.cleanCartItem();
-
     this.router.navigate(['/orders']);
+    console.log(order)
   }
 }
 
