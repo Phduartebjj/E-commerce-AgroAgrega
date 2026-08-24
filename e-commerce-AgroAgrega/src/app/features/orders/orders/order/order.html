@@ -1,0 +1,22 @@
+<div class="order-row" role="row">
+  <div class="col pedido" role="cell">
+    <div class="order-id">{{ order().id }}</div>
+    <div class="order-items"></div>
+  </div>
+
+  <div class="col date" role="cell">
+    <div class="date-value">{{ order().createdAt | date: 'dd/MM/yyyy' }}</div>
+  </div>
+
+  <div class="col status" role="cell">
+    <div class="status-badge status-waiting">
+      <span class="status-icon">◫</span>
+      <span>Aguardando pagamento</span>
+    </div>
+    <div class="status-note">{{ order().status }}</div>
+  </div>
+
+  <div class="col total" role="cell">
+    <div class="total-value">{{ order().total | precoFormatado }}</div>
+  </div>
+</div>

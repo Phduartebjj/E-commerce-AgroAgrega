@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { vi } from 'vitest';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
