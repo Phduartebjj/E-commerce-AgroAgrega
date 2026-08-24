@@ -6,7 +6,6 @@ import { ProductModel } from '../../models/product';
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
-
 interface ProductReview {
   stars: number;
   text: string;
@@ -22,9 +21,9 @@ export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
-  
 
-  showCartNotification = false;
+  cartNotifications: number[] = [];
+  private notificationId = 0;
 
   id: string | null = null;
 
@@ -34,45 +33,45 @@ export class ProductDetails implements OnInit {
 
   selectedImageIndex = 0;
 
-// =========================
-// AVALIAÇÕES
-// =========================
+  // =========================
+  // AVALIAÇÕES
+  // =========================
 
-activeTab: 'details' | 'reviews' = 'details';
+  activeTab: 'details' | 'reviews' = 'details';
 
-reviews: ProductReview[] = [];
+  reviews: ProductReview[] = [];
 
-selectedRating = 0;
+  selectedRating = 0;
 
-reviewText = '';
+  reviewText = '';
 
-selectTab(tab: 'details' | 'reviews'): void {
-  this.activeTab = tab;
-}
-
-selectRating(rating: number): void {
-  if (rating < 1 || rating > 5) {
-    return;
+  selectTab(tab: 'details' | 'reviews'): void {
+    this.activeTab = tab;
   }
 
-  this.selectedRating = rating;
-}
+  selectRating(rating: number): void {
+    if (rating < 1 || rating > 5) {
+      return;
+    }
 
-submitReview(): void {
-  const text = this.reviewText.trim();
-
-  if (this.selectedRating < 1 || !text) {
-    return;
+    this.selectedRating = rating;
   }
 
-  this.reviews.push({
-    stars: this.selectedRating,
-    text,
-  });
+  submitReview(): void {
+    const text = this.reviewText.trim();
 
-  this.selectedRating = 0;
-  this.reviewText = '';
-}
+    if (this.selectedRating < 1 || !text) {
+      return;
+    }
+
+    this.reviews.push({
+      stars: this.selectedRating,
+      text,
+    });
+
+    this.selectedRating = 0;
+    this.reviewText = '';
+  }
 
   // =========================
   // GALERIA
@@ -99,8 +98,7 @@ submitReview(): void {
       return;
     }
 
-    this.selectedImageIndex =
-      (this.selectedImageIndex + 1) % this.product.images.length;
+    this.selectedImageIndex = (this.selectedImageIndex + 1) % this.product.images.length;
   }
 
   previousImage(): void {
@@ -109,8 +107,7 @@ submitReview(): void {
     }
 
     this.selectedImageIndex =
-      (this.selectedImageIndex - 1 + this.product.images.length) %
-      this.product.images.length;
+      (this.selectedImageIndex - 1 + this.product.images.length) % this.product.images.length;
   }
 
   // =========================
@@ -121,19 +118,17 @@ submitReview(): void {
     return this.product === undefined;
   }
 
-ngOnInit(): void {
-  this.route.paramMap.subscribe((params) => {
-    this.id = params.get('id');
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id');
 
-    const products = this.productService.getProducts();
+      const products = this.productService.getProducts();
 
-    this.product = products.find(
-      (product) => product.id === this.id,
-    );
+      this.product = products.find((product) => product.id === this.id);
 
-    this.selectedImageIndex = 0;
-  });
-}
+      this.selectedImageIndex = 0;
+    });
+  }
 
   // =========================
   // QUANTIDADE
@@ -172,10 +167,7 @@ ngOnInit(): void {
       return 0;
     }
 
-    const total = this.reviews.reduce(
-      (sum, review) => sum + review.stars,
-      0,
-    );
+    const total = this.reviews.reduce((sum, review) => sum + review.stars, 0);
 
     return total / this.reviews.length;
   }
@@ -185,9 +177,7 @@ ngOnInit(): void {
   }
 
   getRatingCount(stars: number): number {
-    return this.reviews.filter(
-      (review) => review.stars === stars,
-    ).length;
+    return this.reviews.filter((review) => review.stars === stars).length;
   }
 
   getRatingPercentage(stars: number): number {
@@ -195,9 +185,6 @@ ngOnInit(): void {
       return 0;
     }
 
-    return (
-      (this.getRatingCount(stars) / this.reviews.length) *
-      100
-    );
+    return (this.getRatingCount(stars) / this.reviews.length) * 100;
   }
-} 
+}
