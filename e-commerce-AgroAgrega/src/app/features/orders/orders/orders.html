@@ -14,43 +14,13 @@
       <div role="columnheader">Total</div>
     </div>
 
-    <div class="order-row" role="row">
-      <div class="col pedido" role="cell">
-        <div class="order-id">#AGG123453</div>
-        <div class="order-items">1 item</div>
-      </div>
-
-      <div class="col date" role="cell">
-        <div class="date-value">05/05/2024</div>
-        <div class="time-value">16:48</div>
-      </div>
-
-      <div class="col status" role="cell">
-        <div class="status-badge status-waiting">
-          <span class="status-icon">◫</span>
-          <span>Aguardando pagamento</span>
-        </div>
-        <div class="status-note">Aguardamos a confirmação</div>
-      </div>
-
-      <div class="col total" role="cell">
-        <div class="total-value">R$ 1.599,00</div>
-        <div class="payment-label">Boleto bancário</div>
-      </div>
-    </div>
+    @for (order of orders(); track order.id) {
+      <app-order [order]="order"></app-order>
+    }
   </div>
 
   <footer class="orders-footer">
-    <span class="pagination-label">1–4 de 4 pedidos</span>
-
-    <div class="pagination-controls" aria-label="Paginação">
-      <button type="button" class="page-button page-button-arrow" aria-label="Página anterior">
-        ‹
-      </button>
-      <button type="button" class="page-button page-button-active" aria-label="Página 1">1</button>
-      <button type="button" class="page-button page-button-arrow" aria-label="Próxima página">
-        ›
-      </button>
-    </div>
+    <span class="pagination-label"> {{ orders().length }} pedidos</span>
   </footer>
 </section>
+  

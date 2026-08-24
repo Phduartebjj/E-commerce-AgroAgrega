@@ -106,61 +106,6 @@
   margin-top: 8px;
 }
 
-.status {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-height: 38px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-size: 1.04rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.status-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  line-height: 1;
-  font-weight: 800;
-}
-
-.status-success {
-  background: rgba(28, 174, 103, 0.13);
-  color: #1b8b5d;
-}
-
-.status-info {
-  background: rgba(70, 143, 213, 0.14);
-  color: #2d75b5;
-}
-
-.status-processing {
-  background: rgba(227, 146, 33, 0.15);
-  color: #c77a15;
-}
-
-.status-waiting {
-  background: rgba(213, 134, 46, 0.16);
-  color: #bf7a1d;
-}
-
-.status-note {
-  margin-top: 11px;
-  font-size: 1rem;
-  color: #5b6776;
-}
-
 .total {
   text-align: left;
 }
