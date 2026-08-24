@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+  import { Component } from '@angular/core';
+  import { OrderComponent } from './order/order';
+  import { inject } from '@angular/core';
+  import { OrderService } from '@core/services/order/order.service';
 
-@Component({
-  selector: 'app-orders',
-  imports: [],
-  templateUrl: './orders.html',
-  styleUrl: './orders.css',
-})
-export class Orders {}
+  @Component({
+    selector: 'app-orders',
+    imports: [OrderComponent],
+    templateUrl: './orders.html',
+    styleUrl: './orders.css',
+  })
+  export class Orders {
+    private readonly orderService = inject(OrderService);
+
+    protected readonly orders = this.orderService.getOrders()
+  }

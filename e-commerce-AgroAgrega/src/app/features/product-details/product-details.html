@@ -1,3 +1,479 @@
-<h1>Detalhes do produto</h1>
+<!-- Adicionar header aqui acima -->
 
-<p>ID do produto: {{ id }}</p>
+<main class="product-details">
+  @if (product) {
+    <!-- ========================= -->
+    <!-- BREADCRUMB -->
+    <!-- ========================= -->
+
+    <nav class="breadcrumb">
+      <p>
+        <a routerLink="/">Home</a>
+        >
+        <a routerLink="/products">Produtos</a>
+        >
+        <span class="destaque">{{ product.title }}</span>
+      </p>
+    </nav>
+
+    <!-- ========================= -->
+    <!-- GALERIA -->
+    <!-- ========================= -->
+
+    <section class="product-gallery">
+      <div class="main-image">
+        @if (product.images.length > 1) {
+          <button
+            type="button"
+            class="image-navigation previous"
+            (click)="previousImage()"
+            aria-label="Imagem anterior"
+          >
+            ‹
+          </button>
+        }
+
+        <img
+          [src]="selectedImage"
+          [alt]="product.title"
+        />
+
+        @if (product.images.length > 1) {
+          <button
+            type="button"
+            class="image-navigation next"
+            (click)="nextImage()"
+            aria-label="Próxima imagem"
+          >
+            ›
+          </button>
+        }
+      </div>
+
+      @if (product.images.length > 1) {
+        <div class="image-thumbnails">
+          @for (
+            image of product.images;
+            track image;
+            let i = $index
+          ) {
+            <button
+              type="button"
+              class="thumbnail"
+              [class.selected]="selectedImageIndex === i"
+              (click)="selectImage(i)"
+              [attr.aria-label]="'Selecionar imagem ' + (i + 1)"
+            >
+              <img
+                [src]="image"
+                [alt]="product.title + ' - imagem ' + (i + 1)"
+              />
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- ========================= -->
+    <!-- INFORMAÇÕES DO PRODUTO -->
+    <!-- ========================= -->
+
+    <section class="product-info">
+      <a
+        routerLink="/products"
+        class="back-to-products"
+      >
+        ← Voltar para produtos
+      </a>
+
+      <p class="product-id">
+        ID do produto: {{ id }}
+      </p>
+
+      <span class="product-category">
+        {{ product.category }}
+      </span>
+
+      <h1>{{ product.title }}</h1>
+
+      <p class="product-price">
+        {{ product.price | precoFormatado }}
+      </p>
+
+      <p class="product-description">
+        {{ product.description }}
+      </p>
+
+      <!-- QUANTIDADE -->
+
+      <div class="product-quantity">
+        <span>Quantidade:</span>
+
+        <div class="quantity-control">
+          <button
+            type="button"
+            (click)="decreaseQuantity()"
+            [disabled]="quantity === 1"
+            aria-label="Diminuir quantidade"
+          >
+            -
+          </button>
+
+          <span>{{ quantity }}</span>
+
+          <button
+            type="button"
+            (click)="increaseQuantity()"
+            aria-label="Aumentar quantidade"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <!-- CARRINHO -->
+
+      <button
+        type="button"
+        class="add-to-cart"
+        (click)="addToCart()"
+      >
+        Adicionar ao carrinho
+      </button>
+
+      <a
+        routerLink="/cart"
+        class="go-to-cart"
+      >
+        Ver carrinho →
+      </a>
+    </section>
+
+    <!-- ========================= -->
+    <!-- DETALHES / AVALIAÇÕES -->
+    <!-- ========================= -->
+
+<section class="product-extra">
+
+  <!-- ABAS -->
+
+  <nav class="product-tabs">
+
+    <button
+      type="button"
+      class="product-tab"
+      [class.active]="activeTab === 'details'"
+      (click)="selectTab('details')"
+    >
+      Detalhes
+    </button>
+
+    <button
+      type="button"
+      class="product-tab"
+      [class.active]="activeTab === 'reviews'"
+      (click)="selectTab('reviews')"
+    >
+      Avaliações
+    </button>
+
+  </nav>
+
+
+  <!-- ========================= -->
+  <!-- ABA: DETALHES -->
+  <!-- ========================= -->
+
+  @if (activeTab === 'details') {
+
+    <section class="product-details-content">
+
+      <h2>Detalhes do produto</h2>
+
+      <p>
+        {{ product.description }}
+      </p>
+
+      <div class="product-details-grid">
+
+        <div class="detail-item">
+          <span>Categoria</span>
+          <strong>{{ product.category }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>ID do produto</span>
+          <strong>{{ product.id }}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- ========================= -->
+  <!-- ABA: AVALIAÇÕES -->
+  <!-- ========================= -->
+
+  @if (activeTab === 'reviews') {
+
+    <section class="product-reviews">
+
+      <!-- RESUMO -->
+
+      <div class="reviews-header">
+
+        <div class="reviews-summary">
+
+          <h2>Avaliações</h2>
+
+          @if (reviews.length === 0) {
+
+            <div class="rating-score">
+              <strong>—</strong>
+              <span>Sem avaliações</span>
+            </div>
+
+          } @else {
+
+            <div class="rating-score">
+
+              <strong>
+                {{ reviewAverage.toFixed(1) }}
+              </strong>
+
+              <div class="rating-stars">
+
+                @for (
+                  star of [1, 2, 3, 4, 5];
+                  track star
+                ) {
+
+                  <span
+                    [class.filled]="star <= reviewAverage"
+                  >
+                    ★
+                  </span>
+
+                }
+
+              </div>
+
+              <span>
+                {{ reviewCount }} avaliação(ões)
+              </span>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- DISTRIBUIÇÃO -->
+
+        <div class="rating-bars">
+
+          @for (
+            star of [5, 4, 3, 2, 1];
+            track star
+          ) {
+
+            <div class="rating-row">
+
+              <span>{{ star }}</span>
+
+              <div class="rating-bar">
+
+                <div
+                  class="rating-fill"
+                  [style.width.%]="getRatingPercentage(star)"
+                ></div>
+
+              </div>
+
+              <span>
+                {{ getRatingCount(star) }}
+              </span>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- FORMULÁRIO -->
+
+      <div class="review-form">
+
+        <h3>Avalie este produto</h3>
+
+        <div class="rating-selector">
+
+          <span>Sua avaliação:</span>
+
+          <div class="selectable-stars">
+
+            @for (
+              star of [1, 2, 3, 4, 5];
+              track star
+            ) {
+
+              <button
+                type="button"
+                [class.selected]="star <= selectedRating"
+                (click)="selectRating(star)"
+                [attr.aria-label]="star + ' estrelas'"
+              >
+                ★
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <textarea
+          [(ngModel)]="reviewText"
+          maxlength="300"
+          rows="4"
+          placeholder="Escreva uma breve avaliação sobre este produto..."
+        ></textarea>
+
+
+        <div class="review-form-footer">
+
+          <span>
+            {{ reviewText.length }}/300
+          </span>
+
+          <button
+            type="button"
+            class="submit-review"
+            (click)="submitReview()"
+            [disabled]="
+              selectedRating === 0 ||
+              !reviewText.trim()
+            "
+          >
+            Enviar avaliação
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- AVALIAÇÕES EXISTENTES -->
+
+      @if (reviews.length > 0) {
+
+        <div class="reviews-list">
+
+          <h3>Avaliações dos clientes</h3>
+
+          @for (
+            review of reviews;
+            track $index
+          ) {
+
+            <article class="review-item">
+
+              <div class="review-item-header">
+
+                <div class="review-stars">
+
+                  @for (
+                    star of [1, 2, 3, 4, 5];
+                    track star
+                  ) {
+
+                    <span
+                      [class.filled]="star <= review.stars"
+                    >
+                      ★
+                    </span>
+
+                  }
+
+                </div>
+
+              </div>
+
+              <p>
+                {{ review.text }}
+              </p>
+
+            </article>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="reviews-empty">
+
+          <h3>Ainda não há avaliações</h3>
+
+          <p>
+            Seja o primeiro a avaliar este produto.
+          </p>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</section>
+
+  } @else {
+
+    <!-- ========================= -->
+    <!-- PRODUTO NÃO ENCONTRADO -->
+    <!-- ========================= -->
+
+    <div class="error-container">
+
+      <h2>Produto não encontrado</h2>
+
+      <p>
+        O produto com ID {{ id }} não existe.
+      </p>
+
+      <a routerLink="/products">
+        Voltar para produtos
+      </a>
+
+    </div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- NOTIFICAÇÃO DO CARRINHO -->
+  <!-- ========================= -->
+
+<div class="cart-notifications">
+  @for (notification of cartNotifications; track notification) {
+    <div class="cart-notification" role="status" aria-live="polite">
+      <span class="cart-notification-icon">✓</span>
+
+      <div>
+        <strong>Produto adicionado</strong>
+        <p>Produto adicionado ao carrinho com sucesso.</p>
+      </div>
+    </div>
+  }
+</div>
+
+</main>

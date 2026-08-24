@@ -1,13 +1,198 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'; // Serviço para acessar dados da URL
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ProductService } from '../../core/services/product/product.service';
+import { ProductModel } from '../../models/product';
+import { Cart } from '../../core/services/cart/cart.service';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+
+interface ProductReview {
+  stars: number;
+  text: string;
+}
 
 @Component({
   selector: 'app-product-details',
-  imports: [],
+  imports: [PrecoFormatadoPipe, RouterLink, FormsModule],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css',
 })
-export class ProductDetails {
-  private route = inject(ActivatedRoute); // coleta instância da rota atual
-  id = this.route.snapshot.paramMap.get('id');
+export class ProductDetails implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly productService = inject(ProductService);
+  private readonly cart = inject(Cart);
+
+  cartNotifications: number[] = [];
+  private notificationId = 0;
+
+  id: string | null = null;
+
+  product: ProductModel | undefined;
+
+  quantity = 1;
+
+  selectedImageIndex = 0;
+
+  // =========================
+  // AVALIAÇÕES
+  // =========================
+
+  activeTab: 'details' | 'reviews' = 'details';
+
+  reviews: ProductReview[] = [];
+
+  selectedRating = 0;
+
+  reviewText = '';
+
+  selectTab(tab: 'details' | 'reviews'): void {
+    this.activeTab = tab;
+  }
+
+  selectRating(rating: number): void {
+    if (rating < 1 || rating > 5) {
+      return;
+    }
+
+    this.selectedRating = rating;
+  }
+
+  submitReview(): void {
+    const text = this.reviewText.trim();
+
+    if (this.selectedRating < 1 || !text) {
+      return;
+    }
+
+    this.reviews.push({
+      stars: this.selectedRating,
+      text,
+    });
+
+    this.selectedRating = 0;
+    this.reviewText = '';
+  }
+
+  // =========================
+  // GALERIA
+  // =========================
+
+  get selectedImage(): string | undefined {
+    return this.product?.images[this.selectedImageIndex];
+  }
+
+  selectImage(index: number): void {
+    if (!this.product) {
+      return;
+    }
+
+    if (index < 0 || index >= this.product.images.length) {
+      return;
+    }
+
+    this.selectedImageIndex = index;
+  }
+
+  nextImage(): void {
+    if (!this.product || this.product.images.length === 0) {
+      return;
+    }
+
+    this.selectedImageIndex = (this.selectedImageIndex + 1) % this.product.images.length;
+  }
+
+  previousImage(): void {
+    if (!this.product || this.product.images.length === 0) {
+      return;
+    }
+
+    this.selectedImageIndex =
+      (this.selectedImageIndex - 1 + this.product.images.length) % this.product.images.length;
+  }
+
+  // =========================
+  // PRODUTO
+  // =========================
+
+  get productNotFound(): boolean {
+    return this.product === undefined;
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id');
+
+      const products = this.productService.getProducts();
+
+      this.product = products.find((product) => product.id === this.id);
+
+      this.selectedImageIndex = 0;
+    });
+  }
+
+  // =========================
+  // QUANTIDADE
+  // =========================
+
+  increaseQuantity(): void {
+    this.quantity += 1;
+  }
+
+  decreaseQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity -= 1;
+    }
+  }
+
+  // =========================
+  // CARRINHO
+  // =========================
+
+  addToCart(): void {
+  if (!this.product || this.quantity <= 0) {
+    return;
+  }
+
+  this.cart.addCartItem(this.product, this.quantity);
+
+const notificationId = ++this.notificationId;
+
+this.cartNotifications.push(notificationId);
+
+if (this.cartNotifications.length > 3) {
+  this.cartNotifications.shift();
+}
+
+  setTimeout(() => {
+    this.cartNotifications = this.cartNotifications.filter(
+      (id) => id !== notificationId
+    );
+  }, 3000);
+}
+
+  get reviewAverage(): number {
+    if (this.reviews.length === 0) {
+      return 0;
+    }
+
+    const total = this.reviews.reduce((sum, review) => sum + review.stars, 0);
+
+    return total / this.reviews.length;
+  }
+
+  get reviewCount(): number {
+    return this.reviews.length;
+  }
+
+  getRatingCount(stars: number): number {
+    return this.reviews.filter((review) => review.stars === stars).length;
+  }
+
+  getRatingPercentage(stars: number): number {
+    if (this.reviews.length === 0) {
+      return 0;
+    }
+
+    return (this.getRatingCount(stars) / this.reviews.length) * 100;
+  }
 }

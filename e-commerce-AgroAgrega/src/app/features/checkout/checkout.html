@@ -1,1 +1,253 @@
-<p>checkout works!</p>
+<main>
+  <nav class="breadcrumb">
+    <p>
+      <a routerLink="/">Home</a> > <a routerLink="/cart">Cart</a> >
+      <span class="destaque">Checkout</span>
+    </p>
+  </nav>
+  <section class="checkout-title">
+    <div>
+      <span>FINALIZAR COMPRA</span>
+
+      <h2>Checkout</h2>
+    </div>
+  </section>
+
+  <section class="checkout-container">
+    <section class="customer-infos">
+      <div class="address-header">
+        <span class="icon"></span>
+        <div>
+          <h3>Endereço de entrega</h3>
+          <p>Informe onde deseja receber sua pesquisa</p>
+        </div>
+      </div>
+
+      <form class="checkout-form" [formGroup]="checkoutForm">
+        <div class="form-row form-row-long">
+          <div class="form-group">
+            <label for="cep">CEP</label>
+            <div class="cep-input">
+              <input
+                formControlName="cep"
+                id="cep"
+                name="cep"
+                type="text"
+                placeholder="01310-100"
+              />
+              <button type="button" class="btn-buscar-cep">Buscar CEP</button>
+            </div>
+            @if (checkoutForm.get('cep')?.touched && checkoutForm.get('cep')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('cep')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="fullName">Nome completo</label>
+            <input
+              id="fullName"
+              formControlName="fullName"
+              name="fullName"
+              type="text"
+              placeholder="Lucas Andrade"
+            />
+            @if (checkoutForm.get('fullN  ame')?.touched && checkoutForm.get('fullName')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('fullName')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="cellPhone">Telefone</label>
+            <input
+              formControlName="cellPhone"
+              id="cellPhone"
+              name="cellPhone"
+              type="tel"
+              placeholder="(11) 99999-8421"
+            />
+            @if (checkoutForm.get('cellPhone')?.touched && checkoutForm.get('cellPhone')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('cellPhone')!) }}
+              </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-row form-row-middle">
+          <div class="form-group">
+            <label for="address">Endereço</label>
+            <input
+              formControlName="address"
+              id="address"
+              name="address"
+              type="text"
+              placeholder="Avenida Paulista"
+            />
+            @if (checkoutForm.get('address')?.touched && checkoutForm.get('address')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('address')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="number">Número</label>
+            <input
+              formControlName="number"
+              id="number"
+              name="number"
+              type="text"
+              placeholder="1578"
+            />
+            @if (checkoutForm.get('number')?.touched && checkoutForm.get('number')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('number')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="complement">Complemento</label>
+            <input
+              formControlName="complement"
+              id="complement"
+              name="complement"
+              type="text"
+              placeholder="Opcional"
+            />
+          </div>
+        </div>
+
+        <div class="form-row form-row-middle">
+          <div class="form-group">
+            <label for="neighborhood">Bairro</label>
+            <input
+              formControlName="neighborhood"
+              id="neighborhood"
+              name="neighborhood"
+              type="text"
+              placeholder="Bela Vista"
+            />
+            @if (
+              checkoutForm.get('neighborhood')?.touched && checkoutForm.get('neighborhood')?.invalid
+            ) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('neighborhood')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="city">Cidade</label>
+            <input
+              formControlName="city"
+              id="city"
+              name="city"
+              type="text"
+              placeholder="São Paulo"
+            />
+            @if (checkoutForm.get('city')?.touched && checkoutForm.get('city')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('city')!) }}
+              </small>
+            }
+          </div>
+          <div class="form-group">
+            <label for="state">Estado</label>
+            <select formControlName="state" id="state" name="state">
+              <option value="">Selecione</option>
+              @for (state of states; track state) {
+                <option [value]="state">{{ state }}</option>
+              }
+            </select>
+            @if (checkoutForm.get('state')?.touched && checkoutForm.get('state')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(checkoutForm.get('state')!) }}
+              </small>
+            }
+          </div>
+        </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="saveAddress" name="saveAddress" checked />
+          <label for="saveAddress">Salvar este endereço para próximas compras</label>
+        </div>
+
+        <div class="delivery-section">
+          <div class="delivery-header">
+            <div class="delivery-icon" aria-hidden="true">📦</div>
+            <div>
+              <h3>Forma de entrega</h3>
+              <p>Escolha a melhor opção para você.</p>
+            </div>
+          </div>
+
+          <div class="delivery-option">
+            <div class="delivery-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="deliveryMethod" checked />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="delivery-text">
+                <span class="delivery-name">Entrega padrão</span>
+                <small>Receba em casa até 22 de agosto</small>
+              </div>
+            </div>
+
+            <span class="delivery-price">Grátis</span>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="order-summary">
+      <div class="order-summary-background">
+        <h3>Resumo do pedido</h3>
+
+        <div class="summary-item">
+          <span>Subtotal</span>
+          <span class="value">{{ subTotal() | precoFormatado }}</span>
+        </div>
+
+        <div class="summary-item">
+          <span>Frete</span>
+          <span class="value free">Grátis</span>
+        </div>
+
+        <div class="summary-item">
+          <span>Descontos</span>
+          <span class="value discount">{{ discountValue() | precoFormatado }}</span>
+        </div>
+
+        <div class="summary-total">
+          <div>
+            <h4>Total</h4>
+            <p>inclui impostos</p>
+          </div>
+          <div>
+            <span class="total-value">{{ totalValue() | precoFormatado }}</span>
+          </div>
+        </div>
+
+        <div class="payment-safe">
+          <span class="icon-lock"><img src="../../assets/icones/padlock.svg" alt="" /></span>
+          <span>Pagamento protegido e seguro</span>
+        </div>
+      </div>
+
+      <div>
+        <button (click)="finishOrder()" class="btn-finish">Finalizar Compra</button>
+      </div>
+      <div class="support-section">
+        <span class="icon-chat"><img src="../../assets/icones/chat.svg" alt="" /></span>
+        <div>
+          <h4>Precisa de ajuda?</h4>
+          <p>Nosso time acompanha você durante a compra.</p>
+          <a href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/" target="_blank"
+            >Falar com especialista</a
+          >
+        </div>
+      </div>
+    </section>
+  </section>
+</main>

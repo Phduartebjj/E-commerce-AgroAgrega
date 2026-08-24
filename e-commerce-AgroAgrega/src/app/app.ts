@@ -1,12 +1,42 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet, ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { Header } from './shared/components/header/header';
+import { Footer } from './shared/components/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('e-commerce-AgroAgrega');
+
+  mostrarHeader = signal(true);
+  mostrarFooter = signal(true);
+
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd)
+      )
+      .subscribe(() => {
+        let rotaAtual = this.activatedRoute;
+
+        while (rotaAtual.firstChild) {
+          rotaAtual = rotaAtual.firstChild;
+        }
+
+        const dadosDaRota = rotaAtual.snapshot.data;
+        const esconderHeader = dadosDaRota['hideHeader'];
+        const esconderFooter = dadosDaRota['hideFooter'];
+
+        this.mostrarHeader.set(!esconderHeader);
+        this.mostrarFooter.set(!esconderFooter);
+      });
+  }
 }

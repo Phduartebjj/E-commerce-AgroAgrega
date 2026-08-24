@@ -1,1 +1,26 @@
-<p>products works!</p>
+<section class="product-page">
+  <div class="catalog-shell">
+    <header class="catalog-header">
+      <h1>Catálogo de Produtos</h1>
+
+      <div class="catalog-filters" aria-label="Filtros de categoria">
+        @for (category of categoryFilters; track category) {
+          <button
+            class="filter-chip"
+            [class.active]="selectedCategory() === category"
+            type="button"
+            (click)="selectCategory(category)"
+          >
+            {{ category }}
+          </button>
+        }
+      </div>
+    </header>
+
+    <div class="catalog-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <app-product-card (addToCart)="addProductToCart($event)" [product]="product" ></app-product-card>
+      }
+    </div>
+  </div>
+</section>
