@@ -463,28 +463,17 @@
   <!-- NOTIFICAÇÃO DO CARRINHO -->
   <!-- ========================= -->
 
-  @if (showCartNotification) {
-
-    <div
-      class="cart-notification"
-      role="status"
-      aria-live="polite"
-    >
-
-      <span class="cart-notification-icon">
-        ✓
-      </span>
+<div class="cart-notifications">
+  @for (notification of cartNotifications; track notification) {
+    <div class="cart-notification" role="status" aria-live="polite">
+      <span class="cart-notification-icon">✓</span>
 
       <div>
         <strong>Produto adicionado</strong>
-
-        <p>
-          Produto adicionado ao carrinho com sucesso.
-        </p>
+        <p>Produto adicionado ao carrinho com sucesso.</p>
       </div>
-
     </div>
-
   }
+</div>
 
 </main>
