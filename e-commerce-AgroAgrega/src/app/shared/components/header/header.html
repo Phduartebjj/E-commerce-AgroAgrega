@@ -24,9 +24,31 @@
           @if(loggedIn()){ <strong>Minha conta</strong> }
         </span>
       </a>
-      <a class="icone-favoritos" routerLink="/favorites" aria-label="Ir para a página de favoritos">
-        <img src="assets/images/favorite.png" alt="Favoritos" />
-      </a>
+       <div class="favorites-header-wrapper">
+        <button
+          type="button"
+          class="icone-favoritos"
+          aria-label="Abrir favoritos"
+          [attr.aria-expanded]="favoritesOpen()"
+          (click)="toggleFavorites()"
+        >
+        <img src="assets/images/favorite.png" alt="Favoritos"/>
+
+        @if (favoritesCount() > 0) {
+          <span class="contador-favoritos">
+            {{ favoritesCount() }}
+          </span>
+        }
+
+        </button>
+
+        @if (favoritesOpen()) {
+          <app-favorites />
+        }
+
+      </div>
+
+
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
         <img src="assets/images/cart.png" alt="Carrinho de Compras" />
         @if (totalItens()>0 && loggedIn()) {

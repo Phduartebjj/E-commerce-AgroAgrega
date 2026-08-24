@@ -139,29 +139,69 @@
   font-weight: 700;
 }
 
-.icone-favoritos {
-  display: inline-flex;
+.favorites-header-wrapper {
+  position: relative;
+
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0px;
-  border: none;
-  background: transparent;
-  color: var(--green-dark);
-  text-decoration: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-  transition: opacity 0.5s;
 }
+
+.icone-favoritos {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transition: background 150ms ease;
+}
+
 .icone-favoritos:hover {
-  opacity: 0.6;
+  background: #f5f5f5;
 }
 
 .icone-favoritos img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+
   object-fit: contain;
+}
+
+.contador-favoritos {
+  position: absolute;
+
+  top: -3px;
+  right: -3px;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 4px;
+
+  border-radius: 999px;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  line-height: 1;
 }
 
 .icone-carrinho {
