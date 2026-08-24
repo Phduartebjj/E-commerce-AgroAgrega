@@ -184,4 +184,10 @@
     right: -24px;
 }
 
+.add-cart-button.product-added{
+  background-color: #9bd52b;
+
+  color: var(--green-dark);
+}
+
 
