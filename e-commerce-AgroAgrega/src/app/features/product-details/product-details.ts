@@ -149,18 +149,26 @@ export class ProductDetails implements OnInit {
   // =========================
 
   addToCart(): void {
-    if (!this.product || this.quantity <= 0) {
-      return;
-    }
-
-    this.cart.addCartItem(this.product, this.quantity);
-
-    this.showCartNotification = true;
-
-    setTimeout(() => {
-      this.showCartNotification = false;
-    }, 3000);
+  if (!this.product || this.quantity <= 0) {
+    return;
   }
+
+  this.cart.addCartItem(this.product, this.quantity);
+
+const notificationId = ++this.notificationId;
+
+this.cartNotifications.push(notificationId);
+
+if (this.cartNotifications.length > 3) {
+  this.cartNotifications.shift();
+}
+
+  setTimeout(() => {
+    this.cartNotifications = this.cartNotifications.filter(
+      (id) => id !== notificationId
+    );
+  }, 3000);
+}
 
   get reviewAverage(): number {
     if (this.reviews.length === 0) {
