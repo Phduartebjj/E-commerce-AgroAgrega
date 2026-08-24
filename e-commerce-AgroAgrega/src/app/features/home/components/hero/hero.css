@@ -17,7 +17,7 @@
       rgba(5, 35, 12, 0.15) 70%,
       rgba(5, 35, 12, 0) 100%
     ),
-    url('/assets/images/trator.png');
+    url('../../../../assets/images/trator.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
