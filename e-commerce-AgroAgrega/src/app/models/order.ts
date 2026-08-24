@@ -11,11 +11,11 @@ export interface OrderModel {
 }
 
 export enum OrderStatus {
-  Pending = 'pending',
-  Confirmed = 'confirmed',
-  Shipped = 'shipped',
-  Delivered = 'delivered',
-  Cancelled = 'cancelled',
+  Pending = 'Pendente',
+  Confirmed = 'Confirmado',
+  Shipped = 'À caminho',
+  Delivered = 'Entregue',
+  Cancelled = 'Cancelado',
 }
 
 export interface OrderItemModel {

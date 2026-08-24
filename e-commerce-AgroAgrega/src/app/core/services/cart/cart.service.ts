@@ -10,7 +10,7 @@ import { CouponModel } from '@models/coupon';
 export class Cart {
   //Estado inicial do carrinho, mutável apenas por ele mesmo.
   private platformId = inject(PLATFORM_ID);
-  private readonly chaveStorage = 'my-storage-cart';
+  private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>(this.getStorageCart());
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
@@ -21,7 +21,7 @@ export class Cart {
     if (!this.isBrowser()) {
       return [];
     }
-    const cartItems = localStorage.getItem(this.chaveStorage);
+    const cartItems = localStorage.getItem(this.keyStorage);
     if (!cartItems) {
       return [];
     }
@@ -36,7 +36,7 @@ export class Cart {
     if (!this.isBrowser()) {
       return;
     }
-    localStorage.setItem(this.chaveStorage, JSON.stringify(this.cartItems()));
+    localStorage.setItem(this.keyStorage, JSON.stringify(this.cartItems()));
   }
 
   coupon = signal<CouponModel | null>(null);
