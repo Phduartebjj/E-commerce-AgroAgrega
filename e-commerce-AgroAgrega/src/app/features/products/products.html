@@ -19,7 +19,7 @@
 
     <div class="catalog-grid">
       @for (product of filteredProducts(); track product.id) {
-        <app-product-card (addToCart)="addProductToCart($event)" [product]="product"></app-product-card>
+        <app-product-card (addToCart)="addProductToCart($event)" [product]="product" ></app-product-card>
       }
     </div>
   </div>
