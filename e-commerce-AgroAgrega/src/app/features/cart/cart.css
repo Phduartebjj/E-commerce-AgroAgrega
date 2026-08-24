@@ -42,6 +42,7 @@
   display: flex;
   gap: 16px;
   width: 100%;
+  align-items: flex-start;
 }
 
 .btn {
@@ -67,7 +68,8 @@
 .cart-items {
   display: flex;
   flex-direction: column;
-  width: clamp(200px, 70vw, 830px);
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .cart-header {
@@ -132,6 +134,7 @@ img {
   gap: 24px;
   width: 100%;
   background-color: white;
+  min-width: 0;
 }
 
 .product-info {
@@ -234,7 +237,8 @@ img {
   background-color: white;
   border-radius: 16px;
 
-  width: clamp(200px, 70vw, 830px);
+  width: 100%;
+  max-width: 830px;
 }
 
 .product-item:last-child {
@@ -250,7 +254,8 @@ img {
   padding: 24px 24px;
   background-color: white;
   border-radius: 16px;
-  width: clamp(200px, 50vw, 420px);
+  flex: 0 1 420px;
+  width: min(100%, 420px);
   height: auto;
   display: flex;
   flex-direction: column;
@@ -303,4 +308,85 @@ img {
   text-decoration: none;
   display: block;
   text-align: center;
+}
+
+@media (max-width: 900px) {
+  .cart-container {
+    padding: 3rem 1.5rem;
+  }
+
+  .cart-content {
+    flex-direction: column;
+  }
+
+  .cart-items,
+  .coupon-section,
+  .cart-summary {
+    width: 100%;
+    max-width: none;
+  }
+
+  .cart-summary {
+    flex-basis: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .cart-container {
+    padding: 2rem 1rem;
+  }
+
+  .cart-header,
+  .product-item,
+  .coupon-section,
+  .cart-summary {
+    padding: 16px;
+  }
+
+  .cart-header-values {
+    gap: 0.75rem;
+    font-size: 11px;
+  }
+
+  .product-item {
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+  }
+
+  .product-info {
+    min-width: 0;
+  }
+
+  .product-info img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .product-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .product-price {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    font-size: 14px;
+  }
+
+  .product-quantity {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .coupon-action {
+    flex-direction: column;
+  }
+
+  .coupon-action .btn-ApplyCoupon {
+    width: 100%;
+  }
 }
