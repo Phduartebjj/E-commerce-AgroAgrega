@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -31,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: e-commerce-AgroAgrega
-        run: npm ci
+        run: npm install --include=optional --ignore-scripts
 
       - name: Build Angular app
         working-directory: e-commerce-AgroAgrega
