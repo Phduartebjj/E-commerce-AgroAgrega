@@ -2,7 +2,7 @@ import { ProductModel } from '@models/product';
 
 export const productsItems: ProductModel[] = [
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '1dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Agricultura de Precisão',
     title: 'Kit Estação Meteorológica Inteligente AgroSense Pro',
     price: 2899.9,
@@ -11,7 +11,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/agrosense-pro.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '2dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Insumos',
     title: 'Sementes de milho híbrido SafraMax 5 kg',
     price: 189.9,
@@ -19,7 +19,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/milho-hibrido.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '3dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Insumos',
     title: 'Sementes de capim braquiária Elite 10 kg',
     price: 269.9,
@@ -27,7 +27,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/braquiaria.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '4dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Irrigação',
     title: 'Kit Irrigação por Gotejamento 500 m²',
     price: 749.9,
@@ -35,7 +35,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/gotejamento.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '5dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Ferramentas',
     title: 'Roçadeira Profissional AgroForce 43 cc',
     price: 1199.9,
@@ -43,7 +43,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/rocadeira.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '6dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Pecuária',
     title: 'Bebedouro Automático para Bovinos 70 L',
     price: 489.9,
@@ -51,7 +51,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/bebedouro-bovinos.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '7dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Agricultura de Precisão',
     title: 'Sensor de Umidade do Solo AgroSense',
     price: 399.9,
@@ -59,7 +59,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/sensor-umidade.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '8dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Irrigação',
     title: 'Bomba d’Água Solar 1,5 CV para Irrigação',
     price: 1699.9,
@@ -67,7 +67,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/bomba-solar.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '9dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Pecuária',
     title: 'Sal Mineral Proteinado Premium 25 kg',
     price: 139.9,
@@ -75,7 +75,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/sal-mineral.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '10dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Ferramentas',
     title: 'Tesoura de Poda Profissional Inox',
     price: 89.9,
@@ -83,7 +83,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/tesoura-poda.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '11dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Insumos',
     title: 'Fertilizante Granulado NPK 20-05-20 25 kg',
     price: 219.9,
@@ -91,7 +91,7 @@ export const productsItems: ProductModel[] = [
     images: ['assets/images/products/fertilizante.jpg'],
   },
   {
-    id: globalThis.crypto.randomUUID(),
+    id: '12dsoifjasdf-1234-5678-90ab-cdefghijklmn',
     category: 'Agricultura de Precisão',
     title: 'GPS Agrícola de Alta Precisão AgroNav',
     price: 3490,
