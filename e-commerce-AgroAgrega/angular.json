@@ -60,6 +60,11 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "github-pages": {
+              "baseHref": "/E-commerce-AgroAgrega/",
+              "outputMode": "static",
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
