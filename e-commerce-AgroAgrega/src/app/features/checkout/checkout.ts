@@ -111,6 +111,7 @@ export class CheckoutComponent {
       this.discountTotalValue,
       0,
     );
+    this.cart.removeCoupon();
     this.cart.cleanCartItem();
     this.router.navigate(['/orders']);
     console.log(order);
