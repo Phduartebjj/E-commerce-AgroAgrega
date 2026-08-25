@@ -20,7 +20,7 @@
       </button>
     }
     <div class="products-list" #productsList (scroll)="atualizarSetas()">
-      @for (produto of produtos; track produto.id) {
+      @for (produto of produtos(); track produto.id) {
         <article class="product-card">
           <a [routerLink]="['/products', produto.id]">
             <div class="product-image">
