@@ -15,7 +15,8 @@
           <label class="rating-option">
             <input
               type="radio"
-              name="sort" [checked]="sortOption() === 'price-desc'"
+              name="sort"
+              [checked]="sortOption() === 'price-desc'"
               value="price-desc"
               (change)="sortOption.set('price-desc')"
             />
@@ -35,7 +36,8 @@
             <input
               type="radio"
               name="sort"
-              value="relevant" [checked]="sortOption() === 'relevant'"
+              value="relevant"
+              [checked]="sortOption() === 'relevant'"
               (change)="sortOption.set('relevant')"
             />
             <span>Relevantes</span>
@@ -46,32 +48,17 @@
           <div class="filters-section-title">
             <span>Categorias</span>
           </div>
-
-          <label class="filter-option">
-            <input type="checkbox" />
-            <span>Agricultura de Precisão</span>
-            <strong>4</strong>
-          </label>
-          <label class="filter-option">
-            <input type="checkbox" />
-            <span>Irrigação</span>
-            <strong>7</strong>
-          </label>
-          <label class="filter-option">
-            <input type="checkbox" />
-            <span>Pecuária</span>
-            <strong>10</strong>
-          </label>
-          <label class="filter-option">
-            <input type="checkbox" />
-            <span>Ferramentas</span>
-            <strong>13</strong>
-          </label>
-          <label class="filter-option">
-            <input type="checkbox" />
-            <span>Insumos</span>
-            <strong>16</strong>
-          </label>
+          @for (item of categoryCounts(); track item.category) {
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                [checked]="selectedCategories().includes(item.category)"
+                (click)="toggleCategory(item.category)"
+              />
+              <span>{{ item.category }}</span>
+              <strong>{{ item.count }}</strong>
+            </label>
+          }
         </div>
 
         <div class="filters-section">

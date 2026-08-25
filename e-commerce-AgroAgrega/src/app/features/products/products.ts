@@ -1,4 +1,4 @@
-import { ProductModel, SortOption } from '@models/product';
+import { ProductCategory, ProductModel, SortOption } from '@models/product';
 
 import { Component, computed, inject, signal } from '@angular/core';
 
@@ -25,8 +25,10 @@ export class ProductsComponent {
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
+  readonly categories = this.productService.getProductCategories();
   readonly sortOption = signal<SortOption>('relevant');
 
+  readonly selectedCategories = signal<ProductCategory[]>([]);
   readonly products = this.productService.getProducts();
 
   readonly selectedCategory = computed(() => {
@@ -44,15 +46,16 @@ export class ProductsComponent {
   });
 
   readonly filteredProducts = computed(() => {
-    const category = this.selectedCategory();
     const search = this.searchTerm();
     const sortOption = this.sortOption();
     const products = [...this.products()];
+    const selectedCategories = this.selectedCategories();
 
     const filteredProducts = products.filter((product) => {
       const searchableText = `${product.title} ${product.category}`.toLowerCase();
 
-      const matchesCategory = !category || product.category === category;
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(product.category);
 
       const matchesSearch = !search || searchableText.includes(search);
 
@@ -67,6 +70,26 @@ export class ProductsComponent {
     }
     return filteredProducts;
   });
+
+  readonly categoryCounts = computed(() => {
+    const products = this.products();
+
+    return this.categories.map((category) => {
+      const count = products.filter((product) => product.category === category).length;
+      return { category, count };
+    });
+  });
+
+  toggleCategory(category: ProductCategory): void {
+    console.log('Antes:', this.selectedCategories());
+    this.selectedCategories.update((categories) => {
+      if (categories.includes(category)) {
+        return categories.filter((c) => c !== category);
+      }
+      return [...categories, category];
+    });
+    console.log('Depois:', this.selectedCategories());
+  }
 
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
