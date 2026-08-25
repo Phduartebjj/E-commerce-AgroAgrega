@@ -47,18 +47,23 @@
 
   color: #d5ddd9;
   line-height: 1.6;
+  
 }
 
 .rodape-coluna {
   display: flex;
   flex-direction: column;
+  
 }
 
 .rodape-coluna h3 {
   margin: 0 0 22px;
 
   font-size: 17px;
+  
 }
+
+
 
 .rodape-coluna a {
   margin-bottom: 17px;

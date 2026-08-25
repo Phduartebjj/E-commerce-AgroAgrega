@@ -29,8 +29,17 @@
 
     <small class="product-card-installment">ou em até 10x sem juros</small>
 
-    <button (click)="addToCart.emit(product())" class="product-card-button" type="button">
-      Adicionar
+    <button
+      class="product-card-button"
+      [class.product-added]="adicionado()"
+      type="button"
+      (click)="adicionarAoCarrinho()"
+    >
+      @if (adicionado()) {
+        Adicionado ✓
+      } @else {
+        Adicionar
+      }
     </button>
   </div>
 </article>

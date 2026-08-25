@@ -296,6 +296,7 @@ img {
 }
 
 .btn.btn-checkout {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   background-color: #2e7d4f;
   color: white;
   border: none;
@@ -308,6 +309,16 @@ img {
   text-decoration: none;
   display: block;
   text-align: center;
+}
+
+.btn.btn-checkout:hover{
+  filter: brightness(0.95);
+}
+.btn.btn-checkout:active{
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 @media (max-width: 900px) {
@@ -364,9 +375,12 @@ img {
 
   .product-description {
     display: -webkit-box;
+    display: box;
     overflow: hidden;
     -webkit-box-orient: vertical;
+    box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .product-price {

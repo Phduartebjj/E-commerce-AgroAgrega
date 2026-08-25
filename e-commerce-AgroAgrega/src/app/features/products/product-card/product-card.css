@@ -162,6 +162,12 @@
   font-size: 1.08rem;
   font-weight: 700;
   box-shadow: 0 12px 18px rgba(17, 84, 47, 0.2);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.product-card-button.product-added{
+  background: #9bd52b;
+  color: var(--gren-dark);
 }
 
 @media (max-width: 520px) {

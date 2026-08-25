@@ -181,6 +181,10 @@ main {
 }
 
 .btn-finish {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
     background-color: #2e7d4f;
     color: white;
     border: none;
@@ -193,6 +197,19 @@ main {
     text-decoration: none;
     display: block;
     text-align: center;
+    
+}
+
+.btn-finish:hover {
+
+  filter: brightness(0.95);
+}
+
+.btn-finish:active{
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 .btn-buscar-cep {
