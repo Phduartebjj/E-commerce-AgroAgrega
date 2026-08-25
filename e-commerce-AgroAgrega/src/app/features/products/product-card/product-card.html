@@ -27,7 +27,9 @@
 
   <div class="product-card-content">
     <p class="product-card-category">{{ product().category | uppercase }}</p>
-    <h2 class="product-card-title">{{ product().title }}</h2>
+    <a [routerLink]="['/products', product().id]">
+      <h2 class="product-card-title">{{ product().title }}</h2>
+    </a>
 
     <div class="product-card-rating" aria-label="Avaliação do produto">
       <span class="stars">★★★★★</span>

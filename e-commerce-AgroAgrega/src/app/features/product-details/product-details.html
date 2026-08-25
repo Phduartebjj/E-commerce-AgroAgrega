@@ -1,10 +1,5 @@
-<!-- Adicionar header aqui acima -->
-
 <main class="product-details">
   @if (product) {
-    <!-- ========================= -->
-    <!-- BREADCRUMB -->
-    <!-- ========================= -->
 
     <nav class="breadcrumb">
       <p>
@@ -15,10 +10,6 @@
         <span class="destaque">{{ product.title }}</span>
       </p>
     </nav>
-
-    <!-- ========================= -->
-    <!-- GALERIA -->
-    <!-- ========================= -->
 
     <section class="product-gallery">
       <div class="main-image">
@@ -64,10 +55,6 @@
       }
     </section>
 
-    <!-- ========================= -->
-    <!-- INFORMAÇÕES DO PRODUTO -->
-    <!-- ========================= -->
-
     <section class="product-info">
       <a routerLink="/products" class="back-to-products"> ← Voltar para produtos </a>
 
@@ -86,8 +73,6 @@
       <p class="product-description">
         {{ product.description }}
       </p>
-
-      <!-- QUANTIDADE -->
 
       <div class="product-quantity">
         <span>Quantidade:</span>
@@ -110,20 +95,12 @@
         </div>
       </div>
 
-      <!-- CARRINHO -->
-
       <button type="button" class="add-to-cart" (click)="addToCart()">Adicionar ao carrinho</button>
 
       <a routerLink="/cart" class="go-to-cart"> Ver carrinho → </a>
     </section>
 
-    <!-- ========================= -->
-    <!-- DETALHES / AVALIAÇÕES -->
-    <!-- ========================= -->
-
     <section class="product-extra">
-      <!-- ABAS -->
-
       <nav class="product-tabs">
         <button
           type="button"
@@ -143,10 +120,6 @@
           Avaliações
         </button>
       </nav>
-
-      <!-- ========================= -->
-      <!-- ABA: DETALHES -->
-      <!-- ========================= -->
 
       @if (activeTab === 'details') {
         <section class="product-details-content">
@@ -170,13 +143,8 @@
         </section>
       }
 
-      <!-- ========================= -->
-      <!-- ABA: AVALIAÇÕES -->
-      <!-- ========================= -->
-
       @if (activeTab === 'reviews') {
         <section class="product-reviews">
-          <!-- RESUMO -->
 
           <div class="reviews-header">
             <div class="reviews-summary">
@@ -204,8 +172,6 @@
               }
             </div>
 
-            <!-- DISTRIBUIÇÃO -->
-
             <div class="rating-bars">
               @for (star of [5, 4, 3, 2, 1]; track star) {
                 <div class="rating-row">
@@ -222,8 +188,6 @@
               }
             </div>
           </div>
-
-          <!-- FORMULÁRIO -->
 
           <div class="review-form">
             <h3>Avalie este produto</h3>
@@ -266,8 +230,6 @@
             </div>
           </div>
 
-          <!-- AVALIAÇÕES EXISTENTES -->
-
           @if (reviews.length > 0) {
             <div class="reviews-list">
               <h3>Avaliações dos clientes</h3>
@@ -299,9 +261,6 @@
       }
     </section>
   } @else {
-    <!-- ========================= -->
-    <!-- PRODUTO NÃO ENCONTRADO -->
-    <!-- ========================= -->
 
     <div class="error-container">
       <h2>Produto não encontrado</h2>
@@ -311,10 +270,6 @@
       <a routerLink="/products"> Voltar para produtos </a>
     </div>
   }
-
-  <!-- ========================= -->
-  <!-- NOTIFICAÇÃO DO CARRINHO -->
-  <!-- ========================= -->
 
   <div class="cart-notifications">
     @for (notification of cartNotifications; track notification) {
