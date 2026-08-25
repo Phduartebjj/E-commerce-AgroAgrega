@@ -8,7 +8,7 @@ import * as crypt from 'crypto-js';
 })
 export class TokenAuth{
     private readonly key: string = "auth_token"; // Chave do cookie
-    private readonly maxAge: number = 60 * 12030213123213123123123;// Data de expiração da chave
+    private readonly maxAge: number = 60 * 5;// Data de expiração da chave
     private readonly ultraSecretKey = "7e9c3d4a2b1f8e6d9c0b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d"; // Chave secreta fictícia
 
     private readonly platformId = inject(PLATFORM_ID);
