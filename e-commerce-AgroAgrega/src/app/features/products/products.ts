@@ -8,7 +8,7 @@ import { ProductCardComponent } from './product-card/product-card';
 
 import { Cart } from '@core/services/cart/cart.service';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -25,6 +25,7 @@ export class ProductsComponent {
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
+  private readonly router = inject(Router)
   readonly categories = this.productService.getProductCategories();
   readonly sortOption = signal<SortOption>('relevant');
 
@@ -94,6 +95,9 @@ export class ProductsComponent {
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
+    this.router.navigate([],{
+      relativeTo: this.route, queryParams: {}
+    })
   }
 
   addProductToCart(product: ProductModel): void {
