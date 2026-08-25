@@ -48,7 +48,7 @@ export class ProductsComponent {
     const category = this.selectedCategory();
     const search = this.searchTerm();
 
-    return this.products.filter((product) => {
+    return this.products().filter((product) => {
       const searchableText = `${product.title} ${product.category}`.toLowerCase();
 
       const matchesCategory = !category || product.category === category;
@@ -57,12 +57,6 @@ export class ProductsComponent {
 
       return matchesCategory && matchesSearch;
     });
-
-    if (!category) {
-      return this.products;
-    }
-
-    return this.products.filter((product) => product.category === category);
   });
 
   addProductToCart(product: ProductModel): void {
