@@ -1,98 +1,163 @@
-import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import {
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+import {
+  Router,
+  RouterLink,
+} from '@angular/router';
+
 import { Auth } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
-  styleUrls: ['./login.css'],
-  imports: [RouterLink, FormsModule],
+  styleUrl: './login.css',
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+  ],
 })
 export class Login {
+  private readonly fb = inject(FormBuilder);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
 
-  email = '';
-  password = '';
-  remember = true;
-  showPassword = false;
+  readonly showPassword = signal(false);
 
-  emailError = '';
-  passwordError = '';
-  loginError = '';
+  readonly emailError = signal('');
+  readonly passwordError = signal('');
+  readonly loginError = signal('');
 
-  private lastUrl(): string{
-    const route = this.router.url;
-    if(route.includes("returnUrl=")) return route.substring(`returnUrl=`.length).split('=')[1].replaceAll("%2F", "/");
-    return '';
+  readonly loginForm = this.fb.nonNullable.group({
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.email,
+      ],
+    ],
+
+    password: [
+      '',
+      Validators.required,
+    ],
+
+    remember: [
+      true,
+    ],
+  });
+
+  get passwordValue(): string {
+    return this.loginForm.controls.password.value;
   }
 
-  onSubmit(): void {
+  onSubmit(event: SubmitEvent): void {
+    event.preventDefault();
+
     this.clearErrors();
 
-    const email = this.sanitizeEmail(this.email);
-    const password = this.sanitizePassword(this.password);
+    const email = this.sanitizeEmail(
+      this.loginForm.controls.email.value,
+    );
 
-    this.email = email;
-    this.password = password;
+    const password = this.sanitizePassword(
+      this.loginForm.controls.password.value,
+    );
 
-    if(!email){
-      this.emailError = 'Informe seu e-mail.';
+    this.loginForm.controls.email.setValue(email);
+    this.loginForm.controls.password.setValue(password);
+
+    if (!email) {
+      this.emailError.set('Informe seu e-mail.');
       return;
     }
 
-    if(!this.isValidEmail(email)){
-      this.emailError = 'Informe um e-mail válido.';
+    if (!this.isValidEmail(email)) {
+      this.emailError.set('Informe um e-mail válido.');
       return;
     }
 
-    if(!password){
-      this.passwordError = 'Informe sua senha.';
+    if (!password) {
+      this.passwordError.set('Informe sua senha.');
       return;
     }
 
-    const authenticated = this.auth.login(email, password);
-    if(authenticated){
-      this.router.navigateByUrl(this.lastUrl());
-    };
-    this.loginError = 'Email/senha inválido';
+    const authenticated = this.auth.login(
+      email,
+      password,
+    );
 
+    if (!authenticated) {
+      this.loginError.set(
+        'E-mail ou senha inválidos.',
+      );
+
+      return;
+    }
+
+    this.router.navigateByUrl(
+      this.lastUrl() || '/',
+    );
   }
 
   togglePassword(): void {
-    if(!this.password.length){
-      this.showPassword = false;
+    if (!this.passwordValue.length) {
+      this.showPassword.set(false);
       return;
     }
 
-    this.showPassword = !this.showPassword;
+    this.showPassword.update(
+      value => !value,
+    );
   }
 
-  onPasswordInput(): void{
-    this.passwordError = '';
-    this.loginError = '';
+  onPasswordInput(): void {
+    this.passwordError.set('');
+    this.loginError.set('');
 
-    if (!this.password.length){
-      this.showPassword = false;
+    if (!this.passwordValue.length) {
+      this.showPassword.set(false);
     }
   }
 
-  clearErrors(): void{
-    this.emailError = '';
-    this.passwordError = '';
-    this.loginError = '';
+  clearErrors(): void {
+    this.emailError.set('');
+    this.passwordError.set('');
+    this.loginError.set('');
   }
 
-  private sanitizeEmail(value: string): string{
-    return value.trim().toLowerCase().replace(/\s+/g, '');
+  private lastUrl(): string {
+    const queryString =
+      this.router.url.split('?')[1] ?? '';
+
+    const params = new URLSearchParams(
+      queryString,
+    );
+
+    return params.get('returnUrl') ?? '';
   }
 
-  private sanitizePassword(value: string): string{
+  private sanitizeEmail(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '');
+  }
+
+  private sanitizePassword(value: string): string {
     return value.trim();
   }
 
-  private isValidEmail(value: string): boolean{
+  private isValidEmail(value: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 }
