@@ -24,9 +24,22 @@ export class CheckoutComponent {
   private orderService = inject(OrderService);
   router = inject(Router);
 
-  totalValue = this.cart.total;
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
+
+  get paymentDiscountValue(): number {
+    return this.checkoutForm.get('paymentMethod')?.value === 'pix'
+      ? this.cart.subtotal() * 0.1
+      : 0;
+  }
+
+  get discountTotalValue(): number {
+    return this.cart.discountValue() + this.paymentDiscountValue;
+  }
+
+  get totalValue(): number {
+    return this.cart.total() - this.paymentDiscountValue;
+  }
 
   checkoutForm = new FormGroup({
     fullName: new FormControl('', [
@@ -95,12 +108,12 @@ export class CheckoutComponent {
       this.cart.getCartItems()(),
       crypto.randomUUID(),
       this.cart.subtotal(),
-      this.cart.discountValue(),
+      this.discountTotalValue,
       0,
     );
     this.cart.cleanCartItem();
     this.router.navigate(['/orders']);
-    console.log(order)
+    console.log(order);
   }
 }
 

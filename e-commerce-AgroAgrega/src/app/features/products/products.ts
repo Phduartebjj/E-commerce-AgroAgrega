@@ -85,14 +85,12 @@ export class ProductsComponent {
   });
 
   toggleCategory(category: ProductCategory): void {
-    console.log('Antes:', this.selectedCategories());
     this.selectedCategories.update((categories) => {
       if (categories.includes(category)) {
         return categories.filter((c) => c !== category);
       }
       return [...categories, category];
     });
-    console.log('Depois:', this.selectedCategories());
   }
 
   clearFilters(): void {
