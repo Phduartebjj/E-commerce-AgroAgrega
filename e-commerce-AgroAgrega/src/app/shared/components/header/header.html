@@ -14,7 +14,7 @@
         type="search"
         placeholder="Busque sementes, ferramentas e agroprodutos"
         aria-label="Buscar produtos"
-        (keydow.enter)="buscarProdutos(searchInput.value)"
+        (keydown.enter)="buscarProdutos(searchInput.value)"
       />
       <button class="botao-busca" type="button" (click)="buscarProdutos(searchInput.value)">
         Buscar
