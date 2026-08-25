@@ -31,6 +31,7 @@ export class ProductsComponent {
 
   readonly selectedCategories = signal<ProductCategory[]>([]);
   readonly products = this.productService.getProducts();
+  readonly selectedRating = signal<number | null>(null);
 
   readonly selectedCategory = computed(() => {
     return this.queryParams().get('category');
@@ -47,6 +48,7 @@ export class ProductsComponent {
   });
 
   readonly filteredProducts = computed(() => {
+    const selectedRating = this.selectedRating();
     const search = this.searchTerm();
     const sortOption = this.sortOption();
     const products = [...this.products()];
@@ -54,13 +56,14 @@ export class ProductsComponent {
 
     const filteredProducts = products.filter((product) => {
       const searchableText = `${product.title} ${product.category}`.toLowerCase();
+      const matchesRating = selectedRating === null || product.rating >= selectedRating;
 
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(product.category);
 
       const matchesSearch = !search || searchableText.includes(search);
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesSearch && matchesRating;
     });
 
     if (sortOption === 'price-asc') {
@@ -95,6 +98,7 @@ export class ProductsComponent {
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
+    this.selectedRating.set(null);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
