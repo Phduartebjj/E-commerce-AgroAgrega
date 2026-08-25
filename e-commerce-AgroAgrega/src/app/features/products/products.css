@@ -1,11 +1,11 @@
 .product-page {
   width: 100%;
-  padding: 26px 16px 40px;
+  padding: clamp(20px, 4vw, 42px) clamp(12px, 3vw, 32px) 40px;
   background: #edf2ee;
 }
 
 .catalog-shell {
-  max-width: 980px;
+  width: min(100%, 1240px);
   margin: 0 auto;
   padding: 0;
   border: 0;
@@ -17,28 +17,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: clamp(10px, 2vw, 14px);
+  margin-bottom: clamp(18px, 3vw, 28px);
 }
 
 .catalog-header h1 {
   margin: 0;
-  font-size: clamp(2rem, 2.5vw, 2.7rem);
+  max-width: 100%;
+  font-size: clamp(1.75rem, 3vw, 2.7rem);
   line-height: 1.1;
   font-weight: 800;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.04em;
   color: #0f1f1a;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .catalog-filters {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
   justify-content: center;
   gap: 8px;
 }
 
 .filter-chip {
+  max-width: 100%;
   border: 0;
   border-radius: 999px;
   padding: 7px 14px;
@@ -58,23 +62,26 @@
 
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px;
-}
-
-@media (max-width: 1000px) {
-  .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: clamp(16px, 2.5vw, 28px);
 }
 
 @media (max-width: 720px) {
-  .catalog-shell {
-    padding: 20px 18px 12px;
-  }
-
   .catalog-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.empty-products {
+  width: 100%;
+  padding: clamp(32px, 8vw, 48px) 12px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.empty-products h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }

@@ -1,25 +1,21 @@
 <section class="product-page">
   <div class="catalog-shell">
-    <header class="catalog-header">
-      <h1>Catálogo de Produtos</h1>
-
-      <div class="catalog-filters" aria-label="Filtros de categoria">
-        @for (category of categoryFilters; track category) {
-          <button
-            class="filter-chip"
-            [class.active]="selectedCategory() === category"
-            type="button"
-            (click)="selectCategory(category)"
-          >
-            {{ category }}
-          </button>
-        }
-      </div>
-    </header>
+    @if (filteredProducts().length > 0) {
+      <header class="catalog-header">
+        <h1>{{ catalogTitle() }}</h1>
+      </header>
+    }
 
     <div class="catalog-grid">
       @for (product of filteredProducts(); track product.id) {
-        <app-product-card (addToCart)="addProductToCart($event)" [product]="product" ></app-product-card>
+        <app-product-card
+          (addToCart)="addProductToCart($event)"
+          [product]="product"
+        ></app-product-card>
+      } @empty {
+        <div class="empty-products">
+          <h2>Ops! Parece que este produto não está disponível ainda.</h2>
+        </div>
       }
     </div>
   </div>

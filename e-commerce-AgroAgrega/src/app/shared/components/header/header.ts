@@ -1,6 +1,6 @@
 import { Cart } from '@core/services/cart/cart.service';
-import { Component, inject, Signal, signal } from '@angular/core';
-import { RouterLink,}  from '@angular/router';
+import { Component, inject, InjectionToken, Signal, signal } from '@angular/core';
+import { Router,RouterLink }  from '@angular/router';
 import { Auth } from '@core/services/auth/auth.service';
 
 @Component({
@@ -10,8 +10,22 @@ import { Auth } from '@core/services/auth/auth.service';
   styleUrl: './header.css',
 })
 export class Header {
+ 
+  private router = inject(Router)
   private cart = inject(Cart);
   
+  buscarProdutos(termo: string): void {
+  const search = termo.trim();
+
+  if (!search) {
+    this.router.navigate(['/products']);
+    return;
+  }
+
+  this.router.navigate(['/products'], {
+    queryParams: { search: search },
+  });
+}
   totalItens =this.cart.totalCartItens;
 
   private auth = inject(Auth);
