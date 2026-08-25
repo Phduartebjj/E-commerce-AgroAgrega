@@ -5,7 +5,7 @@ export interface ProductModel {
   description: string;
   category: ProductCategory;
   images: string[];
-  rating?: number;
+  rating: number;
 }
 
 export type ProductCategory =
