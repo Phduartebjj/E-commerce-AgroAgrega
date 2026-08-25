@@ -124,7 +124,7 @@ export class ProductDetails implements OnInit {
 
       const products = this.productService.getProducts();
 
-      this.product = products.find((product) => product.id === this.id);
+      this.product = products().find((product) => product.id === this.id);
 
       this.selectedImageIndex = 0;
     });
@@ -149,26 +149,24 @@ export class ProductDetails implements OnInit {
   // =========================
 
   addToCart(): void {
-  if (!this.product || this.quantity <= 0) {
-    return;
+    if (!this.product || this.quantity <= 0) {
+      return;
+    }
+
+    this.cart.addCartItem(this.product, this.quantity);
+
+    const notificationId = ++this.notificationId;
+
+    this.cartNotifications.push(notificationId);
+
+    if (this.cartNotifications.length > 3) {
+      this.cartNotifications.shift();
+    }
+
+    setTimeout(() => {
+      this.cartNotifications = this.cartNotifications.filter((id) => id !== notificationId);
+    }, 3000);
   }
-
-  this.cart.addCartItem(this.product, this.quantity);
-
-const notificationId = ++this.notificationId;
-
-this.cartNotifications.push(notificationId);
-
-if (this.cartNotifications.length > 3) {
-  this.cartNotifications.shift();
-}
-
-  setTimeout(() => {
-    this.cartNotifications = this.cartNotifications.filter(
-      (id) => id !== notificationId
-    );
-  }, 3000);
-}
 
   get reviewAverage(): number {
     if (this.reviews.length === 0) {

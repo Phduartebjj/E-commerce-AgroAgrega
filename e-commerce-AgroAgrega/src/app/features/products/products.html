@@ -13,15 +13,31 @@
           </div>
 
           <label class="rating-option">
-            <input type="radio" name="sort" />
+            <input
+              type="radio"
+              name="sort" [checked]="sortOption() === 'price-desc'"
+              value="price-desc"
+              (change)="sortOption.set('price-desc')"
+            />
             <span>Maior preço</span>
           </label>
           <label class="rating-option">
-            <input type="radio" name="sort" />
+            <input
+              type="radio"
+              name="sort"
+              [checked]="sortOption() === 'price-asc'"
+              value="price-asc"
+              (change)="sortOption.set('price-asc')"
+            />
             <span>Menor preço</span>
           </label>
           <label class="rating-option">
-            <input type="radio" name="sort" />
+            <input
+              type="radio"
+              name="sort"
+              value="relevant" [checked]="sortOption() === 'relevant'"
+              (change)="sortOption.set('relevant')"
+            />
             <span>Relevantes</span>
           </label>
         </div>
@@ -74,7 +90,6 @@
             <span>ou mais</span>
           </label>
         </div>
-
       </aside>
 
       <div class="catalog-content">

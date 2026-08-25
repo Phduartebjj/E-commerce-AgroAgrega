@@ -9,3 +9,5 @@ export interface ProductModel {
 
 export type ProductCategory =
   'Agricultura de Precisão' | 'Irrigação' | 'Pecuária' | 'Ferramentas' | 'Insumos';
+
+export type SortOption = 'relevant' | 'price-asc' | 'price-desc';

@@ -1,6 +1,4 @@
-import { ProductModel } from '@models/product';
-
-import { routes } from './../../app.routes';
+import { ProductModel, SortOption } from '@models/product';
 
 import { Component, computed, inject, signal } from '@angular/core';
 
@@ -27,6 +25,7 @@ export class ProductsComponent {
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
+  readonly sortOption = signal<SortOption>('relevant');
 
   readonly products = this.productService.getProducts();
 
@@ -47,8 +46,10 @@ export class ProductsComponent {
   readonly filteredProducts = computed(() => {
     const category = this.selectedCategory();
     const search = this.searchTerm();
+    const sortOption = this.sortOption();
+    const products = [...this.products()];
 
-    return this.products().filter((product) => {
+    const filteredProducts = products.filter((product) => {
       const searchableText = `${product.title} ${product.category}`.toLowerCase();
 
       const matchesCategory = !category || product.category === category;
@@ -57,6 +58,14 @@ export class ProductsComponent {
 
       return matchesCategory && matchesSearch;
     });
+
+    if (sortOption === 'price-asc') {
+      return filteredProducts.sort((a, b) => a.price - b.price);
+    }
+    if (sortOption === 'price-desc') {
+      return filteredProducts.sort((a, b) => b.price - a.price);
+    }
+    return filteredProducts;
   });
 
   addProductToCart(product: ProductModel): void {
