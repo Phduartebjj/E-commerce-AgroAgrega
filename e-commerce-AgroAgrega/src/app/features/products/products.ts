@@ -1,6 +1,6 @@
 import { ProductCategory, ProductModel, SortOption } from '@models/product';
 
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 
 import { ProductService } from '../../core/services/product/product.service';
 
@@ -25,7 +25,7 @@ export class ProductsComponent {
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
   readonly categories = this.productService.getProductCategories();
   readonly sortOption = signal<SortOption>('relevant');
 
@@ -95,12 +95,24 @@ export class ProductsComponent {
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
-    this.router.navigate([],{
-      relativeTo: this.route, queryParams: {}
-    })
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+    });
   }
 
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
+  }
+  constructor() {
+    effect(() => {
+      const category = this.selectedCategory();
+
+      if (category && this.categories.includes(category as ProductCategory)) {
+        this.selectedCategories.set([category as ProductCategory]);
+        return;
+      }
+      this.selectedCategories.set([]);
+    });
   }
 }
