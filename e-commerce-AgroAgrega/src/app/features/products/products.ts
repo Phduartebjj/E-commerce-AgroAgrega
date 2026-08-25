@@ -91,6 +91,11 @@ export class ProductsComponent {
     console.log('Depois:', this.selectedCategories());
   }
 
+  clearFilters(): void {
+    this.selectedCategories.set([]);
+    this.sortOption.set('relevant');
+  }
+
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
   }
