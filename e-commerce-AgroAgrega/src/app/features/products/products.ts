@@ -49,7 +49,6 @@ export class ProductsComponent {
     const search = this.searchTerm();
 
     return this.products.filter((product) => {
-      
       const searchableText = `${product.title} ${product.category}`.toLowerCase();
 
       const matchesCategory = !category || product.category === category;

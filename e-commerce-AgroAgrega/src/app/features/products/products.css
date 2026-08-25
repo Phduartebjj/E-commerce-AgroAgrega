@@ -66,6 +66,7 @@
   justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 300px));
   gap: clamp(16px, 2.5vw, 28px);
+  justify-content: center;
 }
 
 .catalog-grid > app-product-card {

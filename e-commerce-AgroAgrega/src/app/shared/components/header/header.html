@@ -34,9 +34,7 @@
           }
         </span>
       </a>
-      <a class="icone-favoritos" routerLink="/favorites" aria-label="Ir para a página de favoritos">
-        <img src="assets/images/favorite.png" alt="Favoritos" />
-      </a>
+
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
         <img src="assets/images/cart.png" alt="Carrinho de Compras" />
         @if (totalItens() > 0) {
@@ -55,7 +53,7 @@
           Categorias</span
         >
       </a>
-   
+
       <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
         >Agricultura de Precisão</a
       >
