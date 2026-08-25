@@ -62,13 +62,24 @@
 
 .catalog-grid {
   display: grid;
+  align-items: start;
+  justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: clamp(16px, 2.5vw, 28px);
 }
 
+.catalog-grid > app-product-card {
+  width: min(100%, 360px);
+}
+
 @media (max-width: 720px) {
   .catalog-grid {
+    justify-items: stretch;
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .catalog-grid > app-product-card {
+    width: 100%;
   }
 }
 
