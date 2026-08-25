@@ -52,10 +52,10 @@
 }
 
 .logo-nome {
-  width: min(240px, 22vw);
+  width: min(150px, 20vw);
   height: auto;
   max-height: 42px;
-  object-fit: contain;
+  object-fit: cover;
   margin-left: -4px;
 }
 
