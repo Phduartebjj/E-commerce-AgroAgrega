@@ -101,6 +101,17 @@
   font-size: 14px;
 }
 
+@media (max-width: 1024px) {
+  .rodape {
+    padding: 45px 40px 30px;
+  }
+
+  .rodape-conteudo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .rodape {
     padding: 40px 25px 30px;
