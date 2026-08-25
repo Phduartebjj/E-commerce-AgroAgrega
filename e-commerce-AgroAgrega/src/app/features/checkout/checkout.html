@@ -184,7 +184,7 @@
           <div class="delivery-option">
             <div class="delivery-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="deliveryMethod" checked />
+                <input type="radio" name="deliveryMethod" value="standard" formControlName="deliveryMethod" checked />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -195,6 +195,64 @@
             </div>
 
             <span class="delivery-price">Grátis</span>
+          </div>
+        </div>
+
+        <div class="payment-section">
+          <div class="payment-header">
+            <div class="payment-icon" aria-hidden="true">💳</div>
+            <div>
+              <h3>Forma de pagamento</h3>
+              <p>Escolha a forma preferida para concluir a compra.</p>
+            </div>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="pix" formControlName="paymentMethod" checked />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Pix</span>
+                <small>Pagamento instantâneo com desconto</small>
+              </div>
+            </div>
+
+            <span class="payment-badge">10% OFF</span>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="card" formControlName="paymentMethod" />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Cartão</span>
+                <small>Crédito ou débito em até 12x</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">Até 12x</span>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="boleto" formControlName="paymentMethod" />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Boleto</span>
+                <small>Vencimento em 3 dias úteis</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">À vista</span>
           </div>
         </div>
       </form>

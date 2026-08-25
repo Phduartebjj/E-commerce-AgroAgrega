@@ -42,6 +42,8 @@ export class CheckoutComponent {
     city: new FormControl('', [Validators.required, nameNoNumbers]),
     state: new FormControl('', [Validators.required]),
     complement: new FormControl(''),
+    deliveryMethod: new FormControl('standard', [Validators.required]),
+    paymentMethod: new FormControl('pix', [Validators.required]),
   });
   states = [
     'AC',
