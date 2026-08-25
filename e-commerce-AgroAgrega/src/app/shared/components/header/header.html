@@ -39,7 +39,7 @@
       </a>
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
         <img src="assets/images/cart.png" alt="Carrinho de Compras" />
-        @if (totalItens() > 0 && loggedIn()) {
+        @if (totalItens() > 0) {
           <span class="contador-carrinho">
             {{ totalItens() }}
           </span>

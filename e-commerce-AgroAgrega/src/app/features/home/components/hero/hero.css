@@ -1,13 +1,13 @@
 :host {
   display: block;
-  padding: 32px 16px 0;
+  padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 32px) 0;
 }
 .hero {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1400px;
   margin: 0 auto;
-  min-height: 520px;
-  border-radius: 24px;
+  min-height: clamp(420px, 52vw, 620px);
+  border-radius: clamp(16px, 2vw, 24px);
   overflow: hidden;
   background-image:
     linear-gradient(
@@ -23,28 +23,29 @@
   background-position: center;
 }
 .hero-content {
-  min-height: 520px;
-  padding: 64px 72px;
+  min-height: clamp(420px, 52vw, 620px);
+  padding: clamp(36px, 6vw, 80px) clamp(24px, 6vw, 88px);
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 
-  max-width: 780px;
+  width: min(100%, 780px);
+  box-sizing: border-box;
   color: var(--white);
 }
 
 .hero-title {
-  max-width: 720px;
+  max-width: 100%;
   margin: 20px 0 16px;
-  font-size: clamp(3rem, 4vw, 4.2rem);
+  font-size: clamp(2.35rem, 5vw, 4.2rem);
   font-weight: 500;
   line-height: 1.05;
 }
 
 .hero-description {
-  max-width: 600px;
+  max-width: 60ch;
   margin: 0 0 24px;
 
   font-size: 1rem;
@@ -53,11 +54,14 @@
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+  max-width: 100%;
 }
 
 .button-catalog {
+  min-width: 170px;
   min-height: 48px;
   padding: 0 24px;
   display: inline-flex;
@@ -80,6 +84,7 @@
 }
 
 .expert-button {
+  min-width: 190px;
   min-height: 48px;
   padding: 0 22px;
   display: inline-flex;
@@ -134,19 +139,18 @@
 
 @media (max-width: 768px) {
   :host {
-    padding: 20px 16px 0;
+    padding: 16px 12px 0;
   }
 
   .hero {
-    min-height: 480px;
-    border-radius: 18px;
+    min-height: clamp(500px, 115vw, 620px);
+    border-radius: 16px;
     background-position: 62% center;
   }
 
   .hero-content {
-    min-height: 480px;
-    max-width: 100%;
-    padding: 40px 24px;
+    min-height: clamp(500px, 115vw, 620px);
+    padding: clamp(28px, 8vw, 48px) clamp(20px, 7vw, 40px);
   }
 
   .hero-title {
@@ -158,9 +162,6 @@
     font-size: 0.95rem;
   }
 
-  .hero-actions {
-    flex-wrap: wrap;
-  }
 }
 
 @media (max-width: 480px) {
@@ -170,14 +171,16 @@
   }
 
   .hero-title {
-    font-size: 2.4rem;
+    font-size: clamp(2rem, 10vw, 2.4rem);
   }
+
   .hero-actions {
     width: 100%;
   }
 
   .button-catalog,
   .expert-button {
+    min-width: 0;
     width: 100%;
   }
 }
