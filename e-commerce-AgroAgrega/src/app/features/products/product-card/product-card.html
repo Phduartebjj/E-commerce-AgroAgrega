@@ -16,13 +16,16 @@
     </a>
 
     <div class="product-card-rating" aria-label="Avaliação do produto">
-      <span class="stars">★★★★★</span>
-      <span class="review">4.8 (127)</span>
+      <span class="star">
+        @for (filled of getStars(product().rating); track $index) {
+          {{ filled ? '★' : '☆' }}
+        }
+      </span>
+      <span class="review">{{ product().rating }}</span>
     </div>
 
     <div class="product-card-price">
       <div class="product-card-amount">
-        <span>R$</span>
         <strong>{{ product().price | precoFormatado }}</strong>
       </div>
     </div>

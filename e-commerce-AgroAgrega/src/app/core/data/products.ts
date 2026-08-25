@@ -63,7 +63,7 @@ export const productsItems: ProductModel[] = [
     price: 399.9,
     description: 'Monitora a umidade do solo em tempo real para irrigação inteligente.',
     images: ['assets/images/products/sensor-umidade.jpg'],
-    rating: 4.9,
+    rating: 5,
   },
   {
     id: '8dsoifjasdf-1234-5678-90ab-cdefghijklmn',

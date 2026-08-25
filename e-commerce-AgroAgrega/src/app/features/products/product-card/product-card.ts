@@ -23,4 +23,12 @@ export class ProductCardComponent {
       this.adicionado.set(false);
     }, 2000);
   }
+
+  getStars(rating: number): boolean[] {
+    const roundedRating = Math.floor(rating);
+
+    return Array.from({ length: 5 }, (_, index) => {
+      return index < roundedRating;
+    });
+  }
 }
