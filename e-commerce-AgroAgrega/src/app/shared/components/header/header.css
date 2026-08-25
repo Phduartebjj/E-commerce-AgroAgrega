@@ -148,8 +148,16 @@
 .conta-texto {
   display: flex;
   flex-direction: column;
+  max-width: 140px;
 }
-.conta-texto small {
+
+.nome-usuario {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 0.875rem;
   font-weight: 400;
 }
