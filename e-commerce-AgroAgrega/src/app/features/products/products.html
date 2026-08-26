@@ -1,26 +1,135 @@
 <section class="product-page">
-  <div class="catalog-shell">
-    <header class="catalog-header">
-      <h1>Catálogo de Produtos</h1>
+  <header class="catalog-header">
+    <h1>Catálogo de Produtos</h1>
 
-      <div class="catalog-filters" aria-label="Filtros de categoria">
-        @for (category of categoryFilters; track category) {
-          <button
-            class="filter-chip"
-            [class.active]="selectedCategory() === category"
-            type="button"
-            (click)="selectCategory(category)"
-          >
-            {{ category }}
-          </button>
+    <div class="catalog-filters" aria-label="Filtros de categoria">
+      @for (category of categoryFilters; track category) {
+        <button
+          class="filter-chip"
+          [class.active]="selectedCategory() === category"
+          type="button"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="catalog-main-content">
+    <!-- Barra Lateral: Filtros Avançados -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Filtros Avançados</h2>
+        <span class="filter-icon">⚙</span>
+      </div>
+
+      <div class="filter-group">
+        <h3>Faixa de Preço (Até R$ {{ maxPriceFilter() }})</h3>
+        <input type="range" min="0" max="5000" class="slider" [value]="maxPriceFilter()" (input)="updateMaxPrice($event)">
+        <div class="price-range">
+          <span>R$ 0</span>
+          <span>R$ 5.000</span>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h3>Marcas</h3>
+        @for (brand of availableBrands; track brand) {
+          <label>
+            <input type="checkbox" [checked]="selectedBrands().includes(brand)" (change)="toggleBrand(brand, $event)"> 
+            {{ brand }}
+          </label>
         }
       </div>
-    </header>
 
-    <div class="catalog-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <app-product-card (addToCart)="addProductToCart($event)" [product]="product"></app-product-card>
+      <div class="filter-group">
+        <h3>Avaliação mínima</h3>
+        <label>
+           <input type="radio" name="rating" [checked]="minRating() === 5" (change)="setMinRating(5)">
+           <span class="stars">★★★★★</span> Apenas 5 estrelas
+        </label>
+        <label>
+           <input type="radio" name="rating" [checked]="minRating() === 4" (change)="setMinRating(4)">
+           <span class="stars">★★★★☆</span> ou mais (4.0+)
+        </label>
+        <label>
+           <input type="radio" name="rating" [checked]="minRating() === 3" (change)="setMinRating(3)">
+           <span class="stars">★★★☆☆</span> ou mais (3.0+)
+        </label>
+        <label>
+           <input type="radio" name="rating" [checked]="minRating() === 0" (change)="setMinRating(0)">
+           Todas as avaliações
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <h3>Disponibilidade</h3>
+        <label>
+          <input type="checkbox" [checked]="inStockOnly()" (change)="setInStockOnly($event)"> 
+          Em estoque
+        </label>
+        <label>
+          <input type="checkbox" disabled> Sob encomenda
+        </label>
+      </div>
+    </aside>
+
+    <!-- Área Principal de Produtos -->
+    <div class="products-section">
+      <!-- Produtos em Destaque -->
+      @if (featuredProducts().length > 0) {
+        <div class="featured-products">
+          <h2>Produtos em Destaque</h2>
+          <div class="featured-grid">
+            @for (prod of featuredProducts(); track prod.id) {
+              <div class="featured-card">
+                <div class="featured-image-placeholder">
+                   <img [src]="prod.images && prod.images.length > 0 ? prod.images[0] : 'assets/images/placeholder.png'" [alt]="prod.title" onerror="this.src='https://placehold.co/120x120?text=Sem+Foto'">
+                </div>
+                <div class="featured-info">
+                  <div class="tags">
+                    <span class="highlight">DESTAQUE</span>
+                    <span class="free-shipping">FRETE GRÁTIS</span>
+                  </div>
+                  <h3>{{ prod.title }}</h3>
+                  <p class="old-price">R$ {{ (prod.price * 1.15).toFixed(2) }}</p>
+                  <p class="new-price">R$ <span>{{ prod.price.toFixed(2) }}</span></p>
+                  <p class="savings">Economize R$ {{ (prod.price * 0.15).toFixed(2) }}</p>
+                  <button class="add-btn-small" (click)="addProductToCart(prod)">Adicionar</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
       }
+
+      <!-- Barra de Ferramentas (Ordenação e View) -->
+      <div class="products-toolbar">
+        <span>{{ filteredProducts().length }} produtos encontrados</span>
+        <div class="toolbar-actions">
+          <label class="sort-label">Ordenar por: 
+            <select class="sort-select" (change)="updateSortOrder($event)">
+              <option value="mais_vendidos">Mais vendidos</option>
+              <option value="menor_preco">Menor Preço</option>
+              <option value="maior_preco">Maior Preço</option>
+            </select>
+          </label>
+          <div class="view-toggles">
+            <button class="view-btn" [class.active]="viewMode() === 'grid'" (click)="setViewMode('grid')">▦</button>
+            <button class="view-btn" [class.active]="viewMode() === 'list'" (click)="setViewMode('list')">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Produtos -->
+      <div class="catalog-grid" [class.list-view]="viewMode() === 'list'">
+        @for (product of filteredProducts(); track product.id) {
+          <app-product-card (addToCart)="addProductToCart($event)" [product]="product"></app-product-card>
+        } @empty {
+          <p class="empty-state">Nenhum produto encontrado para este filtro.</p>
+        }
+      </div>
     </div>
   </div>
 </section>
