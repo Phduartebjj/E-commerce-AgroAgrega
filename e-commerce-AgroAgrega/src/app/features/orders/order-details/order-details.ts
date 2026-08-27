@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '@core/services/order/order.service';
+import { PrecoFormatadoPipe } from '@shared/pipes/preco-formatado-pipe';
 @Component({
   selector: 'app-order-details',
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe, PrecoFormatadoPipe],
 
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',
@@ -16,10 +18,12 @@ export class OrderDetails {
   readonly orderId = this.route.snapshot.paramMap.get('id');
 
   readonly order = computed(() => {
-    const id = this.orderId;
+    if(!this.orderId) {
+      return undefined;
+    }
 
-    return id ? this.OrderService.getOrderById(id) : undefined;
-
-    
+    return this.OrderService.getOrderById(this.orderId);
   });
+
+
 }
