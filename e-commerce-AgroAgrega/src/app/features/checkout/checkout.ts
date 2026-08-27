@@ -34,10 +34,20 @@ export class CheckoutComponent {
 
     if (!cep) return;
 
-    if (cep.length !== 8) return;
+    const cepLimpo = cep.replace(/\D/g, '');
 
-    this.cepService.getCep(cep).subscribe({
+    if (cepLimpo.length !== 8) return;
+
+    this.cepService.getCep(cepLimpo).subscribe({
       next: (dados) => {
+        if (dados.erro) {
+          this.checkoutForm.get('cep')?.setErrors({
+            invalidCep: true,
+          });
+
+          return;
+        }
+
         this.checkoutForm.patchValue({
           address: dados.logradouro,
           complement: dados.complemento,
@@ -46,6 +56,7 @@ export class CheckoutComponent {
           state: dados.uf,
         });
       },
+
       error: (erro) => {
         console.error('Erro ao buscar CEP:', erro);
       },
@@ -167,7 +178,7 @@ function validCep(control: AbstractControl): ValidationErrors | null {
 
   if (!value) return null;
 
-  if (!/^\d{8}$/.test(value)) {
+  if (!/^\d{5}-?\d{3}$/.test(value)) {
     return { invalidCep: true };
   }
 
