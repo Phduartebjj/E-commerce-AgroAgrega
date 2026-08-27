@@ -20,7 +20,7 @@
 
   <!-- Conteúdo principal -->
 
-  <div class="catalog-shell">
+  <div class="catalog-layout">
     <div class="catalog-main-content">
       <!-- Filtros avançados -->
       <aside class="sidebar">
@@ -135,8 +135,9 @@
         </div>
       </aside>
 
-      <!-- Área dos produtos -->
-      <div class="products-section">
+      <div class="catalog-shell">
+        <!-- Área dos produtos -->
+        <div class="products-section">
         <!-- Produtos em destaque -->
         @if (featuredProducts().length > 0) {
           <div class="featured-products">
@@ -226,6 +227,7 @@
               >
                 ☰
               </button>
+              </div>
             </div>
           </div>
         </div>

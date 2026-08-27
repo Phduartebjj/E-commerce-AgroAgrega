@@ -7,11 +7,18 @@ box-sizing: border-box;
 }
 
 .catalog-shell {
+flex: 1 1 auto;
+min-width: 0;
 width: 100%;
 max-width: 1200px;
+padding: 24px;
 margin: 0 auto;
 background: #fdfdfd;
 box-sizing: border-box;
+}
+
+.catalog-layout {
+width: 100%;
 }
 
 /* =========================
@@ -455,7 +462,7 @@ padding: 20px 10px 30px;
 }
 
 .catalog-shell {
-padding: 0;
+padding: 16px;
 }
 
 .catalog-header {
@@ -566,4 +573,3 @@ justify-content: flex-end;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
-
