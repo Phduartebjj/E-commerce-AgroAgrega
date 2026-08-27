@@ -99,7 +99,6 @@ export const routes: Routes = [
     path: 'orders/:id',
     component: OrderDetails,
   },
-<<<<<<< HEAD
   {
     path: 'admin/login',
     component: AdminLoginComponent,
@@ -110,13 +109,9 @@ export const routes: Routes = [
     canActivate: [authAdminGuard],
     component: Admin,
     data: { hideFooter: true, hideHeader: true },
-  }
-];
-=======
-
+  },
   {
     path: '**',
     component: NotFoundComponent,
   },
 ];
->>>>>>> 7baa6cf24ef92bcf59952600fb07e7f0d5e6c7c5
