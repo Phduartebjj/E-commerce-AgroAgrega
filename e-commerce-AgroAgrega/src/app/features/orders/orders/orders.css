@@ -182,3 +182,31 @@
     min-width: 860px;
   }
 }
+
+@media (max-width: 600px) {
+  .orders-page {
+    padding: 16px 12px 0;
+  }
+
+  .header-copy h1 {
+    font-size: 2rem;
+  }
+
+  .header-copy p {
+    font-size: 1rem;
+  }
+
+  .orders-table {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+  }
+
+  .orders-table-header {
+    display: none;
+  }
+
+  .orders-table .order-row {
+    min-width: 0;
+  }
+}

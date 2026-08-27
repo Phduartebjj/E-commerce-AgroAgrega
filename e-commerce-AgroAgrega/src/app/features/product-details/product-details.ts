@@ -2,14 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product/product.service';
-import { ProductModel } from '../../models/product';
+import { ProductModel, ReviewModel } from '../../models/product';
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
-
-interface ProductReview {
-  stars: number;
-  text: string;
-}
 
 @Component({
   selector: 'app-product-details',
@@ -39,11 +34,13 @@ export class ProductDetails implements OnInit {
 
   activeTab: 'details' | 'reviews' = 'details';
 
-  reviews: ProductReview[] = [];
-
   selectedRating = 0;
 
   reviewText = '';
+
+  get reviews(): ReviewModel[] {
+    return this.product?.reviews ?? [];
+  }
 
   selectTab(tab: 'details' | 'reviews'): void {
     this.activeTab = tab;
@@ -60,15 +57,18 @@ export class ProductDetails implements OnInit {
   submitReview(): void {
     const text = this.reviewText.trim();
 
-    if (this.selectedRating < 1 || !text) {
+    if (this.selectedRating < 1 || !text || !this.id) {
       return;
     }
 
-    this.reviews.push({
+    this.productService.addReview(this.id, {
       stars: this.selectedRating,
       text,
+      author: 'Cliente AgroAgrega',
+      createdAt: new Date().toLocaleDateString('pt-BR'),
     });
 
+    this.loadProduct();
     this.selectedRating = 0;
     this.reviewText = '';
   }
@@ -121,13 +121,13 @@ export class ProductDetails implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
-
-      const products = this.productService.getProducts();
-
-      this.product = products.find((product) => product.id === this.id);
-
+      this.loadProduct();
       this.selectedImageIndex = 0;
     });
+  }
+
+  loadProduct(): void {
+    this.product = this.id ? this.productService.getProductById(this.id) : undefined;
   }
 
   // =========================
@@ -149,35 +149,33 @@ export class ProductDetails implements OnInit {
   // =========================
 
   addToCart(): void {
-  if (!this.product || this.quantity <= 0) {
-    return;
+    if (!this.product || this.quantity <= 0) {
+      return;
+    }
+
+    this.cart.addCartItem(this.product, this.quantity);
+
+    const notificationId = ++this.notificationId;
+
+    this.cartNotifications.push(notificationId);
+
+    if (this.cartNotifications.length > 3) {
+      this.cartNotifications.shift();
+    }
+
+    setTimeout(() => {
+      this.cartNotifications = this.cartNotifications.filter((id) => id !== notificationId);
+    }, 3000);
   }
-
-  this.cart.addCartItem(this.product, this.quantity);
-
-const notificationId = ++this.notificationId;
-
-this.cartNotifications.push(notificationId);
-
-if (this.cartNotifications.length > 3) {
-  this.cartNotifications.shift();
-}
-
-  setTimeout(() => {
-    this.cartNotifications = this.cartNotifications.filter(
-      (id) => id !== notificationId
-    );
-  }, 3000);
-}
 
   get reviewAverage(): number {
     if (this.reviews.length === 0) {
-      return 0;
+      return this.product?.rating ?? 0;
     }
 
     const total = this.reviews.reduce((sum, review) => sum + review.stars, 0);
 
-    return total / this.reviews.length;
+    return Number((total / this.reviews.length).toFixed(1));
   }
 
   get reviewCount(): number {

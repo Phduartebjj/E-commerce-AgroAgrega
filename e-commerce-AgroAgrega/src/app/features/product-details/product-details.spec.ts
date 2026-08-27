@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
@@ -16,7 +16,10 @@ function createActivatedRoute(id: string) {
   };
 }
 
+const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
+
 describe('ProductDetails', () => {
+    // const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
   let component: ProductDetails;
   let fixture: ComponentFixture<ProductDetails>;
 
@@ -32,9 +35,10 @@ describe('ProductDetails', () => {
     await TestBed.configureTestingModule({
       imports: [ProductDetails],
       providers: [
+        provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: createActivatedRoute('1'),
+          useValue: createActivatedRoute(productId),
         },
         {
           provide: Cart,
@@ -87,13 +91,13 @@ describe('ProductDetails', () => {
   });
 
   it('should read the product id from the route', () => {
-    expect(component.id).toBe('1');
+    expect(component.id).toBe(productId);
   });
 
   it('should find the product by id', () => {
     expect(component.product).toBeTruthy();
-    expect(component.product?.id).toBe('1');
-    expect(component.product?.title).toBe('Produto de exemplo 1');
+    expect(component.product?.id).toBe(productId);
+    expect(component.product?.title).toBe('Kit Estação Meteorológica Inteligente AgroSense Pro');
   });
   it('should move to the next image', () => {
     component.product = {
@@ -179,8 +183,8 @@ describe('ProductDetails', () => {
   it('should render product details', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('ID do produto: 1');
-    expect(compiled.textContent).toContain('Produto de exemplo 1');
+    expect(compiled.textContent).toContain(`ID do produto: ${productId}`);
+    expect(compiled.textContent).toContain('Kit Estação Meteorológica Inteligente AgroSense Pro');
     expect(compiled.textContent).toContain('Adicionar ao carrinho');
   });
 
@@ -249,4 +253,51 @@ describe('ProductDetails', () => {
     expect(notFoundComponent.product).toBeUndefined();
     expect(notFoundComponent.productNotFound).toBe(true);
   });
+
+  it('should switch tabs', () => {
+    expect(component.activeTab).toBe('details');
+    component.selectTab('reviews');
+    expect(component.activeTab).toBe('reviews');
+    component.selectTab('details');
+    expect(component.activeTab).toBe('details');
+  });
+
+  it('should set selected rating within range 1-5', () => {
+    component.selectRating(4);
+    expect(component.selectedRating).toBe(4);
+
+    component.selectRating(6);
+    expect(component.selectedRating).toBe(4);
+
+    component.selectRating(0);
+    expect(component.selectedRating).toBe(4);
+  });
+
+  it('should submit review and refresh product reviews', () => {
+    const initialReviewsCount = component.reviews.length;
+
+    component.selectRating(5);
+    component.reviewText = 'Excelente produto no campo!';
+    component.submitReview();
+
+    expect(component.reviews.length).toBe(initialReviewsCount + 1);
+    expect(component.reviews[0].text).toBe('Excelente produto no campo!');
+    expect(component.selectedRating).toBe(0);
+    expect(component.reviewText).toBe('');
+  });
+
+  it('should not submit review if rating or text is missing', () => {
+    const initialReviewsCount = component.reviews.length;
+
+    component.selectedRating = 0;
+    component.reviewText = 'Texto sem nota';
+    component.submitReview();
+    expect(component.reviews.length).toBe(initialReviewsCount);
+
+    component.selectedRating = 5;
+    component.reviewText = '   ';
+    component.submitReview();
+    expect(component.reviews.length).toBe(initialReviewsCount);
+  });
 });
+

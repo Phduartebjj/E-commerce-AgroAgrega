@@ -1,8 +1,10 @@
 :host {
   display: block;
+  width: 100%;
 }
 .site-header {
   width: 100%;
+  overflow: hidden;
   background-color: var(--white);
 }
 .barra-anuncios {
@@ -26,18 +28,19 @@
 
 .cabecalho-principal {
   width: min(calc(100% - 32px), 1240px);
-  min-height: 124px;
+  min-height: clamp(88px, 9vw, 124px);
   margin: 0 auto;
 
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: clamp(20px, 3vw, 48px);
 }
 
 .logo-marca {
+  min-width: 0;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   color: var(--green-dark);
 
   text-decoration: none;
@@ -49,10 +52,11 @@
 }
 
 .logo-nome {
-  width: auto;
-  max-width: 240px;
-  height: 42px;
-  object-fit: contain;
+  width: min(150px, 20vw);
+  height: auto;
+  max-height: 42px;
+  object-fit: cover;
+  margin-left: -4px;
 }
 
 .logo-icone {
@@ -64,6 +68,7 @@
 
 .area-busca {
   flex: 1;
+  min-width: 180px;
   max-width: 720px;
 
   display: flex;
@@ -74,9 +79,9 @@
   min-width: 0;
   height: 52px;
 
-  padding: 0 20px;
+  padding: 0 clamp(12px, 2vw, 20px);
   border: 1px solid #e5e5e5;
-  border-radius: 0;
+  border-radius: 28px 0 0 28px;
 
   font-size: 0.95rem;
   outline: none;
@@ -88,19 +93,34 @@
 }
 
 .botao-busca {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
   height: 52px;
-  padding: 0 28px;
+  padding: 0 clamp(16px, 2.5vw, 28px);
   border: none;
   background-color: var(--green-dark);
   color: var(--white);
   font-weight: 600;
   cursor: pointer;
+  border-radius: 0 28px 28px 0;
+  margin: left -1px;
+  
+}
+
+.botao-busca:active{
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 .acoes-header {
   display: flex;
   align-items: center;
-  gap: 24px;
+  flex-shrink: 0;
+  gap: clamp(12px, 2vw, 24px);
   margin-left: auto;
 }
 .conta-link {
@@ -128,8 +148,16 @@
 .conta-texto {
   display: flex;
   flex-direction: column;
+  max-width: 140px;
 }
-.conta-texto small {
+
+.nome-usuario {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 0.875rem;
   font-weight: 400;
 }
@@ -314,10 +342,11 @@ pointer-events: none;
 @media (max-width: 768px) {
   .cabecalho-principal {
     min-height: auto;
-    padding: 24px 16px;
+    width: calc(100% - 24px);
+    padding: 18px 0 20px;
 
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
   }
 
   .logo-marca {
@@ -333,6 +362,7 @@ pointer-events: none;
     order: 3;
 
     flex-basis: 100%;
+    min-width: 0;
     max-width: none;
   }
 
@@ -344,8 +374,8 @@ pointer-events: none;
     width: max-content;
     min-width: 100%;
 
-    padding: 0 16px;
-    gap: 24px;
+    padding: 0 12px;
+    gap: clamp(16px, 4vw, 24px);
 
     justify-content: flex-start;
   }
@@ -363,6 +393,20 @@ pointer-events: none;
     height: 44px;
   }
   .logo-nome {
-    height: 30px;
+    width: min(180px, 36vw);
+    max-height: 30px;
+  }
+  .campo-busca,
+  .botao-busca {
+    height: 46px;
+  }
+  .botao-busca {
+    padding: 0 16px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  .conta-texto {
+    display: none;
   }
 }

@@ -19,8 +19,9 @@ describe('Cart', () => {
     title: 'Produto Teste',
     price: 10,
     description: 'Produto utilizado nos testes',
-    category: 'teste',
+    category: 'Insumos',
     images: [],
+    rating: 5,
   };
   it('deve adicionar um produto ao carrinho', () => {
     service.addCartItem(product1);
@@ -40,7 +41,7 @@ describe('Cart', () => {
   it('Deve remover uma quantidade do produto', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
-    service.removeCartItem(product1);
+    service.decreaseQuantity(product1);
     const cartItems = service.getCartItems()();
     expect(cartItems.length).toBe(1);
     expect(cartItems[0].product).toEqual(product1);
@@ -79,7 +80,7 @@ describe('Cart', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
     expect(service.total()).toBe(20);
-    service.removeCartItem(product1);
+    service.decreaseQuantity(product1);
     expect(service.total()).toBe(10);
     service.removeCartItem(product1);
     expect(service.total()).toBe(0);
@@ -97,7 +98,7 @@ describe('Cart', () => {
     service.addCartItem(product1);
     service.addCartItem(product1);
     expect(service.totalCartItens()).toBe(2);
-    service.removeCartItem(product1);
+    service.decreaseQuantity(product1);
     expect(service.totalCartItens()).toBe(1);
     service.removeCartItem(product1);
     expect(service.totalCartItens()).toBe(0);

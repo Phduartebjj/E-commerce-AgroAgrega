@@ -332,7 +332,7 @@
 }
 
 .breadcrumb a {
-  color: #007bff;
+  color: #666;
   text-decoration: none;
 }
 
@@ -344,10 +344,6 @@
   color: #333;
   font-weight: bold;
 }
-
-/* ========================= */
-/* ABAS E CONTEÚDO EXTRA     */
-/* ========================= */
 
 .product-extra {
   grid-column: 1 / -1;
@@ -391,10 +387,6 @@
   background: #2f7d32;
 }
 
-/* ========================= */
-/* ABA: DETALHES             */
-/* ========================= */
-
 .product-details-content {
   margin-bottom: 4rem;
 }
@@ -435,10 +427,6 @@
 .detail-item strong {
   color: #222;
 }
-
-/* ========================= */
-/* ABA: AVALIAÇÕES           */
-/* ========================= */
 
 .product-reviews {
   width: 100%;
@@ -525,10 +513,6 @@
   background: #f5b400;
   transition: width 0.3s ease;
 }
-
-/* ========================= */
-/* NOTIFICAÇÃO DO CARRINHO   */
-/* ========================= */
 
 .cart-notifications {
   position: fixed;
@@ -721,7 +705,28 @@
 }
 
 .review-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.review-author {
+  font-weight: 600;
+  color: #333;
+}
+
+.review-date {
+  color: #888;
 }
 
 .review-item p {
@@ -742,10 +747,6 @@
   margin: 0;
   color: #777;
 }
-
-/* ========================= */
-/* RESPONSIVIDADE            */
-/* ========================= */
 
 @media (max-width: 768px) {
   .cart-notifications {

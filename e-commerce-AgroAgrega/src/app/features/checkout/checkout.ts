@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Cart } from '../../core/services/cart/cart.service';
-import { inject } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import {
   ReactiveFormsModule,
@@ -12,6 +11,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { OrderService } from '@core/services/order/order.service';
+import { CepService } from '@core/services/cep/cep';
 
 @Component({
   selector: 'app-checkout',
@@ -21,12 +21,59 @@ import { OrderService } from '@core/services/order/order.service';
 })
 export class CheckoutComponent {
   private cart = inject(Cart);
+  private cepService = inject(CepService);
+
   private orderService = inject(OrderService);
   router = inject(Router);
 
-  totalValue = this.cart.total;
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
+
+  getCep() {
+    const cep = this.checkoutForm.get('cep')?.value;
+
+    if (!cep) return;
+
+    const cepLimpo = cep.replace(/\D/g, '');
+
+    if (cepLimpo.length !== 8) return;
+
+    this.cepService.getCep(cepLimpo).subscribe({
+      next: (dados) => {
+        if (dados.erro) {
+          this.checkoutForm.get('cep')?.setErrors({
+            invalidCep: true,
+          });
+
+          return;
+        }
+
+        this.checkoutForm.patchValue({
+          address: dados.logradouro,
+          complement: dados.complemento,
+          neighborhood: dados.bairro,
+          city: dados.localidade,
+          state: dados.uf,
+        });
+      },
+
+      error: (erro) => {
+        console.error('Erro ao buscar CEP:', erro);
+      },
+    });
+  }
+
+  get paymentDiscountValue(): number {
+    return this.checkoutForm.get('paymentMethod')?.value === 'pix' ? this.cart.subtotal() * 0.1 : 0;
+  }
+
+  get discountTotalValue(): number {
+    return this.cart.discountValue() + this.paymentDiscountValue;
+  }
+
+  get totalValue(): number {
+    return this.cart.total() - this.paymentDiscountValue;
+  }
 
   checkoutForm = new FormGroup({
     fullName: new FormControl('', [
@@ -36,12 +83,14 @@ export class CheckoutComponent {
     ]),
     cep: new FormControl('', [Validators.required, validCep]),
     cellPhone: new FormControl('', [Validators.required, validPhone]),
-    address: new FormControl('', [Validators.required, validAddressNumber]),
+    address: new FormControl('', [Validators.required]),
     number: new FormControl('', [Validators.required]),
     neighborhood: new FormControl('', [Validators.required, nameNoNumbers]),
     city: new FormControl('', [Validators.required, nameNoNumbers]),
     state: new FormControl('', [Validators.required]),
     complement: new FormControl(''),
+    deliveryMethod: new FormControl('standard', [Validators.required]),
+    paymentMethod: new FormControl('pix', [Validators.required]),
   });
   states = [
     'AC',
@@ -84,16 +133,22 @@ export class CheckoutComponent {
   }
 
   finishOrder() {
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      return;
+    }
+
     const order = this.orderService.createOrder(
       this.cart.getCartItems()(),
       crypto.randomUUID(),
       this.cart.subtotal(),
-      this.cart.discountValue(),
+      this.discountTotalValue,
       0,
     );
+    this.cart.removeCoupon();
     this.cart.cleanCartItem();
     this.router.navigate(['/orders']);
-    console.log(order)
+    console.log(order);
   }
 }
 
@@ -104,7 +159,6 @@ const errorMessages = {
   charsInvalid: 'Não pode conter caracteres especiais',
   invalidCep: 'CEP inválido',
   invalidPhone: 'Telefone inválido',
-  invalidAddressNumber: 'Número do endereço inválido',
 };
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
@@ -138,18 +192,6 @@ function validPhone(control: AbstractControl): ValidationErrors | null {
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
     return { invalidPhone: true };
-  }
-
-  return null;
-}
-
-function validAddressNumber(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-
-  if (!value) return null;
-
-  if (!/^\d+$/.test(value)) {
-    return { invalidAddressNumber: true };
   }
 
   return null;

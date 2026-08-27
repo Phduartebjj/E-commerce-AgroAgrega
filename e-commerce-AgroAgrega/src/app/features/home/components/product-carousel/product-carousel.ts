@@ -40,10 +40,6 @@ export class ProductCarousel implements AfterViewInit {
   setTimeout(() => {
     this.produtoAdicionadoId.set(null);
     }, 2000);
-
-  
-  
-
   }
 
   produtos = this.productService.getProducts();

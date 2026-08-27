@@ -1,14 +1,34 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { ProductModel } from '@models/product';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-product-card',
-  imports: [UpperCasePipe, PrecoFormatadoPipe],
+  imports: [UpperCasePipe, PrecoFormatadoPipe, RouterLink],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })
 export class ProductCardComponent {
-  product = input.required<ProductModel>()
-  addToCart = output<ProductModel>()
+  product = input.required<ProductModel>();
+  addToCart = output<ProductModel>();
+
+  adicionado = signal(false);
+
+  adicionarAoCarrinho(): void {
+    this.addToCart.emit(this.product());
+    this.adicionado.set(true);
+
+    setTimeout(() => {
+      this.adicionado.set(false);
+    }, 2000);
+  }
+
+  getStars(rating: number): boolean[] {
+    const roundedRating = Math.floor(rating);
+
+    return Array.from({ length: 5 }, (_, index) => {
+      return index < roundedRating;
+    });
+  }
 }
