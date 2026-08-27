@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Cart } from '../../core/services/cart/cart.service';
-import { inject } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import {
   ReactiveFormsModule,
@@ -12,6 +11,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { OrderService } from '@core/services/order/order.service';
+import { CepService } from '@core/services/cep/cep';
 
 @Component({
   selector: 'app-checkout',
@@ -21,16 +21,50 @@ import { OrderService } from '@core/services/order/order.service';
 })
 export class CheckoutComponent {
   private cart = inject(Cart);
+  private cepService = inject(CepService);
+
   private orderService = inject(OrderService);
   router = inject(Router);
 
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
 
+  getCep() {
+    const cep = this.checkoutForm.get('cep')?.value;
+
+    if (!cep) return;
+
+    const cepLimpo = cep.replace(/\D/g, '');
+
+    if (cepLimpo.length !== 8) return;
+
+    this.cepService.getCep(cepLimpo).subscribe({
+      next: (dados) => {
+        if (dados.erro) {
+          this.checkoutForm.get('cep')?.setErrors({
+            invalidCep: true,
+          });
+
+          return;
+        }
+
+        this.checkoutForm.patchValue({
+          address: dados.logradouro,
+          complement: dados.complemento,
+          neighborhood: dados.bairro,
+          city: dados.localidade,
+          state: dados.uf,
+        });
+      },
+
+      error: (erro) => {
+        console.error('Erro ao buscar CEP:', erro);
+      },
+    });
+  }
+
   get paymentDiscountValue(): number {
-    return this.checkoutForm.get('paymentMethod')?.value === 'pix'
-      ? this.cart.subtotal() * 0.1
-      : 0;
+    return this.checkoutForm.get('paymentMethod')?.value === 'pix' ? this.cart.subtotal() * 0.1 : 0;
   }
 
   get discountTotalValue(): number {
