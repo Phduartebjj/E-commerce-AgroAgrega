@@ -88,6 +88,7 @@ export const routes: Routes = [
   {
     path: 'orders',
     component: Orders,
+    canActivate: [authGuard],
   },
 
   {
@@ -98,6 +99,7 @@ export const routes: Routes = [
   {
     path: 'orders/:id',
     component: OrderDetails,
+    canActivate: [authGuard],
   },
   {
     path: 'admin/login',

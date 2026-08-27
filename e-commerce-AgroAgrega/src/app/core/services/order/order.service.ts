@@ -25,6 +25,10 @@ export class OrderService {
     });
   }
 
+  getOrderById(id: string): OrderModel | undefined {
+    return this.orders().find((order) => order.id === id);
+  }
+
   getOrders() {
     return this.orders.asReadonly();
   }

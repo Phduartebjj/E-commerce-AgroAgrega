@@ -1,1 +1,96 @@
-<p>order-details works!</p>
+<main class="order-details-page">
+  <nav class="breadcrumb" aria-label="Navegação estrutural">
+    <span>Home</span>
+    <span aria-hidden="true">›</span>
+    <span>Minha conta</span>
+    <span aria-hidden="true">›</span>
+    <span>Meus pedidos</span>
+    <span aria-hidden="true">›</span>
+    <strong>Pedido #AGG123456</strong>
+  </nav>
+
+  <div class="details-layout">
+    <section class="details-card">
+      <header class="details-header">
+        <div>
+          <div class="title-line">
+            <h1>Pedido #AGG123456</h1>
+            <span class="status-badge"><span>✓</span> Entregue</span>
+          </div>
+          <p>Realizado em 14/05/2024 às 10:32 <b>•</b> Entregue em 20/05/2024</p>
+        </div>
+      </header>
+
+      <div class="section-divider"></div>
+
+      <section class="product-section">
+        <h2>Produto</h2>
+        <div class="product-row">
+          <div class="product-image">
+            <img src="assets/images/placeholder.png" alt="Produto comprado" />
+          </div>
+          <div class="product-info">
+            <h3>Kit Estação Meteorológica<br />Inteligente AgroSense Pro</h3>
+            <p>SKU: AGS-PRO-001</p>
+          </div>
+          <span class="quantity">Qtd: 1</span>
+          <strong class="product-price">R$ 2.899,90</strong>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <section class="tracking-section">
+        <h2>Acompanhamento do pedido</h2>
+        <div class="tracking">
+          <div class="tracking-line"></div>
+          <div class="tracking-step complete">
+            <span class="step-icon">✓</span>
+            <strong>Pedido realizado</strong>
+            <small>14/05/2024 10:32</small>
+          </div>
+          <div class="tracking-step complete">
+            <span class="step-icon">✓</span>
+            <strong>Enviado</strong>
+            <small>16/05/2024 14:30</small>
+          </div>
+          <div class="tracking-step current">
+            <span class="step-icon">◇</span>
+            <strong>Entregue</strong>
+            <small>20/05/2024 11:05</small>
+          </div>
+        </div>
+      </section>
+
+      <div class="info-grid">
+        <section class="info-card">
+          <h2><span>▣</span> Entrega</h2>
+          <strong>João da Silva</strong>
+          <p>Fazenda São Bento, S/N - Zona Rural<br />CEP 38400-000 - Uberlândia, MG</p>
+          <p>Transportadora: AgroLog<br />Código de rastreio: <b>AGRO987654321BR</b></p>
+        </section>
+        <section class="info-card payment-card">
+          <h2><span>▤</span> Pagamento</h2>
+          <div class="payment-content">
+            <div>
+              <strong class="pix">❖ PIX <small>Pago</small></strong>
+            </div>
+            <div class="paid-total">
+              <span>Total pago</span>
+              <strong>R$ 2.899,90</strong>
+              <small>À vista no PIX</small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="summary-card">
+      <h2>Total pago</h2>
+      <strong>R$ 2.899,90</strong>
+      <p>À vista no PIX</p>
+      <button type="button" class="outline-button">▤ &nbsp; Nota fiscal</button>
+      <button type="button" class="primary-button">⟳ &nbsp; Comprar novamente</button>
+    </aside>
+  </div>
+</main>
