@@ -32,7 +32,6 @@ export class ProductsComponent {
 
   // Estado dos filtros
   readonly selectedCategories = signal<ProductCategory[]>([]);
-  readonly selectedRating = signal<number | null>(null);
   readonly sortOption = signal<SortOption>('relevant');
 
   readonly ratingOptions = [
@@ -73,14 +72,18 @@ export class ProductsComponent {
 
     const category = this.selectedCategory();
     const search = this.searchTerm();
-    const selectedRating = this.selectedRating();
     const selectedCategories = this.selectedCategories();
+    const minRating = this.minRating();
     const maxPrice = this.maxPriceFilter();
     const brands = this.selectedBrands();
 
     // 1. Categoria da URL
     if (category && category !== 'Todos') {
       filtered = filtered.filter((product) => product.category === category);
+    }
+
+    if(minRating > 0) {
+      filtered = filtered.filter((product) => product.rating >= minRating);
     }
 
     // 2. Categorias selecionadas nos filtros
@@ -114,13 +117,6 @@ export class ProductsComponent {
       });
     }
 
-    // 6. Avaliação
-    if (selectedRating !== null) {
-      filtered = filtered.filter((product) => {
-        return product.rating >= selectedRating;
-      });
-    }
-
     // 7. Ordenação
     const sort = this.sortOrder();
 
@@ -146,7 +142,6 @@ export class ProductsComponent {
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
-    this.selectedRating.set(null);
     this.selectedBrands.set([]);
     this.minRating.set(0);
     this.maxPriceFilter.set(5000);
