@@ -221,7 +221,7 @@
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="pix"
+                  [value]="PaymentMethod.Pix"
                   formControlName="paymentMethod"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
@@ -242,15 +242,15 @@
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="card"
+                  [value]="PaymentMethod.CreditCard"
                   formControlName="paymentMethod"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
               <div class="payment-text">
-                <span class="payment-name">Cartão</span>
-                <small>Crédito ou débito em até 12x</small>
+                <span class="payment-name">Cartão de crédito</span>
+                <small>em até 12x</small>
               </div>
             </div>
 
@@ -263,7 +263,28 @@
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="boleto"
+                  [value]="PaymentMethod.DebitCard"
+                  formControlName="paymentMethod"
+                />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Cartão de débito</span>
+                <small>pagamento a vista</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">À vista</span>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="PaymentMethod.Boleto"
                   formControlName="paymentMethod"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
@@ -277,6 +298,12 @@
 
             <span class="payment-badge muted">À vista</span>
           </div>
+          @if (
+            checkoutForm.controls.paymentMethod.touched &&
+            checkoutForm.controls.paymentMethod.invalid
+          ) {
+            <small class="payment-error">Selecione um método de pagamento para continuar.</small>
+          }
         </div>
       </form>
     </section>
@@ -319,7 +346,14 @@
       </div>
 
       <div>
-        <button (click)="finishOrder()" class="btn-finish">Finalizar Compra</button>
+        <button
+          (click)="finishOrder()"
+          class="btn-finish"
+          type="button"
+          [disabled]="checkoutForm.controls.paymentMethod.invalid"
+        >
+          Finalizar Compra
+        </button>
       </div>
       <div class="support-section">
         <span class="icon-chat"

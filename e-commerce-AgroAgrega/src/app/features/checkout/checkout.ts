@@ -12,6 +12,7 @@ import {
 } from '@angular/forms';
 import { OrderService } from '@core/services/order/order.service';
 import { CepService } from '@core/services/cep/cep';
+import { OrderPaymentMethod } from '@models/order';
 
 @Component({
   selector: 'app-checkout',
@@ -22,7 +23,7 @@ import { CepService } from '@core/services/cep/cep';
 export class CheckoutComponent {
   private cart = inject(Cart);
   private cepService = inject(CepService);
-
+  readonly PaymentMethod = OrderPaymentMethod;
   private orderService = inject(OrderService);
   router = inject(Router);
 
@@ -64,7 +65,9 @@ export class CheckoutComponent {
   }
 
   get paymentDiscountValue(): number {
-    return this.checkoutForm.get('paymentMethod')?.value === 'pix' ? this.cart.subtotal() * 0.1 : 0;
+    return this.checkoutForm.get('paymentMethod')?.value === OrderPaymentMethod.Pix
+      ? this.cart.subtotal() * 0.1
+      : 0;
   }
 
   get discountTotalValue(): number {
@@ -90,7 +93,9 @@ export class CheckoutComponent {
     state: new FormControl('', [Validators.required]),
     complement: new FormControl(''),
     deliveryMethod: new FormControl('standard', [Validators.required]),
-    paymentMethod: new FormControl('pix', [Validators.required]),
+    paymentMethod: new FormControl<OrderPaymentMethod | null>(null, {
+      validators: [Validators.required],
+    }),
   });
   states = [
     'AC',
@@ -138,12 +143,20 @@ export class CheckoutComponent {
       return;
     }
 
+    const paymentMethod = this.checkoutForm.controls.paymentMethod.value;
+
+    if (!paymentMethod) {
+      this.checkoutForm.controls.paymentMethod.markAsTouched();
+      return;
+    }
+
     const order = this.orderService.createOrder(
       this.cart.getCartItems()(),
       crypto.randomUUID(),
       this.cart.subtotal(),
       this.discountTotalValue,
       0,
+      paymentMethod,
     );
     this.cart.removeCoupon();
     this.cart.cleanCartItem();

@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 
 import { CartItemModel } from '@models/cartItem';
-import { OrderModel, OrderStatus } from '@models/order';
+import { OrderModel, OrderPaymentMethod, OrderStatus } from '@models/order';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +21,7 @@ export class OrderService {
         return;
       }
 
-      localStorage.setItem(
-        this.keyOrders,
-        JSON.stringify(orders)
-      );
+      localStorage.setItem(this.keyOrders, JSON.stringify(orders));
     });
   }
 
@@ -61,6 +58,7 @@ export class OrderService {
     subtotal: number,
     discount: number,
     shipping: number,
+    paymentMethod: OrderPaymentMethod,
   ): void {
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
@@ -78,15 +76,13 @@ export class OrderService {
       total: subtotal - discount + shipping,
       status: OrderStatus.Pending,
       createdAt: new Date().toISOString(),
+      paymentMethod: paymentMethod,
     };
 
     this.orders.update((orders) => [...orders, newOrder]);
 
     console.log('PEDIDO CRIADO:', newOrder);
     console.log('PEDIDOS NO SIGNAL:', this.orders());
-    console.log(
-      'PEDIDOS NO LOCALSTORAGE:',
-      localStorage.getItem(this.keyOrders)
-    );
+    console.log('PEDIDOS NO LOCALSTORAGE:', localStorage.getItem(this.keyOrders));
   }
 }

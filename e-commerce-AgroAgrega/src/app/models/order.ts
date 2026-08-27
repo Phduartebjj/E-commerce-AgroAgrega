@@ -8,6 +8,7 @@ export interface OrderModel {
   total: number;
   status: OrderStatus;
   createdAt: string;
+  paymentMethod: OrderPaymentMethod;
 }
 
 export enum OrderStatus {
@@ -16,6 +17,13 @@ export enum OrderStatus {
   Shipped = 'À caminho',
   Delivered = 'Entregue',
   Cancelled = 'Cancelado',
+}
+
+export enum OrderPaymentMethod {
+  CreditCard = 'Cartão de Crédito',
+  DebitCard = 'Cartão de Débito',
+  Pix = 'Pix',
+  Boleto = 'Boleto',
 }
 
 export interface OrderItemModel {

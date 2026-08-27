@@ -1,11 +1,14 @@
 <div class="order-row" role="row">
   <div class="col pedido" role="cell">
     <div class="order-id">{{ order().id }}</div>
-    <div class="order-items"></div>
+    <div class="order-items">
+      {{ order().items.length }} item{{ order().items.length === 1 ? '' : 's' }}
+    </div>
   </div>
 
   <div class="col date" role="cell">
     <div class="date-value">{{ order().createdAt | date: 'dd/MM/yyyy' }}</div>
+    <div class="time-value">{{ order().createdAt | date: 'HH:mm' }}</div>
   </div>
 
   <div class="col status" role="cell">
@@ -18,5 +21,13 @@
 
   <div class="col total" role="cell">
     <div class="total-value">{{ order().total | precoFormatado }}</div>
+    <div class="payment-label">{{ order().paymentMethod }}</div>
+  </div>
+
+  <div class="col actions" role="cell">
+    <a class="details-button" [routerLink]="['/orders', order().id]">
+      Ver detalhes
+      <span aria-hidden="true">›</span>
+    </a>
   </div>
 </div>

@@ -203,6 +203,12 @@ main {
   filter: brightness(0.95);
 }
 
+.btn-finish:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: none;
+}
+
 .btn-finish:active {
   transform: scale(0.97);
   filter: brightness(0.88);
@@ -270,6 +276,13 @@ main {
   border: 1px solid #dfe7dc;
   border-radius: 12px;
   background: #fff;
+}
+
+.payment-error {
+  display: block;
+  padding: 0 20px 16px;
+  color: #c62828;
+  font-size: 13px;
 }
 
 .delivery-header,
