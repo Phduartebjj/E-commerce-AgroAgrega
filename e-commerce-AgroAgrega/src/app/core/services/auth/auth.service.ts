@@ -32,31 +32,46 @@ export class Auth {
   }
 
   register(name: string, email: string, password: string): ServiceResponse{
-      password = crypt.SHA256(password).toString();
-      const id = crypto.randomUUID();
+    password = crypt.SHA256(password).toString();
+    const id = crypto.randomUUID();
 
-      const user = this.Storage.setUser({
-        id,
-        name,
-        email,
-        password
-      });
+    const user = this.Storage.setUser({
+      id,
+      name,
+      email,
+      password
+    });
 
-      if(!user.res) return {res: user.res, message: user.message};
+    if(!user.res) return {res: user.res, message: user.message};
 
-      this.Token.setToken({
-        id,
-        name,
-        email
-      });
+    this.Token.setToken({
+      id,
+      name,
+      email
+    });
 
-      return {res: user.res, message: user.message};
+    return {res: user.res, message: user.message};
+  }
+    
+  resetPassword(email: string, newPassword: string): ServiceResponse{
+    newPassword = crypt.SHA256(newPassword).toString();
+    const resetPassword = this.Storage.updatePasswordUser(email, newPassword);
+    
+    return resetPassword;
+  }
+    
+  updateEmail(newEmail: string): ServiceResponse{
+    const response = this.Storage.updateEmailUser(this.getId(), newEmail);
+
+    return response;
   }
 
-  resetPassword(email: string, newPassword: string): ServiceResponse{
-      newPassword = crypt.SHA256(newPassword).toString();
-      const resetPassword = this.Storage.updateUser(email, newPassword);
-      return resetPassword;
+  deleteAccount(id: string){
+    this.Storage.removeUser(id);
+  }
+
+  logout(){
+    this.Token.deleteToken();
   }
 
   getId(): string{
@@ -64,9 +79,5 @@ export class Auth {
   }
   getName(): string{
     return this.Token.getName();
-  }
-
-  logout(){
-    this.Token.deleteToken();
   }
 }
