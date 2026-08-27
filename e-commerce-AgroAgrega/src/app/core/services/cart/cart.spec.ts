@@ -19,8 +19,9 @@ describe('Cart', () => {
     title: 'Produto Teste',
     price: 10,
     description: 'Produto utilizado nos testes',
-    category: 'teste',
+    category: 'Insumos',
     images: [],
+    rating: 5,
   };
   it('deve adicionar um produto ao carrinho', () => {
     service.addCartItem(product1);
