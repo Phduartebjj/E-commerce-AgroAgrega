@@ -1,3 +1,5 @@
+import { AddressModel } from './address.model';
+
 export interface OrderModel {
   id: string;
   userId: string;
@@ -9,6 +11,7 @@ export interface OrderModel {
   status: OrderStatus;
   createdAt: string;
   paymentMethod: OrderPaymentMethod;
+  address: AddressModel;
 }
 
 export enum OrderStatus {

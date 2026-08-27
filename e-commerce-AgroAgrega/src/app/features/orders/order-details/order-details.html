@@ -60,9 +60,13 @@
         <div class="info-grid">
           <section class="info-card">
             <h2><span>▣</span> Entrega</h2>
-            <strong>João da Silva</strong>
-            <p>Fazenda São Bento, S/N - Zona Rural<br />CEP 38400-000 - Uberlândia, MG</p>
-            <p>Transportadora: AgroLog<br />Código de rastreio: <b>AGRO987654321BR</b></p>
+            <strong>{{ currentOrder.address.fullName }}</strong>
+            <p>
+              {{ currentOrder.address.address }}, {{ currentOrder.address.number }} -
+              {{ currentOrder.address.complement }}<br />CEP {{ currentOrder.address.cep }} -
+              {{ currentOrder.address.city }}, {{ currentOrder.address.state }}
+            </p>
+            <p>Transportadora: AgroLog</p>
           </section>
           <section class="info-card payment-card">
             <h2><span>▤</span> Pagamento</h2>

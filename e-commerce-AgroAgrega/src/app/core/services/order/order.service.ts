@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { AddressModel } from '@models/address.model';
 
 import { CartItemModel } from '@models/cartItem';
 import { OrderModel, OrderPaymentMethod, OrderStatus } from '@models/order';
@@ -63,6 +64,7 @@ export class OrderService {
     discount: number,
     shipping: number,
     paymentMethod: OrderPaymentMethod,
+    address: AddressModel
   ): void {
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
@@ -80,7 +82,8 @@ export class OrderService {
       total: subtotal - discount + shipping,
       status: OrderStatus.Pending,
       createdAt: new Date().toISOString(),
-      paymentMethod: paymentMethod,
+      paymentMethod,
+      address,
     };
 
     this.orders.update((orders) => [...orders, newOrder]);

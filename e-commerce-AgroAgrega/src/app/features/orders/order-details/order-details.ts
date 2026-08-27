@@ -4,9 +4,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '@core/services/order/order.service';
 import { PrecoFormatadoPipe } from '@shared/pipes/preco-formatado-pipe';
 import { OrderDetailsCard } from './order-details-card/order-details-card';
+
 @Component({
   selector: 'app-order-details',
   imports: [RouterLink, DatePipe, PrecoFormatadoPipe, OrderDetailsCard],
+
 
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',
@@ -18,6 +20,7 @@ export class OrderDetails {
 
   readonly orderId = this.route.snapshot.paramMap.get('id');
 
+  
   readonly order = computed(() => {
     if(!this.orderId) {
       return undefined;
@@ -25,6 +28,4 @@ export class OrderDetails {
 
     return this.OrderService.getOrderById(this.orderId);
   });
-
-
 }
