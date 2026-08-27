@@ -3,9 +3,10 @@ import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '@core/services/order/order.service';
 import { PrecoFormatadoPipe } from '@shared/pipes/preco-formatado-pipe';
+import { OrderDetailsCard } from './order-details-card/order-details-card';
 @Component({
   selector: 'app-order-details',
-  imports: [RouterLink, DatePipe, PrecoFormatadoPipe],
+  imports: [RouterLink, DatePipe, PrecoFormatadoPipe, OrderDetailsCard],
 
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',

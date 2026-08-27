@@ -1,0 +1,11 @@
+<h2>Produto</h2>
+<div class="product-row">
+  <div class="product-image">
+    <img src="assets/images/placeholder.png" alt="Produto comprado" />
+  </div>
+  <div class="product-info">
+    <h3>{{ item().name }}</h3>
+  </div>
+  <span class="quantity">Qtd: {{ item().quantity }}</span>
+  <strong class="product-price">R$ {{ item().price | precoFormatado }}</strong>
+</div>

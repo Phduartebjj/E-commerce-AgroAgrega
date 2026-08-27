@@ -28,18 +28,9 @@
         <div class="section-divider"></div>
 
         <section class="product-section">
-          <h2>Produto</h2>
-          <div class="product-row">
-            <div class="product-image">
-              <img src="assets/images/placeholder.png" alt="Produto comprado" />
-            </div>
-            <div class="product-info">
-              <h3>Kit Estação Meteorológica<br />Inteligente AgroSense Pro</h3>
-              <p>SKU: AGS-PRO-001</p>
-            </div>
-            <span class="quantity">Qtd: 1</span>
-            <strong class="product-price">R$ 2.899,90</strong>
-          </div>
+          @for (item of currentOrder.items; track item.productId) {
+            <app-order-details-card [item]="item" />
+          }
         </section>
 
         <div class="section-divider"></div>
@@ -77,7 +68,7 @@
             <h2><span>▤</span> Pagamento</h2>
             <div class="payment-content">
               <div>
-                <strong class="pix">❖ {{currentOrder.paymentMethod}} <small>Pago</small></strong>
+                <strong class="pix">❖ {{ currentOrder.paymentMethod }} <small>Pago</small></strong>
               </div>
               <div class="paid-total">
                 <span>Total pago</span>
@@ -90,10 +81,9 @@
 
       <aside class="summary-card">
         <h2>Total pago</h2>
-        <strong>R$ 2.899,90</strong>
-        <p>À vista no PIX</p>
+        <strong>{{ currentOrder.total | precoFormatado }}</strong>
+        <p>{{ currentOrder.paymentMethod }}</p>
         <button type="button" class="outline-button">▤ &nbsp; Nota fiscal</button>
-        <button type="button" class="primary-button">⟳ &nbsp; Comprar novamente</button>
       </aside>
     </div>
   </main>
