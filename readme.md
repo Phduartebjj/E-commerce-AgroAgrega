@@ -75,12 +75,17 @@ agroagrega/
 | **Pedro Henrique Duarte** | Desenvolvedor / Integrante | [@integrante2](https://github.com/Phduartebjj) |
 | **Lohan** | Desenvolvedor / Integrante | [@integrante3](https://github.com/Lorran-Ribeiro) |
 | **Igor** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Diaas2006) |
-| **Yuri** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Yuri-dev19) |
-| **Gustavo Leite** | Desenvolvedor / Integrante | [@integrante4]() |
-| **João Saraiva** | Desenvolvedor / Integrante | [@integrante4]() |
-| **Nathan** | Desenvolvedor / Integrante | [@integrante4](https://github.com/Zaczin17) |
+| **Yuri** | Desenvolvedor / Integrante | [@integrante5](https://github.com/Yuri-dev19) |
+| **Gustavo Leite** | Desenvolvedor / Integrante | [@integrante6](https://github.com/gustavoleite3604-arch) |
+| **João Saraiva** | Desenvolvedor / Integrante | [@integrante7](https://github.com/Saraiva896) |
+| **Nathan** | Desenvolvedor / Integrante | [@integrante8](https://github.com/Zaczin17) |
 
 ---
+
+## Link do Projeto no gitPages
+
+[Git-Pages](https://phduartebjj.github.io/E-commerce-AgroAgrega/)
+
 
 ## 📄 Licença
 

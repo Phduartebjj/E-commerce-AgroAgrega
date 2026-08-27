@@ -122,13 +122,13 @@ main {
 }
 
 .form-row.form-row-long {
-  grid-template-columns: 358px 212px 212px;
-  width: fit-content;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  width: 100%;
 }
 
 .form-row.form-row-middle {
-  grid-template-columns: repeat(3, 212px);
-  width: fit-content;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
 }
 
 .form-row:last-of-type {
@@ -181,21 +181,40 @@ main {
 }
 
 .btn-finish {
-    background-color: #2e7d4f;
-    color: white;
-    border: none;
-    padding: 14px 20px;
-    cursor: pointer;
-    border-radius: 10px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 500;
-    text-decoration: none;
-    display: block;
-    text-align: center;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  background-color: #2e7d4f;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.btn-finish:hover {
+  filter: brightness(0.95);
+}
+
+.btn-finish:active {
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 .btn-buscar-cep {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
   background: #2d5016;
   color: white;
   border: none;
@@ -208,6 +227,13 @@ main {
   white-space: nowrap;
   height: 42px;
   width: fit-content;
+}
+
+.btn-buscar-cep:active{
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 .btn-buscar-cep:hover {
@@ -236,7 +262,8 @@ main {
   cursor: pointer;
 }
 
-.delivery-section {
+.delivery-section,
+.payment-section {
   display: flex;
   flex-direction: column;
   margin-top: 10px;
@@ -245,7 +272,8 @@ main {
   background: #fff;
 }
 
-.delivery-header {
+.delivery-header,
+.payment-header {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -253,7 +281,8 @@ main {
   border-bottom: 1px solid #edf0ed;
 }
 
-.delivery-icon {
+.delivery-icon,
+.payment-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,19 +293,22 @@ main {
   font-size: 18px;
 }
 
-.delivery-header h3 {
+.delivery-header h3,
+.payment-header h3 {
   margin: 0 0 4px;
   font-size: 18px;
   color: #1d1d1d;
 }
 
-.delivery-header p {
+.delivery-header p,
+.payment-header p {
   margin: 0;
   font-size: 12px;
   color: #758177;
 }
 
-.delivery-option {
+.delivery-option,
+.payment-option {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -284,7 +316,12 @@ main {
   padding: 18px 20px;
 }
 
-.delivery-option-main {
+.payment-option + .payment-option {
+  border-top: 1px solid #edf0ed;
+}
+
+.delivery-option-main,
+.payment-option-main {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -322,27 +359,43 @@ main {
   box-shadow: inset 0 0 0 5px #2d5a3d;
 }
 
-.delivery-text {
+.delivery-text,
+.payment-text {
   display: flex;
   flex-direction: column;
 }
 
-.delivery-name {
+.delivery-name,
+.payment-name {
   font-size: 15px;
   color: #1d1d1d;
   font-weight: 600;
 }
 
-.delivery-text small {
+.delivery-text small,
+.payment-text small {
   font-size: 12px;
   color: #6d7b72;
   margin-top: 3px;
 }
 
-.delivery-price {
+.delivery-price,
+.payment-badge {
   font-size: 15px;
   font-weight: 700;
   color: #1f7a44;
+}
+
+.payment-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #ebf7ee;
+  font-size: 12px;
+}
+
+.payment-badge.muted {
+  background: #f2f6f3;
+  color: #53615b;
 }
 
 .order-summary {
@@ -496,6 +549,37 @@ main {
 @media (max-width: 768px) {
   main {
     padding: 15px;
+  }
+
+  .checkout-title {
+    margin-bottom: 24px;
+  }
+
+  .checkout-title h2 {
+    font-size: 28px;
+  }
+
+  .customer-infos {
+    padding: 20px;
+  }
+
+  .form-row.form-row-long,
+  .form-row.form-row-middle {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .delivery-option {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .delivery-price {
+    margin-left: 31px;
+  }
+
+  .order-summary-background {
+    padding: 24px 18px;
   }
 
   .checkout-title h2 {

@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: e-commerce-AgroAgrega/package-lock.json
+
+      - name: Install dependencies
+        working-directory: e-commerce-AgroAgrega
+        run: npm install --include=optional --ignore-scripts
+
+      - name: Build Angular app
+        working-directory: e-commerce-AgroAgrega
+        run: npm run build:github
+
+      - name: Enable SPA routes
+        working-directory: e-commerce-AgroAgrega
+        run: cp dist/e-commerce-AgroAgrega/browser/index.html dist/e-commerce-AgroAgrega/browser/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: e-commerce-AgroAgrega/dist/e-commerce-AgroAgrega/browser
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

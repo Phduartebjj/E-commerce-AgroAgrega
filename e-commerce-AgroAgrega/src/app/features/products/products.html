@@ -15,6 +15,92 @@
       }
     </div>
   </header>
+  <div class="catalog-shell">
+    <div class="catalog-layout">
+      <aside class="filters-card" aria-label="Filtros de produtos">
+        <div class="filters-header">
+          <h2>Filtrar produtos</h2>
+          <button type="button" class="clear-filters" (click)="clearFilters()">Limpar</button>
+        </div>
+
+        <div class="filters-section">
+          <div class="filters-section-title">
+            <span>Ordenar por</span>
+          </div>
+
+          <label class="rating-option">
+            <input
+              type="radio"
+              name="sort"
+              [checked]="sortOption() === 'price-desc'"
+              value="price-desc"
+              (change)="sortOption.set('price-desc')"
+            />
+            <span>Maior preço</span>
+          </label>
+          <label class="rating-option">
+            <input
+              type="radio"
+              name="sort"
+              [checked]="sortOption() === 'price-asc'"
+              value="price-asc"
+              (change)="sortOption.set('price-asc')"
+            />
+            <span>Menor preço</span>
+          </label>
+          <label class="rating-option">
+            <input
+              type="radio"
+              name="sort"
+              value="relevant"
+              [checked]="sortOption() === 'relevant'"
+              (change)="sortOption.set('relevant')"
+            />
+            <span>Relevantes</span>
+          </label>
+        </div>
+
+        <div class="filters-section">
+          <div class="filters-section-title">
+            <span>Categorias</span>
+          </div>
+          @for (item of categoryCounts(); track item.category) {
+            <label class="filter-option">
+              <input
+                type="checkbox"
+                [checked]="selectedCategories().includes(item.category)"
+                (click)="toggleCategory(item.category)"
+              />
+              <span>{{ item.category }}</span>
+              <strong>{{ item.count }}</strong>
+            </label>
+          }
+        </div>
+
+        <div class="filters-section">
+          <div class="filters-section-title">
+            <span>Avaliação</span>
+          </div>
+
+          <label class="rating-option">
+            <input type="radio" name="rating" [checked]="selectedRating() === 5" (change)="selectedRating.set(5)" />
+            <span class="stars">★★★★★</span>
+            <span>ou mais</span>
+          </label>
+          <label class="rating-option">
+            <input type="radio" name="rating" [checked]="selectedRating() === 4" (change)="selectedRating.set(4)" />
+            <span class="stars">★★★★☆</span>
+            <span>ou mais</span>
+          </label>
+        </div>
+      </aside>
+
+      <div class="catalog-content">
+        @if (filteredProducts().length > 0) {
+          <header class="catalog-header">
+            <h1>{{ catalogTitle() }}</h1>
+          </header>
+        }
 
   <div class="catalog-main-content">
     <!-- Barra Lateral: Filtros Avançados -->
@@ -129,6 +215,19 @@
         } @empty {
           <p class="empty-state">Nenhum produto encontrado para este filtro.</p>
         }
+      </div>
+        <div class="catalog-grid">
+          @for (product of filteredProducts(); track product.id) {
+            <app-product-card
+              (addToCart)="addProductToCart($event)"
+              [product]="product"
+            ></app-product-card>
+          } @empty {
+            <div class="empty-products">
+              <h2>Ops! Parece que este produto não está disponível ainda.</h2>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>

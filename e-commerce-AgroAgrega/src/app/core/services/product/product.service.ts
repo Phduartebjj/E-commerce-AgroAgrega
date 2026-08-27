@@ -8,8 +8,8 @@ import { ProductCategory, ProductModel } from '../../../models/product';
 export class ProductService {
   private products = signal<ProductModel[]>(productsItems);
 
-  getProducts(): ProductModel[] {
-    return this.products();
+  getProducts() {
+    return this.products.asReadonly();
   }
 
   getProductCategories(): ProductCategory[] {

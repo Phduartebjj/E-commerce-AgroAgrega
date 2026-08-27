@@ -47,18 +47,23 @@
 
   color: #d5ddd9;
   line-height: 1.6;
+  
 }
 
 .rodape-coluna {
   display: flex;
   flex-direction: column;
+  
 }
 
 .rodape-coluna h3 {
   margin: 0 0 22px;
 
   font-size: 17px;
+  
 }
+
+
 
 .rodape-coluna a {
   margin-bottom: 17px;
@@ -99,6 +104,17 @@
 
   color: #d5ddd9;
   font-size: 14px;
+}
+
+@media (max-width: 1024px) {
+  .rodape {
+    padding: 45px 40px 30px;
+  }
+
+  .rodape-conteudo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
 }
 
 @media (max-width: 768px) {

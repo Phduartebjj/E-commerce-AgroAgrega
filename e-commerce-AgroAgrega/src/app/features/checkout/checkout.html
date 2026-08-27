@@ -52,7 +52,7 @@
               type="text"
               placeholder="Lucas Andrade"
             />
-            @if (checkoutForm.get('fullN  ame')?.touched && checkoutForm.get('fullName')?.invalid) {
+            @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid) {
               <small class="errorMessage">
                 {{ getErrorMessage(checkoutForm.get('fullName')!) }}
               </small>
@@ -184,7 +184,7 @@
           <div class="delivery-option">
             <div class="delivery-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="deliveryMethod" checked />
+                <input type="radio" name="deliveryMethod" value="standard" formControlName="deliveryMethod" checked />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -195,6 +195,64 @@
             </div>
 
             <span class="delivery-price">Grátis</span>
+          </div>
+        </div>
+
+        <div class="payment-section">
+          <div class="payment-header">
+            <div class="payment-icon" aria-hidden="true">💳</div>
+            <div>
+              <h3>Forma de pagamento</h3>
+              <p>Escolha a forma preferida para concluir a compra.</p>
+            </div>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="pix" formControlName="paymentMethod" />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Pix</span>
+                <small>Pagamento instantâneo com desconto</small>
+              </div>
+            </div>
+
+            <span class="payment-badge">10% OFF</span>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="card" formControlName="paymentMethod" />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Cartão</span>
+                <small>Crédito ou débito em até 12x</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">Até 12x</span>
+          </div>
+
+          <div class="payment-option">
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input type="radio" name="paymentMethod" value="boleto" formControlName="paymentMethod" />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Boleto</span>
+                <small>Vencimento em 3 dias úteis</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">À vista</span>
           </div>
         </div>
       </form>
@@ -216,7 +274,7 @@
 
         <div class="summary-item">
           <span>Descontos</span>
-          <span class="value discount">{{ discountValue() | precoFormatado }}</span>
+          <span class="value discount">{{ discountTotalValue | precoFormatado }}</span>
         </div>
 
         <div class="summary-total">
@@ -225,12 +283,14 @@
             <p>inclui impostos</p>
           </div>
           <div>
-            <span class="total-value">{{ totalValue() | precoFormatado }}</span>
+            <span class="total-value">{{ totalValue | precoFormatado }}</span>
           </div>
         </div>
 
         <div class="payment-safe">
-          <span class="icon-lock"><img src="../../assets/icones/padlock.svg" alt="" /></span>
+          <span class="icon-lock"
+            ><img src="../../assets/icones/lock_24dp_FEDA90_FILL0_wght400_GRAD0_opsz24.svg" alt=""
+          /></span>
           <span>Pagamento protegido e seguro</span>
         </div>
       </div>
@@ -239,7 +299,9 @@
         <button (click)="finishOrder()" class="btn-finish">Finalizar Compra</button>
       </div>
       <div class="support-section">
-        <span class="icon-chat"><img src="../../assets/icones/chat.svg" alt="" /></span>
+        <span class="icon-chat"
+          ><img src="../../assets/icones/chat_24dp_FEDA90_FILL0_wght400_GRAD0_opsz24.svg" alt=""
+        /></span>
         <div>
           <h4>Precisa de ajuda?</h4>
           <p>Nosso time acompanha você durante a compra.</p>

@@ -9,6 +9,7 @@ export const productsItems: ProductModel[] = [
     description:
       'Sistema completo com sensores de vento, chuva e umidade para monitoramento em campo.',
     images: ['assets/images/products/agrosense-pro.jpg'],
+    rating: 4.9,
   },
   {
     id: '2dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -17,6 +18,7 @@ export const productsItems: ProductModel[] = [
     price: 189.9,
     description: 'Semente de alta produtividade com vigor e uniformidade no plantio.',
     images: ['assets/images/products/milho-hibrido.jpg'],
+    rating: 4.7,
   },
   {
     id: '3dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -25,6 +27,7 @@ export const productsItems: ProductModel[] = [
     price: 269.9,
     description: 'Forragem de qualidade para pastejo contínuo e melhoramento do rebanho.',
     images: ['assets/images/products/braquiaria.jpg'],
+    rating: 4.6,
   },
   {
     id: '4dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -33,6 +36,7 @@ export const productsItems: ProductModel[] = [
     price: 749.9,
     description: 'Sistema eficiente para irrigação localizada, economizando água e energia.',
     images: ['assets/images/products/gotejamento.jpg'],
+    rating: 4.8,
   },
   {
     id: '5dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -41,6 +45,7 @@ export const productsItems: ProductModel[] = [
     price: 1199.9,
     description: 'Potência para limpeza e manutenção em áreas agrícolas e rurais.',
     images: ['assets/images/products/rocadeira.jpg'],
+    rating: 4.5,
   },
   {
     id: '6dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -49,6 +54,7 @@ export const productsItems: ProductModel[] = [
     price: 489.9,
     description: 'Estrutura resistente com capacidade para manter água limpa e estável.',
     images: ['assets/images/products/bebedouro-bovinos.jpg'],
+    rating: 4.4,
   },
   {
     id: '7dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -57,6 +63,7 @@ export const productsItems: ProductModel[] = [
     price: 399.9,
     description: 'Monitora a umidade do solo em tempo real para irrigação inteligente.',
     images: ['assets/images/products/sensor-umidade.jpg'],
+    rating: 5,
   },
   {
     id: '8dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -65,6 +72,7 @@ export const productsItems: ProductModel[] = [
     price: 1699.9,
     description: 'Solução sustentável para irrigação com autonomia energética solar.',
     images: ['assets/images/products/bomba-solar.jpg'],
+    rating: 4.7,
   },
   {
     id: '9dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -73,6 +81,7 @@ export const productsItems: ProductModel[] = [
     price: 139.9,
     description: 'Complemento nutricional para otimizar o desempenho e saúde do rebanho.',
     images: ['assets/images/products/sal-mineral.jpg'],
+    rating: 4.3,
   },
   {
     id: '10dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -81,6 +90,7 @@ export const productsItems: ProductModel[] = [
     price: 89.9,
     description: 'Corte preciso e durabilidade para podas de plantas e árvores.',
     images: ['assets/images/products/tesoura-poda.jpg'],
+    rating: 4.6,
   },
   {
     id: '11dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -89,6 +99,7 @@ export const productsItems: ProductModel[] = [
     price: 219.9,
     description: 'Fertilizante equilibrado para alta produtividade em diversas culturas.',
     images: ['assets/images/products/fertilizante.jpg'],
+    rating: 4.8,
   },
   {
     id: '12dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -97,5 +108,6 @@ export const productsItems: ProductModel[] = [
     price: 3490,
     description: 'Georreferenciamento e navegação para operação agrícola com precisão.',
     images: ['assets/images/products/gps-agricola.jpg'],
+    rating: 4.9,
   },
 ];

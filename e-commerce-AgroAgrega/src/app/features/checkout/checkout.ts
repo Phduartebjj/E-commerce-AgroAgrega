@@ -24,9 +24,22 @@ export class CheckoutComponent {
   private orderService = inject(OrderService);
   router = inject(Router);
 
-  totalValue = this.cart.total;
   subTotal = this.cart.subtotal;
   discountValue = this.cart.discountValue;
+
+  get paymentDiscountValue(): number {
+    return this.checkoutForm.get('paymentMethod')?.value === 'pix'
+      ? this.cart.subtotal() * 0.1
+      : 0;
+  }
+
+  get discountTotalValue(): number {
+    return this.cart.discountValue() + this.paymentDiscountValue;
+  }
+
+  get totalValue(): number {
+    return this.cart.total() - this.paymentDiscountValue;
+  }
 
   checkoutForm = new FormGroup({
     fullName: new FormControl('', [
@@ -36,12 +49,14 @@ export class CheckoutComponent {
     ]),
     cep: new FormControl('', [Validators.required, validCep]),
     cellPhone: new FormControl('', [Validators.required, validPhone]),
-    address: new FormControl('', [Validators.required, validAddressNumber]),
+    address: new FormControl('', [Validators.required]),
     number: new FormControl('', [Validators.required]),
     neighborhood: new FormControl('', [Validators.required, nameNoNumbers]),
     city: new FormControl('', [Validators.required, nameNoNumbers]),
     state: new FormControl('', [Validators.required]),
     complement: new FormControl(''),
+    deliveryMethod: new FormControl('standard', [Validators.required]),
+    paymentMethod: new FormControl('pix', [Validators.required]),
   });
   states = [
     'AC',
@@ -84,16 +99,22 @@ export class CheckoutComponent {
   }
 
   finishOrder() {
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      return;
+    }
+
     const order = this.orderService.createOrder(
       this.cart.getCartItems()(),
       crypto.randomUUID(),
       this.cart.subtotal(),
-      this.cart.discountValue(),
+      this.discountTotalValue,
       0,
     );
+    this.cart.removeCoupon();
     this.cart.cleanCartItem();
     this.router.navigate(['/orders']);
-    console.log(order)
+    console.log(order);
   }
 }
 
@@ -104,7 +125,6 @@ const errorMessages = {
   charsInvalid: 'Não pode conter caracteres especiais',
   invalidCep: 'CEP inválido',
   invalidPhone: 'Telefone inválido',
-  invalidAddressNumber: 'Número do endereço inválido',
 };
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
@@ -138,18 +158,6 @@ function validPhone(control: AbstractControl): ValidationErrors | null {
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
     return { invalidPhone: true };
-  }
-
-  return null;
-}
-
-function validAddressNumber(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-
-  if (!value) return null;
-
-  if (!/^\d+$/.test(value)) {
-    return { invalidAddressNumber: true };
   }
 
   return null;
