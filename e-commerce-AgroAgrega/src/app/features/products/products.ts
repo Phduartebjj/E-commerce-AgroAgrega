@@ -1,16 +1,12 @@
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+
 import { ProductCategory, ProductModel, SortOption } from '@models/product';
 
-import { Component, computed, effect, inject, signal } from '@angular/core';
-
 import { ProductService } from '../../core/services/product/product.service';
-
 import { ProductCardComponent } from './product-card/product-card';
-
 import { Cart } from '@core/services/cart/cart.service';
-
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-products',
@@ -20,18 +16,32 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class ProductsComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
-  private readonly router = inject(Router);
+
+  // Produtos e categorias
+  readonly products = this.productService.getProducts();
   readonly categories = this.productService.getProductCategories();
+  readonly productCategories = this.productService.getProductCategories();
+  readonly categoryFilters = ['Todos', ...this.productCategories];
+
+  // Estado dos filtros
+  readonly selectedCategories = signal<ProductCategory[]>([]);
+  readonly selectedRating = signal<number | null>(null);
   readonly sortOption = signal<SortOption>('relevant');
 
-  readonly selectedCategories = signal<ProductCategory[]>([]);
-  readonly products = this.productService.getProducts();
-  readonly selectedRating = signal<number | null>(null);
+  readonly ratingOptions = [
+    { value: 5, stars: '★★★★★' },
+    { value: 4, stars: '★★★★☆' },
+    { value: 3, stars: '★★★☆☆' },
+    { value: 2, stars: '★★☆☆☆' },
+    { value: 1, stars: '★☆☆☆☆' },
+  ];
 
   readonly selectedCategory = computed(() => {
     return this.queryParams().get('category');
@@ -43,77 +53,198 @@ export class ProductsComponent {
 
   readonly catalogTitle = computed(() => {
     const category = this.selectedCategory();
-
     return category ?? 'Todas as categorias';
   });
 
-  readonly filteredProducts = computed(() => {
-    const selectedRating = this.selectedRating();
-    const search = this.searchTerm();
-    const sortOption = this.sortOption();
-    const products = [...this.products()];
-    const selectedCategories = this.selectedCategories();
+  // Estado da interface
+  readonly viewMode = signal<'grid' | 'list'>('grid');
+  readonly maxPriceFilter = signal<number>(5000);
+  readonly sortOrder = signal<string>('mais_vendidos');
 
-    const filteredProducts = products.filter((product) => {
-      const searchableText = `${product.title} ${product.category}`.toLowerCase();
-      const matchesRating = selectedRating === null || product.rating >= selectedRating;
+  // Filtros adicionais
+  readonly availableBrands = ['Biomatrix', 'AgroSense', 'MultiGrão', 'SafraMax'];
 
-      const matchesCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(product.category);
+  readonly selectedBrands = signal<string[]>([]);
+  readonly inStockOnly = signal<boolean>(false);
+  readonly minRating = signal<number>(0);
 
-      const matchesSearch = !search || searchableText.includes(search);
-
-      return matchesCategory && matchesSearch && matchesRating;
-    });
-
-    if (sortOption === 'price-asc') {
-      return filteredProducts.sort((a, b) => a.price - b.price);
-    }
-    if (sortOption === 'price-desc') {
-      return filteredProducts.sort((a, b) => b.price - a.price);
-    }
-    return filteredProducts;
+  // Produtos em destaque
+  readonly featuredProducts = computed(() => {
+    return this.products().slice(0, 2);
   });
 
+  // Produtos filtrados
+  readonly filteredProducts = computed(() => {
+    let filtered = [...this.products()];
+
+    const category = this.selectedCategory();
+    const search = this.searchTerm();
+    const selectedRating = this.selectedRating();
+    const selectedCategories = this.selectedCategories();
+    const maxPrice = this.maxPriceFilter();
+    const brands = this.selectedBrands();
+
+    // 1. Categoria da URL
+    if (category && category !== 'Todos') {
+      filtered = filtered.filter((product) => product.category === category);
+    }
+
+    // 2. Categorias selecionadas nos filtros
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((product) => selectedCategories.includes(product.category));
+    }
+
+    // 3. Pesquisa
+    if (search) {
+      filtered = filtered.filter((product) => {
+        const searchableText =
+          `${product.title} ${product.category} ${product.description}`.toLowerCase();
+
+        return searchableText.includes(search);
+      });
+    }
+
+    // 4. Preço máximo
+    filtered = filtered.filter((product) => {
+      return product.price <= maxPrice;
+    });
+
+    // 5. Marca
+    if (brands.length > 0) {
+      filtered = filtered.filter((product) => {
+        return brands.some(
+          (brand) =>
+            product.title.toLowerCase().includes(brand.toLowerCase()) ||
+            product.description.toLowerCase().includes(brand.toLowerCase()),
+        );
+      });
+    }
+
+    // 6. Avaliação
+    if (selectedRating !== null) {
+      filtered = filtered.filter((product) => {
+        return product.rating >= selectedRating;
+      });
+    }
+
+    // 7. Ordenação
+    const sort = this.sortOrder();
+
+    if (sort === 'menor_preco' || sort === 'price-asc') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sort === 'maior_preco' || sort === 'price-desc') {
+      filtered.sort((a, b) => b.price - a.price);
+    }
+
+    return filtered;
+  });
+
+  // Quantidade de produtos por categoria
   readonly categoryCounts = computed(() => {
     const products = this.products();
 
     return this.categories.map((category) => {
       const count = products.filter((product) => product.category === category).length;
-      return { category, count };
+
+      return {
+        category,
+        count,
+      };
     });
   });
 
+  // Seleciona categoria
+  selectCategory(category: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  // Seleciona/deseleciona categoria no filtro lateral
   toggleCategory(category: ProductCategory): void {
     this.selectedCategories.update((categories) => {
       if (categories.includes(category)) {
-        return categories.filter((c) => c !== category);
+        return categories.filter((current) => current !== category);
       }
+
       return [...categories, category];
     });
   }
 
+  // Limpa filtros
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
     this.selectedRating.set(null);
+    this.selectedBrands.set([]);
+    this.inStockOnly.set(false);
+    this.minRating.set(0);
+    this.maxPriceFilter.set(5000);
+    this.sortOrder.set('mais_vendidos');
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
     });
   }
 
+  // Adiciona produto ao carrinho
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
   }
+
+  // Alterna visualização
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode.set(mode);
+  }
+
+  // Atualiza preço máximo
+  updateMaxPrice(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    this.maxPriceFilter.set(Number(input.value));
+  }
+
+  // Atualiza ordenação
+  updateSortOrder(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+
+    this.sortOrder.set(select.value);
+  }
+
+  // Marca
+  toggleBrand(brand: string, event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    if (isChecked) {
+      this.selectedBrands.update((brands) => [...brands, brand]);
+    } else {
+      this.selectedBrands.update((brands) => brands.filter((current) => current !== brand));
+    }
+  }
+
+  // Apenas produtos em estoque
+  setInStockOnly(event: Event): void {
+    this.inStockOnly.set((event.target as HTMLInputElement).checked);
+  }
+
+  // Avaliação mínima
+  setMinRating(rating: number): void {
+    this.minRating.set(rating);
+  }
+
   constructor() {
     effect(() => {
       const category = this.selectedCategory();
 
       if (category && this.categories.includes(category as ProductCategory)) {
         this.selectedCategories.set([category as ProductCategory]);
+
         return;
       }
+
       this.selectedCategories.set([]);
     });
   }

@@ -10,7 +10,22 @@ export const productsItems: ProductModel[] = [
       'Sistema completo com sensores de vento, chuva e umidade para monitoramento em campo.',
     images: ['assets/images/products/agrosense-pro.jpg'],
     rating: 4.9,
-    weeklySales: 12,
+    reviews: [
+      {
+        id: 'rev-1-1',
+        author: 'Marcos Silveira',
+        stars: 5,
+        text: 'Excelente produto! Sensores de precisão incrível e fácil instalação.',
+        createdAt: '15/02/2025',
+      },
+      {
+        id: 'rev-1-2',
+        author: 'Aline Souza',
+        stars: 5,
+        text: 'Ajudou muito no monitoramento do microclima da nossa lavoura. Recomendo!',
+        createdAt: '18/02/2025',
+      },
+    ],
   },
   {
     id: '2dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -20,7 +35,22 @@ export const productsItems: ProductModel[] = [
     description: 'Semente de alta produtividade com vigor e uniformidade no plantio.',
     images: ['assets/images/products/milho-hibrido.jpg'],
     rating: 4.7,
-    weeklySales: 17,
+    reviews: [
+      {
+        id: 'rev-2-1',
+        author: 'Roberto Santos',
+        stars: 5,
+        text: 'Germinação rápida e uniforme. Excelente padrão de qualidade.',
+        createdAt: '10/01/2025',
+      },
+      {
+        id: 'rev-2-2',
+        author: 'João Pereira',
+        stars: 4,
+        text: 'Boa qualidade, rendimento dentro do esperado para a safra.',
+        createdAt: '22/01/2025',
+      },
+    ],
   },
   {
     id: '3dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -30,7 +60,22 @@ export const productsItems: ProductModel[] = [
     description: 'Forragem de qualidade para pastejo contínuo e melhoramento do rebanho.',
     images: ['assets/images/products/braquiaria.jpg'],
     rating: 4.6,
-    weeklySales: 33,
+    reviews: [
+      {
+        id: 'rev-3-1',
+        author: 'Cláudio Ferreira',
+        stars: 5,
+        text: 'Pastagem fechou muito rápido, ótimo vigor das mudas.',
+        createdAt: '05/02/2025',
+      },
+      {
+        id: 'rev-3-2',
+        author: 'Antônio Carlos',
+        stars: 4,
+        text: 'Sementes bem limpas e com alta taxa de germinação.',
+        createdAt: '12/02/2025',
+      },
+    ],
   },
   {
     id: '4dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -40,7 +85,22 @@ export const productsItems: ProductModel[] = [
     description: 'Sistema eficiente para irrigação localizada, economizando água e energia.',
     images: ['assets/images/products/gotejamento.jpg'],
     rating: 4.8,
-    weeklySales: 19,
+    reviews: [
+      {
+        id: 'rev-4-1',
+        author: 'Lucas Andrade',
+        stars: 5,
+        text: 'Economia de água perceptível logo na primeira semana de uso.',
+        createdAt: '01/02/2025',
+      },
+      {
+        id: 'rev-4-2',
+        author: 'Beatriz Costa',
+        stars: 5,
+        text: 'Material resistente e montagem bem simples com o manual.',
+        createdAt: '14/02/2025',
+      },
+    ],
   },
   {
     id: '5dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -50,7 +110,22 @@ export const productsItems: ProductModel[] = [
     description: 'Potência para limpeza e manutenção em áreas agrícolas e rurais.',
     images: ['assets/images/products/rocadeira.jpg'],
     rating: 4.5,
-    weeklySales: 47,
+    reviews: [
+      {
+        id: 'rev-5-1',
+        author: 'Eduardo Lima',
+        stars: 5,
+        text: 'Muito potente, aguenta o dia inteiro de serviço pesado sem esquentar.',
+        createdAt: '19/01/2025',
+      },
+      {
+        id: 'rev-5-2',
+        author: 'Paulo Ricardo',
+        stars: 4,
+        text: 'Ótimo corte. Um pouco pesada, mas o rendimento compensa.',
+        createdAt: '28/01/2025',
+      },
+    ],
   },
   {
     id: '6dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -60,7 +135,22 @@ export const productsItems: ProductModel[] = [
     description: 'Estrutura resistente com capacidade para manter água limpa e estável.',
     images: ['assets/images/products/bebedouro-bovinos.jpg'],
     rating: 4.4,
-    weeklySales: 20,
+    reviews: [
+      {
+        id: 'rev-6-1',
+        author: 'Sérgio Nogueira',
+        stars: 5,
+        text: 'Acabamento bem reforçado, o gado não consegue quebrar.',
+        createdAt: '03/02/2025',
+      },
+      {
+        id: 'rev-6-2',
+        author: 'Fernando Dias',
+        stars: 4,
+        text: 'Bóia funciona perfeitamente, mantém o nível constante sem vazamento.',
+        createdAt: '11/02/2025',
+      },
+    ],
   },
   {
     id: '7dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -70,7 +160,15 @@ export const productsItems: ProductModel[] = [
     description: 'Monitora a umidade do solo em tempo real para irrigação inteligente.',
     images: ['assets/images/products/sensor-umidade.jpg'],
     rating: 5,
-    weeklySales: 30,
+    reviews: [
+      {
+        id: 'rev-7-1',
+        author: 'Mariana Oliveira',
+        stars: 5,
+        text: 'Indispensável para o manejo inteligente da irrigação da lavoura.',
+        createdAt: '08/02/2025',
+      },
+    ],
   },
   {
     id: '8dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -80,7 +178,22 @@ export const productsItems: ProductModel[] = [
     description: 'Solução sustentável para irrigação com autonomia energética solar.',
     images: ['assets/images/products/bomba-solar.jpg'],
     rating: 4.7,
-    weeklySales: 12,
+    reviews: [
+      {
+        id: 'rev-8-1',
+        author: 'Rodrigo Meireles',
+        stars: 5,
+        text: 'Autonomia excelente mesmo em dias com céu parcialmente nublado.',
+        createdAt: '25/01/2025',
+      },
+      {
+        id: 'rev-8-2',
+        author: 'Gustavo Paiva',
+        stars: 4,
+        text: 'Vazão muito boa, encheu meu reservatório com tranquilidade.',
+        createdAt: '02/02/2025',
+      },
+    ],
   },
   {
     id: '9dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -90,7 +203,22 @@ export const productsItems: ProductModel[] = [
     description: 'Complemento nutricional para otimizar o desempenho e saúde do rebanho.',
     images: ['assets/images/products/sal-mineral.jpg'],
     rating: 4.3,
-    weeklySales: 11,
+    reviews: [
+      {
+        id: 'rev-9-1',
+        author: 'Daniel Ribeiro',
+        stars: 5,
+        text: 'Consumo no cocho foi imediato, os animais aceitaram super bem.',
+        createdAt: '20/01/2025',
+      },
+      {
+        id: 'rev-9-2',
+        author: 'Carlos Alberto',
+        stars: 4,
+        text: 'Ganho de peso perceptível nos bezerros em poucas semanas.',
+        createdAt: '14/01/2025',
+      },
+    ],
   },
   {
     id: '10dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -100,7 +228,22 @@ export const productsItems: ProductModel[] = [
     description: 'Corte preciso e durabilidade para podas de plantas e árvores.',
     images: ['assets/images/products/tesoura-poda.jpg'],
     rating: 4.6,
-    weeklySales: 39,
+    reviews: [
+      {
+        id: 'rev-10-1',
+        author: 'Renata Gusmão',
+        stars: 5,
+        text: 'Lâmina afiadíssima e a pegada ergonômica não cansa a mão.',
+        createdAt: '29/01/2025',
+      },
+      {
+        id: 'rev-10-2',
+        author: 'Juliano Prado',
+        stars: 4,
+        text: 'Ótima para podas diárias em mudas e árvores frutíferas.',
+        createdAt: '06/02/2025',
+      },
+    ],
   },
   {
     id: '11dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -110,7 +253,22 @@ export const productsItems: ProductModel[] = [
     description: 'Fertilizante equilibrado para alta produtividade em diversas culturas.',
     images: ['assets/images/products/fertilizante.jpg'],
     rating: 4.8,
-    weeklySales: 40,
+    reviews: [
+      {
+        id: 'rev-11-1',
+        author: 'Márcio Fonseca',
+        stars: 5,
+        text: 'Grânulos bem uniformes, fácil de regular na adubadora e resposta rápida.',
+        createdAt: '16/01/2025',
+      },
+      {
+        id: 'rev-11-2',
+        author: 'Fábio Toledo',
+        stars: 5,
+        text: 'Excelente custo-benefício para cobertura.',
+        createdAt: '04/02/2025',
+      },
+    ],
   },
   {
     id: '12dsoifjasdf-1234-5678-90ab-cdefghijklmn',
@@ -120,6 +278,21 @@ export const productsItems: ProductModel[] = [
     description: 'Georreferenciamento e navegação para operação agrícola com precisão.',
     images: ['assets/images/products/gps-agricola.jpg'],
     rating: 4.9,
-    weeklySales: 45,
+    reviews: [
+      {
+        id: 'rev-12-1',
+        author: 'Alexandre Borges',
+        stars: 5,
+        text: 'Precisão impressionante nas passadas do trator, eliminou sobreposição de defensivos.',
+        createdAt: '12/01/2025',
+      },
+      {
+        id: 'rev-12-2',
+        author: 'Bruno Carvalho',
+        stars: 5,
+        text: 'Interface muito fácil de mexer e suporte técnico nota 10.',
+        createdAt: '27/01/2025',
+      },
+    ],
   },
 ];
