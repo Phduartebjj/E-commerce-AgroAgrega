@@ -1,0 +1,126 @@
+<div class="favorites-wrapper">
+
+  <div
+    class="favorites-modal"
+    role="dialog"
+    aria-label="Meus favoritos"
+  >
+
+    <!-- HEADER -->
+    <header class="favorites-header">
+
+      <div>
+        <h3>Meus favoritos</h3>
+
+        <span>
+          {{ favorites().length }}
+          {{ favorites().length === 1 ? 'produto' : 'produtos' }}
+        </span>
+      </div>
+
+    </header>
+
+
+    <!-- CONTEÚDO -->
+    <div class="favorites-content">
+
+      @if (favorites().length === 0) {
+
+        <!-- VAZIO -->
+        <div class="favorites-empty">
+
+          <div
+            class="empty-icon"
+            aria-hidden="true"
+          >
+            ♡
+          </div>
+
+          <h4>Nenhum favorito ainda</h4>
+
+          <p>
+            Os produtos que você favoritar
+            aparecerão aqui.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <!-- PRODUTOS -->
+        <div class="favorite-list">
+
+          @for (
+            product of favorites();
+            track product.id
+          ) {
+
+            <article class="favorite-product">
+
+              <div class="product-image">
+
+                <img
+                  [src]="product.image"
+                  [alt]="product.name"
+                />
+
+              </div>
+
+
+              <div class="product-info">
+
+                <h4>
+                  {{ product.name }}
+                </h4>
+
+                <span class="product-category">
+                  {{ product.category }}
+                </span>
+
+                <strong class="product-price">
+                  {{ product.price | currency:'BRL' }}
+                </strong>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="remove-button"
+                aria-label="Remover dos favoritos"
+                (click)="remove(product.id)"
+              >
+                ♥
+
+              </button>
+
+            </article>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- FOOTER -->
+    @if (favorites().length > 0) {
+
+      <footer class="favorites-footer">
+
+        <button
+          type="button"
+          class="view-favorites-button"
+        >
+          Ver todos os favoritos
+        </button>
+
+      </footer>
+
+    }
+
+  </div>
+
+</div>
