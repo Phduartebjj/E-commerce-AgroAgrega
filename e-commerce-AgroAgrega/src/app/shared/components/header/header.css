@@ -52,10 +52,10 @@
 }
 
 .logo-nome {
-  width: min(240px, 22vw);
+  width: min(150px, 20vw);
   height: auto;
   max-height: 42px;
-  object-fit: contain;
+  object-fit: cover;
   margin-left: -4px;
 }
 
@@ -148,8 +148,16 @@
 .conta-texto {
   display: flex;
   flex-direction: column;
+  max-width: 140px;
 }
-.conta-texto small {
+
+.nome-usuario {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: 0.875rem;
   font-weight: 400;
 }
