@@ -6,9 +6,11 @@ export interface ProductModel {
   category: ProductCategory;
   images: string[];
   rating: number;
+  weeklySales?: number;
 }
 
 export type ProductCategory =
   'Agricultura de Precisão' | 'Irrigação' | 'Pecuária' | 'Ferramentas' | 'Insumos';
+
 
 export type SortOption = 'relevant' | 'price-asc' | 'price-desc';
