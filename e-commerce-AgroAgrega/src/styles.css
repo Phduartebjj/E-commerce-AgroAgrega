@@ -1,23 +1,23 @@
-:root{
---green-dark: #073d2d;
---page-background: #f3f7f5;
---white: #ffffff;
+:root {
+  --green-dark: #073d2d;
+  --page-background: #f3f7f5;
+  --white: #ffffff;
 }
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-html,body {
+html,
+body {
   margin: 0;
- 
- }
- body{
+}
+body {
   min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
   background-color: var(--page-background);
- }
- 
+  overflow-x: hidden;
+}
 
 * {
   padding: 0;

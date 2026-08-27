@@ -6,7 +6,7 @@ import { ProductCarousel } from './components/product-carousel/product-carousel'
 
 @Component({
   selector: 'app-home',
-  imports: [Hero, Benefits,Footer,ProductCarousel],
+  imports: [Hero, Benefits,ProductCarousel],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

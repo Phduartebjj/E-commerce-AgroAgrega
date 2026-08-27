@@ -127,3 +127,52 @@
   color: #5b6776;
   font-size: 1rem;
 }
+
+@media (max-width: 600px) {
+  .order-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 0;
+    margin-bottom: 12px;
+    border: 1px solid #dfe6e2;
+    border-radius: 12px;
+    background: #f3f6f5;
+  }
+
+  .col {
+    padding: 16px;
+  }
+
+  .pedido {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid #dfe6e2;
+  }
+
+  .date {
+    grid-column: 1;
+  }
+
+  .status {
+    grid-column: 2;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .status-badge {
+    min-height: 32px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .status-note {
+    font-size: 0.85rem;
+  }
+
+  .total {
+    grid-column: 1 / -1;
+    border-top: 1px solid #dfe6e2;
+    text-align: left;
+  }
+}

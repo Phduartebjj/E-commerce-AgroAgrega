@@ -3,7 +3,6 @@ import { Cart } from '../../core/services/cart/cart.service';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { RouterLink } from '@angular/router';
-
 @Component({
   selector: 'app-cart',
   imports: [RouterLink, PrecoFormatadoPipe],
@@ -23,24 +22,6 @@ export class CartComponent {
   addProduct(product: ProductModel): void {
     this.cart.addCartItem(product);
   }
-
-  item: ProductModel = {
-    id: '1',
-    title: 'Kit Estação Meteorológica Inteligente AgroSense Pro',
-    price: 2899.9,
-    description: 'Kit completo • Wi-Fi + 4G',
-    images: ['https://placehold.co/80x80?font=roboto'],
-    category: 'AGRICULTURA DE PRECISÃO',
-  };
-
-  item2: ProductModel = {
-    id: '2',
-    title: 'Mangueira de gotejamento resistente 100 m',
-    price: 439.8,
-    description: 'Em estoque • envio imediato',
-    images: ['https://placehold.co/80x80?font=roboto'],
-    category: 'IRRIGAÇÃO',
-  };
 
   applyCoupon(couponCode: string): void {
     this.cart.applyCoupon(couponCode);

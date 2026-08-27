@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
@@ -16,7 +16,10 @@ function createActivatedRoute(id: string) {
   };
 }
 
-describe ('ProductDetails', () => {
+const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
+
+describe('ProductDetails', () => {
+    // const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
   let component: ProductDetails;
   let fixture: ComponentFixture<ProductDetails>;
 
@@ -32,9 +35,10 @@ describe ('ProductDetails', () => {
     await TestBed.configureTestingModule({
       imports: [ProductDetails],
       providers: [
+        provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: createActivatedRoute('1'),
+          useValue: createActivatedRoute(productId),
         },
         {
           provide: Cart,
@@ -87,13 +91,13 @@ describe ('ProductDetails', () => {
   });
 
   it('should read the product id from the route', () => {
-    expect(component.id).toBe('1');
+    expect(component.id).toBe(productId);
   });
 
   it('should find the product by id', () => {
     expect(component.product).toBeTruthy();
-    expect(component.product?.id).toBe('1');
-    expect(component.product?.title).toBe('Produto de exemplo 1');
+    expect(component.product?.id).toBe(productId);
+    expect(component.product?.title).toBe('Kit Estação Meteorológica Inteligente AgroSense Pro');
   });
   it('should move to the next image', () => {
     component.product = {
@@ -179,8 +183,8 @@ describe ('ProductDetails', () => {
   it('should render product details', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('ID do produto: 1');
-    expect(compiled.textContent).toContain('Produto de exemplo 1');
+    expect(compiled.textContent).toContain(`ID do produto: ${productId}`);
+    expect(compiled.textContent).toContain('Kit Estação Meteorológica Inteligente AgroSense Pro');
     expect(compiled.textContent).toContain('Adicionar ao carrinho');
   });
 
