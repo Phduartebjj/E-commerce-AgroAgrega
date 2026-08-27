@@ -215,7 +215,11 @@
             </div>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.Pix)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
                 <input
@@ -223,6 +227,7 @@
                   name="paymentMethod"
                   [value]="PaymentMethod.Pix"
                   formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -236,7 +241,11 @@
             <span class="payment-badge">10% OFF</span>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.CreditCard)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
                 <input
@@ -244,6 +253,7 @@
                   name="paymentMethod"
                   [value]="PaymentMethod.CreditCard"
                   formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -257,7 +267,11 @@
             <span class="payment-badge muted">Até 12x</span>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.DebitCard"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.DebitCard)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
                 <input
@@ -265,6 +279,7 @@
                   name="paymentMethod"
                   [value]="PaymentMethod.DebitCard"
                   formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.DebitCard"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -278,7 +293,11 @@
             <span class="payment-badge muted">À vista</span>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.Boleto)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
                 <input
@@ -286,6 +305,7 @@
                   name="paymentMethod"
                   [value]="PaymentMethod.Boleto"
                   formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>

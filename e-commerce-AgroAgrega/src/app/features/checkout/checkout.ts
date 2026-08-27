@@ -78,6 +78,11 @@ export class CheckoutComponent {
     return this.cart.total() - this.paymentDiscountValue;
   }
 
+  selectPaymentMethod(paymentMethod: OrderPaymentMethod): void {
+    this.checkoutForm.controls.paymentMethod.setValue(paymentMethod);
+    this.checkoutForm.controls.paymentMethod.markAsTouched();
+  }
+
   checkoutForm = new FormGroup({
     fullName: new FormControl('', [
       Validators.required,

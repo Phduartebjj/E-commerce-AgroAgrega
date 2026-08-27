@@ -327,6 +327,12 @@ main {
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.payment-option.selected {
+  background: #f2faf4;
 }
 
 .payment-option + .payment-option {
