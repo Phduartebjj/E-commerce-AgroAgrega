@@ -34,8 +34,10 @@
                 name="cep"
                 type="text"
                 placeholder="01310-100"
+                maxlength="8"
+                placeholder="01310100"
               />
-              <button type="button" class="btn-buscar-cep">Buscar CEP</button>
+              <button type="button" (click)="getCep()" class="btn-buscar-cep">Buscar CEP</button>
             </div>
             @if (checkoutForm.get('cep')?.touched && checkoutForm.get('cep')?.invalid) {
               <small class="errorMessage">
@@ -184,7 +186,13 @@
           <div class="delivery-option">
             <div class="delivery-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="deliveryMethod" value="standard" formControlName="deliveryMethod" checked />
+                <input
+                  type="radio"
+                  name="deliveryMethod"
+                  value="standard"
+                  formControlName="deliveryMethod"
+                  checked
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -210,7 +218,12 @@
           <div class="payment-option">
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="pix" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="pix"
+                  formControlName="paymentMethod"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -226,7 +239,12 @@
           <div class="payment-option">
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="card" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="card"
+                  formControlName="paymentMethod"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -242,7 +260,12 @@
           <div class="payment-option">
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="boleto" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="boleto"
+                  formControlName="paymentMethod"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
