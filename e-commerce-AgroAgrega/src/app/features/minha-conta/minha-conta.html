@@ -1,23 +1,41 @@
 <div class="minha-conta">
-
   <h1>Minha Conta</h1>
 
   <section>
     <h2>👤 Meus dados</h2>
 
-    <div>
-      <span>Nome</span>
-      <button>Editar</button>
-    </div>
+    @if (!editingProfile) {
+      <div>
+        <span>Nome</span>
+        <strong>{{ userName }}</strong>
+      </div>
 
-    <div>
-      <span>E-mail</span>
-      <button>Editar</button>
-    </div>
+      <div>
+        <span>E-mail</span>
+        <strong>{{ userEmail }}</strong>
+      </div>
+
+      <button type="button" (click)="editProfile()">Editar dados</button>
+    } @else {
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <label>
+          Nome
+          <input type="text" formControlName="name" />
+        </label>
+
+        <label>
+          E-mail
+          <input type="email" formControlName="email" />
+        </label>
+
+        <button type="submit">Salvar</button>
+        <button type="button" (click)="cancelEdit()">Cancelar</button>
+      </form>
+    }
 
     <div>
       <span>Telefone</span>
-      <button>Editar</button>
+      <button type="button">Editar</button>
     </div>
   </section>
 
@@ -42,8 +60,9 @@
   <section>
     <h2>⚙️ Conta</h2>
 
-    <button>Logout</button>
-    <button>Remover conta</button>
+    <button type="button" (click)="logout()">Logout</button>
+    <button type="button" (click)="removeAccount()">
+  Remover conta
+</button>
   </section>
-
 </div>

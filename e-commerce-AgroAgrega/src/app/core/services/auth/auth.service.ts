@@ -66,6 +66,28 @@ export class Auth {
     return this.Token.getName();
   }
 
+  getEmail(): string{
+    return this.Token.getEmail();
+  }
+
+  updateProfile(name: string, email: string): ServiceResponse {
+    const id = this.getId();
+    const result = this.Storage.updateProfile(id, name, email);
+    if (!result.res) return result;
+
+    this.Token.deleteToken();
+    this.Token.setToken({id, name, email});
+    return result;
+  }
+
+  removeAccount(): boolean {
+    const removed = this.Storage.removeUser(this.getId());
+    if (removed) {
+      this.logout();
+    }
+    return removed;
+  }
+
   logout(){
     this.Token.deleteToken();
   }

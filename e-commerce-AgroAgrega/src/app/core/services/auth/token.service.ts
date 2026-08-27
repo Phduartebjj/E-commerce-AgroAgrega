@@ -52,6 +52,9 @@ export class TokenAuth{
     getName(): string{
         return this.tokenData()?.name ?? '';
     }
+    getEmail(): string{
+        return this.tokenData()?.email ?? '';
+    }
 
     // Sobe o cookie.
     setToken(userPayload: UserTokenModel): void{
