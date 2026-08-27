@@ -1,6 +1,14 @@
 import { RouterLink } from '@angular/router';
-import { Component, inject, ElementRef, ViewChild,signal,AfterViewInit } from '@angular/core';
-import { ProductService } from '@core/services/product/product.service';
+import {
+  Component,
+  inject,
+  ElementRef,
+  ViewChild,
+  signal,
+  AfterViewInit,
+  input,
+} from '@angular/core';
+
 import { PrecoFormatadoPipe } from '../../../../shared/pipes/preco-formatado-pipe';
 import { Cart } from '@core/services/cart/cart.service';
 import { ProductModel } from '@models/product';
@@ -12,37 +20,39 @@ import { ProductModel } from '@models/product';
   styleUrl: './product-carousel.css',
 })
 export class ProductCarousel implements AfterViewInit {
-  produtoAdicionadoId = signal<ProductModel['id'] | null>(null);;
+  produtos = input.required<ProductModel[]>();
+
+  titulo = input<string>('Produtos em destauqe');
+
+  label = input<string>('SELEÇÃO AGROAGREGA');
+
+  produtoAdicionadoId = signal<ProductModel['id'] | null>(null);
 
   ngAfterViewInit(): void {
     this.atualizarSetas();
   }
 
+  atualizarSetas(): void {
+    const lista = this.productsList.nativeElement;
 
-  atualizarSetas(): void{
-    const lista =  this.productsList.nativeElement;
+    this.podeRolarEsquerda.set(lista.scrollLeft > 0);
 
-    this.podeRolarEsquerda.set(lista.scrollLeft>0);
-
-    this.podeRolarDireita.set(lista.scrollLeft+lista.clientWidth < lista.scrollWidth - 1);
+    this.podeRolarDireita.set(lista.scrollLeft + lista.clientWidth < lista.scrollWidth - 1);
   }
   podeRolarEsquerda = signal(false);
   podeRolarDireita = signal(true);
   @ViewChild('productsList')
   productsList!: ElementRef<HTMLDivElement>;
   private cart = inject(Cart);
-  private productService = inject(ProductService);
   adicionarAoCarrinho(produto: ProductModel): void {
     this.cart.addCartItem(produto);
 
-  this.produtoAdicionadoId.set(produto.id);
+    this.produtoAdicionadoId.set(produto.id);
 
-  setTimeout(() => {
-    this.produtoAdicionadoId.set(null);
+    setTimeout(() => {
+      this.produtoAdicionadoId.set(null);
     }, 2000);
   }
-
-  produtos = this.productService.getProducts();
 
   rolarEsquerda(): void {
     this.productsList.nativeElement.scrollBy({
