@@ -1,0 +1,56 @@
+.minha-conta {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.minha-conta h1 {
+  color: var(--green-dark);
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+.minha-conta section {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.minha-conta h2 {
+  color: var(--green-dark);
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.minha-conta section > div {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.minha-conta section > div:last-child {
+  border-bottom: none;
+}
+
+.minha-conta span:first-child {
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.minha-conta button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background-color: var(--green-dark);
+  color: var(--white);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.minha-conta button:hover {
+  opacity: 0.9;
+}

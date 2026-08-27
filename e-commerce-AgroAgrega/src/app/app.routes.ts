@@ -16,6 +16,7 @@ import { Orders } from './features/orders/orders/orders';
 import { OrderDetails } from './features/orders/order-details/order-details';
 import { AboutUsComponent } from '@features/about-us/about-us';
 import { authGuard, guestGuard } from '@core/services/auth/guards/';
+import { MinhaConta } from './features/minha-conta/minha-conta';
 
 export const routes: Routes = [
   {
@@ -74,5 +75,8 @@ export const routes: Routes = [
   {
     path: 'orders/:id',
     component: OrderDetails,
+  },
+  { path: 'minha-conta', component: MinhaConta,
+
   },
 ];
