@@ -51,11 +51,6 @@ export class ProductsComponent {
     return (this.queryParams().get('search') ?? '').trim().toLowerCase();
   });
 
-  readonly catalogTitle = computed(() => {
-    const category = this.selectedCategory();
-    return category ?? 'Todas as categorias';
-  });
-
   // Estado da interface
   readonly viewMode = signal<'grid' | 'list'>('grid');
   readonly maxPriceFilter = signal<number>(5000);
@@ -65,7 +60,6 @@ export class ProductsComponent {
   readonly availableBrands = ['Biomatrix', 'AgroSense', 'MultiGrão', 'SafraMax'];
 
   readonly selectedBrands = signal<string[]>([]);
-  readonly inStockOnly = signal<boolean>(false);
   readonly minRating = signal<number>(0);
 
   // Produtos em destaque
@@ -139,20 +133,6 @@ export class ProductsComponent {
     return filtered;
   });
 
-  // Quantidade de produtos por categoria
-  readonly categoryCounts = computed(() => {
-    const products = this.products();
-
-    return this.categories.map((category) => {
-      const count = products.filter((product) => product.category === category).length;
-
-      return {
-        category,
-        count,
-      };
-    });
-  });
-
   // Seleciona categoria
   selectCategory(category: string): void {
     this.router.navigate([], {
@@ -162,24 +142,12 @@ export class ProductsComponent {
     });
   }
 
-  // Seleciona/deseleciona categoria no filtro lateral
-  toggleCategory(category: ProductCategory): void {
-    this.selectedCategories.update((categories) => {
-      if (categories.includes(category)) {
-        return categories.filter((current) => current !== category);
-      }
-
-      return [...categories, category];
-    });
-  }
-
   // Limpa filtros
   clearFilters(): void {
     this.selectedCategories.set([]);
     this.sortOption.set('relevant');
     this.selectedRating.set(null);
     this.selectedBrands.set([]);
-    this.inStockOnly.set(false);
     this.minRating.set(0);
     this.maxPriceFilter.set(5000);
     this.sortOrder.set('mais_vendidos');
@@ -223,11 +191,6 @@ export class ProductsComponent {
     } else {
       this.selectedBrands.update((brands) => brands.filter((current) => current !== brand));
     }
-  }
-
-  // Apenas produtos em estoque
-  setInStockOnly(event: Event): void {
-    this.inStockOnly.set((event.target as HTMLInputElement).checked);
   }
 
   // Avaliação mínima

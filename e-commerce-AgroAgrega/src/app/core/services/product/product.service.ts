@@ -17,7 +17,7 @@ export class ProductService {
   }
 
   getProductCategories(): ProductCategory[] {
-    return ['Agricultura de Precisão', 'Irrigação', 'Pecuária', 'Ferramentas', 'Insumos'];
+    return ['Agricultura de Precisão', 'Irrigação', 'Pecuária', 'Insumos', 'Ferramentas'];
   }
 
   addReview(productId: string, review: Omit<ReviewModel, 'id'> & { id?: string }): void {

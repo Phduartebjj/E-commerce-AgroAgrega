@@ -4,13 +4,14 @@ min-width: 0;
 padding: 26px 16px 40px;
 background: #edf2ee;
 box-sizing: border-box;
+overflow-x: hidden;
 }
 
 .catalog-shell {
 flex: 1 1 auto;
 min-width: 0;
 width: 100%;
-max-width: 1200px;
+max-width: none;
 padding: 24px;
 margin: 0 auto;
 background: #fdfdfd;
@@ -19,6 +20,8 @@ box-sizing: border-box;
 
 .catalog-layout {
 width: 100%;
+max-width: 1200px;
+margin: 0 auto;
 }
 
 /* =========================
@@ -146,6 +149,7 @@ color: #1f2937;
 .filter-group label {
 display: flex;
 align-items: center;
+min-width: 0;
 margin-bottom: 10px;
 font-size: 14px;
 color: #6b7280;
@@ -341,10 +345,15 @@ gap: 20px;
 }
 
 .sort-label {
+display: inline-flex;
+align-items: center;
+min-width: 0;
 color: #6b7280;
 }
 
 .sort-select {
+min-width: 0;
+max-width: 100%;
 border: 1px solid #f0f0f0;
 padding: 5px 10px;
 border-radius: 6px;
@@ -427,8 +436,8 @@ gap: 20px;
 }
 
 .sidebar {
-width: 230px;
-flex-basis: 230px;
+width: 220px;
+flex-basis: 220px;
 }
 
 .catalog-grid {
@@ -451,8 +460,22 @@ flex-basis: auto;
 width: 100%;
 }
 
+.catalog-shell {
+width: 100%;
+padding: 20px;
+}
+
 .featured-grid {
 grid-template-columns: 1fr;
+}
+
+.products-toolbar {
+flex-wrap: wrap;
+}
+
+.toolbar-actions {
+flex: 1 1 360px;
+justify-content: flex-end;
 }
 }
 
@@ -501,8 +524,18 @@ padding: 15px;
 
 .toolbar-actions {
 justify-content: space-between;
+flex: none;
+width: 100%;
 flex-wrap: wrap;
 gap: 10px;
+}
+
+.sort-label {
+flex: 1 1 220px;
+}
+
+.sort-select {
+flex: 1 1 auto;
 }
 
 .catalog-grid {
@@ -529,6 +562,10 @@ padding-right: 6px;
 .catalog-main-content {
 padding-left: 2px;
 padding-right: 2px;
+}
+
+.catalog-shell {
+padding: 14px;
 }
 
 .sidebar {
