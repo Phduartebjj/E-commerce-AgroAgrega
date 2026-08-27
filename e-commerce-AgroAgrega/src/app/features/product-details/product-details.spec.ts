@@ -253,4 +253,51 @@ describe('ProductDetails', () => {
     expect(notFoundComponent.product).toBeUndefined();
     expect(notFoundComponent.productNotFound).toBe(true);
   });
+
+  it('should switch tabs', () => {
+    expect(component.activeTab).toBe('details');
+    component.selectTab('reviews');
+    expect(component.activeTab).toBe('reviews');
+    component.selectTab('details');
+    expect(component.activeTab).toBe('details');
+  });
+
+  it('should set selected rating within range 1-5', () => {
+    component.selectRating(4);
+    expect(component.selectedRating).toBe(4);
+
+    component.selectRating(6);
+    expect(component.selectedRating).toBe(4);
+
+    component.selectRating(0);
+    expect(component.selectedRating).toBe(4);
+  });
+
+  it('should submit review and refresh product reviews', () => {
+    const initialReviewsCount = component.reviews.length;
+
+    component.selectRating(5);
+    component.reviewText = 'Excelente produto no campo!';
+    component.submitReview();
+
+    expect(component.reviews.length).toBe(initialReviewsCount + 1);
+    expect(component.reviews[0].text).toBe('Excelente produto no campo!');
+    expect(component.selectedRating).toBe(0);
+    expect(component.reviewText).toBe('');
+  });
+
+  it('should not submit review if rating or text is missing', () => {
+    const initialReviewsCount = component.reviews.length;
+
+    component.selectedRating = 0;
+    component.reviewText = 'Texto sem nota';
+    component.submitReview();
+    expect(component.reviews.length).toBe(initialReviewsCount);
+
+    component.selectedRating = 5;
+    component.reviewText = '   ';
+    component.submitReview();
+    expect(component.reviews.length).toBe(initialReviewsCount);
+  });
 });
+
