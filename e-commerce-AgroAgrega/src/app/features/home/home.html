@@ -1,5 +1,15 @@
-
 <app-hero></app-hero>
-<app-benefits></app-benefits>
-<app-product-carousel></app-product-carousel>
 
+<app-benefits></app-benefits>
+
+<app-product-carousel
+  titulo="Produtos em destaque"
+  label="SELEÇÃO AGROAGREGA"
+  [produtos]="produtosDestaque()"
+/>
+
+<app-product-carousel
+  titulo="Mais vendidos na semana"
+  label="OS MAIS PROCURADOS"
+  [produtos]="maisVendidos()"
+/>
