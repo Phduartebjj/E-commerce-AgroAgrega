@@ -16,7 +16,7 @@ function createActivatedRoute(id: string) {
   };
 }
 
-describe('ProductDetails', () => {
+describe ('ProductDetails', () => {
   let component: ProductDetails;
   let fixture: ComponentFixture<ProductDetails>;
 
