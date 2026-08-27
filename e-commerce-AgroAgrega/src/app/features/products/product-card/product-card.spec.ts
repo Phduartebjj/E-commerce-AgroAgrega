@@ -23,6 +23,7 @@ describe('ProductCardComponent', () => {
       description: 'Descricao de teste',
       category: 'Insumos',
       images: [],
+      rating: 5,
     };
     fixture.componentRef.setInput('product', product);
     await fixture.whenStable();
