@@ -30,6 +30,7 @@ export enum OrderPaymentMethod {
 }
 
 export interface OrderItemModel {
+  imgSrc: string;
   productId: string;
   name: string;
   price: number;

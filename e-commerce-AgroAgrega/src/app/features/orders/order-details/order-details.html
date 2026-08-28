@@ -29,6 +29,7 @@
 
         <section class="product-section">
           @for (item of currentOrder.items; track item.productId) {
+      
             <app-order-details-card [item]="item" />
           }
         </section>

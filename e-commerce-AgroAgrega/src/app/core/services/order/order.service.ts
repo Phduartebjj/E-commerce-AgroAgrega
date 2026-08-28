@@ -64,12 +64,13 @@ export class OrderService {
     discount: number,
     shipping: number,
     paymentMethod: OrderPaymentMethod,
-    address: AddressModel
+    address: AddressModel,
   ): void {
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
       userId,
       items: cartItem.map((item) => ({
+        imgSrc: item.product.images[0],
         productId: item.product.id,
         name: item.product.title,
         price: item.product.price,

@@ -86,6 +86,12 @@
   background: #e1e7eb;
 }
 
+.product-section{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .product-section h2,
 .tracking-section h2,
 .info-card h2 {
