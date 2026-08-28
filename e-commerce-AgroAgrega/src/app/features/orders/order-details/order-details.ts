@@ -30,7 +30,7 @@ export class OrderDetails {
   private readonly OrderService = inject(OrderService);
 
   readonly orderId = this.route.snapshot.paramMap.get('id');
-
+  
   readonly order = computed(() => {
     if (!this.orderId) {
       return undefined;

@@ -352,6 +352,11 @@ DESTAQUES
   align-self: flex-start;
 }
 
+.add-btn-small.product-added {
+  background: #9bd52b;
+  color: var(--gren-dark);
+}
+
 /* =========================
 TOOLBAR
 ========================= */

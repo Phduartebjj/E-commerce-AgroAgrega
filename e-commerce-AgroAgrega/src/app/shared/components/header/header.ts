@@ -7,7 +7,7 @@ import { FavoritesComponent } from '../favorites/favorites.component';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, FavoritesComponent],
+  imports: [RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

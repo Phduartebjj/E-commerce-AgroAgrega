@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { BrandOption, ProductCategory, ProductModel, SortOption } from '@models/product';
@@ -10,7 +10,7 @@ import { Cart } from '@core/services/cart/cart.service';
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent],
+  imports: [ProductCardComponent, RouterLink],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -19,6 +19,8 @@ export class ProductsComponent {
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+
+  adicionado = signal(false);
 
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
@@ -152,6 +154,11 @@ export class ProductsComponent {
   // Adiciona produto ao carrinho
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
+    this.adicionado.set(true);
+
+    setTimeout(() => {
+      this.adicionado.set(false);
+    }, 2000);
   }
 
   // Alterna visualização

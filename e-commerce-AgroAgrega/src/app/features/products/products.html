@@ -116,101 +116,115 @@
             Todas as avaliações
           </label>
         </div>
-
       </aside>
 
       <div class="catalog-shell">
         <!-- Área dos produtos -->
         <div class="products-section">
-        <!-- Produtos em destaque -->
-        @if (featuredProducts().length > 0) {
-          <div class="featured-products">
-            <h2>Produtos em Destaque</h2>
+          <!-- Produtos em destaque -->
+          @if (featuredProducts().length > 0) {
+            <div class="featured-products">
+              <h2>Produtos em Destaque</h2>
 
-            <div class="featured-grid">
-              @for (prod of featuredProducts(); track prod.id) {
-                <div class="featured-card">
-                  <div class="featured-image-placeholder">
-                    <img
-                      [src]="
-                        prod.images && prod.images.length > 0
-                          ? prod.images[0]
-                          : 'assets/images/placeholder.png'
-                      "
-                      [alt]="prod.title"
-                    />
-                  </div>
-
-                  <div class="featured-info">
-                    <div class="tags">
-                      <span class="highlight"> DESTAQUE </span>
-
-                      <span class="free-shipping"> FRETE GRÁTIS </span>
+              <div class="featured-grid">
+                @for (prod of featuredProducts(); track prod.id) {
+                  <div class="featured-card">
+                    <div class="featured-image-placeholder">
+                      <a [routerLink]="['/products', prod.id]">
+                        <img
+                          [src]="
+                            prod.images && prod.images.length > 0
+                              ? prod.images[0]
+                              : 'assets/images/placeholder.png'
+                          "
+                          [alt]="prod.title"
+                        />
+                      </a>
                     </div>
 
-                    <h3>{{ prod.title }}</h3>
+                    <div class="featured-info">
+                      <div class="tags">
+                        <span class="highlight"> DESTAQUE </span>
 
-                    <p class="old-price">R$ {{ (prod.price * 1.15).toFixed(2) }}</p>
+                        <span class="free-shipping"> FRETE GRÁTIS </span>
+                      </div>
+                      <a [routerLink]="['/products', prod.id]">
+                        <h3>{{ prod.title }}</h3>
+                      </a>
+                      <p class="old-price">R$ {{ (prod.price * 1.15).toFixed(2) }}</p>
 
-                    <p class="new-price">
-                      R$
-                      <span>
-                        {{ prod.price.toFixed(2) }}
-                      </span>
-                    </p>
+                      <p class="new-price">
+                        R$
+                        <span>
+                          {{ prod.price.toFixed(2) }}
+                        </span>
+                      </p>
 
-                    <p class="savings">Economize R$ {{ (prod.price * 0.15).toFixed(2) }}</p>
+                      <p class="savings">Economize R$ {{ (prod.price * 0.15).toFixed(2) }}</p>
 
-                    <button class="add-btn-small" type="button" (click)="addProductToCart(prod)">
-                      Adicionar
-                    </button>
+                      <button
+                        class="add-btn-small"
+                        type="button"
+                        [class.product-added]="adicionado()"
+                        (click)="addProductToCart(prod)"
+                      >
+                        @if (adicionado()) {
+                          Adicionado ✓
+                        } @else {
+                          Adicionar
+                        }
+                      </button>
+                    </div>
                   </div>
-                </div>
-              }
+                }
+              </div>
             </div>
-          </div>
-        }
+          }
 
-        <!-- Barra de ferramentas -->
-        <div class="products-toolbar">
-          <span>
-            {{ filteredProducts().length }}
-            produtos encontrados
-          </span>
+          <!-- Barra de ferramentas -->
+          <div class="products-toolbar">
+            <span>
+              {{ filteredProducts().length }}
+              produtos encontrados
+            </span>
 
-          <div class="toolbar-actions">
-            <label class="sort-label">
-              Ordenar por:
+            <div class="toolbar-actions">
+              <label class="sort-label">
+                Ordenar por:
 
-              <select class="sort-select" [value]="sortOrder()" (change)="updateSortOrder($event)">
-                <option value="mais_vendidos">Mais vendidos</option>
+                <select
+                  class="sort-select"
+                  [value]="sortOrder()"
+                  (change)="updateSortOrder($event)"
+                >
+                  <option value="mais_vendidos">Mais vendidos</option>
 
-                <option value="menor_preco">Menor Preço</option>
+                  <option value="menor_preco">Menor Preço</option>
 
-                <option value="maior_preco">Maior Preço</option>
-              </select>
-            </label>
+                  <option value="maior_preco">Maior Preço</option>
+                </select>
+              </label>
 
-            <div class="view-toggles">
-              <button
-                class="view-btn"
-                type="button"
-                [class.active]="viewMode() === 'grid'"
-                (click)="setViewMode('grid')"
-                aria-label="Visualização em grade"
-              >
-                ▦
-              </button>
+              <div class="view-toggles">
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'grid'"
+                  (click)="setViewMode('grid')"
+                  aria-label="Visualização em grade"
+                >
+                  ▦
+                </button>
 
-              <button
-                class="view-btn"
-                type="button"
-                [class.active]="viewMode() === 'list'"
-                (click)="setViewMode('list')"
-                aria-label="Visualização em lista"
-              >
-                ☰
-              </button>
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'list'"
+                  (click)="setViewMode('list')"
+                  aria-label="Visualização em lista"
+                >
+                  ☰
+                </button>
               </div>
             </div>
           </div>
