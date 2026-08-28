@@ -370,7 +370,7 @@
           (click)="finishOrder()"
           class="btn-finish"
           type="button"
-          [disabled]="checkoutForm.controls.paymentMethod.invalid"
+          [disabled]="checkoutForm.invalid"
         >
           Finalizar Compra
         </button>

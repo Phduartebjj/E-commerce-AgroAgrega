@@ -4,11 +4,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { ProductModel } from '../../../models/product';
 import { COUPONS } from '@core/data/coupons';
 import { CouponModel } from '@models/coupon';
+import { Auth } from '../auth/auth.service';
 @Injectable({
   providedIn: 'root',
 })
 export class Cart {
   //Estado inicial do carrinho, mutável apenas por ele mesmo.
+  private readonly auth = inject(Auth);
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>(this.getStorageCart());
@@ -17,11 +19,17 @@ export class Cart {
     return this.cartItems.asReadonly();
   }
 
+  private getStorageKey(): string {
+    const userId = this.auth.getId();
+    return `${this.keyStorage}-${userId}`;
+  }
+
   getStorageCart() {
     if (!this.isBrowser()) {
       return [];
     }
-    const cartItems = localStorage.getItem(this.keyStorage);
+    const key = this.getStorageKey();
+    const cartItems = localStorage.getItem(key);
     if (!cartItems) {
       return [];
     }
@@ -36,7 +44,8 @@ export class Cart {
     if (!this.isBrowser()) {
       return;
     }
-    localStorage.setItem(this.keyStorage, JSON.stringify(this.cartItems()));
+    const key = this.getStorageKey();
+    localStorage.setItem(key, JSON.stringify(this.cartItems()));
   }
 
   coupon = signal<CouponModel | null>(null);
