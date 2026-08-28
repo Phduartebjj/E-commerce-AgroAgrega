@@ -24,4 +24,4 @@ export type ProductCategory =
 
 export type SortOption = 'relevant' | 'price-asc' | 'price-desc';
 
-export type BrandOption = 'Biomatrix' | 'AgroSense' | 'MultiGrão' | 'SafraMax';
+export type BrandOption = 'Biomatrix' | 'AgroSense' | 'MultiGrão' | 'SafraMax' | 'none';

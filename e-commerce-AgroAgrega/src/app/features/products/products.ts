@@ -109,7 +109,7 @@ export class ProductsComponent {
     // 5. Marca
     if (brands.length > 0) {
       filtered = filtered.filter((product) => {
-        return brands.includes(product.brand ?? '');
+        return brands.includes(product.brand ?? 'none');
       });
     }
 
@@ -174,7 +174,7 @@ export class ProductsComponent {
   }
 
   // Marca
-  toggleBrand(brand: string, event: Event): void {
+  toggleBrand(brand: BrandOption, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
 
     if (isChecked) {
