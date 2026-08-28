@@ -13,7 +13,7 @@ export class Cart {
   private readonly auth = inject(Auth);
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
-  private cartItems = signal<CartItemModel[]>(this.getStorageCart());
+  private cartItems = signal<CartItemModel[]>([]);
 
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
@@ -22,9 +22,11 @@ export class Cart {
 
   private getStorageKey(): string | null {
     const userId = this.auth.currentUserId();
+
     if (!userId) {
       return null;
     }
+
     return `${this.keyStorage}-${userId}`;
   }
 
@@ -107,35 +109,49 @@ export class Cart {
         return [...items, { product: product, quantity: quantity }];
       }
     });
+
+    this.updateStorageCart();
   }
 
   decreaseQuantity(product: ProductModel): void {
     this.cartItems.update((items) => {
-      //Procura produto que vai ser removido no array
-      const productFind = items.find((p) => p.product.id === product.id);
+      const productFind = items.find((item) => item.product.id === product.id);
 
-      //Remove o possível tipo undefined
       if (!productFind) {
         return items;
       }
 
+      if (productFind.quantity <= 1) {
+        return items.filter((item) => item.product.id !== product.id);
+      }
+
       return items.map((item) => {
-        if (product.id === item.product.id) {
-          return { ...item, quantity: item.quantity - 1 };
+        if (item.product.id === product.id) {
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+          };
         }
+
         return item;
       });
     });
+
+    this.updateStorageCart();
   }
 
   removeCartItem(product: ProductModel): void {
     this.cartItems.update((items) => {
       return items.filter((item) => item.product.id !== product.id);
     });
+
+    this.updateStorageCart();
   }
   //Por enquanto só joga os itens fora.
   cleanCartItem(): void {
     this.cartItems.set([]);
+
+    this.updateStorageCart();
   }
   //calcula o valor total do carrinho
   total = computed(() => {
@@ -173,7 +189,11 @@ export class Cart {
 
   constructor() {
     effect(() => {
-      this.auth.currentUserId();
+      const userId = this.auth.currentUserId();
+      if (!userId) {
+        this.cartItems.set([]);
+        return;
+      }
 
       this.loadCartForUser();
     });

@@ -10,7 +10,7 @@ import { ServiceResponse } from '@models/serviceResponse';
 export class Auth {
   private Storage = inject(StorageService);
   private Token = inject(TokenAuth);
-  readonly currentUserId = signal<string | null>(null);
+  readonly currentUserId = signal<string | null>(this.getInitialUserId());
   public isLoggedIn(): boolean {
     return this.Token.checkToken();
   }
