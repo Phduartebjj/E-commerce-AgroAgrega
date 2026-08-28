@@ -29,7 +29,6 @@
 
         <section class="product-section">
           @for (item of currentOrder.items; track item.productId) {
-      
             <app-order-details-card [item]="item" />
           }
         </section>
@@ -88,7 +87,9 @@
         <h2>Total pago</h2>
         <strong>{{ currentOrder.total | precoFormatado }}</strong>
         <p>{{ currentOrder.paymentMethod }}</p>
-        <button type="button" class="outline-button">▤ &nbsp; Nota fiscal</button>
+        <button type="button" (click)="generateReceipt()" class="outline-button">
+          ▤ &nbsp; Nota fiscal
+        </button>
       </aside>
     </div>
   </main>
