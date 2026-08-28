@@ -203,6 +203,12 @@ main {
   filter: brightness(0.95);
 }
 
+.btn-finish:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: none;
+}
+
 .btn-finish:active {
   transform: scale(0.97);
   filter: brightness(0.88);
@@ -272,6 +278,13 @@ main {
   background: #fff;
 }
 
+.payment-error {
+  display: block;
+  padding: 0 20px 16px;
+  color: #c62828;
+  font-size: 13px;
+}
+
 .delivery-header,
 .payment-header {
   display: flex;
@@ -314,6 +327,12 @@ main {
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.payment-option.selected {
+  background: #f2faf4;
 }
 
 .payment-option + .payment-option {

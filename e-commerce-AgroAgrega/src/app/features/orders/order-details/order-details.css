@@ -1,0 +1,311 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: #fff;
+}
+
+.order-details-page {
+  width: min(100%, 1200px);
+  margin: 0 auto;
+  padding: 22px 30px 44px;
+  color: #172235;
+  box-sizing: border-box;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #637086;
+  font-size: 12px;
+}
+
+.breadcrumb strong {
+  color: #172235;
+}
+
+.details-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 26px;
+  align-items: start;
+}
+
+.details-card,
+.summary-card {
+  border: 1px solid #e0e6eb;
+  border-radius: 7px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.details-card {
+  padding: 20px 18px;
+}
+
+.details-header h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+}
+
+.details-header p {
+  margin: 10px 0 0;
+  color: #637086;
+  font-size: 13px;
+}
+
+.details-header p b {
+  padding: 0 7px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #e8f7ed;
+  color: #168046;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.section-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: #e1e7eb;
+}
+
+.product-section{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-section h2,
+.tracking-section h2,
+.info-card h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.info-card p {
+  margin: 8px 0 0;
+  color: #637086;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.tracking {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.tracking-line {
+  position: absolute;
+  top: 20px;
+  left: 16%;
+  right: 16%;
+  height: 2px;
+  background: #38a868;
+}
+
+.tracking-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+}
+
+.step-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #85d3a6;
+  border-radius: 50%;
+  background: #fff;
+  color: #168046;
+  font-weight: 700;
+}
+
+.tracking-step.current .step-icon {
+  border-color: #168046;
+  background: #168046;
+  color: #fff;
+}
+
+.tracking-step strong {
+  font-size: 11px;
+}
+
+.tracking-step small {
+  color: #637086;
+  font-size: 10px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.info-card {
+  padding: 16px;
+  border: 1px solid #e2e8ed;
+  border-radius: 7px;
+}
+
+.info-card h2 span {
+  margin-right: 9px;
+  color: #168046;
+}
+
+.info-card > strong {
+  display: block;
+  font-size: 12px;
+}
+
+.info-card p + p {
+  margin-top: 10px;
+}
+
+.info-card p b {
+  color: #168046;
+}
+
+.payment-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.pix {
+  color: #168046;
+  font-size: 12px;
+}
+
+.pix small {
+  margin-left: 8px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #e8f7ed;
+  font-size: 10px;
+}
+
+.paid-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.paid-total span,
+.paid-total small {
+  color: #637086;
+  font-size: 11px;
+}
+
+.paid-total strong {
+  font-size: 16px;
+}
+
+.summary-card {
+  padding: 27px 16px 20px;
+}
+
+.summary-card h2 {
+  display: inline;
+  margin: 0;
+  font-size: 16px;
+}
+
+.summary-card > strong {
+  float: right;
+  color: #168046;
+  font-size: 20px;
+}
+
+.summary-card p {
+  margin: 12px 0 30px;
+  color: #637086;
+  text-align: right;
+  font-size: 12px;
+}
+
+.summary-card button {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.outline-button {
+  border: 1px solid #79c999;
+  background: #fff;
+  color: #172235;
+}
+
+.primary-button {
+  margin-top: 16px;
+  border: 1px solid #07803e;
+  background: #07803e;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .details-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .order-details-page {
+    padding: 18px 12px 30px;
+  }
+
+  .details-card {
+    padding: 16px 12px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking {
+    gap: 4px;
+  }
+
+  .tracking-line {
+    left: 14%;
+    right: 14%;
+  }
+
+  .tracking-step strong {
+    font-size: 10px;
+  }
+}

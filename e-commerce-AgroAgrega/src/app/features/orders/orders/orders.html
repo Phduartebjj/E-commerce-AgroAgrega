@@ -4,6 +4,12 @@
       <h1>Meus pedidos</h1>
       <p>Acompanhe o status e os detalhes de todos os seus pedidos.</p>
     </div>
+    <label class="orders-filter">
+      <span class="sr-only">Filtrar pedidos</span>
+      <select aria-label="Filtrar pedidos">
+        <option>Todos os pedidos</option>
+      </select>
+    </label>
   </header>
 
   <div class="orders-table" role="table" aria-label="Lista de pedidos">
@@ -12,6 +18,7 @@
       <div role="columnheader">Data</div>
       <div role="columnheader">Status</div>
       <div role="columnheader">Total</div>
+      <div role="columnheader">Ações</div>
     </div>
 
     @for (order of orders(); track order.id) {
@@ -20,7 +27,12 @@
   </div>
 
   <footer class="orders-footer">
-    <span class="pagination-label"> {{ orders().length }} pedidos</span>
+    <span class="pagination-label">1–{{ orders().length }} de {{ orders().length }} pedidos</span>
+    <nav class="pagination-controls" aria-label="Paginação">
+      <button class="page-button page-button-arrow" type="button" aria-label="Página anterior">‹</button>
+      <button class="page-button page-button-active" type="button" aria-current="page">1</button>
+      <button class="page-button page-button-arrow" type="button" aria-label="Próxima página">›</button>
+    </nav>
   </footer>
 </section>
   
