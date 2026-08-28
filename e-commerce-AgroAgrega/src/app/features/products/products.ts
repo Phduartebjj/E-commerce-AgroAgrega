@@ -189,6 +189,10 @@ export class ProductsComponent {
     this.minRating.set(rating);
   }
 
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   constructor() {
     effect(() => {
       const category = this.selectedCategory();
