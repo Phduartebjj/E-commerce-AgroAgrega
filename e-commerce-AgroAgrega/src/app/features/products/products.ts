@@ -82,7 +82,7 @@ export class ProductsComponent {
       filtered = filtered.filter((product) => product.category === category);
     }
 
-    if(minRating > 0) {
+    if (minRating > 0) {
       filtered = filtered.filter((product) => product.rating >= minRating);
     }
 
