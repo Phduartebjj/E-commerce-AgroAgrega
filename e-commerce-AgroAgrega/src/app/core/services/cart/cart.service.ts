@@ -14,25 +14,37 @@ export class Cart {
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>(this.getStorageCart());
+
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
     return this.cartItems.asReadonly();
   }
 
-  private getStorageKey(): string {
-    const userId = this.auth.getId();
+  private getStorageKey(): string | null {
+    const userId = this.auth.currentUserId();
+    if (!userId) {
+      return null;
+    }
     return `${this.keyStorage}-${userId}`;
   }
 
-  getStorageCart() {
+  getStorageCart(): CartItemModel[] {
     if (!this.isBrowser()) {
       return [];
     }
+
     const key = this.getStorageKey();
+
+    if (!key) {
+      return [];
+    }
+
     const cartItems = localStorage.getItem(key);
+
     if (!cartItems) {
       return [];
     }
+
     try {
       return JSON.parse(cartItems) as CartItemModel[];
     } catch {
@@ -45,6 +57,9 @@ export class Cart {
       return;
     }
     const key = this.getStorageKey();
+    if (!key) {
+      return;
+    }
     localStorage.setItem(key, JSON.stringify(this.cartItems()));
   }
 
@@ -152,12 +167,15 @@ export class Cart {
     return this.cartItems().length === 0;
   });
 
+  loadCartForUser(): void {
+    this.cartItems.set(this.auth.currentUserId() ? this.getStorageCart() : []);
+  }
+
   constructor() {
     effect(() => {
-      if (!this.isBrowser()) {
-        return;
-      }
-      this.updateStorageCart();
+      this.auth.currentUserId();
+
+      this.loadCartForUser();
     });
   }
 
