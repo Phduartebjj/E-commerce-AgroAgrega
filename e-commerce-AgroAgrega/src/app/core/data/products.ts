@@ -10,6 +10,7 @@ export const productsItems: ProductModel[] = [
       'Sistema completo com sensores de vento, chuva e umidade para monitoramento em campo.',
     images: ['assets/images/products/agrosense-pro.jpg'],
     rating: 4.9,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-1-1',
@@ -35,6 +36,7 @@ export const productsItems: ProductModel[] = [
     description: 'Semente de alta produtividade com vigor e uniformidade no plantio.',
     images: ['assets/images/products/milho-hibrido.jpg'],
     rating: 4.7,
+    brand: 'Biomatrix',
     reviews: [
       {
         id: 'rev-2-1',
@@ -60,6 +62,7 @@ export const productsItems: ProductModel[] = [
     description: 'Forragem de qualidade para pastejo contínuo e melhoramento do rebanho.',
     images: ['assets/images/products/braquiaria.jpg'],
     rating: 4.6,
+    brand: 'MultiGrão',
     reviews: [
       {
         id: 'rev-3-1',
@@ -85,6 +88,7 @@ export const productsItems: ProductModel[] = [
     description: 'Sistema eficiente para irrigação localizada, economizando água e energia.',
     images: ['assets/images/products/gotejamento.jpg'],
     rating: 4.8,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-4-1',
@@ -110,6 +114,7 @@ export const productsItems: ProductModel[] = [
     description: 'Potência para limpeza e manutenção em áreas agrícolas e rurais.',
     images: ['assets/images/products/rocadeira.jpg'],
     rating: 4.5,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-5-1',
@@ -135,6 +140,7 @@ export const productsItems: ProductModel[] = [
     description: 'Estrutura resistente com capacidade para manter água limpa e estável.',
     images: ['assets/images/products/bebedouro-bovinos.jpg'],
     rating: 4.4,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-6-1',
@@ -160,6 +166,7 @@ export const productsItems: ProductModel[] = [
     description: 'Monitora a umidade do solo em tempo real para irrigação inteligente.',
     images: ['assets/images/products/sensor-umidade.jpg'],
     rating: 5,
+    brand: 'SafraMax',
     reviews: [
       {
         id: 'rev-7-1',
@@ -177,6 +184,7 @@ export const productsItems: ProductModel[] = [
     price: 1699.9,
     description: 'Solução sustentável para irrigação com autonomia energética solar.',
     images: ['assets/images/products/bomba-solar.jpg'],
+    brand: 'AgroSense',
     rating: 4.7,
     reviews: [
       {
@@ -203,6 +211,7 @@ export const productsItems: ProductModel[] = [
     description: 'Complemento nutricional para otimizar o desempenho e saúde do rebanho.',
     images: ['assets/images/products/sal-mineral.jpg'],
     rating: 4.3,
+    brand: 'MultiGrão',
     reviews: [
       {
         id: 'rev-9-1',
@@ -228,6 +237,7 @@ export const productsItems: ProductModel[] = [
     description: 'Corte preciso e durabilidade para podas de plantas e árvores.',
     images: ['assets/images/products/tesoura-poda.jpg'],
     rating: 4.6,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-10-1',
@@ -253,6 +263,7 @@ export const productsItems: ProductModel[] = [
     description: 'Fertilizante equilibrado para alta produtividade em diversas culturas.',
     images: ['assets/images/products/fertilizante.jpg'],
     rating: 4.8,
+    brand: 'MultiGrão',
     reviews: [
       {
         id: 'rev-11-1',
@@ -278,6 +289,7 @@ export const productsItems: ProductModel[] = [
     description: 'Georreferenciamento e navegação para operação agrícola com precisão.',
     images: ['assets/images/products/gps-agricola.jpg'],
     rating: 4.9,
+    brand: 'AgroSense',
     reviews: [
       {
         id: 'rev-12-1',

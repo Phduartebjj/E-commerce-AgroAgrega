@@ -153,7 +153,7 @@
   line-height: 0.7;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .order-row {
     grid-template-columns: 1fr 1fr;
     gap: 0;
@@ -208,5 +208,31 @@
 
   .details-button {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .col {
+    padding: 14px 12px;
+  }
+
+  .order-id {
+    font-size: 1rem;
+  }
+
+  .order-items,
+  .payment-label,
+  .status-note {
+    font-size: 0.9rem;
+  }
+
+  .date-value,
+  .time-value {
+    font-size: 0.95rem;
+  }
+
+  .status-badge {
+    max-width: 100%;
+    font-size: 0.8rem;
   }
 }

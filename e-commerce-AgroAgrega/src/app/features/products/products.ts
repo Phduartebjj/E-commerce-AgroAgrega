@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { ProductCategory, ProductModel, SortOption } from '@models/product';
+import { BrandOption, ProductCategory, ProductModel, SortOption } from '@models/product';
 
 import { ProductService } from '../../core/services/product/product.service';
 import { ProductCardComponent } from './product-card/product-card';
@@ -56,9 +56,9 @@ export class ProductsComponent {
   readonly sortOrder = signal<string>('mais_vendidos');
 
   // Filtros adicionais
-  readonly availableBrands = ['Biomatrix', 'AgroSense', 'MultiGrão', 'SafraMax'];
+  readonly availableBrands = ['Biomatrix', 'AgroSense', 'MultiGrão', 'SafraMax'] as BrandOption[];
 
-  readonly selectedBrands = signal<string[]>([]);
+  readonly selectedBrands = signal<BrandOption[]>([]);
   readonly minRating = signal<number>(0);
 
   // Produtos em destaque
@@ -82,7 +82,7 @@ export class ProductsComponent {
       filtered = filtered.filter((product) => product.category === category);
     }
 
-    if(minRating > 0) {
+    if (minRating > 0) {
       filtered = filtered.filter((product) => product.rating >= minRating);
     }
 
@@ -109,11 +109,7 @@ export class ProductsComponent {
     // 5. Marca
     if (brands.length > 0) {
       filtered = filtered.filter((product) => {
-        return brands.some(
-          (brand) =>
-            product.title.toLowerCase().includes(brand.toLowerCase()) ||
-            product.description.toLowerCase().includes(brand.toLowerCase()),
-        );
+        return brands.includes(product.brand ?? 'none');
       });
     }
 
@@ -178,7 +174,7 @@ export class ProductsComponent {
   }
 
   // Marca
-  toggleBrand(brand: string, event: Event): void {
+  toggleBrand(brand: BrandOption, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
 
     if (isChecked) {
@@ -191,6 +187,10 @@ export class ProductsComponent {
   // Avaliação mínima
   setMinRating(rating: number): void {
     this.minRating.set(rating);
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   constructor() {
