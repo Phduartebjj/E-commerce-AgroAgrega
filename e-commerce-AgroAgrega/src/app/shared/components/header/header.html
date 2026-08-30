@@ -21,7 +21,7 @@
       </button>
     </div>
     <div class="acoes-header">
-      <a class="conta-link" routerLink="/login">
+      <a class="conta-link" [routerLink]="loggedIn() ? '/minha-conta' : '/login'">
         @if (loggedIn()) {
           <span class="icone-perfil"
             ><img src="assets/images/profile.png" alt="Minha Conta"
@@ -53,7 +53,6 @@
           Categorias</span
         >
       </a>
-
       <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
         >Agricultura de Precisão</a
       >

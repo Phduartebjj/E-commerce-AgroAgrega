@@ -1,39 +1,62 @@
+import { Component, inject, Signal, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { Cart } from '@core/services/cart/cart.service';
-import { Component, inject, InjectionToken, Signal, signal } from '@angular/core';
-import { Router,RouterLink }  from '@angular/router';
 import { Auth } from '@core/services/auth/auth.service';
+import { FavoritesService } from '@core/services/favorites/favorites.service';
+import { FavoritesComponent } from '../favorites/favorites.component';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, FavoritesComponent],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
- 
-  private router = inject(Router)
-  private cart = inject(Cart);
-  
-  buscarProdutos(termo: string): void {
-  const search = termo.trim();
+  private readonly router = inject(Router);
+  private readonly cart = inject(Cart);
+  private readonly favoritesService = inject(FavoritesService);
+  private readonly auth = inject(Auth);
 
-  if (!search) {
-    this.router.navigate(['/products']);
-    return;
+  readonly favoritesOpen = signal(false);
+  readonly favoritesCount = this.favoritesService.count;
+
+  readonly totalItens = this.cart.totalCartItens;
+
+  public name(): string {
+    return this.userName();
   }
 
-  this.router.navigate(['/products'], {
-    queryParams: { search: search },
-  });
-}
-  totalItens =this.cart.totalCartItens;
+  public loggedIn(): boolean {
+    return this.auth.isLoggedIn();
+  }
 
-  private auth = inject(Auth);
+  buscarProdutos(termo: string): void {
+    const search = termo.trim();
 
-  public name: Signal<string> = signal(this.userName()).asReadonly();
-  public loggedIn: Signal<boolean> = signal(this.auth.isLoggedIn()).asReadonly(); 
+    if (!search) {
+      this.router.navigate(['/products']);
+      return;
+    }
 
-  private userName(): string{
+    this.router.navigate(['/products'], {
+      queryParams: { search },
+    });
+  }
+
+  toggleFavorites(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+
+    this.favoritesOpen.update(open => !open);
+  }
+
+  closeFavorites(): void {
+    this.favoritesOpen.set(false);
+  }
+
+  private userName(): string {
     const name = this.auth.getName();
     return name !== '' ? `Olá, ${name.toUpperCase()}!` : 'Entrar ou Cadastrar';
   }

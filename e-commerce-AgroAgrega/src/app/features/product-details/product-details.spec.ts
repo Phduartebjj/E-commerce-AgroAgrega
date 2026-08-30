@@ -16,10 +16,8 @@ function createActivatedRoute(id: string) {
   };
 }
 
-const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
-
 describe('ProductDetails', () => {
-    // const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
+  const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
   let component: ProductDetails;
   let fixture: ComponentFixture<ProductDetails>;
 

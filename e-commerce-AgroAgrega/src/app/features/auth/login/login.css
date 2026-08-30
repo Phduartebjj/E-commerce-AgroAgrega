@@ -439,7 +439,7 @@ input {
   filter: brightness(0.95);
 }
 
-.btn-primary:active{
+.btn-primary:active {
   transform: scale(0.97);
   filter: brightness(0.88);
 

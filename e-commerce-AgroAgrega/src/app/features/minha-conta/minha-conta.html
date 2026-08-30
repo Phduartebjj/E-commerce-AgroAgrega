@@ -1,68 +1,166 @@
 <div class="minha-conta">
-  <h1>Minha Conta</h1>
+  <div class="minha-conta__header">
+    <div>
+      <p class="eyebrow">Perfil</p>
+      <h1>Minha Conta</h1>
+    </div>
+  </div>
 
-  <section>
-    <h2>👤 Meus dados</h2>
+  <section class="card card--dados">
+    <div class="card__title-row">
+      <h2>👤 Meus dados</h2>
+      @if (!editingProfile) {
+        <button type="button" class="btn btn--secondary" (click)="editProfile()">Editar dados</button>
+      }
+    </div>
 
     @if (!editingProfile) {
-      <div>
-        <span>Nome</span>
-        <strong>{{ userName }}</strong>
-      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <span>Nome</span>
+          <strong>{{ userName }}</strong>
+        </div>
 
-      <div>
-        <span>E-mail</span>
-        <strong>{{ userEmail }}</strong>
+        <div class="info-item">
+          <span>E-mail</span>
+          <strong>{{ userEmail }}</strong>
+        </div>
       </div>
-
-      <button type="button" (click)="editProfile()">Editar dados</button>
     } @else {
-      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
         <label>
-          Nome
+          <span>Nome</span>
           <input type="text" formControlName="name" />
         </label>
 
         <label>
-          E-mail
+          <span>E-mail</span>
           <input type="email" formControlName="email" />
         </label>
 
-        <button type="submit">Salvar</button>
-        <button type="button" (click)="cancelEdit()">Cancelar</button>
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Salvar</button>
+          <button type="button" class="btn btn--ghost" (click)="cancelEdit()">Cancelar</button>
+        </div>
       </form>
     }
-
-    <div>
-      <span>Telefone</span>
-      <button type="button">Editar</button>
-    </div>
   </section>
 
-  <section>
-    <h2>📍 Meus endereços</h2>
-
-    <div>
-      <span>Endereço de entrega</span>
-      <button>Editar</button>
+  <section class="card">
+    <div class="card__title-row">
+      <h2>📍 Meus endereços</h2>
+      @if (!isAddressFormOpen) {
+        <button type="button" class="btn btn--secondary" (click)="startAddAddress()">+ Adicionar endereço</button>
+      }
     </div>
 
-    <button>+ Adicionar endereço</button>
+    @if (isAddressFormOpen) {
+      <form class="profile-form address-form" [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+        <label>
+          <span>Nome</span>
+          <input type="text" formControlName="fullName" />
+        </label>
+
+        <div class="cep-field">
+          <label>
+            <span>CEP</span>
+            <input type="text" formControlName="cep" placeholder="00000-000" (blur)="buscarEnderecoPorCep()" />
+          </label>
+
+          <button type="button" class="btn btn--secondary btn--small" (click)="buscarEnderecoPorCep()">Buscar CEP</button>
+        </div>
+
+        <label>
+          <span>Rua</span>
+          <input type="text" formControlName="address" />
+        </label>
+
+        <div class="two-columns">
+          <label>
+            <span>Número</span>
+            <input type="text" formControlName="number" />
+          </label>
+
+          <label>
+            <span>Bairro</span>
+            <input type="text" formControlName="neighborhood" />
+          </label>
+        </div>
+
+        <div class="two-columns">
+          <label>
+            <span>Cidade</span>
+            <input type="text" formControlName="city" />
+          </label>
+
+          <label>
+            <span>Estado</span>
+            <input type="text" formControlName="state" maxlength="2" />
+          </label>
+        </div>
+
+        <label>
+          <span>Complemento</span>
+          <input type="text" formControlName="complement" />
+        </label>
+
+        <label>
+          <span>Ponto de referência</span>
+          <input type="text" formControlName="referencePoint" placeholder="Ex.: Próximo ao mercado, em frente à praça" />
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Salvar endereço</button>
+          <button type="button" class="btn btn--ghost" (click)="cancelAddressEdit()">Cancelar</button>
+        </div>
+      </form>
+    } @else if (userAddresses.length === 0) {
+      <p class="empty-state">Você ainda não possui endereços cadastrados.</p>
+    } @else {
+      <div class="info-list">
+        @for (address of userAddresses; track $index) {
+          <div class="info-item info-item--stacked">
+            <div class="address-summary">
+              <span>{{ address.fullName }}</span>
+              <strong>{{ address.address }}, {{ address.number }} - {{ address.neighborhood }}</strong>
+              <small>{{ address.city }} - {{ address.state }} · CEP {{ address.cep }}</small>
+            </div>
+
+            <div class="address-actions">
+              <button type="button" class="btn btn--secondary" (click)="editAddress(address, $index)">Editar</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </section>
 
-  <section>
+  <section class="card">
     <h2>📦 Meus pedidos</h2>
 
-    <p>Pedido #001</p>
-    <p>Pedido #002</p>
+    @if (recentOrders().length === 0) {
+      <p class="empty-state">Você ainda não possui pedidos.</p>
+    } @else {
+      <ul class="pedido-list">
+        @for (order of recentOrders().slice(-3).reverse(); track order.id) {
+          <li class="pedido-item">
+            <div>
+              <strong>Pedido #{{ order.id.slice(0, 8) }}</strong>
+              <small>{{ order.createdAt | date: 'dd/MM/yyyy' }}</small>
+            </div>
+            <span class="pedido-status pedido-status--{{ order.status.toLowerCase() }}">{{ order.status }}</span>
+          </li>
+        }
+      </ul>
+    }
   </section>
 
-  <section>
+  <section class="card card--account">
     <h2>⚙️ Conta</h2>
 
-    <button type="button" (click)="logout()">Logout</button>
-    <button type="button" (click)="removeAccount()">
-  Remover conta
-</button>
+    <div class="account-actions">
+      <button type="button" class="btn btn--secondary" (click)="logout()">Logout</button>
+      <button type="button" class="btn btn--danger" (click)="removeAccount()">Remover conta</button>
+    </div>
   </section>
 </div>

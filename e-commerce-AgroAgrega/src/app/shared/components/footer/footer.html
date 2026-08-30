@@ -1,36 +1,33 @@
 <footer class="rodape">
   <div class="rodape-conteudo">
-
-    
     <div class="rodape-sobre">
       <a class="logo" routerLink="/" aria-label="Ir para a página inicial">
-        <img  src="assets/images/agroagrega-icon.png" alt="" />
+        <img src="assets/images/agroagrega-icon.png" alt="" />
         <span>AgroAgrega</span>
       </a>
 
       <p>
-        Conectamos a força produtora de pequenos produtores rurais ao consumidor final consciente
-        de todo o Brasil.
+        Conectamos a força produtora de pequenos produtores rurais ao consumidor final consciente de
+        todo o Brasil.
       </p>
     </div>
 
-    
     <nav class="rodape-coluna" aria-label="Categorias">
       <h3>Nossas Categorias</h3>
 
-      <a routerLink="/products">Produtos Naturais</a>
-      <a routerLink="/products">Orgânicos</a>
-      <a routerLink="/products">Artesanais da Fazenda</a>
-      <a routerLink="/products">Sementes Premium</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
+        >Agricultura de Precisão</a
+      >
+      <a routerLink="/products" [queryParams]="{ category: 'Irrigação' }">Irrigação</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Pecuária' }">Pecuária</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Insumos' }">Insumos</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">Ferramentas</a>
     </nav>
 
-   
     <nav class="rodape-coluna" aria-label="Institucional">
       <h3>Institucional</h3>
 
-      
-      <a href="#">Políticas de Privacidade</a>
-      <a href="#">Termos de Serviço</a>
+      <a routerLink="/about">Sobre Nós</a>
     </nav>
 
     <!-- CONTATO -->
@@ -39,32 +36,21 @@
 
       <p>
         E-mail:
-        <a href="mailto:contato@agroagrega.com.br">
-          contato@agroagrega.com.br
-        </a>
+        <a href="mailto:contato@agroagrega.com.br"> contato@agroagrega.com.br </a>
       </p>
 
       <p>
         WhatsApp Comercial:
-        <a href="tel:+5511988220402">
-          (21) 98822-0402
-        </a>
+        <a href="tel:+5511988220402"> (21) 98822-0402 </a>
       </p>
 
-      <p>
-        Edifício Eco Sapucai - R. Marquês de Sapucaí, 200 - Cidade Nova
-      </p>
+      <p>Edifício Eco Sapucai - R. Marquês de Sapucaí, 200 - Cidade Nova</p>
     </div>
-
   </div>
 
   <div class="rodape-inferior">
-    <p>
-      © 2026 AgroAgrega Ltda. Todos os direitos reservados.
-    </p>
+    <p>© 2026 AgroAgrega Ltda. Todos os direitos reservados.</p>
 
-    <p>
-      CNPJ: 76.943.866/0001-06 • Desenvolvido com amor pelo Agro e Tecnologia.
-    </p>
+    <p>CNPJ: 76.943.866/0001-06 • Desenvolvido com amor pelo Agro e Tecnologia.</p>
   </div>
 </footer>

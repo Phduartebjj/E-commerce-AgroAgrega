@@ -34,8 +34,10 @@
                 name="cep"
                 type="text"
                 placeholder="01310-100"
+                maxlength="9"
+                placeholder="01310100"
               />
-              <button type="button" class="btn-buscar-cep">Buscar CEP</button>
+              <button type="button" (click)="getCep()" class="btn-buscar-cep">Buscar CEP</button>
             </div>
             @if (checkoutForm.get('cep')?.touched && checkoutForm.get('cep')?.invalid) {
               <small class="errorMessage">
@@ -184,7 +186,13 @@
           <div class="delivery-option">
             <div class="delivery-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="deliveryMethod" value="standard" formControlName="deliveryMethod" checked />
+                <input
+                  type="radio"
+                  name="deliveryMethod"
+                  value="standard"
+                  formControlName="deliveryMethod"
+                  checked
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -207,10 +215,20 @@
             </div>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.Pix)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="pix" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="PaymentMethod.Pix"
+                  formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -223,26 +241,72 @@
             <span class="payment-badge">10% OFF</span>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.CreditCard)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="card" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="PaymentMethod.CreditCard"
+                  formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
               <div class="payment-text">
-                <span class="payment-name">Cartão</span>
-                <small>Crédito ou débito em até 12x</small>
+                <span class="payment-name">Cartão de crédito</span>
+                <small>em até 12x</small>
               </div>
             </div>
 
             <span class="payment-badge muted">Até 12x</span>
           </div>
 
-          <div class="payment-option">
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.DebitCard"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.DebitCard)"
+          >
             <div class="payment-option-main">
               <label class="delivery-radio">
-                <input type="radio" name="paymentMethod" value="boleto" formControlName="paymentMethod" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="PaymentMethod.DebitCard"
+                  formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.DebitCard"
+                />
+                <span class="radio-mark" aria-hidden="true"></span>
+              </label>
+
+              <div class="payment-text">
+                <span class="payment-name">Cartão de débito</span>
+                <small>pagamento a vista</small>
+              </div>
+            </div>
+
+            <span class="payment-badge muted">À vista</span>
+          </div>
+
+          <div
+            class="payment-option"
+            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto"
+            (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.Boleto)"
+          >
+            <div class="payment-option-main">
+              <label class="delivery-radio">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="PaymentMethod.Boleto"
+                  formControlName="paymentMethod"
+                  [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto"
+                />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
 
@@ -254,6 +318,12 @@
 
             <span class="payment-badge muted">À vista</span>
           </div>
+          @if (
+            checkoutForm.controls.paymentMethod.touched &&
+            checkoutForm.controls.paymentMethod.invalid
+          ) {
+            <small class="payment-error">Selecione um método de pagamento para continuar.</small>
+          }
         </div>
       </form>
     </section>
@@ -289,18 +359,25 @@
 
         <div class="payment-safe">
           <span class="icon-lock"
-            ><img src="../../assets/icones/lock_24dp_FEDA90_FILL0_wght400_GRAD0_opsz24.svg" alt=""
+            ><img src="assets/icones/lock_30dp_1A3D2A_FILL0_wght400_GRAD0_opsz24.svg" alt=""
           /></span>
           <span>Pagamento protegido e seguro</span>
         </div>
       </div>
 
       <div>
-        <button (click)="finishOrder()" class="btn-finish">Finalizar Compra</button>
+        <button
+          (click)="finishOrder()"
+          class="btn-finish"
+          type="button"
+          [disabled]="checkoutForm.controls.paymentMethod.invalid"
+        >
+          Finalizar Compra
+        </button>
       </div>
       <div class="support-section">
         <span class="icon-chat"
-          ><img src="../../assets/icones/chat_24dp_FEDA90_FILL0_wght400_GRAD0_opsz24.svg" alt=""
+          ><img src="assets/icones/chat_30dp_E8F5E9_FILL0_wght400_GRAD0_opsz24.svg" alt=""
         /></span>
         <div>
           <h4>Precisa de ajuda?</h4>
