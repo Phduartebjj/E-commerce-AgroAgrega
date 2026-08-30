@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { vi } from 'vitest';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
@@ -18,12 +17,15 @@ function createActivatedRoute(id: string) {
 }
 
 describe('ProductDetails', () => {
+  const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
   let component: ProductDetails;
   let fixture: ComponentFixture<ProductDetails>;
-  let mockCartService: { addCartItem: ReturnType<typeof vi.fn> };
+
+  let mockCartService: {
+    addCartItem: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
-    // Criar mock do CartService usando Vitest
     mockCartService = {
       addCartItem: vi.fn(),
     };
@@ -31,9 +33,10 @@ describe('ProductDetails', () => {
     await TestBed.configureTestingModule({
       imports: [ProductDetails],
       providers: [
+        provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: createActivatedRoute('1'),
+          useValue: createActivatedRoute(productId),
         },
         {
           provide: Cart,
@@ -44,7 +47,41 @@ describe('ProductDetails', () => {
 
     fixture = TestBed.createComponent(ProductDetails);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
+  });
+  it('should select a valid product image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(1);
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should ignore an invalid image index', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg'],
+    };
+
+    component.selectImage(10);
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
+  });
+  it('should ignore a negative image index', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg'],
+    };
+
+    component.selectImage(-1);
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
   });
 
   it('should create', () => {
@@ -52,25 +89,88 @@ describe('ProductDetails', () => {
   });
 
   it('should read the product id from the route', () => {
-    expect(component.id).toBe('1');
+    expect(component.id).toBe(productId);
   });
 
   it('should find the product by id', () => {
     expect(component.product).toBeTruthy();
-    expect(component.product?.id).toBe('1');
-    expect(component.product?.title).toBe('Produto de exemplo 1');
+    expect(component.product?.id).toBe(productId);
+    expect(component.product?.title).toBe('Kit Estação Meteorológica Inteligente AgroSense Pro');
+  });
+  it('should move to the next image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should return to the first image after the last image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(2);
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(0);
+    expect(component.selectedImage).toBe('image-1.jpg');
+  });
+  it('should move to the previous image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.selectImage(2);
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(1);
+    expect(component.selectedImage).toBe('image-2.jpg');
+  });
+  it('should return to the last image when moving previous from the first image', () => {
+    component.product = {
+      ...component.product!,
+      images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
+    };
+
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(2);
+    expect(component.selectedImage).toBe('image-3.jpg');
+  });
+  it('should not change image when product has no images', () => {
+    component.product = {
+      ...component.product!,
+      images: [],
+    };
+
+    component.nextImage();
+
+    expect(component.selectedImageIndex).toBe(0);
+
+    component.previousImage();
+
+    expect(component.selectedImageIndex).toBe(0);
   });
 
   it('should increase and decrease quantity within valid range', () => {
     expect(component.quantity).toBe(1);
 
     component.increaseQuantity();
+
     expect(component.quantity).toBe(2);
 
     component.decreaseQuantity();
+
     expect(component.quantity).toBe(1);
 
     component.decreaseQuantity();
+
     expect(component.quantity).toBe(1);
   });
 
@@ -81,33 +181,39 @@ describe('ProductDetails', () => {
   it('should render product details', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('ID do produto: 1');
-    expect(compiled.textContent).toContain('Produto de exemplo 1');
+    expect(compiled.textContent).toContain(`ID do produto: ${productId}`);
+    expect(compiled.textContent).toContain('Kit Estação Meteorológica Inteligente AgroSense Pro');
     expect(compiled.textContent).toContain('Adicionar ao carrinho');
   });
 
-  it('should inject CartService', () => {
-    expect(component['cart']).toBeTruthy();
-  });
-
-  it('should call addCartItem with current product when addToCart is called', () => {
+  it('should call addCartItem with current product and quantity', () => {
     component.addToCart();
 
-    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product);
+    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product, component.quantity);
+
     expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
-  it('should call addCartItem multiple times based on selected quantity', () => {
+  it('should call addCartItem once with the selected quantity', () => {
     component.quantity = 3;
 
     component.addToCart();
 
-    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product);
-    expect(mockCartService.addCartItem).toHaveBeenCalledTimes(3);
+    expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product, 3);
+
+    expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
   it('should not call addCartItem when product does not exist', () => {
     component.product = undefined;
+
+    component.addToCart();
+
+    expect(mockCartService.addCartItem).not.toHaveBeenCalled();
+  });
+
+  it('should not add product when quantity is invalid', () => {
+    component.quantity = 0;
 
     component.addToCart();
 
@@ -136,6 +242,7 @@ describe('ProductDetails', () => {
     }).compileComponents();
 
     const notFoundFixture = TestBed.createComponent(ProductDetails);
+
     const notFoundComponent = notFoundFixture.componentInstance;
 
     notFoundFixture.detectChanges();

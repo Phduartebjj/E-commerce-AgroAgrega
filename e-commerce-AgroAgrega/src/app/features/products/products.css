@@ -1,0 +1,234 @@
+.product-page {
+  width: 100%;
+  padding: clamp(20px, 4vw, 42px) clamp(12px, 3vw, 32px) 40px;
+  background: #edf2ee;
+}
+
+.catalog-shell {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.catalog-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 32px);
+  align-items: start;
+}
+
+.filters-card {
+  position: sticky;
+  top: 24px;
+  border: 1px solid rgba(15, 31, 26, 0.08);
+  border-radius: 22px;
+  padding: 22px 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 31, 26, 0.08);
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.filters-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #22322b;
+}
+
+.clear-filters {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #1a6d3d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filters-section {
+  padding: 16px 0;
+  border-top: 1px solid #e5ece6;
+}
+
+.filters-section-last {
+  padding-bottom: 0;
+}
+
+.filters-section-title {
+  margin-bottom: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #31433b;
+}
+
+.price-range {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6a7a73;
+}
+
+.range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #dfe7e1;
+  overflow: hidden;
+}
+
+.range-track-active {
+  display: block;
+  width: 72%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1a6d3d 0%, #2c8b54 100%);
+}
+
+.filter-option,
+.rating-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.82rem;
+  color: #31433b;
+}
+
+.rating-option {
+  grid-template-columns: auto auto 1fr;
+}
+
+.filter-option input,
+.rating-option input {
+  margin: 0;
+  accent-color: #1a6d3d;
+}
+
+.filter-option strong {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8a9791;
+}
+
+.stars {
+  color: #f1b84b;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+
+.catalog-content {
+  min-width: 0;
+}
+
+.catalog-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 2vw, 14px);
+  margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.catalog-header h1 {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(1.75rem, 3vw, 2.7rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #0f1f1a;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+}
+
+.filter-chip {
+  max-width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: #e7efe8;
+  color: #1f3e32;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+}
+
+.filter-chip.active {
+  background: #1a6d3d;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(26, 109, 61, 0.2);
+}
+
+.catalog-grid {
+  display: grid;
+  align-items: start;
+  justify-items: stretch;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(16px, 2.5vw, 28px);
+  justify-content: center;
+}
+
+.catalog-grid > app-product-card {
+  width: 100%;
+}
+
+@media (min-width: 720px) and (max-width: 1023.98px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 719.98px) {
+  .catalog-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filters-card {
+    position: static;
+  }
+
+  .catalog-grid {
+    justify-items: stretch;
+  }
+}
+
+.empty-products {
+  width: 100%;
+  padding: clamp(32px, 8vw, 48px) 12px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.empty-products h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}

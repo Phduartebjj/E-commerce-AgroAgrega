@@ -232,27 +232,28 @@ input {
 
 /* Headings */
 .area-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--green-700);
-  text-transform: uppercase;
   margin-bottom: 12px;
+  color: var(--green-600);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .form-heading {
-  font-size: clamp(28px, 3vw, 48px);
-  font-weight: 800;
+  margin: 0 0 8px;
   color: var(--gray-900);
-  line-height: 1.1;
-  margin-bottom: 8px;
-  letter-spacing: -0.05em;
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 
 .form-sub {
-  font-size: 14px;
+  margin: 0 0 26px;
   color: var(--gray-500);
-  margin-bottom: 28px;
+  font-size: 14px;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -269,8 +270,26 @@ input {
   gap: 6px;
 }
 
+.field__error {
+  display: block;
+  margin-top: 2px;
+  color: #dc2626;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.login-error {
+  width: 100%;
+  margin-top: -4px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .field__label {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
 }
@@ -290,7 +309,7 @@ input {
 
 .field__input {
   width: 100%;
-  height: 48px;
+  height: 46px;
   padding: 0 14px 0 42px;
   border: 1.5px solid var(--gray-200);
   border-radius: 8px;
@@ -301,6 +320,7 @@ input {
   transition:
     border-color 0.18s,
     box-shadow 0.18s;
+  cursor: auto;
 }
 
 .field__input:focus {
@@ -320,14 +340,17 @@ input {
 
 .field__toggle {
   position: absolute;
+  top: 50%;
   right: 14px;
-  background: none;
-  border: none;
-  font-size: 13px;
-  font-weight: 600;
-  color: #2a2a2a;
   padding: 0;
+  border: 0;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--green-700);
+  font-size: 12px;
+  font-weight: 600;
 }
+
 .field__toggle:hover {
   color: var(--green-600);
 }
@@ -377,7 +400,7 @@ input {
 }
 
 .checkbox__input:checked + .checkbox__box {
-  background: var(--green-700);
+  background-color: var(--green-700);
   border-color: var(--green-700);
 }
 
@@ -392,6 +415,10 @@ input {
 
 /* Botão principal */
 .btn-primary {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
   height: 54px;
   width: 100%;
   display: flex;
@@ -404,17 +431,19 @@ input {
   font-weight: 700;
   border: none;
   border-radius: 10px;
-  transition:
-    background 0.18s,
-    transform 0.12s;
   margin-top: 2px;
   box-shadow: 0 4px 10px rgba(31, 128, 64, 0.18);
 }
 .btn-primary:hover {
   background: var(--green-600);
+  filter: brightness(0.95);
 }
+
 .btn-primary:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
 }
 
 /* Divider */

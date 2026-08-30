@@ -1,8 +1,7 @@
 <main class="cart-container">
-  <p class="breadcrumb">
-    <a routerLink="/">Home</a> >
-    <a class="destaque" routerLink="/cart">Carrinho</a>
-  </p>
+  <nav class="breadcrumb">
+    <p><a routerLink="/">Home</a> > <span class="destaque">Cart</span></p>
+  </nav>
   <section class="cart-title">
     <div>
       <span>SUA COMPRA</span>
@@ -36,7 +35,8 @@
             <img [src]="item.product.images" alt="{{ item.product.title }}" />
             <div class="product-details">
               <p class="product-category">{{ item.product.category }}</p>
-              <p class="product-title">{{ item.product.title }}</p>
+              <a [routerLink]="['/products', item.product.id]"> {{ item.product.title }}</a>
+
               <p class="product-description">{{ item.product.description }}</p>
               <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
             </div>
@@ -98,7 +98,4 @@
       </button>
     </div>
   </section>
-  <button (click)="addProduct(item)">Adicionar Produto</button>
-  <button (click)="addProduct(item2)">Adicionar Produto 2</button>
-  <button (click)="clearCart()">Limpar Carrinho</button>
 </main>

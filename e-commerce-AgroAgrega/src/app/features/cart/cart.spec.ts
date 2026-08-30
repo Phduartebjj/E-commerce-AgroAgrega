@@ -4,7 +4,7 @@ import { CartComponent } from './cart';
 import { provideRouter, RouterLink } from '@angular/router';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 
-describe('Cart', () => {
+describe('CartComponent', () => {
   let component: CartComponent;
   let fixture: ComponentFixture<CartComponent>;
 

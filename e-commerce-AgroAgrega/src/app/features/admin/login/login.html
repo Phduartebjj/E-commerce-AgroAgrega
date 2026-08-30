@@ -1,0 +1,27 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="brand">
+      <span class="brand-icon">🌱</span>
+      <h1>Agro<span>Agrega</span></h1>
+    </div>
+    <p class="subtitle">Painel Administrativo</p>
+
+    <form>
+      <div class="campo">
+        <label for="usuario">Usuário</label>
+        <input id="usuario" type="text" name="usuario" [(ngModel)]="usuario" required autofocus />
+      </div>
+
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" name="senha" [(ngModel)]="senha" required />
+      </div>
+
+      @if (erro) {
+        <p class="erro">Usuário ou senha inválidos.</p>
+      }
+
+      <button type="submit" (click)="onSubmit()">Entrar</button>
+    </form>
+  </div>
+</div>

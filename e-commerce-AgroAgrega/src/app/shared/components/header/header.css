@@ -1,0 +1,372 @@
+:host {
+  display: block;
+  width: 100%;
+}
+.site-header {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--white);
+}
+.barra-anuncios {
+  min-height: 52px;
+  padding: 10px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--green-dark);
+  color: var(--white);
+}
+.barra-anuncios-texto {
+  margin: 0;
+  font-size: clamp(0.75rem, 1.2vw, 1rem);
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.cabecalho-principal {
+  width: min(calc(100% - 32px), 1240px);
+  min-height: clamp(88px, 9vw, 124px);
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+}
+
+.logo-marca {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--green-dark);
+
+  text-decoration: none;
+  line-height: 1;
+}
+
+.logo-marca img {
+  display: block;
+}
+
+.logo-nome {
+  width: min(150px, 20vw);
+  height: auto;
+  max-height: 42px;
+  object-fit: cover;
+  margin-left: -4px;
+}
+
+.logo-icone {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.area-busca {
+  flex: 1;
+  min-width: 180px;
+  max-width: 720px;
+
+  display: flex;
+  align-items: center;
+}
+.campo-busca {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+
+  padding: 0 clamp(12px, 2vw, 20px);
+  border: 1px solid #e5e5e5;
+  border-radius: 28px 0 0 28px;
+
+  font-size: 0.95rem;
+  outline: none;
+  cursor: auto;
+}
+
+.campo-busca:focus {
+  border-color: var(--green-dark);
+}
+
+.botao-busca {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  height: 52px;
+  padding: 0 clamp(16px, 2.5vw, 28px);
+  border: none;
+  background-color: var(--green-dark);
+  color: var(--white);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0 28px 28px 0;
+  margin: left -1px;
+  
+}
+
+.botao-busca:active{
+  transform: scale(0.97);
+  filter: brightness(0.88);
+
+  box-shadow: none;
+}
+
+.acoes-header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: clamp(12px, 2vw, 24px);
+  margin-left: auto;
+}
+.conta-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--green-dark);
+  text-decoration: none;
+  transition: opacity 0.5s;
+}
+.conta-link:hover {
+  opacity: 0.6;
+}
+
+.icone-perfil {
+  font-size: 1.6rem;
+}
+
+.icone-perfil img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.conta-texto {
+  display: flex;
+  flex-direction: column;
+  max-width: 140px;
+}
+
+.nome-usuario {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.conta-texto strong {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.icone-favoritos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+  border: none;
+  background: transparent;
+  color: var(--green-dark);
+  text-decoration: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: opacity 0.5s;
+}
+.icone-favoritos:hover {
+  opacity: 0.6;
+}
+
+.icone-favoritos img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.icone-carrinho {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0px;
+  border: none;
+  background: transparent;
+  color: var(--green-dark);
+  text-decoration: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: opacity 0.5s;
+  position: relative;
+}
+.icone-carrinho:hover {
+  opacity: 0.6;
+}
+
+.icone-carrinho img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.contador-carrinho{
+position: absolute;
+top: -3px;
+right: -5px;
+
+min-width: 18px;
+height: 18px;
+padding: 0 5px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+border-radius: 999px;
+background-color: #9bd52b;
+color: var(--green-dark);
+
+font-size: 0.65rem;
+font-weight: 700;
+line-height: 1;
+
+box-shadow: 0 0 0 2px var(--white);
+pointer-events: none;
+}
+
+.navegar-categorias {
+  overflow-x: auto;
+  scrollbar-width: none;
+  width: 100%;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background-color: var(--white);
+}
+.navegar-categorias::-webkit-scrollbar{
+  display: none;
+}
+
+.conteudo-do-menu {
+  width: min(calc(100% - 32px), 1240px);
+  min-height: 42px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 32px;
+}
+
+.conteudo-do-menu a {
+  color: var(--green-dark);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  transition: opacity 0.5s;
+}
+
+.conteudo-do-menu a:hover {
+  opacity: 0.5;
+}
+
+.todas-categorias {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icone-categorias {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.icone-categorias img {
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 768px) {
+  .cabecalho-principal {
+    min-height: auto;
+    width: calc(100% - 24px);
+    padding: 18px 0 20px;
+
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-marca {
+    order: 1;
+  }
+
+  .acoes-header {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .area-busca {
+    order: 3;
+
+    flex-basis: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .navegar-categorias {
+    overflow-x: auto;
+  }
+
+  .conteudo-do-menu {
+    width: max-content;
+    min-width: 100%;
+
+    padding: 0 12px;
+    gap: clamp(16px, 4vw, 24px);
+
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .conta-texto {
+    display: none;
+  }
+  .acoes-header {
+    gap: 12px;
+  }
+  .logo-icone {
+    width: 44px;
+    height: 44px;
+  }
+  .logo-nome {
+    width: min(180px, 36vw);
+    max-height: 30px;
+  }
+  .campo-busca,
+  .botao-busca {
+    height: 46px;
+  }
+  .botao-busca {
+    padding: 0 16px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  .conta-texto {
+    display: none;
+  }
+}

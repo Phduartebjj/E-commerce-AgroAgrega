@@ -1,169 +1,356 @@
 <div class="page">
+
   <aside class="hero">
+
     <div class="hero__overlay"></div>
-    <a routerLink="/" class="hero__back">&larr; Voltar para a loja</a>
+
+    <a
+      routerLink="/"
+      class="hero__back"
+    >
+      &larr; Voltar para a loja
+    </a>
 
     <div class="hero__body">
-      <div class="hero__logo-icon" aria-hidden="true">+</div>
-      <p class="hero__label">AGROAGREGA CONECTA</p>
-      <h1 class="hero__headline">Plante novas<br />possibilidades.</h1>
-      <p class="hero__sub">
-        Crie sua conta e encontre soluções para fazer o campo avançar.
-      </p>
-      <div class="hero__badges">
-        <span class="hero__badge">&#10003; Ambiente seguro</span>
-        <span class="hero__badge">&#10003; Suporte especializado</span>
+
+      <div
+        class="hero__logo-icon"
+        aria-hidden="true"
+      >
+        +
       </div>
+
+      <p class="hero__label">
+        AGROAGREGA CONECTA
+      </p>
+
+      <h1 class="hero__headline">
+        Plante novas<br />
+        possibilidades.
+      </h1>
+
+      <p class="hero__sub">
+        Crie sua conta e encontre soluções
+        para fazer o campo avançar.
+      </p>
+
+      <div class="hero__badges">
+
+        <span class="hero__badge">
+          &#10003; Ambiente seguro
+        </span>
+
+        <span class="hero__badge">
+          &#10003; Suporte especializado
+        </span>
+
+      </div>
+
     </div>
 
-    <p class="hero__footer">MÁQUINAS + TECNOLOGIA + DADOS + PRODUTIVIDADE</p>
+    <p class="hero__footer">
+      MÁQUINAS + TECNOLOGIA + DADOS + PRODUTIVIDADE
+    </p>
+
   </aside>
 
   <main class="form-panel">
+
     <div class="form-wrap">
+
+      <!-- BRAND -->
       <div class="brand">
+
         <div class="brand__icon">
-          <img src="/unnamed%20(1).png?v=2" alt="" />
+          <img
+            src="./assets/images/agroagrega-icon.png"
+            alt="AgroAgrega"
+          />
         </div>
-        <span class="brand__name"><strong>Agro</strong>Agrega</span>
+
+        <span class="brand__name">
+          <strong>Agro</strong>Agrega
+        </span>
+
       </div>
 
-      @if (!submitted) {
-        <p class="area-label">ÁREA DO CLIENTE</p>
-        <h2 class="form-heading">Crie sua conta</h2>
-        <p class="form-sub">
-          Junte-se à AgroAgrega e cuide melhor do seu negócio.
-        </p>
+      <!-- HEADER -->
+      <p class="area-label">
+        ÁREA DO CLIENTE
+      </p>
 
-        <form class="form" (ngSubmit)="onSubmit()" #registerForm="ngForm">
-          <div class="field">
-            <label class="field__label" for="name">Nome completo</label>
-            <input
-              id="name"
-              class="field__input"
-              type="text"
-              placeholder="Como podemos chamar você?"
-              autocomplete="name"
-              [(ngModel)]="name"
-              name="name"
-              required
-            />
-          </div>
+      <h2 class="form-heading">
+        Crie sua conta
+      </h2>
 
-          <div class="field">
-            <label class="field__label" for="email">E-mail</label>
-            <input
-              id="email"
-              class="field__input"
-              type="email"
-              placeholder="seuemail@exemplo.com"
-              autocomplete="email"
-              [(ngModel)]="email"
-              name="email"
-              required
-              email
-            />
-          </div>
+      <p class="form-sub">
+        Junte-se à AgroAgrega e cuide melhor
+        do seu negócio.
+      </p>
 
-          <div class="field">
-            <label class="field__label" for="password">Senha</label>
-            <div class="field__wrap">
-              <input
-                id="password"
-                class="field__input"
-                [type]="showPassword ? 'text' : 'password'"
-                placeholder="Mínimo de 6 caracteres"
-                autocomplete="new-password"
-                [(ngModel)]="password"
-                name="password"
-                minlength="6"
-                required
-              />
-              <button
-                type="button"
-                class="field__toggle"
-                (click)="togglePassword()"
-              >
-                {{ showPassword ? 'Ocultar' : 'Mostrar' }}
-              </button>
-            </div>
-          </div>
+      <!-- FORM -->
+      <form
+        class="form"
+        [formGroup]="registerForm"
+        (submit)="onSubmit($event)"
+      >
 
-          <div class="field">
-            <label class="field__label" for="passwordConfirmation"
-              >Confirme sua senha</label
-            >
-            <div class="field__wrap">
-              <input
-                id="passwordConfirmation"
-                class="field__input"
-                [class.field__input--invalid]="
-                  passwordConfirmation && !passwordsMatch
-                "
-                [type]="showPasswordConfirmation ? 'text' : 'password'"
-                placeholder="Digite sua senha novamente"
-                autocomplete="new-password"
-                [(ngModel)]="passwordConfirmation"
-                name="passwordConfirmation"
-                required
-              />
-              <button
-                type="button"
-                class="field__toggle"
-                (click)="togglePasswordConfirmation()"
-              >
-                {{ showPasswordConfirmation ? 'Ocultar' : 'Mostrar' }}
-              </button>
-            </div>
-            @if (passwordConfirmation && !passwordsMatch) {
-              <span class="field__error">As senhas precisam ser iguais.</span>
-            }
-          </div>
+        <!-- NOME -->
+        <div class="field">
 
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              class="checkbox__input"
-              name="terms"
-              ngModel
-              required
-            />
-            <span class="checkbox__box">&#10003;</span>
-            <span
-              >Concordo com os
-              <a routerLink="/" class="link">Termos de Uso</a></span
-            >
+          <label
+            class="field__label"
+            for="name"
+          >
+            Nome completo
           </label>
 
-          <button
-            type="submit"
-            class="btn-primary"
-            [disabled]="registerForm.invalid || !passwordsMatch"
+          <input
+            id="name"
+            class="field__input"
+            [class.field__input--invalid]="
+              nameError()
+            "
+            type="text"
+            placeholder="Como podemos chamar você?"
+            autocomplete="name"
+            formControlName="name"
+            (input)="onNameInput()"
+          />
+
+          @if (nameError()) {
+            <span class="field__error">
+              {{ nameError() }}
+            </span>
+          }
+
+        </div>
+
+        <!-- EMAIL -->
+        <div class="field">
+
+          <label
+            class="field__label"
+            for="email"
           >
-            Criar minha conta <span aria-hidden="true">&rarr;</span>
-          </button>
-        </form>
+            E-mail
+          </label>
 
-        <p class="register-line">
-          Já tem uma conta?
-          <a routerLink="/login" class="link link--bold">Entrar agora</a>
-        </p>
-      } @else {
-        <p class="area-label">CONTA CRIADA</p>
-        <h2 class="form-heading">Tudo pronto, {{ name }}.</h2>
-        <p class="form-sub">
-          Sua conta foi criada. Agora você já pode explorar a AgroAgrega.
-        </p>
-        <a routerLink="/login" class="btn-primary"
-          >Ir para o login <span aria-hidden="true">&rarr;</span></a
+          <input
+            id="email"
+            class="field__input"
+            [class.field__input--invalid]="
+              emailError()
+            "
+            type="email"
+            placeholder="seuemail@exemplo.com"
+            autocomplete="email"
+            formControlName="email"
+            (input)="onEmailInput()"
+          />
+
+          @if (emailError()) {
+            <span class="field__error">
+              {{ emailError() }}
+            </span>
+          }
+
+        </div>
+
+        <!-- SENHA -->
+        <div class="field">
+
+          <label
+            class="field__label"
+            for="password"
+          >
+            Senha
+          </label>
+
+          <div class="field__wrap">
+
+            <input
+              id="password"
+              class="field__input"
+              [class.field__input--invalid]="
+                passwordError()
+              "
+              [type]="
+                showPassword()
+                  ? 'text'
+                  : 'password'
+              "
+              placeholder="Mínimo de 6 caracteres"
+              autocomplete="new-password"
+              formControlName="password"
+              (input)="onPasswordInput()"
+            />
+
+            <button
+              type="button"
+              class="field__toggle"
+              (click)="togglePassword()"
+            >
+              {{
+                showPassword()
+                  ? 'Ocultar'
+                  : 'Mostrar'
+              }}
+            </button>
+
+          </div>
+
+          @if (passwordError()) {
+            <span class="field__error">
+              {{ passwordError() }}
+            </span>
+          }
+
+        </div>
+
+        <!-- CONFIRMAÇÃO DA SENHA -->
+        <div class="field">
+
+          <label
+            class="field__label"
+            for="passwordConfirmation"
+          >
+            Confirme sua senha
+          </label>
+
+          <div class="field__wrap">
+
+            <input
+              id="passwordConfirmation"
+              class="field__input"
+              [class.field__input--invalid]="
+                passwordConfirmationError()
+              "
+              [type]="
+                showPasswordConfirmation()
+                  ? 'text'
+                  : 'password'
+              "
+              placeholder="Digite sua senha novamente"
+              autocomplete="new-password"
+              formControlName="passwordConfirmation"
+              (input)="onPasswordConfirmationInput()"
+            />
+
+            <button
+              type="button"
+              class="field__toggle"
+              (click)="
+                togglePasswordConfirmation()
+              "
+            >
+              {{
+                showPasswordConfirmation()
+                  ? 'Ocultar'
+                  : 'Mostrar'
+              }}
+            </button>
+
+          </div>
+
+          @if (passwordConfirmationError()) {
+            <span class="field__error">
+              {{ passwordConfirmationError() }}
+            </span>
+          }
+
+        </div>
+
+        <!-- TERMOS -->
+        <label class="checkbox-label">
+
+          <input
+            type="checkbox"
+            class="checkbox__input"
+            formControlName="terms"
+            (change)="onTermsChange()"
+          />
+
+          <span
+            class="checkbox__box"
+            aria-hidden="true"
+          >
+            &#10003;
+          </span>
+
+          <span>
+            Concordo com os
+
+            <a
+              routerLink="/"
+              class="link"
+            >
+              Termos de Uso
+            </a>
+          </span>
+
+        </label>
+
+        <!-- ERRO DO AUTH -->
+        @if (registerError()) {
+          <div
+            class="login-error"
+            role="alert"
+          >
+            {{ registerError() }}
+          </div>
+        }
+
+        <!-- BOTÃO -->
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="
+            registerForm.invalid ||
+            !passwordsMatch
+          "
         >
-      }
+          Criar minha conta
 
-      <p class="terms">
-        Seus dados são tratados com segurança conforme nossa
-        <a routerLink="/" class="link">Política de Privacidade</a>.
+          <span aria-hidden="true">
+            &rarr;
+          </span>
+
+        </button>
+
+      </form>
+
+      <!-- LOGIN -->
+      <p class="register-line">
+
+        Já tem uma conta?
+
+        <a
+          routerLink="/login"
+          class="link link--bold"
+        >
+          Entrar agora
+        </a>
+
       </p>
+
+      <!-- PRIVACIDADE -->
+      <p class="terms">
+
+        Seus dados são tratados com segurança
+        conforme nossa
+
+        <a
+          routerLink="/"
+          class="link"
+        >
+          Política de Privacidade
+        </a>.
+
+      </p>
+
     </div>
+
   </main>
+
 </div>
->>>>>>> 60b3e756c1b35c505f2ff8c51d8157db6c139adb

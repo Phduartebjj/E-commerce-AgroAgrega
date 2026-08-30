@@ -1,1 +1,26 @@
-<p>orders works!</p>
+<section class="orders-page">
+  <header class="orders-header">
+    <div class="header-copy">
+      <h1>Meus pedidos</h1>
+      <p>Acompanhe o status e os detalhes de todos os seus pedidos.</p>
+    </div>
+  </header>
+
+  <div class="orders-table" role="table" aria-label="Lista de pedidos">
+    <div class="orders-table-header" role="row">
+      <div role="columnheader">Pedido</div>
+      <div role="columnheader">Data</div>
+      <div role="columnheader">Status</div>
+      <div role="columnheader">Total</div>
+    </div>
+
+    @for (order of orders(); track order.id) {
+      <app-order [order]="order"></app-order>
+    }
+  </div>
+
+  <footer class="orders-footer">
+    <span class="pagination-label"> {{ orders().length }} pedidos</span>
+  </footer>
+</section>
+  

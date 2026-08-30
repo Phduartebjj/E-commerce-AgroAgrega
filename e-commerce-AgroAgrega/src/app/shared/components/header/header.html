@@ -1,0 +1,66 @@
+<header class="site-header">
+  <div class="barra-anuncios">
+    <p class="barra-anuncios-texto">Entrega para todo Brasil e compra online com entrega rápida</p>
+  </div>
+  <div class="cabecalho-principal">
+    <a class="logo-marca" routerLink="/" aria-label="Ir para a página inicial">
+      <img class="logo-icone" src="assets/images/agroagrega-icon.png" alt="AgroAgrega ícone" />
+      <img class="logo-nome" src="assets/images/AgroAgrega-logo.svg" alt="AgroAgrega" />
+    </a>
+    <div class="area-busca">
+      <input
+        #searchInput
+        class="campo-busca"
+        type="search"
+        placeholder="Busque sementes, ferramentas e agroprodutos"
+        aria-label="Buscar produtos"
+        (keydown.enter)="buscarProdutos(searchInput.value)"
+      />
+      <button class="botao-busca" type="button" (click)="buscarProdutos(searchInput.value)">
+        Buscar
+      </button>
+    </div>
+    <div class="acoes-header">
+      <a class="conta-link" routerLink="/login">
+        @if (loggedIn()) {
+          <span class="icone-perfil"
+            ><img src="assets/images/profile.png" alt="Minha Conta"
+          /></span>
+        }
+        <span class="conta-texto">
+          <small class="nome-usuario">{{ name() }}</small>
+          @if (loggedIn()) {
+            <strong>Minha conta</strong>
+          }
+        </span>
+      </a>
+
+      <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
+        <img src="assets/images/cart.png" alt="Carrinho de Compras" />
+        @if (totalItens() > 0) {
+          <span class="contador-carrinho">
+            {{ totalItens() }}
+          </span>
+        }
+      </a>
+    </div>
+  </div>
+  <nav class="navegar-categorias" aria-label="Categorias de produtos">
+    <div class="conteudo-do-menu">
+      <a class="todas-categorias" routerLink="/products">
+        <span class="icone-categorias"
+          ><img src="assets/images/todas-categorias.svg" alt="Todas categorias" />Todas as
+          Categorias</span
+        >
+      </a>
+
+      <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
+        >Agricultura de Precisão</a
+      >
+      <a routerLink="/products" [queryParams]="{ category: 'Irrigação' }">Irrigação</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Pecuária' }">Pecuária</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Insumos' }">Insumos</a>
+      <a routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">Ferramentas</a>
+    </div>
+  </nav>
+</header>
