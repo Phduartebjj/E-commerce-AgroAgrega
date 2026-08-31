@@ -18,7 +18,7 @@ import { AboutUsComponent } from '@features/about-us/about-us';
 import { authGuard, guestGuard, authAdminGuard } from '@core/services/auth/guards/';
 
 import { AdminLoginComponent } from './features/admin/login/login';
-import { Admin } from '@features/admin/admin';
+import { AdminComponent } from '@features/admin/admin';
 
 export const routes: Routes = [
   {
@@ -86,7 +86,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [authAdminGuard],
-    component: Admin,
+    component: AdminComponent,
     data: { hideFooter: true, hideHeader: true },
   }
 ];
