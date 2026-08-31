@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductService } from '@core/services/product/product.service';
+import { OrderService } from '@core/services/order/order.service';
 import { ProductModel } from '@models/product';
 import { AuthAdminService } from '@core/services/auth/auth-admin.service';
 
@@ -63,6 +64,12 @@ export class AdminComponent implements OnInit {
   editStorePhone = signal<string>('');
   editStoreCity = signal<string>('');
 
+  // Password modal
+  showPasswordModal = signal<boolean>(false);
+  currentPassword = signal<string>('');
+  newPassword = signal<string>('');
+  confirmPassword = signal<string>('');
+
   // Computed values
   filteredOrders = computed(() => {
     const orders = this.orders();
@@ -121,11 +128,44 @@ export class AdminComponent implements OnInit {
     public productService: ProductService,
     private authAdminService: AuthAdminService,
     private router: Router,
+    private orderService: OrderService,
   ) {}
 
   ngOnInit(): void {
-    this.orders.set(this.getMockOrders());
+    this.syncOrdersFromService();
     this.clients.set(this.getMockClients());
+  }
+
+  private syncOrdersFromService(): void {
+    const serviceOrders = this.orderService.getOrders()();
+
+    if (!serviceOrders.length) {
+      this.orders.set(this.getMockOrders());
+      return;
+    }
+
+    this.orders.set(
+      serviceOrders.map((order) => ({
+        id: order.id,
+        customerName: order.customerName || `Cliente ${order.userId.slice(0, 8)}`,
+        date: new Date(order.createdAt),
+        total: order.total,
+        status: this.mapOrderStatus(order.status),
+        itemsCount: order.items.reduce((sum, item) => sum + item.quantity, 0),
+      }))
+    );
+  }
+
+  private mapOrderStatus(status: string): OrderStatus {
+    const map: Record<string, OrderStatus> = {
+      Pendente: 'pending',
+      Confirmado: 'processing',
+      'À caminho': 'shipped',
+      Entregue: 'delivered',
+      Cancelado: 'cancelled',
+    };
+
+    return map[status] ?? 'pending';
   }
 
   // Tab navigation
@@ -217,6 +257,56 @@ export class AdminComponent implements OnInit {
     this.storeCity.set(this.editStoreCity());
     this.showProfileModal.set(false);
     alert('✅ Perfil atualizado com sucesso!');
+  }
+
+  openPasswordModal(): void {
+    this.currentPassword.set('');
+    this.newPassword.set('');
+    this.confirmPassword.set('');
+    this.showPasswordModal.set(true);
+  }
+
+  closePasswordModal(): void {
+    this.showPasswordModal.set(false);
+  }
+
+  savePassword(): void {
+    const senhaAtual = this.currentPassword().trim();
+    const novaSenha = this.newPassword().trim();
+    const confirmacao = this.confirmPassword().trim();
+
+    if (!senhaAtual || !novaSenha || !confirmacao) {
+      alert('Preencha a senha atual, a nova senha e a confirmação.');
+      return;
+    }
+
+    if (senhaAtual !== 'admin123') {
+      alert('Senha atual incorreta.');
+      return;
+    }
+
+    if (novaSenha.length < 6) {
+      alert('A nova senha deve ter pelo menos 6 caracteres.');
+      return;
+    }
+
+    if (novaSenha !== confirmacao) {
+      alert('A confirmação da nova senha não confere.');
+      return;
+    }
+
+    this.showPasswordModal.set(false);
+    alert('✅ Senha alterada com sucesso!');
+  }
+
+  clearHistory(): void {
+    if (!confirm('Tem certeza que deseja limpar o histórico do painel?')) {
+      return;
+    }
+
+    this.orders.set([]);
+    this.clients.set([]);
+    alert('✅ Histórico limpo com sucesso!');
   }
 
   // Auth

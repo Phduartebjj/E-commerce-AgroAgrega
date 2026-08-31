@@ -12,6 +12,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { OrderService } from '@core/services/order/order.service';
+import { Auth } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -22,6 +23,7 @@ import { OrderService } from '@core/services/order/order.service';
 export class CheckoutComponent {
   private cart = inject(Cart);
   private orderService = inject(OrderService);
+  private auth = inject(Auth);
   router = inject(Router);
 
   subTotal = this.cart.subtotal;
@@ -104,8 +106,14 @@ export class CheckoutComponent {
       return;
     }
 
-    const order = this.orderService.createOrder(
+    const customerName =
+      this.checkoutForm.get('fullName')?.value?.trim() ||
+      this.auth.getName() ||
+      'Cliente';
+
+    this.orderService.createOrder(
       this.cart.getCartItems()(),
+      customerName,
       crypto.randomUUID(),
       this.cart.subtotal(),
       this.discountTotalValue,
@@ -114,7 +122,6 @@ export class CheckoutComponent {
     this.cart.removeCoupon();
     this.cart.cleanCartItem();
     this.router.navigate(['/orders']);
-    console.log(order);
   }
 }
 

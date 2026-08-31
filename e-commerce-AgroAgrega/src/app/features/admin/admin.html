@@ -401,10 +401,10 @@
         <div class="settings-card">
           <h3>Segurança</h3>
           <div class="setting-item">
-            <button class="btn btn-secondary">🔐 Alterar Senha</button>
+            <button class="btn btn-secondary" (click)="openPasswordModal()">🔐 Alterar Senha</button>
           </div>
           <div class="setting-item">
-            <button class="btn btn-secondary">🗑️ Limpar Histórico</button>
+            <button class="btn btn-secondary" (click)="clearHistory()">🗑️ Limpar Histórico</button>
           </div>
         </div>
 
@@ -422,6 +422,59 @@
       </div>
     </section>
   </main>
+
+  <!-- Password Modal -->
+  <div class="modal-overlay" *ngIf="showPasswordModal()" (click)="closePasswordModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Alterar Senha</h3>
+        <button class="modal-close" (click)="closePasswordModal()">✕</button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="savePassword()">
+        <div class="form-group">
+          <label>Senha atual</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="currentPassword()"
+            (ngModelChange)="currentPassword.set($event)"
+            name="currentPassword"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Nova senha</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="newPassword()"
+            (ngModelChange)="newPassword.set($event)"
+            name="newPassword"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Confirmar nova senha</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+            name="confirmPassword"
+            required
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">💾 Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="closePasswordModal()">✕ Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Profile Edit Modal -->
   <div class="modal-overlay" *ngIf="showProfileModal()" (click)="closeProfileModal()">

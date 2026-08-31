@@ -57,6 +57,7 @@ export class OrderService {
 
   createOrder(
     cartItem: CartItemModel[],
+    customerName: string,
     userId: string,
     subtotal: number,
     discount: number,
@@ -65,6 +66,7 @@ export class OrderService {
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
       userId,
+      customerName,
       items: cartItem.map((item) => ({
         productId: item.product.id,
         name: item.product.title,
