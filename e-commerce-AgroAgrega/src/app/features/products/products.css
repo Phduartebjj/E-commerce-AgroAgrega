@@ -7,37 +7,7 @@
   overflow-x: hidden;
 }
 
-.back-to-top {
-  position: fixed;
-  right: 50px;
-  bottom: 50px;
-  z-index: 10;
-  display: grid;
-  place-items: center;
-  width: clamp(40px, 5vw, 50px);
-  height: clamp(40px, 5vw, 50px);
-  border: 0;
-  border-radius: 50%;
-  background: #205c2d;
-  color: #ffffff;
-  font-size: 24px;
-  line-height: 1;
-  box-shadow: 0 4px 12px rgba(15, 31, 26, 0.2);
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
 
-.back-to-top:hover {
-  background: #174620;
-  transform: translateY(-2px);
-}
-
-.back-to-top:focus-visible {
-  outline: 3px solid #f5a623;
-  outline-offset: 3px;
-}
 
 .catalog-shell {
   flex: 1 1 auto;

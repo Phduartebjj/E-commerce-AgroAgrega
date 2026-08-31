@@ -47,10 +47,28 @@ img {
 }
 
 html {
-  min-width: 100vw;
+  min-width: 100%;
   font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 @font-face {
   font-family: 'Manrope';
   src: url(/src/app/assets/fonts/Manrope-VariableFont_wght.ttf) format('ttf');
+}
+
+/* Responsividade base */
+@media (max-width: 768px) {
+  html,
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 13px;
+  }
 }
