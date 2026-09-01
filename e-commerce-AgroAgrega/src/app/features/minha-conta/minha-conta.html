@@ -33,11 +33,21 @@
         <label>
           <span>Nome</span>
           <input type="text" formControlName="name" />
+          @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('name')!) }}
+            </small>
+          }
         </label>
 
         <label>
           <span>E-mail</span>
           <input type="email" formControlName="email" />
+          @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('email')!) }}
+            </small>
+          }
         </label>
 
         <div class="form-actions">

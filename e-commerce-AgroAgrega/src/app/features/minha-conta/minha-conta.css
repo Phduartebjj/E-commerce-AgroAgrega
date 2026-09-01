@@ -12,10 +12,17 @@
   justify-content: space-between;
 }
 
+label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .errorMessage {
   color: red;
-  position: absolute;
-  transform: translateY(65px);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
 }
 
 .eyebrow {
