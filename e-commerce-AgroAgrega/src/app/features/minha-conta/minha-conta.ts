@@ -1,11 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth } from '@core/services/auth/auth.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderService } from '@core/services/order/order.service';
 import { AddressModel } from '@models/address.model';
+import { errorMessages } from '@shared/constants/form-error-messages';
 
 @Component({
   selector: 'app-minha-conta',
@@ -29,10 +30,12 @@ export class MinhaConta {
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;
 
-  protected readonly recentOrders = computed(() => this.orderService.getOrdersByUserId(this.auth.getId()));
+  protected readonly recentOrders = computed(() =>
+    this.orderService.getOrdersByUserId(this.auth.getId()),
+  );
 
   readonly profileForm = this.formBuilder.nonNullable.group({
-    name: [this.userName, [Validators.required, Validators.minLength(2)]],
+    name: [this.userName, [Validators.required, Validators.minLength(3)]],
     email: [this.userEmail, [Validators.required, Validators.email]],
   });
 
@@ -74,6 +77,16 @@ export class MinhaConta {
     }
 
     localStorage.setItem(this.getUserAddressStorageKey(), JSON.stringify(this.userAddresses));
+  }
+
+  getErrorMessage(control: AbstractControl): string {
+    if (!control.errors) {
+      return '';
+    }
+
+    const errorKey = Object.keys(control.errors)[0];
+
+    return errorMessages[errorKey as keyof typeof errorMessages] ?? '';
   }
 
   editProfile(): void {
@@ -170,7 +183,9 @@ export class MinhaConta {
 
     const address: AddressModel = {
       fullName: this.addressForm.controls.fullName.value.trim(),
-      cep: this.addressForm.controls.cep.value.replace(/\D/g, '').replace(/(\d{5})(\d{3})/, '$1-$2'),
+      cep: this.addressForm.controls.cep.value
+        .replace(/\D/g, '')
+        .replace(/(\d{5})(\d{3})/, '$1-$2'),
       address: this.addressForm.controls.address.value.trim(),
       number: this.addressForm.controls.number.value.trim(),
       neighborhood: this.addressForm.controls.neighborhood.value.trim(),
@@ -198,7 +213,9 @@ export class MinhaConta {
   }
 
   removeAccount(): void {
-    const confirmed = confirm('Tem certeza que deseja remover sua conta? Esta ação não poderá ser desfeita.');
+    const confirmed = confirm(
+      'Tem certeza que deseja remover sua conta? Esta ação não poderá ser desfeita.',
+    );
 
     if (!confirmed) {
       return;

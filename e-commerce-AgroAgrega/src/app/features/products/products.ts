@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { BrandOption, ProductCategory, ProductModel, SortOption } from '@models/product';
@@ -10,7 +10,7 @@ import { Cart } from '@core/services/cart/cart.service';
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent],
+  imports: [ProductCardComponent, RouterLink],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -19,6 +19,8 @@ export class ProductsComponent {
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+
+  private readonly addedProductIds = signal<Set<string>>(new Set());
 
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
@@ -149,9 +151,26 @@ export class ProductsComponent {
     });
   }
 
+  // Verifica se um produto foi adicionado
+  isProductAdded(productId: string): boolean {
+    return this.addedProductIds().has(productId);
+  }
+
   // Adiciona produto ao carrinho
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
+    
+    // Marca o produto como adicionado
+    this.addedProductIds.update(ids => new Set([...ids, product.id]));
+
+    // Remove a marcação após 2 segundos
+    setTimeout(() => {
+      this.addedProductIds.update(ids => {
+        const newIds = new Set(ids);
+        newIds.delete(product.id);
+        return newIds;
+      });
+    }, 2000);
   }
 
   // Alterna visualização

@@ -283,13 +283,17 @@
   }
 }
 
-@media (max-width: 620px) {
+@media (max-width: 768px) {
   .order-details-page {
     padding: 18px 12px 30px;
   }
 
   .details-card {
     padding: 16px 12px;
+  }
+
+  .details-header h1 {
+    font-size: 18px;
   }
 
   .info-grid {
@@ -307,5 +311,59 @@
 
   .tracking-step strong {
     font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-details-page {
+    padding: 12px 8px 24px;
+  }
+
+  .details-card {
+    padding: 12px 10px;
+  }
+
+  .breadcrumb {
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .details-header h1 {
+    font-size: 16px;
+  }
+
+  .details-header p {
+    font-size: 12px;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .info-grid {
+    gap: 12px;
+  }
+
+  .info-card {
+    padding: 12px;
+  }
+
+  .payment-content {
+    flex-direction: column;
+  }
+
+  .paid-total {
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  .summary-card {
+    padding: 16px 12px;
+  }
+
+  .summary-card button {
+    min-height: 40px;
+    font-size: 12px;
   }
 }

@@ -12,6 +12,12 @@
   justify-content: space-between;
 }
 
+.errorMessage {
+  color: red;
+  position: absolute;
+  transform: translateY(65px);
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: #5d7c55;
@@ -179,7 +185,9 @@
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .btn:hover {

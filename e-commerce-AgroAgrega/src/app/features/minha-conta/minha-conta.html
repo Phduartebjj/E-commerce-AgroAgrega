@@ -10,7 +10,9 @@
     <div class="card__title-row">
       <h2>👤 Meus dados</h2>
       @if (!editingProfile) {
-        <button type="button" class="btn btn--secondary" (click)="editProfile()">Editar dados</button>
+        <button type="button" class="btn btn--secondary" (click)="editProfile()">
+          Editar dados
+        </button>
       }
     </div>
 
@@ -50,7 +52,9 @@
     <div class="card__title-row">
       <h2>📍 Meus endereços</h2>
       @if (!isAddressFormOpen) {
-        <button type="button" class="btn btn--secondary" (click)="startAddAddress()">+ Adicionar endereço</button>
+        <button type="button" class="btn btn--secondary" (click)="startAddAddress()">
+          + Adicionar endereço
+        </button>
       }
     </div>
 
@@ -59,31 +63,67 @@
         <label>
           <span>Nome</span>
           <input type="text" formControlName="fullName" />
+          @if (addressForm.get('fullName')?.touched && addressForm.get('fullName')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(addressForm.get('fullName')!) }}
+            </small>
+          }
         </label>
 
         <div class="cep-field">
           <label>
             <span>CEP</span>
-            <input type="text" formControlName="cep" placeholder="00000-000" (blur)="buscarEnderecoPorCep()" />
+            <input
+              type="text"
+              formControlName="cep"
+              placeholder="00000-000"
+              (blur)="buscarEnderecoPorCep()"
+            />
+            @if (addressForm.get('cep')?.touched && addressForm.get('cep')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('cep')!) }}
+              </small>
+            }
           </label>
 
-          <button type="button" class="btn btn--secondary btn--small" (click)="buscarEnderecoPorCep()">Buscar CEP</button>
+          <button
+            type="button"
+            class="btn btn--secondary btn--small"
+            (click)="buscarEnderecoPorCep()"
+          >
+            Buscar CEP
+          </button>
         </div>
 
         <label>
           <span>Rua</span>
           <input type="text" formControlName="address" />
+          @if (addressForm.get('address')?.touched && addressForm.get('address')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(addressForm.get('address')!) }}
+            </small>
+          }
         </label>
 
         <div class="two-columns">
           <label>
             <span>Número</span>
             <input type="text" formControlName="number" />
+            @if (addressForm.get('number')?.touched && addressForm.get('number')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('number')!) }}
+              </small>
+            }
           </label>
 
           <label>
             <span>Bairro</span>
             <input type="text" formControlName="neighborhood" />
+            @if (addressForm.get('neighborhood')?.touched && addressForm.get('neighborhood')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('neighborhood')!) }}
+              </small>
+            }
           </label>
         </div>
 
@@ -91,11 +131,21 @@
           <label>
             <span>Cidade</span>
             <input type="text" formControlName="city" />
+            @if (addressForm.get('city')?.touched && addressForm.get('city')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('city')!) }}
+              </small>
+            }
           </label>
 
           <label>
             <span>Estado</span>
             <input type="text" formControlName="state" maxlength="2" />
+            @if (addressForm.get('state')?.touched && addressForm.get('state')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('state')!) }}
+              </small>
+            }
           </label>
         </div>
 
@@ -106,12 +156,18 @@
 
         <label>
           <span>Ponto de referência</span>
-          <input type="text" formControlName="referencePoint" placeholder="Ex.: Próximo ao mercado, em frente à praça" />
+          <input
+            type="text"
+            formControlName="referencePoint"
+            placeholder="Ex.: Próximo ao mercado, em frente à praça"
+          />
         </label>
 
         <div class="form-actions">
           <button type="submit" class="btn btn--primary">Salvar endereço</button>
-          <button type="button" class="btn btn--ghost" (click)="cancelAddressEdit()">Cancelar</button>
+          <button type="button" class="btn btn--ghost" (click)="cancelAddressEdit()">
+            Cancelar
+          </button>
         </div>
       </form>
     } @else if (userAddresses.length === 0) {
@@ -122,12 +178,20 @@
           <div class="info-item info-item--stacked">
             <div class="address-summary">
               <span>{{ address.fullName }}</span>
-              <strong>{{ address.address }}, {{ address.number }} - {{ address.neighborhood }}</strong>
+              <strong
+                >{{ address.address }}, {{ address.number }} - {{ address.neighborhood }}</strong
+              >
               <small>{{ address.city }} - {{ address.state }} · CEP {{ address.cep }}</small>
             </div>
 
             <div class="address-actions">
-              <button type="button" class="btn btn--secondary" (click)="editAddress(address, $index)">Editar</button>
+              <button
+                type="button"
+                class="btn btn--secondary"
+                (click)="editAddress(address, $index)"
+              >
+                Editar
+              </button>
             </div>
           </div>
         }
@@ -148,7 +212,9 @@
               <strong>Pedido #{{ order.id.slice(0, 8) }}</strong>
               <small>{{ order.createdAt | date: 'dd/MM/yyyy' }}</small>
             </div>
-            <span class="pedido-status pedido-status--{{ order.status.toLowerCase() }}">{{ order.status }}</span>
+            <span class="pedido-status pedido-status--{{ order.status.toLowerCase() }}">{{
+              order.status
+            }}</span>
           </li>
         }
       </ul>

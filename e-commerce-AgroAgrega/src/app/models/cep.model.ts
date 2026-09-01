@@ -5,5 +5,5 @@ export interface CepModel {
   bairro: string;
   localidade: string;
   uf: string;
-  erro?: boolean
+  erro?: boolean;
 }
