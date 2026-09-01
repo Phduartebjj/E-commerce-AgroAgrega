@@ -169,6 +169,41 @@
           </div>
         </div>
 
+        <div class="saved-address-section" aria-label="Endereços cadastrados">
+          <div class="saved-address-header">
+            <div class="saved-address-icon" aria-hidden="true">📍</div>
+            <div>
+              <h3>Usar um endereço cadastrado</h3>
+              <p>Escolha um dos seus endereços salvos para agilizar a entrega.</p>
+            </div>
+          </div>
+
+          <div class="saved-address-list">
+            @for (address of savedAddresses; track address.id) {
+              <label class="saved-address-option">
+                <input
+                  type="radio"
+                  name="savedAddress"
+                  [value]="address.id"
+                  [checked]="selectedAddressId === address.id"
+                  (change)="selectSavedAddress(address.id)"
+                />
+
+                <div class="saved-address-content">
+                  <span class="saved-address-name">
+                    {{ address.fullName }}
+                  </span>
+
+                  <span class="saved-address-details">
+                    {{ address.address }}, {{ address.number }} - {{ address.neighborhood }},
+                    {{ address.city }}/{{ address.state }}
+                  </span>
+                </div>
+              </label>
+            }
+          </div>
+        </div>
+
         <div class="form-checkbox">
           <input type="checkbox" id="saveAddress" name="saveAddress" checked />
           <label for="saveAddress">Salvar este endereço para próximas compras</label>
@@ -243,7 +278,9 @@
 
           <div
             class="payment-option"
-            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+            [class.selected]="
+              checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard
+            "
             (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.CreditCard)"
           >
             <div class="payment-option-main">

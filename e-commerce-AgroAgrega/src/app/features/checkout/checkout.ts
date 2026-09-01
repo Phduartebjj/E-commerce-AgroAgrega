@@ -19,6 +19,7 @@ import { OrderPaymentMethod } from '@models/order';
 import { AddressModel } from '@models/address.model';
 import { Auth } from '@core/services/auth/auth.service';
 import { errorMessages } from '@shared/constants/form-error-messages';
+import { AddressService } from '@core/services/address/address.service';
 
 @Component({
   selector: 'app-checkout',
@@ -31,12 +32,50 @@ export class CheckoutComponent {
   private readonly cepService = inject(CepService);
   private orderService = inject(OrderService);
   private auth = inject(Auth);
-
+  private readonly addressService = inject(AddressService);
   readonly PaymentMethod = OrderPaymentMethod;
   readonly router = inject(Router);
 
   readonly subTotal = this.cart.subtotal;
   readonly discountValue = this.cart.discountValue;
+
+  savedAddresses: AddressModel[] = [];
+  selectedAddressId: string | null = null;
+  private loadSavedAddresses(): void {
+    const userId = this.auth.getId();
+
+    if (!userId) {
+      this.savedAddresses = [];
+      return;
+    }
+
+    this.savedAddresses = this.addressService.getAddresses(userId);
+  }
+
+  constructor() {
+    this.loadSavedAddresses();
+  }
+
+  selectSavedAddress(addressId: string): void {
+    const address = this.savedAddresses.find((address) => address.id === addressId);
+
+    if (!address) {
+      return;
+    }
+
+    this.selectedAddressId = address.id;
+
+    this.checkoutForm.patchValue({
+      fullName: address.fullName,
+      cep: address.cep,
+      address: address.address,
+      number: address.number,
+      neighborhood: address.neighborhood,
+      city: address.city,
+      state: address.state,
+      complement: address.complement ?? '',
+    });
+  }
 
   checkoutForm = new FormGroup({
     fullName: new FormControl('', {
@@ -199,6 +238,7 @@ export class CheckoutComponent {
     }
 
     const address: AddressModel = {
+      id: crypto.randomUUID(),
       fullName: this.checkoutForm.controls.fullName.value,
       cep: this.checkoutForm.controls.cep.value,
       address: this.checkoutForm.controls.address.value,

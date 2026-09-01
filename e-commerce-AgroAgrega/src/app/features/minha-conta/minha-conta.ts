@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AddressService } from '@core/services/address/address.service';
 import { Auth } from '@core/services/auth/auth.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderService } from '@core/services/order/order.service';
@@ -19,8 +20,7 @@ export class MinhaConta {
   private readonly cepService = inject(CepService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
-
-  private readonly addressStorageKey = 'user-addresses';
+  private readonly addressService = inject(AddressService);
 
   userName = this.auth.getName();
   userEmail = this.auth.getEmail();
@@ -54,10 +54,6 @@ export class MinhaConta {
     this.loadAddresses();
   }
 
-  private getUserAddressStorageKey(): string {
-    return `${this.addressStorageKey}-${this.auth.getId()}`;
-  }
-
   private loadAddresses(): void {
     const userId = this.auth.getId();
     if (!userId) {
@@ -65,17 +61,7 @@ export class MinhaConta {
       return;
     }
 
-    const storage = localStorage.getItem(this.getUserAddressStorageKey());
-    this.userAddresses = storage ? (JSON.parse(storage) as AddressModel[]) : [];
-  }
-
-  private saveAddresses(): void {
-    const userId = this.auth.getId();
-    if (!userId) {
-      return;
-    }
-
-    localStorage.setItem(this.getUserAddressStorageKey(), JSON.stringify(this.userAddresses));
+    this.userAddresses = this.addressService.getAddresses(userId);
   }
 
   getErrorMessage(control: AbstractControl): string {
@@ -179,8 +165,13 @@ export class MinhaConta {
       this.addressForm.markAllAsTouched();
       return;
     }
+    const id =
+      this.editingAddressIndex === null
+        ? crypto.randomUUID()
+        : this.userAddresses[this.editingAddressIndex].id;
 
     const address: AddressModel = {
+      id,
       fullName: this.addressForm.controls.fullName.value.trim(),
       cep: this.addressForm.controls.cep.value
         .replace(/\D/g, '')
@@ -202,7 +193,13 @@ export class MinhaConta {
       this.userAddresses = nextAddresses;
     }
 
-    this.saveAddresses();
+    const userId = this.auth.getId();
+
+    if (!userId) {
+      return;
+    }
+
+    this.addressService.saveAddresses(userId, this.userAddresses);
     this.cancelAddressEdit();
   }
 
