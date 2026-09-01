@@ -165,8 +165,13 @@ export class MinhaConta {
       this.addressForm.markAllAsTouched();
       return;
     }
+    const id =
+      this.editingAddressIndex === null
+        ? crypto.randomUUID()
+        : this.userAddresses[this.editingAddressIndex].id;
 
     const address: AddressModel = {
+      id,
       fullName: this.addressForm.controls.fullName.value.trim(),
       cep: this.addressForm.controls.cep.value
         .replace(/\D/g, '')

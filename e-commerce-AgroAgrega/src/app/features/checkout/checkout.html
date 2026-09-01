@@ -179,22 +179,28 @@
           </div>
 
           <div class="saved-address-list">
-            <label class="saved-address-option">
-              <input type="radio" name="savedAddress" value="casa" checked />
-              <div class="saved-address-content">
-                <span class="saved-address-name">Casa</span>
-                <span class="saved-address-details">Avenida Paulista, 1578 - Bela Vista, São Paulo/SP</span>
-              </div>
-              <span class="saved-address-tag">Principal</span>
-            </label>
+            @for (address of savedAddresses; track address.id) {
+              <label class="saved-address-option">
+                <input
+                  type="radio"
+                  name="savedAddress"
+                  [value]="address.id"
+                  [checked]="selectedAddressId === address.id"
+                  (change)="selectSavedAddress(address.id)"
+                />
 
-            <label class="saved-address-option">
-              <input type="radio" name="savedAddress" value="trabalho" />
-              <div class="saved-address-content">
-                <span class="saved-address-name">Trabalho</span>
-                <span class="saved-address-details">Rua das Flores, 245 - Centro, Rio de Janeiro/RJ</span>
-              </div>
-            </label>
+                <div class="saved-address-content">
+                  <span class="saved-address-name">
+                    {{ address.fullName }}
+                  </span>
+
+                  <span class="saved-address-details">
+                    {{ address.address }}, {{ address.number }} - {{ address.neighborhood }},
+                    {{ address.city }}/{{ address.state }}
+                  </span>
+                </div>
+              </label>
+            }
           </div>
         </div>
 
@@ -272,7 +278,9 @@
 
           <div
             class="payment-option"
-            [class.selected]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+            [class.selected]="
+              checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard
+            "
             (click)="$event.preventDefault(); selectPaymentMethod(PaymentMethod.CreditCard)"
           >
             <div class="payment-option-main">
