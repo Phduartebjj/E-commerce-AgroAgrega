@@ -20,7 +20,7 @@
         Buscar
       </button>
     </div>
-    <div class="acoes-header">
+    <div class="acoes-header" [class.acoes-header-fixas]="navegacaoFixa()">
       <a class="conta-link" [routerLink]="loggedIn() ? '/minha-conta' : '/login'">
         @if (loggedIn()) {
           <span class="icone-perfil"

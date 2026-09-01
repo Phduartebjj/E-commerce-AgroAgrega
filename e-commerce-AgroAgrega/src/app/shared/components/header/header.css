@@ -123,6 +123,23 @@
   gap: clamp(12px, 2vw, 24px);
   margin-left: auto;
 }
+
+.acoes-header.acoes-header-fixas {
+  position: fixed;
+
+  top: 0;
+  right: max(16px, calc((100vw - 1240px) / 2));
+
+  height: 42px;
+
+  margin-left: 0;
+  padding-left: 16px;
+
+  z-index: 1100;
+
+  background-color: var(--white);
+}
+
 .conta-link {
   display: flex;
   align-items: center;
@@ -410,6 +427,17 @@ pointer-events: none;
     flex-wrap: wrap;
     gap: 16px;
   }
+
+  .acoes-header.acoes-header-fixas {
+  right: 12px;
+  padding-left: 8px;
+  gap: 10px;
+}
+
+.acoes-header.acoes-header-fixas .conta-texto {
+  display: none;
+}
+
 
   .logo-marca {
     order: 1;
