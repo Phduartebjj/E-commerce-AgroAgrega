@@ -17,7 +17,7 @@ import { OrderService } from '@core/services/order/order.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderPaymentMethod } from '@models/order';
 import { AddressModel } from '@models/address.model';
-import { errorMessages } from '@models/errorsMessage.model';
+import { errorMessages } from '@shared/constants/form-error-messages';
 
 @Component({
   selector: 'app-checkout',
