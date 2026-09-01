@@ -209,28 +209,6 @@
     }
   </section>
 
-  <section class="card">
-    <h2>📦 Meus pedidos</h2>
-
-    @if (recentOrders().length === 0) {
-      <p class="empty-state">Você ainda não possui pedidos.</p>
-    } @else {
-      <ul class="pedido-list">
-        @for (order of recentOrders().slice(-3).reverse(); track order.id) {
-          <li class="pedido-item">
-            <div>
-              <strong>Pedido #{{ order.id.slice(0, 8) }}</strong>
-              <small>{{ order.createdAt | date: 'dd/MM/yyyy' }}</small>
-            </div>
-            <span class="pedido-status pedido-status--{{ order.status.toLowerCase() }}">{{
-              order.status
-            }}</span>
-          </li>
-        }
-      </ul>
-    }
-  </section>
-
   <section class="card card--account">
     <h2>⚙️ Conta</h2>
 
