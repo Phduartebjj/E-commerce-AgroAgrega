@@ -27,10 +27,10 @@ import { errorMessages } from '@shared/constants/form-error-messages';
   styleUrl: './checkout.css',
 })
 export class CheckoutComponent {
-  private readonly cart = inject(Cart);
+  private cart = inject(Cart);
   private readonly cepService = inject(CepService);
-  private readonly orderService = inject(OrderService);
-  private readonly auth = inject(Auth);
+  private orderService = inject(OrderService);
+  private auth = inject(Auth);
 
   readonly PaymentMethod = OrderPaymentMethod;
   readonly router = inject(Router);
@@ -209,11 +209,15 @@ export class CheckoutComponent {
       complement: this.checkoutForm.controls.complement.value,
     };
 
+    const customerName =
+      this.checkoutForm.get('fullName')?.value?.trim() || this.auth.getName() || 'Cliente';
+
     const userId = this.auth.getId() || crypto.randomUUID();
 
     this.orderService.createOrder(
       this.cart.getCartItems()(),
-      userId,
+      customerName,
+      crypto.randomUUID(),
       this.cart.subtotal(),
       this.discountTotalValue,
       0,

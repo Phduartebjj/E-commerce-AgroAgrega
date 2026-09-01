@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,7 +9,7 @@ import { errorMessages } from '@shared/constants/form-error-messages';
 
 @Component({
   selector: 'app-minha-conta',
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule],
   templateUrl: './minha-conta.html',
   styleUrl: './minha-conta.css',
 })

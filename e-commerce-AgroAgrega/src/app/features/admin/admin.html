@@ -1,1 +1,541 @@
-<p>Get To works!</p>
+<div class="admin-container">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h1 class="sidebar-title">🌿 AgroAgrega</h1>
+      <p class="sidebar-subtitle">Admin Panel</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button
+        class="nav-button"
+        [class.nav-button--active]="activeTab() === 'dashboard'"
+        (click)="selectTab('dashboard')"
+      >
+        📊 Dashboard
+      </button>
+      <button
+        class="nav-button"
+        [class.nav-button--active]="activeTab() === 'products'"
+        (click)="selectTab('products')"
+      >
+        📦 Produtos
+      </button>
+      <button
+        class="nav-button"
+        [class.nav-button--active]="activeTab() === 'orders'"
+        (click)="selectTab('orders')"
+      >
+        🛒 Pedidos
+      </button>
+      <button
+        class="nav-button"
+        [class.nav-button--active]="activeTab() === 'clients'"
+        (click)="selectTab('clients')"
+      >
+        👥 Clientes
+      </button>
+      <button
+        class="nav-button"
+        [class.nav-button--active]="activeTab() === 'settings'"
+        (click)="selectTab('settings')"
+      >
+        ⚙️ Configurações
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-button" (click)="logout()">🚪 Sair</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-content">
+    <!-- Dashboard Tab -->
+    <section *ngIf="activeTab() === 'dashboard'" class="tab-section">
+      <header class="section-header">
+        <h2>Dashboard</h2>
+        <p>Resumo geral do seu negócio</p>
+      </header>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-icon">📦</span>
+          <h3>Total de Produtos</h3>
+          <p class="metric-value">{{ metrics().totalProducts }}</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🛒</span>
+          <h3>Pedidos</h3>
+          <p class="metric-value">{{ metrics().totalOrders }}</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <h3>Receita Total</h3>
+          <p class="metric-value">{{ metrics().totalRevenue | currency: 'BRL' }}</p>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">👥</span>
+          <h3>Clientes</h3>
+          <p class="metric-value">{{ metrics().totalClients }}</p>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dashboard-panel">
+          <h3>Pedidos Recentes</h3>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of filteredOrders().slice(0, 5)">
+                <td>{{ order.id }}</td>
+                <td>{{ order.customerName }}</td>
+                <td>{{ order.total | currency: 'BRL' }}</td>
+                <td>
+                  <span [class]="statusBadgeClass(order.status)">
+                    {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="dashboard-panel">
+          <h3>Estatísticas</h3>
+          <ul class="stats-list">
+            <li>
+              <span>Ticket Médio:</span>
+              <strong>{{ metrics().avgOrderValue | currency: 'BRL' }}</strong>
+            </li>
+            <li>
+              <span>Total de Categorias:</span>
+              <strong>5</strong>
+            </li>
+            <li>
+              <span>Status Pedidos:</span>
+              <strong>{{ statusOptions.length }} tipos</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Tab -->
+    <section *ngIf="activeTab() === 'products'" class="tab-section">
+      <header class="section-header">
+        <h2>Gerenciar Produtos</h2>
+        <p>Adicione, edite ou remova produtos do catálogo</p>
+      </header>
+
+      <div class="products-layout">
+        <div class="product-form-panel">
+          <h3>{{ editingProductId() ? 'Editar' : 'Novo' }} Produto</h3>
+          <form (ngSubmit)="editingProductId() ? saveProduct() : addProduct()">
+            <div class="form-group">
+              <label>Nome do Produto</label>
+              <input
+                type="text"
+                class="form-input"
+                placeholder="Ex: Adubo Orgânico"
+                [ngModel]="productName()"
+                (ngModelChange)="productName.set($event)"
+                name="productName"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Preço (R$)</label>
+              <input
+                type="number"
+                class="form-input"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                [ngModel]="productPrice()"
+                (ngModelChange)="productPrice.set($event)"
+                name="productPrice"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Categoria</label>
+              <select
+                class="form-input"
+                [ngModel]="productCategory()"
+                (ngModelChange)="productCategory.set($event)"
+                name="productCategory"
+              >
+                <option value="Agricultura de Precisão">Agricultura de Precisão</option>
+                <option value="Irrigação">Irrigação</option>
+                <option value="Pecuária">Pecuária</option>
+                <option value="Ferramentas">Ferramentas</option>
+                <option value="Insumos">Insumos</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Descrição</label>
+              <textarea
+                class="form-input"
+                rows="3"
+                placeholder="Descrição do produto..."
+                [ngModel]="productDescription()"
+                (ngModelChange)="productDescription.set($event)"
+                name="productDescription"
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                {{ editingProductId() ? '💾 Salvar' : '➕ Adicionar' }}
+              </button>
+              <button
+                *ngIf="editingProductId()"
+                type="button"
+                class="btn btn-secondary"
+                (click)="clearProductForm()"
+              >
+                ❌ Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="products-list-panel">
+          <h3>Produtos do Catálogo</h3>
+          <div class="products-grid">
+            <div *ngFor="let product of productService.getProducts()()" class="product-card">
+              <div class="product-card-header">
+                <h4>{{ product.title }}</h4>
+                <span class="product-category">{{ product.category }}</span>
+              </div>
+              <p class="product-price">{{ product.price | currency: 'BRL' }}</p>
+              <p class="product-description">{{ product.description }}</p>
+              <div class="product-actions">
+                <button class="btn-icon" (click)="editProduct(product)" title="Editar">✏️</button>
+                <button class="btn-icon btn-icon--danger" (click)="deleteProduct(product.id)" title="Deletar">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders Tab -->
+    <section *ngIf="activeTab() === 'orders'" class="tab-section">
+      <header class="section-header">
+        <h2>Gestão de Pedidos</h2>
+        <p>{{ filteredOrders().length }} pedido(s) encontrado(s)</p>
+      </header>
+
+      <div class="filters-bar">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar por ID ou cliente..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+
+        <div class="status-filters">
+          <button
+            class="chip"
+            [class.chip--active]="selectedStatus() === 'all'"
+            (click)="onStatusFilterChange('all')"
+          >
+            Todos
+          </button>
+          <button
+            *ngFor="let status of statusOptions"
+            class="chip"
+            [class.chip--active]="selectedStatus() === status"
+            (click)="onStatusFilterChange(status)"
+          >
+            {{ status }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table" *ngIf="filteredOrders().length; else emptyOrders">
+          <thead>
+            <tr>
+              <th>Pedido</th>
+              <th>Cliente</th>
+              <th>Data</th>
+              <th>Itens</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of filteredOrders()">
+              <td><strong>{{ order.id }}</strong></td>
+              <td>{{ order.customerName }}</td>
+              <td>{{ order.date | date: 'dd/MM/yyyy' }}</td>
+              <td class="center">{{ order.itemsCount }}</td>
+              <td>{{ order.total | currency: 'BRL' }}</td>
+              <td>
+                <span [class]="statusBadgeClass(order.status)">
+                  {{ order.status }}
+                </span>
+              </td>
+              <td>
+                <select
+                  class="status-select"
+                  [ngModel]="order.status"
+                  (ngModelChange)="updateOrderStatus(order, $event)"
+                >
+                  <option *ngFor="let status of statusOptions" [value]="status">
+                    {{ status }}
+                  </option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #emptyOrders>
+          <p class="empty-state">Nenhum pedido encontrado para esse filtro.</p>
+        </ng-template>
+      </div>
+    </section>
+
+    <!-- Clients Tab -->
+    <section *ngIf="activeTab() === 'clients'" class="tab-section">
+      <header class="section-header">
+        <h2>Gerenciar Clientes</h2>
+        <p>{{ filteredClients().length }} cliente(s)</p>
+      </header>
+
+      <div class="filters-bar">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar por nome ou email..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table" *ngIf="filteredClients().length; else emptyClients">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Telefone</th>
+              <th>Membro Desde</th>
+              <th>Pedidos</th>
+              <th>Total Gasto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of filteredClients()">
+              <td><strong>{{ client.name }}</strong></td>
+              <td>{{ client.email }}</td>
+              <td>{{ client.phone }}</td>
+              <td>{{ client.joinDate | date: 'dd/MM/yyyy' }}</td>
+              <td class="center">{{ client.totalOrders }}</td>
+              <td>{{ client.totalSpent | currency: 'BRL' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #emptyClients>
+          <p class="empty-state">Nenhum cliente encontrado.</p>
+        </ng-template>
+      </div>
+    </section>
+
+    <!-- Settings Tab -->
+    <section *ngIf="activeTab() === 'settings'" class="tab-section">
+      <header class="section-header">
+        <h2>Configurações</h2>
+        <p>Gerencie as configurações da sua loja</p>
+      </header>
+
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Perfil da Loja</h3>
+          <div class="setting-item">
+            <label>Nome da Loja:</label>
+            <p><strong>{{ storeName() }}</strong></p>
+          </div>
+          <div class="setting-item">
+            <label>Email de Contato:</label>
+            <p><strong>{{ storeEmail() }}</strong></p>
+          </div>
+          <div class="setting-item">
+            <label>Telefone:</label>
+            <p><strong>{{ storePhone() }}</strong></p>
+          </div>
+          <div class="setting-item">
+            <label>Localização:</label>
+            <p><strong>{{ storeCity() }}</strong></p>
+          </div>
+          <button class="btn btn-primary" (click)="openProfileModal()">✏️ Editar Perfil</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>Notificações</h3>
+          <div class="toggle-item">
+            <label>Notificar sobre novos pedidos</label>
+            <input type="checkbox" checked />
+          </div>
+          <div class="toggle-item">
+            <label>Notificar sobre promoções</label>
+            <input type="checkbox" checked />
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Segurança</h3>
+          <div class="setting-item">
+            <button class="btn btn-secondary" (click)="openPasswordModal()">🔐 Alterar Senha</button>
+          </div>
+          <div class="setting-item">
+            <button class="btn btn-secondary" (click)="clearHistory()">🗑️ Limpar Histórico</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Informações do Sistema</h3>
+          <div class="setting-item">
+            <label>Versão:</label>
+            <p><strong>1.0.0</strong></p>
+          </div>
+          <div class="setting-item">
+            <label>Última Atualização:</label>
+            <p><strong>30/08/2026</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Password Modal -->
+  <div class="modal-overlay" *ngIf="showPasswordModal()" (click)="closePasswordModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Alterar Senha</h3>
+        <button class="modal-close" (click)="closePasswordModal()">✕</button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="savePassword()">
+        <div class="form-group">
+          <label>Senha atual</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="currentPassword()"
+            (ngModelChange)="currentPassword.set($event)"
+            name="currentPassword"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Nova senha</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="newPassword()"
+            (ngModelChange)="newPassword.set($event)"
+            name="newPassword"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Confirmar nova senha</label>
+          <input
+            type="password"
+            class="form-input"
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+            name="confirmPassword"
+            required
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">💾 Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="closePasswordModal()">✕ Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Profile Edit Modal -->
+  <div class="modal-overlay" *ngIf="showProfileModal()" (click)="closeProfileModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Editar Perfil da Loja</h3>
+        <button class="modal-close" (click)="closeProfileModal()">✕</button>
+      </div>
+
+      <form class="modal-form" (ngSubmit)="saveProfile()">
+        <div class="form-group">
+          <label>Nome da Loja</label>
+          <input
+            type="text"
+            class="form-input"
+            [ngModel]="editStoreName()"
+            (ngModelChange)="editStoreName.set($event)"
+            name="storeName"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email de Contato</label>
+          <input
+            type="email"
+            class="form-input"
+            [ngModel]="editStoreEmail()"
+            (ngModelChange)="editStoreEmail.set($event)"
+            name="storeEmail"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Telefone</label>
+          <input
+            type="tel"
+            class="form-input"
+            [ngModel]="editStorePhone()"
+            (ngModelChange)="editStorePhone.set($event)"
+            name="storePhone"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Localização</label>
+          <input
+            type="text"
+            class="form-input"
+            [ngModel]="editStoreCity()"
+            (ngModelChange)="editStoreCity.set($event)"
+            name="storeCity"
+          />
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">💾 Salvar</button>
+          <button type="button" class="btn btn-secondary" (click)="closeProfileModal()">✕ Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
