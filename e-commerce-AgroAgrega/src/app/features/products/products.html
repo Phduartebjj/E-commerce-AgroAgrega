@@ -165,10 +165,10 @@
                       <button
                         class="add-btn-small"
                         type="button"
-                        [class.product-added]="adicionado()"
+                        [class.product-added]="isProductAdded(prod.id)"
                         (click)="addProductToCart(prod)"
                       >
-                        @if (adicionado()) {
+                        @if (isProductAdded(prod.id)) {
                           Adicionado ✓
                         } @else {
                           Adicionar

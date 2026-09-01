@@ -20,7 +20,7 @@ export class ProductsComponent {
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
 
-  adicionado = signal(false);
+  private readonly addedProductIds = signal<Set<string>>(new Set());
 
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
@@ -151,13 +151,25 @@ export class ProductsComponent {
     });
   }
 
+  // Verifica se um produto foi adicionado
+  isProductAdded(productId: string): boolean {
+    return this.addedProductIds().has(productId);
+  }
+
   // Adiciona produto ao carrinho
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
-    this.adicionado.set(true);
+    
+    // Marca o produto como adicionado
+    this.addedProductIds.update(ids => new Set([...ids, product.id]));
 
+    // Remove a marcação após 2 segundos
     setTimeout(() => {
-      this.adicionado.set(false);
+      this.addedProductIds.update(ids => {
+        const newIds = new Set(ids);
+        newIds.delete(product.id);
+        return newIds;
+      });
     }, 2000);
   }
 
