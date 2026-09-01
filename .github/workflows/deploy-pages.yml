@@ -38,6 +38,9 @@ jobs:
         working-directory: e-commerce-AgroAgrega
         run: npm run build:github
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Enable SPA routes
         working-directory: e-commerce-AgroAgrega
         run: cp dist/e-commerce-AgroAgrega/browser/index.html dist/e-commerce-AgroAgrega/browser/404.html
