@@ -20,7 +20,7 @@ export class ProductsComponent {
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
 
-  private readonly addedProductIds = signal<Set<string>>(new Set());
+  private readonly featuredAddedIds = signal<Set<string>>(new Set());
 
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
@@ -151,39 +151,41 @@ export class ProductsComponent {
     });
   }
 
-  // Verifica se um produto foi adicionado
-  isProductAdded(productId: string): boolean {
-    return this.addedProductIds().has(productId);
-  }
-
   // Adiciona produto ao carrinho
   addProductToCart(product: ProductModel): void {
     this.cart.addCartItem(product);
-    
-    // Marca o produto como adicionado
-    this.addedProductIds.update(ids => new Set([...ids, product.id]));
-
-    // Remove a marcação após 2 segundos
-    setTimeout(() => {
-      this.addedProductIds.update(ids => {
-        const newIds = new Set(ids);
-        newIds.delete(product.id);
-        return newIds;
-      });
-    }, 2000);
   }
 
-  // Alterna visualização
+  isFeaturedProductAdded(productId: string): boolean {
+    return this.featuredAddedIds().has(productId);
+  }
   setViewMode(mode: 'grid' | 'list'): void {
     this.viewMode.set(mode);
   }
 
-  // Atualiza preço máximo
   updateMaxPrice(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     this.maxPriceFilter.set(Number(input.value));
   }
+
+  addFeaturedProductToCart(product: ProductModel): void {
+  this.cart.addCartItem(product);
+
+  this.featuredAddedIds.update(
+    ids => new Set([...ids, product.id])
+  );
+
+  setTimeout(() => {
+    this.featuredAddedIds.update(ids => {
+      const newIds = new Set(ids);
+
+      newIds.delete(product.id);
+
+      return newIds;
+    });
+  }, 2000);
+}
 
   // Atualiza ordenação
   updateSortOrder(event: Event): void {
