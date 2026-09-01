@@ -17,6 +17,7 @@ import { OrderService } from '@core/services/order/order.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderPaymentMethod } from '@models/order';
 import { AddressModel } from '@models/address.model';
+import { errorMessages } from '@models/errorsMessage.model';
 
 @Component({
   selector: 'app-checkout',
@@ -222,15 +223,6 @@ export class CheckoutComponent {
     this.router.navigate(['/orders']);
   }
 }
-
-const errorMessages = {
-  required: 'Campo obrigatório',
-  minlength: 'Campo muito curto',
-  numberInvalid: 'Não pode conter números',
-  charsInvalid: 'Não pode conter caracteres especiais',
-  invalidCep: 'CEP inválido',
-  invalidPhone: 'Telefone inválido',
-};
 
 function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
