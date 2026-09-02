@@ -1,0 +1,315 @@
+.minha-conta {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+  display: grid;
+  gap: 24px;
+}
+
+.minha-conta__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #5d7c55;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.minha-conta h1 {
+  margin: 0;
+  color: var(--green-dark, #1a3d2a);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e8efe7;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(18, 47, 34, 0.05);
+  padding: 24px;
+}
+
+.card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.minha-conta h2 {
+  margin: 0;
+  color: var(--green-dark, #1a3d2a);
+  font-size: 1.35rem;
+}
+
+.info-list {
+  display: grid;
+  gap: 14px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #edf1ed;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item span {
+  font-weight: 600;
+  color: #3a4d3f;
+}
+
+.info-item strong {
+  color: #1c2d24;
+}
+
+.profile-form {
+  display: grid;
+  gap: 16px;
+}
+
+.profile-form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+  color: #233c30;
+}
+
+.profile-form input {
+  width: 100%;
+  border: 1px solid #d9e4d7;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font: inherit;
+  background: #f9fbf9;
+}
+
+.profile-form input:focus {
+  outline: 2px solid rgba(30, 87, 60, 0.2);
+  border-color: var(--green-dark, #1a3d2a);
+}
+
+.cep-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.cep-field label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+  color: #233c30;
+}
+
+.btn--small {
+  padding: 11px 14px;
+  white-space: nowrap;
+}
+
+.address-form {
+  margin-top: 8px;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.info-item--stacked {
+  align-items: flex-start;
+  padding: 16px 0;
+}
+
+.address-summary {
+  display: grid;
+  gap: 4px;
+}
+
+.address-summary span,
+.address-summary strong,
+.address-summary small {
+  display: block;
+}
+
+.address-summary span {
+  color: #3a4d3f;
+  font-weight: 700;
+}
+
+.address-summary strong {
+  color: #1c2d24;
+}
+
+.address-summary small {
+  color: #5b6f63;
+}
+
+.address-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.form-actions,
+.account-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.96;
+}
+
+.btn--primary {
+  background: var(--green-dark, #1a3d2a);
+  color: #fff;
+}
+
+.btn--secondary {
+  background: #edf4ee;
+  color: var(--green-dark, #1a3d2a);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--green-dark, #1a3d2a);
+  border: 1px solid #d7e5d8;
+}
+
+.btn--danger {
+  background: #e36b5c;
+  color: white;
+}
+
+.btn--full {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.pedido-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  color: #2c3d33;
+}
+
+.pedido-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e9efe9;
+  border-radius: 10px;
+  background: #f9fbf9;
+}
+
+.pedido-item strong,
+.pedido-item small {
+  display: block;
+}
+
+.pedido-item small {
+  color: #5b6f63;
+  margin-top: 4px;
+}
+
+.pedido-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.pedido-status--pendente,
+.pedido-status--aguardando pagamento,
+.pedido-status--confirmado {
+  background: #fff1d8;
+  color: #8a5b00;
+}
+
+.pedido-status--à caminho,
+.pedido-status--em trânsito,
+.pedido-status--shipped {
+  background: #ddeaf8;
+  color: #2456a8;
+}
+
+.pedido-status--entregue {
+  background: #dff6e8;
+  color: #1d7d46;
+}
+
+.pedido-status--cancelado {
+  background: #fde2df;
+  color: #b12a26;
+}
+
+.empty-state {
+  margin: 0;
+  color: #5b6f63;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 18px 16px;
+  }
+
+  .card__title-row,
+  .info-item,
+  .account-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

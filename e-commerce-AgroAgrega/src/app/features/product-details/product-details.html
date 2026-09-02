@@ -234,7 +234,7 @@
             <div class="reviews-list">
               <h3>Avaliações dos clientes</h3>
 
-              @for (review of reviews; track review.id || $index) {
+              @for (review of reviews; track $index) {
                 <article class="review-item">
                   <div class="review-item-header">
                     <div class="review-stars">
@@ -242,16 +242,6 @@
                         <span [class.filled]="star <= review.stars"> ★ </span>
                       }
                     </div>
-                    @if (review.author || review.createdAt) {
-                      <div class="review-meta">
-                        @if (review.author) {
-                          <span class="review-author">{{ review.author }}</span>
-                        }
-                        @if (review.createdAt) {
-                          <span class="review-date">• {{ review.createdAt }}</span>
-                        }
-                      </div>
-                    }
                   </div>
 
                   <p>

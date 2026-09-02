@@ -11,62 +11,102 @@ export class Auth {
   private Storage = inject(StorageService);
   private Token = inject(TokenAuth);
 
-  public isLoggedIn(): boolean{
+  public isLoggedIn(): boolean {
     return this.Token.checkToken();
   }
 
-  login(email: string, password: string): boolean{
-    const user = this.Storage.getUser(email); 
-    if(!user) return false;
+  login(email: string, password: string): boolean {
+    const user = this.Storage.getUser(email);
+    if (!user) return false;
 
     password = crypt.SHA256(password).toString();
-    if(user.password !== password) return false
-    
+    if (user.password !== password) return false;
+
     this.Token.setToken({
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
     });
-       
+
     return true;
   }
 
-  register(name: string, email: string, password: string): ServiceResponse{
-      password = crypt.SHA256(password).toString();
-      const id = crypto.randomUUID();
+  register(name: string, email: string, password: string): ServiceResponse {
+    password = crypt.SHA256(password).toString();
+    const id = crypto.randomUUID();
 
-      const user = this.Storage.setUser({
-        id,
-        name,
-        email,
-        password
-      });
+    const user = this.Storage.setUser({
+      id,
+      name,
+      email,
+      password,
+    });
 
-      if(!user.res) return {res: user.res, message: user.message};
+    if (!user.res) return { res: user.res, message: user.message };
 
-      this.Token.setToken({
-        id,
-        name,
-        email
-      });
+    this.Token.setToken({
+      id,
+      name,
+      email,
+    });
 
-      return {res: user.res, message: user.message};
+    return { res: user.res, message: user.message };
   }
 
-  resetPassword(email: string, newPassword: string): ServiceResponse{
-      newPassword = crypt.SHA256(newPassword).toString();
-      const resetPassword = this.Storage.updateUser(email, newPassword);
-      return resetPassword;
+  resetPassword(email: string, newPassword: string): ServiceResponse {
+    newPassword = crypt.SHA256(newPassword).toString();
+    const resetPassword = this.Storage.updatePasswordUser(email, newPassword);
+
+    return resetPassword;
   }
 
-  getId(): string{
+  updateEmail(newEmail: string): ServiceResponse {
+    const response = this.Storage.updateEmailUser(this.getId(), newEmail);
+    return response;
+  }
+
+  deleteAccount(id: string): void {
+    this.Storage.removeUser(id);
+  }
+
+  getId(): string {
     return this.Token.getId();
   }
-  getName(): string{
+
+  getName(): string {
     return this.Token.getName();
   }
 
-  logout(){
+  getEmail(): string {
+    return this.Token.getEmail();
+  }
+
+  updateProfile(name: string, email: string): ServiceResponse {
+    const id = this.getId();
+    const result = this.Storage.updateProfile(id, name, email);
+    if (!result.res) return result;
+
+    this.Token.deleteToken();
+    this.Token.setToken({ id, name, email });
+    return result;
+  }
+
+  logout(): void {
     this.Token.deleteToken();
   }
+
+  removeAccount(): boolean {
+    const id = this.getId();
+    if (!id) {
+      return false;
+    }
+
+    const removed = this.Storage.removeUser(id);
+    if (removed) {
+      this.logout();
+    }
+
+    return removed;
+  }
 }
+

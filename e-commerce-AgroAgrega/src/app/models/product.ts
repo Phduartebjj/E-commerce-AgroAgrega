@@ -15,14 +15,13 @@ export interface ProductModel {
   images: string[];
   rating: number;
   reviews?: ReviewModel[];
+  weeklySales?: number;
+  brand?: BrandOption;
 }
 
 export type ProductCategory =
-  | 'Agricultura de Precisão'
-  | 'Irrigação'
-  | 'Pecuária'
-  | 'Ferramentas'
-  | 'Insumos';
+  'Agricultura de Precisão' | 'Irrigação' | 'Pecuária' | 'Ferramentas' | 'Insumos';
 
 export type SortOption = 'relevant' | 'price-asc' | 'price-desc';
 
+export type BrandOption = 'Biomatrix' | 'AgroSense' | 'MultiGrão' | 'SafraMax' | 'none';

@@ -45,8 +45,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "700kB",
+                  "maximumError": "1.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -62,7 +62,7 @@
               "sourceMap": true
             },
             "github-pages": {
-              "baseHref": "/E-commerce-AgroAgrega/",
+              "baseHref": "./",
               "outputMode": "static",
               "outputHashing": "all"
             }

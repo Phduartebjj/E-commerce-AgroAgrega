@@ -1,0 +1,10 @@
+{
+  "name": "e-commerce-agroagrega-workspace",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix ./e-commerce-AgroAgrega run start --",
+    "build": "npm --prefix ./e-commerce-AgroAgrega run build",
+    "test": "npm --prefix ./e-commerce-AgroAgrega run test",
+    "watch": "npm --prefix ./e-commerce-AgroAgrega run watch"
+  }
+}

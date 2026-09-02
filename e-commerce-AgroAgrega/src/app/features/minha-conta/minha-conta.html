@@ -1,0 +1,220 @@
+<div class="minha-conta">
+  <div class="minha-conta__header">
+    <div>
+      <p class="eyebrow">Perfil</p>
+      <h1>Minha Conta</h1>
+    </div>
+  </div>
+
+  <section class="card card--dados">
+    <div class="card__title-row">
+      <h2>👤 Meus dados</h2>
+      @if (!editingProfile) {
+        <button type="button" class="btn btn--secondary" (click)="editProfile()">
+          Editar dados
+        </button>
+      }
+    </div>
+
+    @if (!editingProfile) {
+      <div class="info-list">
+        <div class="info-item">
+          <span>Nome</span>
+          <strong>{{ userName }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>E-mail</span>
+          <strong>{{ userEmail }}</strong>
+        </div>
+      </div>
+    } @else {
+      <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <label>
+          <span>Nome</span>
+          <input type="text" formControlName="name" />
+          @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('name')!) }}
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>E-mail</span>
+          <input type="email" formControlName="email" />
+          @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('email')!) }}
+            </small>
+          }
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Salvar</button>
+          <button type="button" class="btn btn--ghost" (click)="cancelEdit()">Cancelar</button>
+        </div>
+      </form>
+    }
+  </section>
+
+  <section class="card">
+    <div class="card__title-row">
+      <h2>📍 Meus endereços</h2>
+      @if (!isAddressFormOpen) {
+        <button type="button" class="btn btn--secondary" (click)="startAddAddress()">
+          + Adicionar endereço
+        </button>
+      }
+    </div>
+
+    @if (isAddressFormOpen) {
+      <form class="profile-form address-form" [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+        <label>
+          <span>Nome</span>
+          <input type="text" formControlName="fullName" />
+          @if (addressForm.get('fullName')?.touched && addressForm.get('fullName')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(addressForm.get('fullName')!) }}
+            </small>
+          }
+        </label>
+
+        <div class="cep-field">
+          <label>
+            <span>CEP</span>
+            <input
+              type="text"
+              formControlName="cep"
+              placeholder="00000-000"
+              (blur)="buscarEnderecoPorCep()"
+            />
+            @if (addressForm.get('cep')?.touched && addressForm.get('cep')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('cep')!) }}
+              </small>
+            }
+          </label>
+
+          <button
+            type="button"
+            class="btn btn--secondary btn--small"
+            (click)="buscarEnderecoPorCep()"
+          >
+            Buscar CEP
+          </button>
+        </div>
+
+        <label>
+          <span>Rua</span>
+          <input type="text" formControlName="address" />
+          @if (addressForm.get('address')?.touched && addressForm.get('address')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(addressForm.get('address')!) }}
+            </small>
+          }
+        </label>
+
+        <div class="two-columns">
+          <label>
+            <span>Número</span>
+            <input type="text" formControlName="number" />
+            @if (addressForm.get('number')?.touched && addressForm.get('number')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('number')!) }}
+              </small>
+            }
+          </label>
+
+          <label>
+            <span>Bairro</span>
+            <input type="text" formControlName="neighborhood" />
+            @if (addressForm.get('neighborhood')?.touched && addressForm.get('neighborhood')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('neighborhood')!) }}
+              </small>
+            }
+          </label>
+        </div>
+
+        <div class="two-columns">
+          <label>
+            <span>Cidade</span>
+            <input type="text" formControlName="city" />
+            @if (addressForm.get('city')?.touched && addressForm.get('city')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('city')!) }}
+              </small>
+            }
+          </label>
+
+          <label>
+            <span>Estado</span>
+            <input type="text" formControlName="state" maxlength="2" />
+            @if (addressForm.get('state')?.touched && addressForm.get('state')?.invalid) {
+              <small class="errorMessage">
+                {{ getErrorMessage(addressForm.get('state')!) }}
+              </small>
+            }
+          </label>
+        </div>
+
+        <label>
+          <span>Complemento</span>
+          <input type="text" formControlName="complement" />
+        </label>
+
+        <label>
+          <span>Ponto de referência</span>
+          <input
+            type="text"
+            formControlName="referencePoint"
+            placeholder="Ex.: Próximo ao mercado, em frente à praça"
+          />
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Salvar endereço</button>
+          <button type="button" class="btn btn--ghost" (click)="cancelAddressEdit()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    } @else if (userAddresses.length === 0) {
+      <p class="empty-state">Você ainda não possui endereços cadastrados.</p>
+    } @else {
+      <div class="info-list">
+        @for (address of userAddresses; track $index) {
+          <div class="info-item info-item--stacked">
+            <div class="address-summary">
+              <span>{{ address.fullName }}</span>
+              <strong
+                >{{ address.address }}, {{ address.number }} - {{ address.neighborhood }}</strong
+              >
+              <small>{{ address.city }} - {{ address.state }} · CEP {{ address.cep }}</small>
+            </div>
+
+            <div class="address-actions">
+              <button
+                type="button"
+                class="btn btn--secondary"
+                (click)="editAddress(address, $index)"
+              >
+                Editar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="card card--account">
+    <h2>⚙️ Conta</h2>
+
+    <div class="account-actions">
+      <button type="button" class="btn btn--secondary" (click)="logout()">Logout</button>
+      <button type="button" class="btn btn--danger" (click)="removeAccount()">Remover conta</button>
+    </div>
+  </section>
+</div>

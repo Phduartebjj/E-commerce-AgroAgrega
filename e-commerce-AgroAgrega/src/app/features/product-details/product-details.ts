@@ -2,9 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../core/services/product/product.service';
-import { ProductModel, ReviewModel } from '../../models/product';
+import { ProductModel } from '../../models/product';
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+
+interface ProductReview {
+  stars: number;
+  text: string;
+}
 
 @Component({
   selector: 'app-product-details',
@@ -34,13 +39,11 @@ export class ProductDetails implements OnInit {
 
   activeTab: 'details' | 'reviews' = 'details';
 
+  reviews: ProductReview[] = [];
+
   selectedRating = 0;
 
   reviewText = '';
-
-  get reviews(): ReviewModel[] {
-    return this.product?.reviews ?? [];
-  }
 
   selectTab(tab: 'details' | 'reviews'): void {
     this.activeTab = tab;
@@ -57,18 +60,15 @@ export class ProductDetails implements OnInit {
   submitReview(): void {
     const text = this.reviewText.trim();
 
-    if (this.selectedRating < 1 || !text || !this.id) {
+    if (this.selectedRating < 1 || !text) {
       return;
     }
 
-    this.productService.addReview(this.id, {
+    this.reviews.push({
       stars: this.selectedRating,
       text,
-      author: 'Cliente AgroAgrega',
-      createdAt: new Date().toLocaleDateString('pt-BR'),
     });
 
-    this.loadProduct();
     this.selectedRating = 0;
     this.reviewText = '';
   }
@@ -121,13 +121,13 @@ export class ProductDetails implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id');
-      this.loadProduct();
+
+      const products = this.productService.getProducts();
+
+      this.product = products().find((product) => product.id === this.id);
+
       this.selectedImageIndex = 0;
     });
-  }
-
-  loadProduct(): void {
-    this.product = this.id ? this.productService.getProductById(this.id) : undefined;
   }
 
   // =========================
@@ -170,12 +170,12 @@ export class ProductDetails implements OnInit {
 
   get reviewAverage(): number {
     if (this.reviews.length === 0) {
-      return this.product?.rating ?? 0;
+      return 0;
     }
 
     const total = this.reviews.reduce((sum, review) => sum + review.stars, 0);
 
-    return Number((total / this.reviews.length).toFixed(1));
+    return total / this.reviews.length;
   }
 
   get reviewCount(): number {

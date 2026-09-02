@@ -19,9 +19,11 @@ describe('Cart', () => {
     title: 'Produto Teste',
     price: 10,
     description: 'Produto utilizado nos testes',
-    category: 'Insumos',
-    images: [],
+    category: 'Ferramentas',
+    weeklySales: 2,
+    brand: 'Biomatrix',
     rating: 5,
+    images: [],
   };
   it('deve adicionar um produto ao carrinho', () => {
     service.addCartItem(product1);

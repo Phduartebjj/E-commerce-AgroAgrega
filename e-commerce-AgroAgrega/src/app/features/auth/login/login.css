@@ -1,4 +1,4 @@
-:host {
+:root {
   --green-700: #1a6e35;
   --green-600: #1f8040;
   --green-100: #edf7f0;
@@ -439,7 +439,7 @@ input {
   filter: brightness(0.95);
 }
 
-.btn-primary:active{
+.btn-primary:active {
   transform: scale(0.97);
   filter: brightness(0.88);
 
