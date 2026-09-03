@@ -23,6 +23,26 @@ describe('ProductService', () => {
     expect(found?.id).toBe(targetProduct.id);
   });
 
+  it('should expose the expanded catalog with unique and complete products', () => {
+    const products = service.getProducts()();
+    const productIds = products.map((product) => product.id);
+
+    expect(products).toHaveLength(52);
+    expect(new Set(productIds).size).toBe(products.length);
+    expect(products.every((product) => product.images.length > 0)).toBe(true);
+    expect(products.every((product) => (product.weeklySales ?? 0) > 0)).toBe(true);
+  });
+
+  it('should keep every catalog category well represented', () => {
+    const products = service.getProducts()();
+
+    for (const category of service.getProductCategories()) {
+      expect(
+        products.filter((product) => product.category === category).length,
+      ).toBeGreaterThanOrEqual(10);
+    }
+  });
+
   it('should add a review and recalculate product rating', () => {
     const products = service.getProducts()();
     const targetProduct = products[0];
@@ -42,4 +62,3 @@ describe('ProductService', () => {
     expect(typeof updatedProduct?.rating).toBe('number');
   });
 });
-

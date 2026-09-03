@@ -32,7 +32,7 @@
       @for (item of cartItems(); track item.product.id) {
         <div class="product-item">
           <div class="product-info">
-            <img [src]="item.product.images" alt="{{ item.product.title }}" />
+            <img [src]="item.product.images[0]" [alt]="item.product.title" />
             <div class="product-details">
               <p class="product-category">{{ item.product.category }}</p>
               <a [routerLink]="['/products', item.product.id]"> {{ item.product.title }}</a>
