@@ -26,10 +26,15 @@ describe('ProductService', () => {
   it('should expose the expanded catalog with unique and complete products', () => {
     const products = service.getProducts()();
     const productIds = products.map((product) => product.id);
+    const productImages = products.map((product) => product.images[0]);
 
     expect(products).toHaveLength(52);
     expect(new Set(productIds).size).toBe(products.length);
+    expect(new Set(productImages).size).toBe(products.length);
     expect(products.every((product) => product.images.length > 0)).toBe(true);
+    expect(
+      productImages.every((image) => image.startsWith('assets/images/generated-products/product-')),
+    ).toBe(true);
     expect(products.every((product) => (product.weeklySales ?? 0) > 0)).toBe(true);
   });
 

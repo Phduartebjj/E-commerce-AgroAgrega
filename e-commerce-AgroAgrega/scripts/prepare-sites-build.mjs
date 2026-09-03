@@ -1,4 +1,4 @@
-import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const projectRoot = resolve(import.meta.dirname, '..');
@@ -6,6 +6,8 @@ const angularOutput = resolve(projectRoot, 'dist', 'e-commerce-AgroAgrega', 'bro
 const sitesClientOutput = resolve(projectRoot, 'dist', 'client');
 const sitesServerOutput = resolve(projectRoot, 'dist', 'server');
 
+await rm(sitesClientOutput, { recursive: true, force: true });
+await rm(sitesServerOutput, { recursive: true, force: true });
 await mkdir(sitesClientOutput, { recursive: true });
 await mkdir(sitesServerOutput, { recursive: true });
 await cp(angularOutput, sitesClientOutput, { recursive: true, force: true });
@@ -38,3 +40,4 @@ export default {
 `.trimStart();
 
 await writeFile(resolve(sitesServerOutput, 'index.js'), workerSource, 'utf8');
+await rm(resolve(projectRoot, 'dist', 'e-commerce-AgroAgrega'), { recursive: true, force: true });

@@ -1,23 +1,8 @@
 <main class="product-page" id="catalog-content">
   <header class="catalog-header">
-    <span class="catalog-eyebrow">Catálogo AgroAgrega</span>
+    <span class="catalog-eyebrow">AgroAgrega</span>
     <h1>Encontre o que sua produção precisa</h1>
     <p class="catalog-intro">Soluções para agricultura, pecuária e o dia a dia no campo.</p>
-
-    <div class="catalog-search">
-      <span class="catalog-search-icon" aria-hidden="true">⌕</span>
-      <input
-        type="search"
-        [value]="searchTerm()"
-        placeholder="Busque por produto, marca ou categoria"
-        aria-label="Buscar no catálogo"
-        (input)="updateCatalogSearch($event)"
-      />
-
-      @if (searchTerm()) {
-        <button type="button" aria-label="Limpar busca" (click)="clearSearch()">Limpar</button>
-      }
-    </div>
 
     <nav class="catalog-filters" aria-label="Categorias do catálogo">
       @for (category of categoryFilters; track category) {

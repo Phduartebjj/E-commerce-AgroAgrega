@@ -207,28 +207,6 @@ export class ProductsComponent {
     });
   }
 
-  updateCatalogSearch(event: Event): void {
-    const search = (event.target as HTMLInputElement).value.trim();
-
-    this.resetPagination();
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { search: search || null },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-  }
-
-  clearSearch(): void {
-    this.resetPagination();
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { search: null },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-  }
-
   clearFilters(): void {
     this.selectedBrands.set([]);
     this.minRating.set(0);

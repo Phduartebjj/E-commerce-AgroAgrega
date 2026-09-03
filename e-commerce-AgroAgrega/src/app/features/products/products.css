@@ -55,65 +55,6 @@
   line-height: 1.6;
 }
 
-.catalog-search {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  width: min(100%, 720px);
-  min-height: 56px;
-  margin-top: 24px;
-  padding: 0 8px 0 18px;
-  border: 1px solid var(--catalog-border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 12px 30px rgba(13, 62, 38, 0.07);
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.catalog-search:focus-within {
-  border-color: var(--catalog-green);
-  box-shadow:
-    0 0 0 4px rgba(21, 95, 57, 0.12),
-    0 12px 30px rgba(13, 62, 38, 0.08);
-}
-
-.catalog-search-icon {
-  color: var(--catalog-green);
-  font-size: 1.6rem;
-  line-height: 1;
-  transform: rotate(-18deg);
-}
-
-.catalog-search input {
-  min-width: 0;
-  height: 54px;
-  padding: 0 14px;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--catalog-ink);
-  cursor: text;
-  font: inherit;
-}
-
-.catalog-search input::placeholder {
-  color: #7b8781;
-}
-
-.catalog-search button {
-  min-height: 40px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 10px;
-  background: #eaf3ed;
-  color: var(--catalog-green-dark);
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 750;
-}
-
 .catalog-filters {
   display: flex;
   flex-wrap: wrap;
@@ -782,23 +723,6 @@ a:focus-visible {
     line-height: 1.5;
   }
 
-  .catalog-search {
-    min-height: 52px;
-    margin-top: 19px;
-    padding-left: 13px;
-    border-radius: 14px;
-  }
-
-  .catalog-search input {
-    height: 50px;
-    padding-inline: 10px;
-    font-size: 0.88rem;
-  }
-
-  .catalog-search button {
-    padding-inline: 9px;
-  }
-
   .catalog-filters {
     justify-content: flex-start;
     flex-wrap: nowrap;
@@ -894,15 +818,6 @@ a:focus-visible {
 }
 
 @media (max-width: 390px) {
-  .catalog-search-icon {
-    display: none;
-  }
-
-  .catalog-search {
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding-left: 7px;
-  }
-
   .featured-card {
     grid-template-columns: 90px minmax(0, 1fr);
     gap: 11px;

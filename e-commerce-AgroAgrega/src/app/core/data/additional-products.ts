@@ -1,24 +1,5 @@
 import { BrandOption, ProductCategory, ProductModel } from '@models/product';
 
-const categoryImages: Record<ProductCategory, string[]> = {
-  'Agricultura de Precisão': [
-    'assets/images/products/agrosense-pro.jpg',
-    'assets/images/products/gps-agricola.jpg',
-    'assets/images/products/sensor-umidade.jpg',
-  ],
-  Irrigação: ['assets/images/products/gotejamento.jpg', 'assets/images/products/bomba-solar.jpg'],
-  Pecuária: [
-    'assets/images/products/bebedouro-bovinos.jpg',
-    'assets/images/products/sal-mineral.jpg',
-  ],
-  Insumos: [
-    'assets/images/products/milho-hibrido.jpg',
-    'assets/images/products/braquiaria.jpg',
-    'assets/images/products/fertilizante.jpg',
-  ],
-  Ferramentas: ['assets/images/products/rocadeira.jpg', 'assets/images/products/tesoura-poda.jpg'],
-};
-
 function createProduct(
   id: number,
   category: ProductCategory,
@@ -28,17 +9,15 @@ function createProduct(
   rating: number,
   brand: BrandOption,
   weeklySales: number,
-  imageIndex = 0,
+  _legacyImageIndex = 0,
 ): ProductModel {
-  const images = categoryImages[category];
-
   return {
     id: `agro-${id.toString().padStart(3, '0')}`,
     category,
     title,
     price,
     description,
-    images: [images[imageIndex % images.length]],
+    images: [`assets/images/generated-products/product-${id.toString().padStart(3, '0')}.png`],
     rating,
     brand,
     weeklySales,

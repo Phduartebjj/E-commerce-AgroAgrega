@@ -63,7 +63,7 @@
 .product-card-visual > a {
   display: block;
   width: 100%;
-  aspect-ratio: 1.55 / 1;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 12px;
   background: #edf2ef;
@@ -296,7 +296,7 @@
   :host-context(.catalog-grid.list-view) .product-card-visual > a {
     height: auto;
     min-height: 0;
-    aspect-ratio: 1.55 / 1;
+    aspect-ratio: 1 / 1;
   }
 
   :host-context(.catalog-grid.list-view) .product-card-content {
