@@ -40,6 +40,12 @@ export class ProductsComponent {
   readonly products = this.productService.getProducts();
   readonly productCategories = this.productService.getProductCategories();
   readonly categoryFilters: CategoryFilter[] = ['Todos', ...this.productCategories];
+  readonly categoryProductCounts = computed(() =>
+    this.productCategories.map((category) => ({
+      category,
+      count: this.products().filter((product) => product.category === category).length,
+    })),
+  );
 
   readonly selectedCategory = computed<CategoryFilter>(() => {
     const category = this.queryParams().get('category');

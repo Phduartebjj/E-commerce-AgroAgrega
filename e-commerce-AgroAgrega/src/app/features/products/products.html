@@ -3,20 +3,6 @@
     <span class="catalog-eyebrow">AgroAgrega</span>
     <h1>Encontre o que sua produção precisa</h1>
     <p class="catalog-intro">Soluções para agricultura, pecuária e o dia a dia no campo.</p>
-
-    <nav class="catalog-filters" aria-label="Categorias do catálogo">
-      @for (category of categoryFilters; track category) {
-        <button
-          class="filter-chip"
-          [class.active]="selectedCategory() === category"
-          [attr.aria-pressed]="selectedCategory() === category"
-          type="button"
-          (click)="selectCategory(category)"
-        >
-          <span>{{ category }}</span>
-        </button>
-      }
-    </nav>
   </header>
 
   <div class="catalog-layout">
@@ -55,6 +41,34 @@
               </button>
             }
           </div>
+
+          <fieldset class="filter-group category-filter">
+            <legend>Categorias</legend>
+            <label for="catalog-category-all">
+              <input
+                id="catalog-category-all"
+                type="radio"
+                name="catalog-category"
+                [checked]="selectedCategory() === 'Todos'"
+                (change)="selectCategory('Todos')"
+              />
+              <span>Todos</span>
+              <strong>{{ products().length }}</strong>
+            </label>
+            @for (item of categoryProductCounts(); track item.category; let index = $index) {
+              <label [for]="'catalog-category-' + index">
+                <input
+                  [id]="'catalog-category-' + index"
+                  type="radio"
+                  name="catalog-category"
+                  [checked]="selectedCategory() === item.category"
+                  (change)="selectCategory(item.category)"
+                />
+                <span>{{ item.category }}</span>
+                <strong>{{ item.count }}</strong>
+              </label>
+            }
+          </fieldset>
 
           <fieldset class="filter-group price-filter">
             <legend>Faixa de preço</legend>
