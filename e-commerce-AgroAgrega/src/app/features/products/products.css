@@ -273,6 +273,7 @@
 
 .featured-card {
   position: relative;
+  z-index: 0;
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr);
   gap: 16px;
@@ -283,52 +284,88 @@
   background: linear-gradient(135deg, #fffdf7 0%, #f7fbf8 100%);
   isolation: isolate;
   transition:
-    border-color 240ms ease,
-    box-shadow 240ms ease,
-    transform 240ms ease;
+    border-color 260ms ease,
+    box-shadow 360ms ease,
+    transform 360ms cubic-bezier(0.2, 0.9, 0.25, 1.25);
 }
 
 .featured-card::after {
   position: absolute;
   z-index: 2;
   inset: -2px;
-  border: 2px solid #f7ff45;
+  padding: 2px;
   border-radius: 18px;
+  background: conic-gradient(
+    from var(--featured-neon-angle),
+    rgba(255, 122, 0, 0.26) 0deg 244deg,
+    rgba(255, 94, 0, 0.58) 274deg,
+    #ff5e00 305deg,
+    #fff2d8 323deg,
+    #ff7a00 340deg,
+    rgba(255, 122, 0, 0.26) 360deg
+  );
   content: '';
+  filter: drop-shadow(0 0 4px rgba(255, 94, 0, 0.88))
+    drop-shadow(0 0 10px rgba(255, 122, 0, 0.62));
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.995);
+  transition: opacity 160ms ease;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
 }
 
 .featured-card:is(:hover, :focus-within) {
-  border-color: rgba(247, 255, 69, 0.95);
-  box-shadow: 0 12px 28px rgba(96, 99, 7, 0.14);
-  transform: translateY(-3px);
+  z-index: 1;
+  border-color: rgba(255, 122, 0, 0.56);
+  box-shadow:
+    0 24px 42px -18px rgba(133, 55, 0, 0.52),
+    0 12px 24px rgba(26, 35, 29, 0.16);
+  animation: featured-card-pop 620ms cubic-bezier(0.2, 0.88, 0.25, 1) both;
+  transform: translateY(-8px) scale(1.025);
 }
 
 .featured-card:is(:hover, :focus-within)::after {
-  animation: featured-neon-pulse 1.35s ease-in-out infinite;
+  animation: featured-neon-travel 1.7s linear infinite;
+  opacity: 1;
 }
 
-@keyframes featured-neon-pulse {
-  0%,
-  100% {
-    opacity: 0.38;
-    box-shadow:
-      0 0 5px rgba(247, 255, 69, 0.5),
-      0 0 12px rgba(255, 230, 0, 0.28),
-      inset 0 0 4px rgba(247, 255, 69, 0.3);
-    transform: scale(0.995);
+@keyframes featured-card-pop {
+  0% {
+    transform: translateY(0) scale(1);
   }
 
-  50% {
-    opacity: 1;
-    box-shadow:
-      0 0 9px rgba(247, 255, 69, 0.95),
-      0 0 24px rgba(255, 230, 0, 0.64),
-      0 0 40px rgba(255, 230, 0, 0.28),
-      inset 0 0 8px rgba(247, 255, 69, 0.55);
-    transform: scale(1.008);
+  44% {
+    transform: translateY(-13px) scale(1.045);
+  }
+
+  68% {
+    transform: translateY(-5px) scale(1.012);
+  }
+
+  84% {
+    transform: translateY(-9px) scale(1.032);
+  }
+
+  100% {
+    transform: translateY(-8px) scale(1.025);
+  }
+}
+
+@property --featured-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes featured-neon-travel {
+  to {
+    --featured-neon-angle: 360deg;
   }
 }
 
@@ -877,6 +914,7 @@ a:focus-visible {
   }
 
   .featured-card:is(:hover, :focus-within) {
+    animation: none;
     transform: none;
   }
 }
