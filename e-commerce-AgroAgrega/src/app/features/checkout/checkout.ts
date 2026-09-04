@@ -252,12 +252,9 @@ export class CheckoutComponent {
     const customerName =
       this.checkoutForm.get('fullName')?.value?.trim() || this.auth.getName() || 'Cliente';
 
-    const userId = this.auth.getId() || crypto.randomUUID();
-
     this.orderService.createOrder(
       this.cart.getCartItems()(),
       customerName,
-      crypto.randomUUID(),
       this.cart.subtotal(),
       this.discountTotalValue,
       0,

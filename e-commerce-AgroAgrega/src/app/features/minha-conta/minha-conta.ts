@@ -30,7 +30,7 @@ export class MinhaConta {
   editingAddressIndex: number | null = null;
 
   protected readonly recentOrders = computed(() => {
-    const userId = this.auth.currentUserID();
+    const userId = this.auth.currentUserId();
 
     if (!userId) {
       return [];

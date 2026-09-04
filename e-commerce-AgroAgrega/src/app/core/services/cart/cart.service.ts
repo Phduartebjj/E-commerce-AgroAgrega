@@ -12,7 +12,7 @@ export class Cart {
   //Estado inicial do carrinho, mutável apenas por ele mesmo.
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
-  private cartItems = signal<CartItemModel[]>(this.getStorageCart());
+  private cartItems = signal<CartItemModel[]>([]);
   private readonly auth = inject(Auth);
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
@@ -20,7 +20,7 @@ export class Cart {
   }
 
   private getStorageKey(): string | null {
-    const userId = this.auth.currentUserID();
+    const userId = this.auth.currentUserId();
     if (!userId) {
       return null;
     }
@@ -166,7 +166,7 @@ export class Cart {
 
   constructor() {
     effect(() => {
-      const userId = this.auth.currentUserID();
+      const userId = this.auth.currentUserId();
 
       if (!this.isBrowser()) {
         return;
@@ -181,7 +181,7 @@ export class Cart {
     });
 
     effect(() => {
-      const userId = this.auth.currentUserID();
+      const userId = this.auth.currentUserId();
       this.cartItems();
       if (!this.isBrowser() || !userId) {
         return;

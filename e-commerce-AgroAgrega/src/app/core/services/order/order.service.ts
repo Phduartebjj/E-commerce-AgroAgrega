@@ -17,7 +17,7 @@ export class OrderService {
 
   constructor() {
     effect(() => {
-      const userId = this.auth.currentUserID();
+      const userId = this.auth.currentUserId();
 
       if (!this.isBrowser()) {
         return;
@@ -31,7 +31,7 @@ export class OrderService {
       this.orders.set(this.getStorageOrders());
     });
     effect(() => {
-      const userId = this.auth.currentUserID();
+      const userId = this.auth.currentUserId();
       const orders = this.orders();
 
       if (!this.isBrowser() || !userId) {
@@ -69,7 +69,7 @@ export class OrderService {
   }
 
   private getStorageKey(): string | null {
-    const userId = this.auth.currentUserID();
+    const userId = this.auth.currentUserId();
 
     if (!userId) {
       return null;
@@ -106,13 +106,19 @@ export class OrderService {
   createOrder(
     cartItem: CartItemModel[],
     customerName: string,
-    userId: string,
     subtotal: number,
     discount: number,
     shipping: number,
     paymentMethod: OrderPaymentMethod,
     address: AddressModel,
   ): void {
+    const userId = this.auth.currentUserId();
+
+    if (!userId) {
+      console.error('Usuário não autenticado. Não é possível criar o pedido.');
+      return;
+    }
+
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
       userId,
@@ -136,9 +142,13 @@ export class OrderService {
     };
 
     this.orders.update((orders) => [...orders, newOrder]);
+    const key = this.getStorageKey();
 
     console.log('PEDIDO CRIADO:', newOrder);
     console.log('PEDIDOS NO SIGNAL:', this.orders());
-    console.log('PEDIDOS NO LOCALSTORAGE:', localStorage.getItem(this.keyOrders));
+    console.log(
+      'PEDIDOS NO LOCALSTORAGE:',
+      key ? localStorage.getItem(key) : 'Chave de armazenamento não encontrada',
+    );
   }
 }

@@ -11,7 +11,7 @@ export class Auth {
   private Storage = inject(StorageService);
   private Token = inject(TokenAuth);
 
-  readonly currentUserID = signal<string | null>(this.getInitialUserId());
+  readonly currentUserId = signal<string | null>(this.getInitialUserId());
 
   private getInitialUserId(): string | null {
     const id = this.Token.getId();
@@ -35,6 +35,8 @@ export class Auth {
       email: user.email,
     });
 
+    this.currentUserId.set(user.id);
+
     return true;
   }
 
@@ -56,6 +58,8 @@ export class Auth {
       name,
       email,
     });
+
+    this.currentUserId.set(id);
 
     return { res: user.res, message: user.message };
   }
@@ -100,7 +104,7 @@ export class Auth {
 
   logout(): void {
     this.Token.deleteToken();
-    this.currentUserID.set(null);
+    this.currentUserId.set(null);
   }
 
   removeAccount(): boolean {
