@@ -4,6 +4,7 @@ import { AddressModel } from '@models/address.model';
 
 import { CartItemModel } from '@models/cartItem';
 import { OrderModel, OrderPaymentMethod, OrderStatus } from '@models/order';
+import { Auth } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +12,39 @@ import { OrderModel, OrderPaymentMethod, OrderStatus } from '@models/order';
 export class OrderService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly keyOrders = 'client-orders';
-
-  private readonly orders = signal<OrderModel[]>(this.getStorageOrders());
+  private readonly auth = inject(Auth);
+  private readonly orders = signal<OrderModel[]>([]);
 
   constructor() {
     effect(() => {
-      const orders = this.orders();
+      const userId = this.auth.currentUserID();
 
       if (!this.isBrowser()) {
         return;
       }
 
-      localStorage.setItem(this.keyOrders, JSON.stringify(orders));
+      if (!userId) {
+        this.orders.set([]);
+        return;
+      }
+
+      this.orders.set(this.getStorageOrders());
+    });
+    effect(() => {
+      const userId = this.auth.currentUserID();
+      const orders = this.orders();
+
+      if (!this.isBrowser() || !userId) {
+        return;
+      }
+
+      const key = this.getStorageKey();
+
+      if (!key) {
+        return;
+      }
+
+      localStorage.setItem(key, JSON.stringify(orders));
     });
   }
 
@@ -46,12 +68,28 @@ export class OrderService {
     return isPlatformBrowser(this.platformId);
   }
 
+  private getStorageKey(): string | null {
+    const userId = this.auth.currentUserID();
+
+    if (!userId) {
+      return null;
+    }
+
+    return `${this.keyOrders}-${userId}`;
+  }
+
   private getStorageOrders(): OrderModel[] {
     if (!this.isBrowser()) {
       return [];
     }
 
-    const storage = localStorage.getItem(this.keyOrders);
+    const key = this.getStorageKey();
+
+    if (!key) {
+      return [];
+    }
+
+    const storage = localStorage.getItem(key);
 
     if (!storage) {
       return [];
