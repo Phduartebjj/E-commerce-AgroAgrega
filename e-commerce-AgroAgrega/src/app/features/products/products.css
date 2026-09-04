@@ -297,16 +297,16 @@
   border-radius: 18px;
   background: conic-gradient(
     from var(--featured-neon-angle),
-    rgba(255, 122, 0, 0.26) 0deg 244deg,
-    rgba(255, 94, 0, 0.58) 274deg,
-    #ff5e00 305deg,
+    rgba(124, 255, 24, 0.26) 0deg 244deg,
+    rgba(112, 239, 28, 0.58) 274deg,
+    #034507 305deg,
     #fff2d8 323deg,
-    #ff7a00 340deg,
-    rgba(255, 122, 0, 0.26) 360deg
+    #1f6d03 340deg,
+    rgba(28, 195, 17, 0.26) 360deg
   );
   content: '';
-  filter: drop-shadow(0 0 4px rgba(255, 94, 0, 0.88))
-    drop-shadow(0 0 10px rgba(255, 122, 0, 0.62));
+  filter: drop-shadow(0 0 4px rgba(21, 101, 3, 0.88))
+    drop-shadow(0 0 10px rgba(19, 137, 41, 0.62));
   mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -322,9 +322,9 @@
 
 .featured-card:is(:hover, :focus-within) {
   z-index: 1;
-  border-color: rgba(255, 122, 0, 0.56);
+  border-color: rgba(69, 216, 24, 0.56);
   box-shadow:
-    0 24px 42px -18px rgba(133, 55, 0, 0.52),
+    0 24px 42px -18px rgba(104, 179, 12, 0.525),
     0 12px 24px rgba(26, 35, 29, 0.16);
   animation: featured-card-pop 620ms cubic-bezier(0.2, 0.88, 0.25, 1) both;
   transform: translateY(-8px) scale(1.025);
