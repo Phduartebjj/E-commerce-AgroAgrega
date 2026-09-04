@@ -1,7 +1,11 @@
 import { Component, signal } from '@angular/core';
+
 import { RouterOutlet, ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+
 import { filter } from 'rxjs';
+
 import { Header } from './shared/components/header/header';
+
 import { Footer } from './shared/components/footer/footer';
 
 @Component({
@@ -20,13 +24,16 @@ export class App {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      this.atualizarLayout();
-    });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.atualizarLayout();
+      });
   }
 
   private atualizarLayout(): void {
     let rotaAtual = this.activatedRoute;
+
     while (rotaAtual.firstChild) {
       rotaAtual = rotaAtual.firstChild;
     }
