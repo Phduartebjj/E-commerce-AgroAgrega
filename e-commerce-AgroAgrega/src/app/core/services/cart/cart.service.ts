@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ProductModel } from '../../../models/product';
 import { COUPONS } from '@core/data/coupons';
 import { CouponModel } from '@models/coupon';
+import { Auth } from '../auth/auth.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,16 +13,30 @@ export class Cart {
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>(this.getStorageCart());
+  private readonly auth = inject(Auth);
   //Retorna apenas os items do carrinho, para leitura
   getCartItems() {
     return this.cartItems.asReadonly();
+  }
+
+  private getStorageKey(): string | null {
+    const userId = this.auth.currentUserID();
+    if (!userId) {
+      return null;
+    }
+    return `${this.keyStorage}-${userId}`;
   }
 
   getStorageCart() {
     if (!this.isBrowser()) {
       return [];
     }
-    const cartItems = localStorage.getItem(this.keyStorage);
+
+    const key = this.getStorageKey();
+    if (!key) {
+      return [];
+    }
+    const cartItems = localStorage.getItem(key);
     if (!cartItems) {
       return [];
     }
@@ -36,7 +51,13 @@ export class Cart {
     if (!this.isBrowser()) {
       return;
     }
-    localStorage.setItem(this.keyStorage, JSON.stringify(this.cartItems()));
+
+    const key = this.getStorageKey();
+    if (!key) {
+      return;
+    }
+
+    localStorage.setItem(key, JSON.stringify(this.cartItems()));
   }
 
   coupon = signal<CouponModel | null>(null);
@@ -145,9 +166,27 @@ export class Cart {
 
   constructor() {
     effect(() => {
+      const userId = this.auth.currentUserID();
+
       if (!this.isBrowser()) {
         return;
       }
+
+      if (!userId) {
+        this.cartItems.set([]);
+        return;
+      }
+
+      this.cartItems.set(this.getStorageCart());
+    });
+
+    effect(() => {
+      const userId = this.auth.currentUserID();
+      this.cartItems();
+      if (!this.isBrowser() || !userId) {
+        return;
+      }
+
       this.updateStorageCart();
     });
   }
