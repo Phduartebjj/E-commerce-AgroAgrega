@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AddressService } from '@core/services/address/address.service';
 import { Auth } from '@core/services/auth/auth.service';
 import { CepService } from '@core/services/cep/cep';
@@ -10,7 +10,7 @@ import { errorMessages } from '@shared/constants/form-error-messages';
 
 @Component({
   selector: 'app-minha-conta',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './minha-conta.html',
   styleUrl: './minha-conta.css',
 })

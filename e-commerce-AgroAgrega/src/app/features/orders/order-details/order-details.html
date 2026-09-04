@@ -1,11 +1,11 @@
 @if (order(); as currentOrder) {
   <main class="order-details-page">
     <nav class="breadcrumb" aria-label="Navegação estrutural">
-      <span>Home</span>
+      <a routerLink="/">Home</a>
       <span aria-hidden="true">›</span>
-      <span>Minha conta</span>
+      <a routerLink="/account">Minha conta</a>
       <span aria-hidden="true">›</span>
-      <span>Meus pedidos</span>
+      <a routerLink="/orders">Meus pedidos</a>
       <span aria-hidden="true">›</span>
       <strong>Pedido #{{ currentOrder.id }}</strong>
     </nav>

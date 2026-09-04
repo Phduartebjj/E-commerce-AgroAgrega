@@ -21,7 +21,7 @@
       </button>
     </div>
     <div class="acoes-header" [class.acoes-header-fixas]="navegacaoFixa()">
-      <a class="conta-link" [routerLink]="loggedIn() ? '/minha-conta' : '/login'">
+      <a class="conta-link" [routerLink]="loggedIn() ? '/account' : '/login'">
         @if (loggedIn()) {
           <span class="icone-perfil"
             ><img src="assets/images/profile.png" alt="Minha Conta"

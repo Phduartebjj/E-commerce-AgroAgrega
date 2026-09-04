@@ -102,7 +102,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'minha-conta',
+    path: 'account',
     component: MinhaConta,
     canActivate: [authGuard],
   },

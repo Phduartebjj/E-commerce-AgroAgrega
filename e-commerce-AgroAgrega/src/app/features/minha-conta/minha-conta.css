@@ -12,6 +12,21 @@
   justify-content: space-between;
 }
 
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #637086;
+  font-size: 12px;
+}
+
+.breadcrumb strong {
+  color: #172235;
+}
+
+
 label {
   position: relative;
   display: flex;

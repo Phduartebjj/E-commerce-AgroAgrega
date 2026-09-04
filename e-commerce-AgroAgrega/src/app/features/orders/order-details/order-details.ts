@@ -8,7 +8,7 @@ import { ReceiptService } from '@core/services/receipt/receipt';
 
 @Component({
   selector: 'app-order-details',
-  imports: [DatePipe, PrecoFormatadoPipe, OrderDetailsCard],
+  imports: [DatePipe, PrecoFormatadoPipe, OrderDetailsCard, RouterLink],
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',
 })
