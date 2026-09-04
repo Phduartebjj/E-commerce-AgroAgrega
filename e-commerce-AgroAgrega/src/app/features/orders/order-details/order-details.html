@@ -16,7 +16,7 @@
           <div>
             <div class="title-line">
               <h1>Pedido #{{ currentOrder.id }}</h1>
-              <span class="status-badge"><span>✓</span> Entregue</span>
+              <span class="status-badge"><span>✓</span> {{ currentOrder.status }}</span>
             </div>
             <p>
               Realizado em {{ currentOrder.createdAt | date: 'dd/MM/yyyy' }} às
@@ -72,7 +72,7 @@
             <h2><span>▤</span> Pagamento</h2>
             <div class="payment-content">
               <div>
-                <strong class="pix">❖ {{ currentOrder.paymentMethod }} <small>Pago</small></strong>
+                <strong class="pix">❖ {{ currentOrder.paymentMethod }} <small>{{ currentOrder.status }}</small></strong>
               </div>
               <div class="paid-total">
                 <span>Total pago</span>

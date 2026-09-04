@@ -9,17 +9,17 @@ export const guestGuard: CanActivateFn = () => {
 
   const loggedIn = authService.isLoggedIn();
 
-  console.log('=== GUEST GUARD ===');
+  console.log('===== GUEST GUARD =====');
   console.log('URL:', router.url);
-  console.log('LOGGED IN:', loggedIn);
-  console.log('USER ID:', authService.getId());
+  console.log('loggedIn:', loggedIn);
+  console.log('userId:', authService.getId());
 
   if (!loggedIn) {
-    console.log('PERMITINDO LOGIN');
+    console.log('>>> GUEST: PERMITINDO LOGIN');
     return true;
   }
 
-  console.log('REDIRECIONANDO PARA HOME');
+  console.log('>>> GUEST: MANDANDO PARA HOME');
 
   return router.createUrlTree(['/']);
 };

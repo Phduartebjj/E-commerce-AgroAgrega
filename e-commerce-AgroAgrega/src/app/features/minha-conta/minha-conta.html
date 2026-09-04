@@ -89,11 +89,6 @@
               placeholder="00000-000"
               (blur)="buscarEnderecoPorCep()"
             />
-            @if (addressForm.get('cep')?.touched && addressForm.get('cep')?.invalid) {
-              <small class="errorMessage">
-                {{ getErrorMessage(addressForm.get('cep')!) }}
-              </small>
-            }
           </label>
 
           <button
@@ -104,6 +99,11 @@
             Buscar CEP
           </button>
         </div>
+        @if (addressForm.get('cep')?.touched && addressForm.get('cep')?.invalid) {
+          <small class="errorMessage">
+            {{ getErrorMessage(addressForm.get('cep')!) }}
+          </small>
+        }
 
         <label>
           <span>Rua</span>
@@ -129,7 +129,9 @@
           <label>
             <span>Bairro</span>
             <input type="text" formControlName="neighborhood" />
-            @if (addressForm.get('neighborhood')?.touched && addressForm.get('neighborhood')?.invalid) {
+            @if (
+              addressForm.get('neighborhood')?.touched && addressForm.get('neighborhood')?.invalid
+            ) {
               <small class="errorMessage">
                 {{ getErrorMessage(addressForm.get('neighborhood')!) }}
               </small>
