@@ -102,7 +102,7 @@ export class MinhaConta {
     this.isAddressFormOpen = true;
     this.editingAddressIndex = null;
     this.addressForm.reset({
-      fullName: this.userName,
+      fullName: '',
       cep: '',
       address: '',
       number: '',
