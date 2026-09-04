@@ -104,6 +104,11 @@
   color: #bf7a1d;
 }
 
+.status-cancelled {
+  background: rgba(220, 70, 70, 0.15);
+  color: #c03a3a;
+}
+
 .status-note {
   margin-top: 11px;
   font-size: 1rem;

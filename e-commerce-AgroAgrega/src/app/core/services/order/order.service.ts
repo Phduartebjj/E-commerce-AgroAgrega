@@ -103,6 +103,17 @@ export class OrderService {
     }
   }
 
+  cancelOrder(orderId: string): void {
+    this.orders.update((orders) => {
+      return orders.map((order) => {
+        if (order.id === orderId) {
+          return { ...order, status: OrderStatus.Cancelled };
+        }
+        return order;
+      });
+    });
+  }
+
   createOrder(
     cartItem: CartItemModel[],
     customerName: string,
