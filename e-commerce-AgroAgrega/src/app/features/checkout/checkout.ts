@@ -15,7 +15,7 @@ import {
 
 import { OrderService } from '@core/services/order/order.service';
 import { CepService } from '@core/services/cep/cep';
-import { OrderPaymentMethod } from '@models/order';
+import { OrderPaymentMethod, OrderStatus } from '@models/order';
 import { AddressModel } from '@models/address.model';
 import { Auth } from '@core/services/auth/auth.service';
 import { errorMessages } from '@shared/constants/form-error-messages';
@@ -141,11 +141,6 @@ export class CheckoutComponent {
       validators: [validCardNumber],
     }),
 
-    cardHolder: new FormControl('', {
-      nonNullable: true,
-      validators: [nameNoSpecialChars],
-    }),
-
     cardExpiration: new FormControl('', {
       nonNullable: true,
       validators: [validCardExpiration],
@@ -247,7 +242,6 @@ export class CheckoutComponent {
 
     const cardFields = [
       this.checkoutForm.controls.cardNumber,
-      this.checkoutForm.controls.cardHolder,
       this.checkoutForm.controls.cardExpiration,
       this.checkoutForm.controls.cardCvv,
       this.checkoutForm.controls.cardCpf,
@@ -322,15 +316,28 @@ export class CheckoutComponent {
     const customerName =
       this.checkoutForm.get('fullName')?.value?.trim() || this.auth.getName() || 'Cliente';
 
-    this.orderService.createOrder(
-      this.cart.getCartItems()(),
-      customerName,
-      this.cart.subtotal(),
-      this.discountTotalValue,
-      0,
-      paymentMethod,
-      address,
-    );
+    if (paymentMethod === OrderPaymentMethod.Pix || paymentMethod === OrderPaymentMethod.Boleto) {
+      this.orderService.createOrder(
+        this.cart.getCartItems()(),
+        customerName,
+        this.cart.subtotal(),
+        this.discountTotalValue,
+        0,
+        paymentMethod,
+        address,
+        OrderStatus.Confirmed,
+      );
+    } else {
+      this.orderService.createOrder(
+        this.cart.getCartItems()(),
+        customerName,
+        this.cart.subtotal(),
+        this.discountTotalValue,
+        0,
+        paymentMethod,
+        address,
+      );
+    }
 
     this.cart.removeCoupon();
     this.cart.cleanCartItem();

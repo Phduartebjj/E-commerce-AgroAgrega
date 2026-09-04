@@ -401,7 +401,13 @@
           <div class="card-form card-group">
             <div class="form-group">
               <label for="cardNumber">Número do cartão</label>
-              <input id="cardNumber" type="text" placeholder="0000 0000 0000 0000" maxlength="19" />
+              <input
+                id="cardNumber"
+                type="text"
+                placeholder="0000 0000 0000 0000"
+                maxlength="19"
+                formControlName="cardNumber"
+              />
               @if (
                 checkoutForm.controls.cardNumber.invalid && checkoutForm.controls.cardNumber.touched
               ) {
@@ -413,7 +419,12 @@
 
             <div class="form-group">
               <label for="cardName">Nome no cartão</label>
-              <input id="cardName" type="text" placeholder="NOME COMPLETO" />
+              <input
+                id="cardName"
+                type="text"
+                placeholder="NOME COMPLETO"
+                formControlName="cardName"
+              />
               @if (
                 checkoutForm.controls.cardName.invalid && checkoutForm.controls.cardName.touched
               ) {
@@ -426,7 +437,13 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="cardExpiration">Validade</label>
-                <input id="cardExpiration" type="text" placeholder="MM/AA" maxlength="5" />
+                <input
+                  id="cardExpiration"
+                  type="text"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  formControlName="cardExpiration"
+                />
                 @if (
                   checkoutForm.controls.cardExpiration.invalid &&
                   checkoutForm.controls.cardExpiration.touched
@@ -439,7 +456,13 @@
 
               <div class="form-group">
                 <label for="cardCvv">CVV</label>
-                <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                <input
+                  id="cardCvv"
+                  type="text"
+                  placeholder="123"
+                  maxlength="4"
+                  formControlName="cardCvv"
+                />
                 @if (
                   checkoutForm.controls.cardCvv.invalid && checkoutForm.controls.cardCvv.touched
                 ) {
@@ -452,7 +475,13 @@
 
             <div class="form-group">
               <label for="cardCpf">CPF do titular</label>
-              <input id="cardCpf" type="text" placeholder="000.000.000-00" maxlength="14" />
+              <input
+                id="cardCpf"
+                type="text"
+                placeholder="000.000.000-00"
+                maxlength="14"
+                formControlName="cardCpf"
+              />
               @if (checkoutForm.controls.cardCpf.invalid && checkoutForm.controls.cardCpf.touched) {
                 <span class="errorMessage">
                   {{ getErrorMessage(checkoutForm.controls.cardCpf) }}
@@ -502,14 +531,7 @@
       </div>
 
       <div>
-        <button
-          (click)="finishOrder()"
-          class="btn-finish"
-          type="button"
-          [disabled]="checkoutForm.invalid"
-        >
-          Finalizar Compra
-        </button>
+        <button (click)="finishOrder()" class="btn-finish" type="button">Finalizar Compra</button>
       </div>
       <div class="support-section">
         <span class="icon-chat"

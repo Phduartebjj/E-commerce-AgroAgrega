@@ -18,7 +18,7 @@
               <h1>Pedido #{{ currentOrder.id }}</h1>
               @if (currentOrder.status === 'Pendente') {
                 <span class="status-badge status-pending"
-                  ><span>✓</span> {{ currentOrder.status }}</span
+                  ><span>⧖</span> {{ currentOrder.status }}</span
                 >
               } @else if (currentOrder.status === 'Cancelado') {
                 <span class="status-badge status-cancelled"

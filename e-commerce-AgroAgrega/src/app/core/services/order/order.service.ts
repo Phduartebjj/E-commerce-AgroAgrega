@@ -122,6 +122,7 @@ export class OrderService {
     shipping: number,
     paymentMethod: OrderPaymentMethod,
     address: AddressModel,
+    status: OrderStatus = OrderStatus.Pending,
   ): void {
     const userId = this.auth.currentUserId();
 
@@ -146,7 +147,7 @@ export class OrderService {
       discount,
       shipping,
       total: subtotal - discount + shipping,
-      status: OrderStatus.Pending,
+      status,
       createdAt: new Date().toISOString(),
       paymentMethod,
       address,
@@ -154,12 +155,5 @@ export class OrderService {
 
     this.orders.update((orders) => [...orders, newOrder]);
     const key = this.getStorageKey();
-
-    console.log('PEDIDO CRIADO:', newOrder);
-    console.log('PEDIDOS NO SIGNAL:', this.orders());
-    console.log(
-      'PEDIDOS NO LOCALSTORAGE:',
-      key ? localStorage.getItem(key) : 'Chave de armazenamento não encontrada',
-    );
   }
 }
