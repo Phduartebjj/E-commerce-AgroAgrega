@@ -14,7 +14,7 @@ export class AdminLoginComponent {
   usuario = '';
   senha = '';
   erro = false;
-
+  
   private auth = inject(AuthAdminService);
   private router = inject(Router);
 //   constructor(
