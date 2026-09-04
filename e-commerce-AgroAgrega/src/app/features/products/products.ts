@@ -2,15 +2,27 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { BrandOption, ProductCategory, ProductModel, SortOption } from '@models/product';
-
-import { ProductService } from '../../core/services/product/product.service';
-import { ProductCardComponent } from './product-card/product-card';
+import { BrandOption, ProductCategory, ProductModel } from '@models/product';
 import { Cart } from '@core/services/cart/cart.service';
+import { ProductService } from '../../core/services/product/product.service';
+import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { ProductCardComponent } from './product-card/product-card';
+
+type CategoryFilter = ProductCategory | 'Todos';
+type CatalogSortOrder = 'mais_vendidos' | 'melhor_avaliados' | 'menor_preco' | 'maior_preco';
+
+const PRODUCTS_PER_PAGE = 12;
+
+function normalizeCatalogText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR');
+}
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent, RouterLink],
+  imports: [ProductCardComponent, RouterLink, PrecoFormatadoPipe],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -20,211 +32,294 @@ export class ProductsComponent {
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
 
-  private readonly featuredAddedIds = signal<Set<string>>(new Set());
-
+  private readonly addedProductIds = signal<Set<string>>(new Set());
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
-  // Produtos e categorias
   readonly products = this.productService.getProducts();
-  readonly categories = this.productService.getProductCategories();
   readonly productCategories = this.productService.getProductCategories();
-  readonly categoryFilters = ['Todos', ...this.productCategories];
+  readonly categoryFilters: CategoryFilter[] = ['Todos', ...this.productCategories];
+  readonly categoryProductCounts = computed(() =>
+    this.productCategories.map((category) => ({
+      category,
+      count: this.products().filter((product) => product.category === category).length,
+    })),
+  );
 
-  // Estado dos filtros
-  readonly selectedCategories = signal<ProductCategory[]>([]);
-  readonly sortOption = signal<SortOption>('relevant');
+  readonly selectedCategory = computed<CategoryFilter>(() => {
+    const category = this.queryParams().get('category');
 
-  readonly ratingOptions = [
-    { value: 5, stars: '★★★★★' },
-    { value: 4, stars: '★★★★☆' },
-    { value: 3, stars: '★★★☆☆' },
-    { value: 2, stars: '★★☆☆☆' },
-    { value: 1, stars: '★☆☆☆☆' },
-  ];
-
-  readonly selectedCategory = computed(() => {
-    return this.queryParams().get('category');
+    return this.productCategories.includes(category as ProductCategory)
+      ? (category as ProductCategory)
+      : 'Todos';
   });
 
-  readonly searchTerm = computed(() => {
-    return (this.queryParams().get('search') ?? '').trim().toLowerCase();
-  });
-
-  // Estado da interface
+  readonly searchTerm = computed(() => (this.queryParams().get('search') ?? '').trim());
   readonly viewMode = signal<'grid' | 'list'>('grid');
-  readonly maxPriceFilter = signal<number>(5000);
-  readonly sortOrder = signal<string>('mais_vendidos');
-
-  // Filtros adicionais
-  readonly availableBrands = ['Biomatrix', 'AgroSense', 'MultiGrão', 'SafraMax'] as BrandOption[];
-
+  readonly filtersOpen = signal(false);
   readonly selectedBrands = signal<BrandOption[]>([]);
-  readonly minRating = signal<number>(0);
+  readonly minRating = signal(0);
+  readonly sortOrder = signal<CatalogSortOrder>('mais_vendidos');
+  readonly currentPage = signal(1);
 
-  // Produtos em destaque
-  readonly featuredProducts = computed(() => {
-    return this.products().slice(0, 2);
+  readonly maxCatalogPrice = computed(() => {
+    const highestPrice = Math.max(...this.products().map((product) => product.price), 0);
+
+    return Math.max(500, Math.ceil(highestPrice / 500) * 500);
   });
 
-  // Produtos filtrados
+  readonly maxPriceFilter = signal(this.maxCatalogPrice());
+
+  readonly availableBrands = computed(() => {
+    const brands = this.products()
+      .map((product) => product.brand)
+      .filter((brand): brand is Exclude<BrandOption, 'none'> => Boolean(brand && brand !== 'none'));
+
+    return [...new Set(brands)].sort((first, second) => first.localeCompare(second, 'pt-BR'));
+  });
+
+  readonly activeFilterCount = computed(() => {
+    let count = this.selectedBrands().length;
+
+    if (this.selectedCategory() !== 'Todos') count += 1;
+    if (this.searchTerm()) count += 1;
+    if (this.minRating() > 0) count += 1;
+    if (this.maxPriceFilter() < this.maxCatalogPrice()) count += 1;
+
+    return count;
+  });
+
+  readonly featuredProducts = computed(() =>
+    [...this.products()]
+      .sort((first, second) => (second.weeklySales ?? 0) - (first.weeklySales ?? 0))
+      .slice(0, 2),
+  );
+
+  private readonly featureProductsOnFirstPage = computed(
+    () => this.activeFilterCount() === 0 && this.sortOrder() === 'mais_vendidos',
+  );
+
+  readonly showFeaturedProducts = computed(
+    () => this.featureProductsOnFirstPage() && this.currentPage() === 1,
+  );
+
   readonly filteredProducts = computed(() => {
     let filtered = [...this.products()];
-
     const category = this.selectedCategory();
-    const search = this.searchTerm();
-    const selectedCategories = this.selectedCategories();
+    const search = normalizeCatalogText(this.searchTerm());
+    const selectedBrands = this.selectedBrands();
     const minRating = this.minRating();
     const maxPrice = this.maxPriceFilter();
-    const brands = this.selectedBrands();
 
-    // 1. Categoria da URL
-    if (category && category !== 'Todos') {
+    if (category !== 'Todos') {
       filtered = filtered.filter((product) => product.category === category);
+    }
+
+    if (search) {
+      filtered = filtered.filter((product) => {
+        const searchableText = normalizeCatalogText(
+          `${product.title} ${product.category} ${product.description} ${product.brand ?? ''}`,
+        );
+
+        return searchableText.includes(search);
+      });
+    }
+
+    filtered = filtered.filter((product) => product.price <= maxPrice);
+
+    if (selectedBrands.length > 0) {
+      filtered = filtered.filter((product) => selectedBrands.includes(product.brand ?? 'none'));
     }
 
     if (minRating > 0) {
       filtered = filtered.filter((product) => product.rating >= minRating);
     }
 
-    // 2. Categorias selecionadas nos filtros
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter((product) => selectedCategories.includes(product.category));
-    }
-
-    // 3. Pesquisa
-    if (search) {
-      filtered = filtered.filter((product) => {
-        const searchableText =
-          `${product.title} ${product.category} ${product.description}`.toLowerCase();
-
-        return searchableText.includes(search);
-      });
-    }
-
-    // 4. Preço máximo
-    filtered = filtered.filter((product) => {
-      return product.price <= maxPrice;
-    });
-
-    // 5. Marca
-    if (brands.length > 0) {
-      filtered = filtered.filter((product) => {
-        return brands.includes(product.brand ?? 'none');
-      });
-    }
-
-    // 7. Ordenação
-    const sort = this.sortOrder();
-
-    if (sort === 'menor_preco' || sort === 'price-asc') {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (sort === 'maior_preco' || sort === 'price-desc') {
-      filtered.sort((a, b) => b.price - a.price);
+    switch (this.sortOrder()) {
+      case 'menor_preco':
+        filtered.sort((first, second) => first.price - second.price);
+        break;
+      case 'maior_preco':
+        filtered.sort((first, second) => second.price - first.price);
+        break;
+      case 'melhor_avaliados':
+        filtered.sort(
+          (first, second) =>
+            second.rating - first.rating || (second.weeklySales ?? 0) - (first.weeklySales ?? 0),
+        );
+        break;
+      default:
+        filtered.sort(
+          (first, second) =>
+            (second.weeklySales ?? 0) - (first.weeklySales ?? 0) || second.rating - first.rating,
+        );
     }
 
     return filtered;
   });
 
-  // Seleciona categoria
-  selectCategory(category: string): void {
+  readonly catalogGridProducts = computed(() => {
+    const products = this.filteredProducts();
+
+    if (!this.featureProductsOnFirstPage()) return products;
+
+    const featuredIds = new Set(this.featuredProducts().map((product) => product.id));
+
+    return products.filter((product) => !featuredIds.has(product.id));
+  });
+
+  readonly totalPages = computed(() => this.calculateTotalPages());
+
+  readonly pageNumbers = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, index) => index + 1),
+  );
+
+  readonly visibleProducts = computed(() => {
+    if (this.featureProductsOnFirstPage()) {
+      const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
+
+      if (this.currentPage() === 1) {
+        return this.catalogGridProducts().slice(0, firstPageCapacity);
+      }
+
+      const startIndex = firstPageCapacity + (this.currentPage() - 2) * PRODUCTS_PER_PAGE;
+
+      return this.catalogGridProducts().slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+    }
+
+    const startIndex = (this.currentPage() - 1) * PRODUCTS_PER_PAGE;
+
+    return this.catalogGridProducts().slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+  });
+
+  readonly pageAnnouncement = computed(
+    () => `Página ${this.currentPage()} de ${this.totalPages()} carregada.`,
+  );
+
+  constructor() {
+    effect(() => {
+      this.queryParams();
+      this.resetPagination();
+    });
+  }
+
+  selectCategory(category: CategoryFilter): void {
+    this.resetPagination();
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { category },
+      queryParams: { category: category === 'Todos' ? null : category },
       queryParamsHandling: 'merge',
     });
   }
 
-  // Limpa filtros
   clearFilters(): void {
-    this.selectedCategories.set([]);
-    this.sortOption.set('relevant');
     this.selectedBrands.set([]);
     this.minRating.set(0);
-    this.maxPriceFilter.set(5000);
+    this.maxPriceFilter.set(this.maxCatalogPrice());
     this.sortOrder.set('mais_vendidos');
+    this.resetPagination();
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {},
+      queryParams: { category: null, search: null },
+      queryParamsHandling: 'merge',
     });
   }
 
-  // Adiciona produto ao carrinho
-  addProductToCart(product: ProductModel): void {
-    this.cart.addCartItem(product);
+  isProductAdded(productId: string): boolean {
+    return this.addedProductIds().has(productId);
   }
 
-  isFeaturedProductAdded(productId: string): boolean {
-    return this.featuredAddedIds().has(productId);
+  addProductToCart(product: ProductModel): void {
+    this.cart.addCartItem(product);
+    this.addedProductIds.update((ids) => new Set([...ids, product.id]));
+
+    setTimeout(() => {
+      this.addedProductIds.update((ids) => {
+        const newIds = new Set(ids);
+        newIds.delete(product.id);
+        return newIds;
+      });
+    }, 2000);
   }
+
   setViewMode(mode: 'grid' | 'list'): void {
     this.viewMode.set(mode);
   }
 
   updateMaxPrice(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    this.maxPriceFilter.set(Number(input.value));
+    this.maxPriceFilter.set(Number((event.target as HTMLInputElement).value));
+    this.resetPagination();
   }
 
-  addFeaturedProductToCart(product: ProductModel): void {
-  this.cart.addCartItem(product);
-
-  this.featuredAddedIds.update(
-    ids => new Set([...ids, product.id])
-  );
-
-  setTimeout(() => {
-    this.featuredAddedIds.update(ids => {
-      const newIds = new Set(ids);
-
-      newIds.delete(product.id);
-
-      return newIds;
-    });
-  }, 2000);
-}
-
-  // Atualiza ordenação
   updateSortOrder(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-
-    this.sortOrder.set(select.value);
+    this.sortOrder.set((event.target as HTMLSelectElement).value as CatalogSortOrder);
+    this.resetPagination();
   }
 
-  // Marca
   toggleBrand(brand: BrandOption, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
 
-    if (isChecked) {
-      this.selectedBrands.update((brands) => [...brands, brand]);
-    } else {
-      this.selectedBrands.update((brands) => brands.filter((current) => current !== brand));
+    this.selectedBrands.update((brands) =>
+      isChecked ? [...new Set([...brands, brand])] : brands.filter((current) => current !== brand),
+    );
+    this.resetPagination();
+  }
+
+  setMinRating(rating: number): void {
+    this.minRating.set(rating);
+    this.resetPagination();
+  }
+
+  toggleFilters(): void {
+    this.filtersOpen.update((isOpen) => !isOpen);
+  }
+
+  goToPage(page: number): void {
+    if (
+      !Number.isInteger(page) ||
+      page < 1 ||
+      page > this.totalPages() ||
+      page === this.currentPage()
+    ) {
+      return;
+    }
+
+    this.currentPage.set(page);
+
+    const resultsSection = document.getElementById('catalog-results');
+
+    if (typeof resultsSection?.scrollIntoView === 'function') {
+      const prefersReducedMotion =
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      resultsSection.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
+
+    if (typeof resultsSection?.focus === 'function') {
+      resultsSection.focus({ preventScroll: true });
     }
   }
 
-  // Avaliação mínima
-  setMinRating(rating: number): void {
-    this.minRating.set(rating);
+  private calculateTotalPages(): number {
+    const gridProductCount = this.catalogGridProducts().length;
+
+    if (!this.featureProductsOnFirstPage()) {
+      return Math.max(1, Math.ceil(gridProductCount / PRODUCTS_PER_PAGE));
+    }
+
+    const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
+    const remainingProducts = Math.max(0, gridProductCount - firstPageCapacity);
+
+    return 1 + Math.ceil(remainingProducts / PRODUCTS_PER_PAGE);
   }
 
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  constructor() {
-    effect(() => {
-      const category = this.selectedCategory();
-
-      if (category && this.categories.includes(category as ProductCategory)) {
-        this.selectedCategories.set([category as ProductCategory]);
-
-        return;
-      }
-
-      this.selectedCategories.set([]);
-    });
+  private resetPagination(): void {
+    this.currentPage.set(1);
   }
 }

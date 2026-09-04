@@ -14,6 +14,7 @@ export class ProductCardComponent {
   addToCart = output<ProductModel>();
 
   adicionado = signal(false);
+  imageUnavailable = signal(false);
 
   adicionarAoCarrinho(): void {
     this.addToCart.emit(this.product());
@@ -24,8 +25,12 @@ export class ProductCardComponent {
     }, 2000);
   }
 
+  handleImageError(): void {
+    this.imageUnavailable.set(true);
+  }
+
   getStars(rating: number): boolean[] {
-    const roundedRating = Math.floor(rating);
+    const roundedRating = Math.round(rating);
 
     return Array.from({ length: 5 }, (_, index) => {
       return index < roundedRating;

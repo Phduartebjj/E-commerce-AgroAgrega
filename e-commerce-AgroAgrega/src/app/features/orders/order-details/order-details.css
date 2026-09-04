@@ -4,6 +4,12 @@
   background: #fff;
 }
 
+.outline-button.cancel {
+  margin-top: 8px;
+  background-color: #f44336;
+  color: #fff;
+}
+
 .order-details-page {
   width: min(100%, 1200px);
   margin: 0 auto;
@@ -86,7 +92,7 @@
   background: #e1e7eb;
 }
 
-.product-section{
+.product-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -366,4 +372,29 @@
     min-height: 40px;
     font-size: 12px;
   }
+}
+
+.status-success {
+  background: rgba(28, 174, 103, 0.13);
+  color: #1b8b5d;
+}
+
+.status-info {
+  background: rgba(70, 143, 213, 0.14);
+  color: #2d75b5;
+}
+
+.status-processing {
+  background: rgba(227, 146, 33, 0.15);
+  color: #c77a15;
+}
+
+.status-pending {
+  background: rgba(213, 134, 46, 0.16);
+  color: #bf7a1d;
+}
+
+.status-cancelled {
+  background: rgba(220, 70, 70, 0.15);
+  color: #c03a3a;
 }

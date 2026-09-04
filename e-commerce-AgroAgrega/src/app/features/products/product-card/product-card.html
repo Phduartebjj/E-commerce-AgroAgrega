@@ -1,27 +1,53 @@
 <article class="product-card">
   <div class="product-card-top">
-    <span class="product-card-tag">12% OFF</span>
+    <span class="product-card-tag">
+      {{ (product().weeklySales ?? 0) >= 80 ? 'Mais vendido' : 'Pronta entrega' }}
+    </span>
   </div>
 
   <div class="product-card-visual">
-    <a [routerLink]="['/products', product().id]">
-      <img class="product-card-figure" [src]="product().images[0]" [alt]="product().title" />
+    <a [routerLink]="['/products', product().id]" [attr.aria-label]="'Ver ' + product().title">
+      @if (product().images[0] && !imageUnavailable()) {
+        <img
+          class="product-card-figure"
+          [src]="product().images[0]"
+          [alt]="product().title"
+          loading="lazy"
+          decoding="async"
+          width="360"
+          height="360"
+          (error)="handleImageError()"
+        />
+      } @else {
+        <span class="product-card-image-fallback" aria-hidden="true">
+          <strong>AgroAgrega</strong>
+          <small>Imagem em atualização</small>
+        </span>
+      }
     </a>
   </div>
 
   <div class="product-card-content">
-    <p class="product-card-category">{{ product().category | uppercase }}</p>
+    <p class="product-card-category">
+      <span>{{ product().category | uppercase }}</span>
+      @if (product().brand && product().brand !== 'none') {
+        <small>{{ product().brand }}</small>
+      }
+    </p>
     <a [routerLink]="['/products', product().id]">
       <h2 class="product-card-title">{{ product().title }}</h2>
     </a>
 
-    <div class="product-card-rating" aria-label="Avaliação do produto">
-      <span class="star">
+    <div
+      class="product-card-rating"
+      [attr.aria-label]="'Avaliação ' + product().rating.toFixed(1) + ' de 5'"
+    >
+      <span class="star" aria-hidden="true">
         @for (filled of getStars(product().rating); track $index) {
           {{ filled ? '★' : '☆' }}
         }
       </span>
-      <span class="review">{{ product().rating }}</span>
+      <span class="review">{{ product().rating.toFixed(1) }}</span>
     </div>
 
     <div class="product-card-price">
@@ -36,6 +62,7 @@
       class="product-card-button"
       [class.product-added]="adicionado()"
       type="button"
+      [attr.aria-label]="'Adicionar ' + product().title + ' ao carrinho'"
       (click)="adicionarAoCarrinho()"
     >
       @if (adicionado()) {

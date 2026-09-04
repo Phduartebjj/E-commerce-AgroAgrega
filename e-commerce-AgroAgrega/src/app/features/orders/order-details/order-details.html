@@ -16,7 +16,19 @@
           <div>
             <div class="title-line">
               <h1>Pedido #{{ currentOrder.id }}</h1>
-              <span class="status-badge"><span>✓</span> Entregue</span>
+              @if (currentOrder.status === 'Pendente') {
+                <span class="status-badge status-pending"
+                  ><span>⧖</span> {{ currentOrder.status }}</span
+                >
+              } @else if (currentOrder.status === 'Cancelado') {
+                <span class="status-badge status-cancelled"
+                  ><span>✕</span> {{ currentOrder.status }}</span
+                >
+              } @else {
+                <span class="status-badge status-confirmed"
+                  ><span>✓</span> {{ currentOrder.status }}</span
+                >
+              }
             </div>
             <p>
               Realizado em {{ currentOrder.createdAt | date: 'dd/MM/yyyy' }} às
@@ -72,7 +84,10 @@
             <h2><span>▤</span> Pagamento</h2>
             <div class="payment-content">
               <div>
-                <strong class="pix">❖ {{ currentOrder.paymentMethod }} <small>Pago</small></strong>
+                <strong class="pix"
+                  >❖ {{ currentOrder.paymentMethod }}
+                  <small>{{ currentOrder.status }}</small></strong
+                >
               </div>
               <div class="paid-total">
                 <span>Total pago</span>
@@ -87,8 +102,17 @@
         <h2>Total pago</h2>
         <strong>{{ currentOrder.total | precoFormatado }}</strong>
         <p>{{ currentOrder.paymentMethod }}</p>
-        <button type="button" (click)="generateReceipt()" class="outline-button">
-          ▤ &nbsp; Nota fiscal
+        @if (!(currentOrder.status === 'Cancelado')) {
+          <button type="button" (click)="generateReceipt()" class="outline-button">
+            ▤ &nbsp; Nota fiscal
+          </button>
+        }
+        <button type="button" (click)="cancelOrder(currentOrder.id)" class="outline-button cancel">
+          @if (currentOrder.status === 'Cancelado') {
+            Pedido cancelado
+          } @else {
+            ✕ &nbsp; Cancelar pedido
+          }
         </button>
       </aside>
     </div>

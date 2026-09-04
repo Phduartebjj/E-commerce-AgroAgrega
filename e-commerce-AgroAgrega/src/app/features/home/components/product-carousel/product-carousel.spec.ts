@@ -15,6 +15,7 @@ describe('ProductCarousel', () => {
 
     fixture = TestBed.createComponent(ProductCarousel);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('produtos', []);
     await fixture.whenStable();
   });
 

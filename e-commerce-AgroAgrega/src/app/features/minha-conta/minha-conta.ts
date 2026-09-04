@@ -29,9 +29,14 @@ export class MinhaConta {
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;
 
-  protected readonly recentOrders = computed(() =>
-    this.orderService.getOrdersByUserId(this.auth.getId()),
-  );
+  protected readonly recentOrders = computed(() => {
+    const userId = this.auth.currentUserId();
+
+    if (!userId) {
+      return [];
+    }
+    return this.orderService.getOrdersByUserId(userId);
+  });
 
   readonly profileForm = this.formBuilder.nonNullable.group({
     name: [this.userName, [Validators.required, Validators.minLength(3)]],
@@ -97,7 +102,7 @@ export class MinhaConta {
     this.isAddressFormOpen = true;
     this.editingAddressIndex = null;
     this.addressForm.reset({
-      fullName: this.userName,
+      fullName: '',
       cep: '',
       address: '',
       number: '',
