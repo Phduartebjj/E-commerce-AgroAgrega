@@ -99,6 +99,27 @@
   padding: 22px;
 }
 
+@media (min-width: 921px) {
+  .sidebar-content {
+    max-height: calc(100vh - 116px);
+    max-height: calc(100dvh - 116px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-color: rgba(21, 95, 57, 0.42) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  .sidebar-content::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  .sidebar-content::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(21, 95, 57, 0.42);
+  }
+}
+
 .sidebar-header {
   display: flex;
   align-items: flex-start;
@@ -251,6 +272,7 @@
 }
 
 .featured-card {
+  position: relative;
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr);
   gap: 16px;
@@ -259,6 +281,55 @@
   border: 1px solid rgba(181, 137, 39, 0.2);
   border-radius: 16px;
   background: linear-gradient(135deg, #fffdf7 0%, #f7fbf8 100%);
+  isolation: isolate;
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+
+.featured-card::after {
+  position: absolute;
+  z-index: 2;
+  inset: -2px;
+  border: 2px solid #f7ff45;
+  border-radius: 18px;
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.995);
+}
+
+.featured-card:is(:hover, :focus-within) {
+  border-color: rgba(247, 255, 69, 0.95);
+  box-shadow: 0 12px 28px rgba(96, 99, 7, 0.14);
+  transform: translateY(-3px);
+}
+
+.featured-card:is(:hover, :focus-within)::after {
+  animation: featured-neon-pulse 1.35s ease-in-out infinite;
+}
+
+@keyframes featured-neon-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    box-shadow:
+      0 0 5px rgba(247, 255, 69, 0.5),
+      0 0 12px rgba(255, 230, 0, 0.28),
+      inset 0 0 4px rgba(247, 255, 69, 0.3);
+    transform: scale(0.995);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow:
+      0 0 9px rgba(247, 255, 69, 0.95),
+      0 0 24px rgba(255, 230, 0, 0.64),
+      0 0 40px rgba(255, 230, 0, 0.28),
+      inset 0 0 8px rgba(247, 255, 69, 0.55);
+    transform: scale(1.008);
+  }
 }
 
 .featured-image {
@@ -800,6 +871,12 @@ a:focus-visible {
   *::before,
   *::after {
     scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .featured-card:is(:hover, :focus-within) {
+    transform: none;
   }
 }
