@@ -35,7 +35,8 @@
                 type="text"
                 placeholder="01310-100"
                 maxlength="9"
-                placeholder="01310100"
+                aria-label="CEP"
+                title="CEP"
               />
               <button type="button" (click)="getCep()" class="btn-buscar-cep">Buscar CEP</button>
             </div>
@@ -53,6 +54,8 @@
               name="fullName"
               type="text"
               placeholder="Lucas Andrade"
+              aria-label="Nome completo"
+              title="Nome completo"
             />
             @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid) {
               <small class="errorMessage">
@@ -68,6 +71,8 @@
               name="cellPhone"
               type="tel"
               placeholder="(11) 99999-8421"
+              aria-label="Telefone"
+              title="Telefone"
             />
             @if (checkoutForm.get('cellPhone')?.touched && checkoutForm.get('cellPhone')?.invalid) {
               <small class="errorMessage">
@@ -192,6 +197,8 @@
                   value="standard"
                   formControlName="deliveryMethod"
                   checked
+                  aria-label="Entrega padrão"
+                  title="Entrega padrão"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -228,6 +235,8 @@
                   [value]="PaymentMethod.Pix"
                   formControlName="paymentMethod"
                   [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix"
+                  aria-label="Pagamento via Pix"
+                  title="Pagamento via Pix"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -254,6 +263,8 @@
                   [value]="PaymentMethod.CreditCard"
                   formControlName="paymentMethod"
                   [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard"
+                  aria-label="Pagamento via cartão de crédito"
+                  title="Pagamento via cartão de crédito"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -280,6 +291,8 @@
                   [value]="PaymentMethod.DebitCard"
                   formControlName="paymentMethod"
                   [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.DebitCard"
+                  aria-label="Pagamento via cartão de débito"
+                  title="Pagamento via cartão de débito"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -306,6 +319,8 @@
                   [value]="PaymentMethod.Boleto"
                   formControlName="paymentMethod"
                   [checked]="checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto"
+                  aria-label="Pagamento via boleto"
+                  title="Pagamento via boleto"
                 />
                 <span class="radio-mark" aria-hidden="true"></span>
               </label>
@@ -382,7 +397,10 @@
         <div>
           <h4>Precisa de ajuda?</h4>
           <p>Nosso time acompanha você durante a compra.</p>
-          <a href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/" target="_blank"
+          <a
+            href="https://www.linkedin.com/in/pedro-duarte-7b3b0b361/"
+            target="_blank"
+            rel="noopener noreferrer"
             >Falar com especialista</a
           >
         </div>
