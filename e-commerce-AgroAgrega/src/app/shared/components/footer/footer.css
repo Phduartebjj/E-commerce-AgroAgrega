@@ -3,11 +3,12 @@
 }
 
 .rodape {
-  margin-top: 60px;
+  margin-top: 0px;
   padding: 55px 100px 35px;
 
   background-color: #06382b;
   color: var(--white);
+  position: relative;
 }
 
 .rodape-conteudo {
@@ -131,4 +132,66 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.voltar-ao-topo {
+  width: 100%;
+  min-height: 52px;
+
+  border: 0;
+
+  background-color: #0b4a3a;
+  color: var(--white);
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.voltar-ao-topo {
+  position: absolute;
+
+  top: -24px;
+  left: 50%;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e2e2e2;
+  border-radius: 50%;
+
+  background: var(--white);
+  color: var(--green-dark);
+
+  font-size: 1.3rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transform: translateX(-50%);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.voltar-ao-topo:hover {
+  background-color: var(--green-dark);
+  color: var(--white);
+}
+
+.voltar-ao-topo:active {
+  transform: translateX(-50%) scale(0.92);
 }

@@ -19,7 +19,8 @@
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],
       "@mocks/*": ["./src/app/mocks/*"],
-      "@models/*": ["./src/app/models/*"]
+      "@models/*": ["./src/app/models/*"],
+      "@shared/*": ["./src/app/shared/*"]
     }
   },
   "angularCompilerOptions": {

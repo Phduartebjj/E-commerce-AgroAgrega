@@ -1,8 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
 import { effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { AddressModel } from '@models/address.model';
 
 import { CartItemModel } from '@models/cartItem';
-import { OrderModel, OrderStatus } from '@models/order';
+import { OrderModel, OrderPaymentMethod, OrderStatus } from '@models/order';
 
 @Injectable({
   providedIn: 'root',
@@ -21,11 +22,12 @@ export class OrderService {
         return;
       }
 
-      localStorage.setItem(
-        this.keyOrders,
-        JSON.stringify(orders)
-      );
+      localStorage.setItem(this.keyOrders, JSON.stringify(orders));
     });
+  }
+
+  getOrderById(id: string): OrderModel | undefined {
+    return this.orders().find((order) => order.id === id);
   }
 
   getOrders() {
@@ -62,12 +64,15 @@ export class OrderService {
     subtotal: number,
     discount: number,
     shipping: number,
+    paymentMethod: OrderPaymentMethod,
+    address: AddressModel,
   ): void {
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
       userId,
       customerName,
       items: cartItem.map((item) => ({
+        imgSrc: item.product.images[0],
         productId: item.product.id,
         name: item.product.title,
         price: item.product.price,
@@ -80,15 +85,14 @@ export class OrderService {
       total: subtotal - discount + shipping,
       status: OrderStatus.Pending,
       createdAt: new Date().toISOString(),
+      paymentMethod,
+      address,
     };
 
     this.orders.update((orders) => [...orders, newOrder]);
 
     console.log('PEDIDO CRIADO:', newOrder);
     console.log('PEDIDOS NO SIGNAL:', this.orders());
-    console.log(
-      'PEDIDOS NO LOCALSTORAGE:',
-      localStorage.getItem(this.keyOrders)
-    );
+    console.log('PEDIDOS NO LOCALSTORAGE:', localStorage.getItem(this.keyOrders));
   }
 }

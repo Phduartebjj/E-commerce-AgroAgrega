@@ -43,9 +43,15 @@
           </span>
         }
       </a>
+
+      <a class="icone-pedidos" routerLink="/orders" aria-label="Pedidos">
+        <img src="assets/images/pedidos.png" alt="Meus pedidos" />
+      
+      </a>
+
     </div>
   </div>
-  <nav class="navegar-categorias" aria-label="Categorias de produtos">
+  <nav class="navegar-categorias" aria-label="Categorias de produtos"[class.navegar-categorias-fixa]="navegacaoFixa()">
     <div class="conteudo-do-menu">
       <a class="todas-categorias" routerLink="/products">
         <span class="icone-categorias"
@@ -53,7 +59,6 @@
           Categorias</span
         >
       </a>
-
       <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
         >Agricultura de Precisão</a
       >

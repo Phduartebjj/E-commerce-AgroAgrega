@@ -1,104 +1,253 @@
 <section class="product-page">
-  <div class="catalog-shell">
-    <div class="catalog-layout">
-      <aside class="filters-card" aria-label="Filtros de produtos">
-        <div class="filters-header">
-          <h2>Filtrar produtos</h2>
-          <button type="button" class="clear-filters" (click)="clearFilters()">Limpar</button>
+  <!-- Cabeçalho do catálogo -->
+
+  <header class="catalog-header">
+    <h1>Catálogo de Produtos</h1>
+
+    <div class="catalog-filters" aria-label="Filtros de categoria">
+      @for (category of categoryFilters; track category) {
+        <button
+          class="filter-chip"
+          [class.active]="selectedCategory() === category"
+          type="button"
+          (click)="selectCategory(category)"
+        >
+          {{ category }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+
+  <div class="catalog-layout">
+    <div class="catalog-main-content">
+      <!-- Filtros avançados -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>Filtros Avançados</h2>
+          <span class="filter-icon">⚙</span>
         </div>
 
-        <div class="filters-section">
-          <div class="filters-section-title">
-            <span>Ordenar por</span>
-          </div>
+        <!-- Faixa de preço -->
+        <div class="filter-group">
+          <h3>Faixa de Preço (Até R$ {{ maxPriceFilter() }})</h3>
 
-          <label class="rating-option">
-            <input
-              type="radio"
-              name="sort"
-              [checked]="sortOption() === 'price-desc'"
-              value="price-desc"
-              (change)="sortOption.set('price-desc')"
-            />
-            <span>Maior preço</span>
-          </label>
-          <label class="rating-option">
-            <input
-              type="radio"
-              name="sort"
-              [checked]="sortOption() === 'price-asc'"
-              value="price-asc"
-              (change)="sortOption.set('price-asc')"
-            />
-            <span>Menor preço</span>
-          </label>
-          <label class="rating-option">
-            <input
-              type="radio"
-              name="sort"
-              value="relevant"
-              [checked]="sortOption() === 'relevant'"
-              (change)="sortOption.set('relevant')"
-            />
-            <span>Relevantes</span>
-          </label>
+          <input
+            type="range"
+            min="0"
+            max="5000"
+            class="slider"
+            [value]="maxPriceFilter()"
+            (input)="updateMaxPrice($event)"
+          />
+
+          <div class="price-range">
+            <span>R$ 0</span>
+            <span>R$ 5.000</span>
+          </div>
         </div>
 
-        <div class="filters-section">
-          <div class="filters-section-title">
-            <span>Categorias</span>
-          </div>
-          @for (item of categoryCounts(); track item.category) {
-            <label class="filter-option">
+        <!-- Marcas -->
+        <div class="filter-group">
+          <h3>Marcas</h3>
+
+          @for (brand of availableBrands; track brand) {
+            <label>
               <input
                 type="checkbox"
-                [checked]="selectedCategories().includes(item.category)"
-                (click)="toggleCategory(item.category)"
+                [checked]="selectedBrands().includes(brand)"
+                (change)="toggleBrand(brand, $event)"
               />
-              <span>{{ item.category }}</span>
-              <strong>{{ item.count }}</strong>
+
+              {{ brand }}
             </label>
           }
         </div>
 
-        <div class="filters-section">
-          <div class="filters-section-title">
-            <span>Avaliação</span>
-          </div>
+        <!-- Avaliação mínima -->
+        <div class="filter-group">
+          <h3>Avaliação mínima</h3>
 
-          <label class="rating-option">
-            <input type="radio" name="rating" [checked]="selectedRating() === 5" (change)="selectedRating.set(5)" />
+          <label>
+            <input
+              type="radio"
+              name="advanced-rating"
+              [checked]="minRating() === 5"
+              (change)="setMinRating(5)"
+            />
+
             <span class="stars">★★★★★</span>
-            <span>ou mais</span>
+            Apenas 5 estrelas
           </label>
-          <label class="rating-option">
-            <input type="radio" name="rating" [checked]="selectedRating() === 4" (change)="selectedRating.set(4)" />
+
+          <label>
+            <input
+              type="radio"
+              name="advanced-rating"
+              [checked]="minRating() === 4"
+              (change)="setMinRating(4)"
+            />
+
             <span class="stars">★★★★☆</span>
-            <span>ou mais</span>
+            ou mais (4.0+)
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="advanced-rating"
+              [checked]="minRating() === 3"
+              (change)="setMinRating(3)"
+            />
+
+            <span class="stars">★★★☆☆</span>
+            ou mais (3.0+)
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="advanced-rating"
+              [checked]="minRating() === 0"
+              (change)="setMinRating(0)"
+            />
+
+            Todas as avaliações
           </label>
         </div>
       </aside>
 
-      <div class="catalog-content">
-        @if (filteredProducts().length > 0) {
-          <header class="catalog-header">
-            <h1>{{ catalogTitle() }}</h1>
-          </header>
-        }
+      <div class="catalog-shell">
+        <!-- Área dos produtos -->
+        <div class="products-section">
+          <!-- Produtos em destaque -->
+          @if (featuredProducts().length > 0) {
+            <div class="featured-products">
+              <h2>Produtos em Destaque</h2>
 
-        <div class="catalog-grid">
+              <div class="featured-grid">
+                @for (prod of featuredProducts(); track prod.id) {
+                  <div class="featured-card">
+                    <div class="featured-image-placeholder">
+                      <a [routerLink]="['/products', prod.id]">
+                        <img
+                          [src]="
+                            prod.images && prod.images.length > 0
+                              ? prod.images[0]
+                              : 'assets/images/placeholder.png'
+                          "
+                          [alt]="prod.title"
+                        />
+                      </a>
+                    </div>
+
+                    <div class="featured-info">
+                      <div class="tags">
+                        <span class="highlight"> DESTAQUE </span>
+
+                        <span class="free-shipping"> FRETE GRÁTIS </span>
+                      </div>
+                      <a [routerLink]="['/products', prod.id]">
+                        <h3>{{ prod.title }}</h3>
+                      </a>
+                      <p class="old-price">R$ {{ (prod.price * 1.15).toFixed(2) }}</p>
+
+                      <p class="new-price">
+                        R$
+                        <span>
+                          {{ prod.price.toFixed(2) }}
+                        </span>
+                      </p>
+
+                      <p class="savings">Economize R$ {{ (prod.price * 0.15).toFixed(2) }}</p>
+
+                      <button
+                        class="add-btn-small"
+                        type="button"
+                        [class.product-added]="isProductAdded(prod.id)"
+                        (click)="addProductToCart(prod)"
+                      >
+                        @if (isProductAdded(prod.id)) {
+                          Adicionado ✓
+                        } @else {
+                          Adicionar
+                        }
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Barra de ferramentas -->
+          <div class="products-toolbar">
+            <span>
+              {{ filteredProducts().length }}
+              produtos encontrados
+            </span>
+
+            <div class="toolbar-actions">
+              <label class="sort-label">
+                Ordenar por:
+
+                <select
+                  class="sort-select"
+                  [value]="sortOrder()"
+                  (change)="updateSortOrder($event)"
+                >
+                  <option value="mais_vendidos">Mais vendidos</option>
+
+                  <option value="menor_preco">Menor Preço</option>
+
+                  <option value="maior_preco">Maior Preço</option>
+                </select>
+              </label>
+
+              <div class="view-toggles">
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'grid'"
+                  (click)="setViewMode('grid')"
+                  aria-label="Visualização em grade"
+                >
+                  ▦
+                </button>
+
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'list'"
+                  (click)="setViewMode('list')"
+                  aria-label="Visualização em lista"
+                >
+                  ☰
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de produtos -->
+        <div class="catalog-grid" [class.list-view]="viewMode() === 'list'">
           @for (product of filteredProducts(); track product.id) {
             <app-product-card
-              (addToCart)="addProductToCart($event)"
               [product]="product"
+              (addToCart)="addProductToCart($event)"
             ></app-product-card>
           } @empty {
             <div class="empty-products">
               <h2>Ops! Parece que este produto não está disponível ainda.</h2>
+
+              <p>Tente alterar ou limpar os filtros.</p>
             </div>
           }
         </div>
       </div>
     </div>
   </div>
+
+  
 </section>

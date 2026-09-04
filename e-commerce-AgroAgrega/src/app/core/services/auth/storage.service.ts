@@ -54,9 +54,10 @@ export class StorageService{
   }
 
   // Atualiza usuário
-  updateUser(email: string, newPassword: string): ServiceResponse {
+  updatePasswordUser(email: string, newPassword: string): ServiceResponse {
       try {
           const data = localStorage.getItem('db');
+
           if(!data) return {res: false, message: 'Database not found'};
         
           const users: UserModel[] = JSON.parse(data);
@@ -73,10 +74,49 @@ export class StorageService{
           return {res: false, message: ''};
       }
   }
+  
+  updateEmailUser(id: string, newEmail: string): ServiceResponse{
+    try {
+      const data = localStorage.getItem('db');
 
-  // removeUser(key: string): void {
-  //   localStorage.removeItem(key);
-  // }
+      if(!data) return {res: false, message: 'Database not found'};
+        
+      const users: UserModel[] = JSON.parse(data);
+      const user = users.find(user => user.id === id);
+
+      if(!user) return {res: false, message: 'User not found'};
+      user.email = newEmail;
+
+      localStorage.setItem('db', JSON.stringify(users));
+      return {res: true, message: ''};
+      
+    } catch (err) {
+      console.error('Erro ao atualizar usuário', err);
+      return {res: false, message: ''};
+    }
+  }
+
+  removeUser(id: string): ServiceResponse {
+    try {
+      const data = localStorage.getItem('db');
+
+      if(!data) return {res: false, message: 'Database not found'};
+        
+      const users: UserModel[] = JSON.parse(data);
+      const user = users.find(user => user.id === id);
+
+      if(!user) return {res: false, message: 'User not found'};
+      const deleteUser = users.filter(user => user.id !== id);
+
+      localStorage.setItem('db', JSON.stringify(deleteUser));
+      
+      return {res: true, message: ''};
+      
+    } catch (err) {
+      console.error('Erro ao atualizar usuário', err);
+      return {res: false, message: ''};
+    }
+  }
 
   clear(): void {
     localStorage.clear();
