@@ -130,6 +130,38 @@ export class CheckoutComponent {
     paymentMethod: new FormControl<OrderPaymentMethod | null>(null, {
       validators: [Validators.required],
     }),
+
+    cardName: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.minLength(3), nameNoSpecialChars],
+    }),
+
+    cardNumber: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardNumber],
+    }),
+
+    cardHolder: new FormControl('', {
+      nonNullable: true,
+      validators: [nameNoSpecialChars],
+    }),
+
+    cardExpiration: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardExpiration],
+    }),
+
+    cardCvv: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardCvv],
+    }),
+
+    cardCpf: new FormControl('', {
+      nonNullable: true,
+      validators: [validCpf],
+    }),
+
+    installments: new FormControl<number | null>(null),
   });
 
   states = [
@@ -212,6 +244,44 @@ export class CheckoutComponent {
   selectPaymentMethod(paymentMethod: OrderPaymentMethod): void {
     this.checkoutForm.controls.paymentMethod.setValue(paymentMethod);
     this.checkoutForm.controls.paymentMethod.markAsTouched();
+
+    const cardFields = [
+      this.checkoutForm.controls.cardNumber,
+      this.checkoutForm.controls.cardHolder,
+      this.checkoutForm.controls.cardExpiration,
+      this.checkoutForm.controls.cardCvv,
+      this.checkoutForm.controls.cardCpf,
+      this.checkoutForm.controls.cardName,
+    ];
+
+    const installments = this.checkoutForm.controls.installments;
+
+    const isCreditCard = paymentMethod === OrderPaymentMethod.CreditCard;
+
+    const isCard =
+      paymentMethod === OrderPaymentMethod.CreditCard ||
+      paymentMethod === OrderPaymentMethod.DebitCard;
+
+    if (isCard) {
+      cardFields.forEach((control) => {
+        control.addValidators(Validators.required);
+        control.updateValueAndValidity();
+      });
+    } else {
+      cardFields.forEach((control) => {
+        control.removeValidators(Validators.required);
+        control.updateValueAndValidity();
+      });
+    }
+
+    if (isCreditCard) {
+      installments.addValidators(Validators.required);
+    } else {
+      installments.removeValidators(Validators.required);
+      installments.setValue(null);
+    }
+
+    installments.updateValueAndValidity();
   }
 
   getErrorMessage(control: AbstractControl): string {
@@ -312,6 +382,141 @@ function nameNoNumbers(control: AbstractControl): ValidationErrors | null {
 
   if (/\d/.test(value)) {
     return { numberInvalid: true };
+  }
+
+  return null;
+}
+
+function validCardNumber(control: AbstractControl): ValidationErrors | null {
+  const value = control.value?.replace(/\D/g, '');
+
+  if (!value) {
+    return null;
+  }
+
+  if (value.length < 13 || value.length > 19) {
+    return { invalidCardNumber: true };
+  }
+
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let i = value.length - 1; i >= 0; i--) {
+    let digit = Number(value[i]);
+
+    if (shouldDouble) {
+      digit *= 2;
+
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+
+  return sum % 10 === 0 ? null : { invalidCardNumber: true };
+}
+
+function validCardExpiration(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) {
+    return null;
+  }
+
+  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) {
+    return { invalidCardExpiration: true };
+  }
+
+  const [month, year] = value.split('/').map(Number);
+
+  const currentDate = new Date();
+
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear() % 100;
+
+  if (year < currentYear || (year === currentYear && month < currentMonth)) {
+    return { expiredCard: true };
+  }
+
+  return null;
+}
+
+function validCardCvv(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) {
+    return null;
+  }
+
+  if (!/^\d{3,4}$/.test(value)) {
+    return { invalidCardCvv: true };
+  }
+
+  return null;
+}
+
+function validCpf(control: AbstractControl): ValidationErrors | null {
+  const value = control.value?.replace(/\D/g, '');
+
+  if (!value) {
+    return null;
+  }
+
+  if (value.length !== 11) {
+    return { invalidCpf: true };
+  }
+
+  if (/^(\d)\1{10}$/.test(value)) {
+    return { invalidCpf: true };
+  }
+
+  let sum = 0;
+
+  for (let i = 0; i < 9; i++) {
+    sum += Number(value[i]) * (10 - i);
+  }
+
+  let digit = (sum * 10) % 11;
+
+  if (digit === 10) {
+    digit = 0;
+  }
+
+  if (digit !== Number(value[9])) {
+    return { invalidCpf: true };
+  }
+
+  sum = 0;
+
+  for (let i = 0; i < 10; i++) {
+    sum += Number(value[i]) * (11 - i);
+  }
+
+  digit = (sum * 10) % 11;
+
+  if (digit === 10) {
+    digit = 0;
+  }
+
+  if (digit !== Number(value[10])) {
+    return { invalidCpf: true };
+  }
+
+  return null;
+}
+
+function validInstallments(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+
+  if (value === null || value === '') {
+    return null;
+  }
+
+  if (!Number.isInteger(value) || value < 1 || value > 12) {
+    return { invalidInstallments: true };
   }
 
   return null;

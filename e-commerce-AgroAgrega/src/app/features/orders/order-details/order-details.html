@@ -102,7 +102,7 @@
         <h2>Total pago</h2>
         <strong>{{ currentOrder.total | precoFormatado }}</strong>
         <p>{{ currentOrder.paymentMethod }}</p>
-        @if (!(currentOrder.status === 'Pendente' || currentOrder.status === 'Cancelado')) {
+        @if (!(currentOrder.status === 'Cancelado')) {
           <button type="button" (click)="generateReceipt()" class="outline-button">
             ▤ &nbsp; Nota fiscal
           </button>
