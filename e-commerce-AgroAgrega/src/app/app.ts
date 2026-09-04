@@ -13,30 +13,30 @@ import { Footer } from './shared/components/footer/footer';
 export class App {
   protected readonly title = signal('e-commerce-AgroAgrega');
 
-  mostrarHeader = signal(true);
-  mostrarFooter = signal(true);
+  mostrarHeader = signal(false);
+  mostrarFooter = signal(false);
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd)
-      )
-      .subscribe(() => {
-        let rotaAtual = this.activatedRoute;
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      this.atualizarLayout();
+    });
+  }
 
-        while (rotaAtual.firstChild) {
-          rotaAtual = rotaAtual.firstChild;
-        }
+  private atualizarLayout(): void {
+    let rotaAtual = this.activatedRoute;
+    while (rotaAtual.firstChild) {
+      rotaAtual = rotaAtual.firstChild;
+    }
 
-        const dadosDaRota = rotaAtual.snapshot.data;
-        const esconderHeader = dadosDaRota['hideHeader'];
-        const esconderFooter = dadosDaRota['hideFooter'];
+    const dadosDaRota = rotaAtual.snapshot.data;
 
-        this.mostrarHeader.set(!esconderHeader);
-        this.mostrarFooter.set(!esconderFooter);
-      });
+    const esconderHeader = dadosDaRota['hideHeader'];
+    const esconderFooter = dadosDaRota['hideFooter'];
+
+    this.mostrarHeader.set(!esconderHeader);
+    this.mostrarFooter.set(!esconderFooter);
   }
 }
