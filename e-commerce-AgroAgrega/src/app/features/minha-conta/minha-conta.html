@@ -8,12 +8,10 @@
 
   <section class="card card--dados">
     <div class="card__title-row">
-      <h2>👤 Meus dados</h2>
-      @if (!editingProfile) {
-        <button type="button" class="btn btn--secondary" (click)="editProfile()">
-          Editar dados
-        </button>
-      }
+      <h2 class="titulo-com-icone">
+        <img src="assets/images/icon-my-account.png" alt="" class="icone-titulo" />
+        Meus dados
+      </h2>
     </div>
 
     @if (!editingProfile) {
@@ -60,7 +58,14 @@
 
   <section class="card">
     <div class="card__title-row">
-      <h2>📍 Meus endereços</h2>
+      <h2 class="titulo-com-icone">
+  <img
+    src="assets/images/icon-my-loc.png"
+    alt=""
+    class="icone-titulo"
+  />
+  Meus endereços
+</h2>
       @if (!isAddressFormOpen) {
         <button type="button" class="btn btn--secondary" (click)="startAddAddress()">
           + Adicionar endereço
@@ -212,7 +217,14 @@
   </section>
 
   <section class="card card--account">
-    <h2>⚙️ Conta</h2>
+    <h2 class="titulo-com-icone">
+  <img
+    src="assets/images/icon-my-config.png"
+    alt=""
+    class="icone-titulo"
+  />
+  Conta
+</h2>
 
     <div class="account-actions">
       <button type="button" class="btn btn--secondary" (click)="logout()">Logout</button>

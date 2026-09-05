@@ -297,6 +297,20 @@ label {
   color: #5b6f63;
 }
 
+
+.titulo-com-icone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icone-titulo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .card {
     padding: 18px 16px;
