@@ -4,12 +4,14 @@
   padding: 40px 20px 60px;
   display: grid;
   gap: 24px;
+  min-width: 0;
 }
 
 .minha-conta__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-width: 0;
 }
 
 .breadcrumb {
@@ -61,6 +63,7 @@ label {
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(18, 47, 34, 0.05);
   padding: 24px;
+  min-width: 0;
 }
 
 .card__title-row {
@@ -69,6 +72,7 @@ label {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
+  min-width: 0;
 }
 
 .minha-conta h2 {
@@ -102,6 +106,9 @@ label {
 
 .info-item strong {
   color: #1c2d24;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
 .profile-form {
@@ -118,11 +125,14 @@ label {
 
 .profile-form input {
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   border: 1px solid #d9e4d7;
   border-radius: 10px;
   padding: 12px 14px;
   font: inherit;
   background: #f9fbf9;
+  cursor: auto;
 }
 
 .profile-form input:focus {
@@ -167,6 +177,7 @@ label {
 .address-summary {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .address-summary span,
@@ -186,11 +197,13 @@ label {
 
 .address-summary small {
   color: #5b6f63;
+  overflow-wrap: anywhere;
 }
 
 .address-actions {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .form-actions,
@@ -207,6 +220,7 @@ label {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  min-height: 44px;
   transition:
     transform 0.2s ease,
     opacity 0.2s ease;
@@ -271,6 +285,7 @@ label {
 .pedido-item small {
   color: #5b6f63;
   margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 
 .pedido-status {
@@ -312,19 +327,99 @@ label {
   color: #5b6f63;
 }
 
-@media (max-width: 640px) {
+
+.titulo-com-icone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icone-titulo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .minha-conta {
+    padding: 32px 16px 48px;
+  }
+
+  .minha-conta__header,
+  .card__title-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .card__title-row > .btn {
+    margin-left: auto;
+  }
+
+  .info-item {
+    align-items: flex-start;
+  }
+
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .pedido-item {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .minha-conta {
+    padding: 24px 12px 36px;
+    gap: 16px;
+  }
+
+  .minha-conta h1 {
+    font-size: 2rem;
+  }
+
   .card {
-    padding: 18px 16px;
+    padding: 16px 14px;
+    border-radius: 14px;
   }
 
   .card__title-row,
   .info-item,
-  .account-actions {
+  .address-actions,
+  .account-actions,
+  .form-actions,
+  .pedido-item {
     flex-direction: column;
     align-items: flex-start;
   }
 
+  .card__title-row > .btn,
+  .info-item > strong,
+  .address-actions,
+  .form-actions,
+  .account-actions,
   .btn {
     width: 100%;
+  }
+
+  .cep-field {
+    grid-template-columns: 1fr;
+  }
+
+  .card__title-row > .btn {
+    margin-left: 0;
+  }
+
+  .info-item > strong {
+    text-align: left;
+  }
+
+  .cep-field .btn {
+    margin-top: 0;
+  }
+
+  .pedido-status {
+    align-self: flex-start;
   }
 }

@@ -22,7 +22,7 @@ import { ProductModel } from '@models/product';
 export class ProductCarousel implements AfterViewInit {
   produtos = input.required<ProductModel[]>();
 
-  titulo = input<string>('Produtos em destauqe');
+  titulo = input<string>('Produtos em destaque');
 
   label = input<string>('SELEÇÃO AGROAGREGA');
 
@@ -33,12 +33,19 @@ export class ProductCarousel implements AfterViewInit {
   }
 
   atualizarSetas(): void {
-    const lista = this.productsList.nativeElement;
+  const lista = this.productsList.nativeElement;
 
-    this.podeRolarEsquerda.set(lista.scrollLeft > 0);
+  const limite = 40;
+  const maxScroll = lista.scrollWidth - lista.clientWidth;
 
-    this.podeRolarDireita.set(lista.scrollLeft + lista.clientWidth < lista.scrollWidth - 1);
-  }
+  this.podeRolarEsquerda.set(
+    lista.scrollLeft > limite
+  );
+
+  this.podeRolarDireita.set(
+    lista.scrollLeft < maxScroll - limite
+  );
+}
   podeRolarEsquerda = signal(false);
   podeRolarDireita = signal(true);
   @ViewChild('productsList')

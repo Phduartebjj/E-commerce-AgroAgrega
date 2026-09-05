@@ -1,14 +1,14 @@
-
-<footer class="rodape">
+<footer class="rodape" #footerRoot>
   <button
-  class="voltar-ao-topo"
-  type="button"
-  aria-label="Voltar ao topo"
-  title="Voltar ao topo"
-  (click)="voltarAoTopo()"
->
-  ↑
-</button>
+    class="voltar-ao-topo"
+    type="button"
+    [class.visivel]="mostrarBotaoVoltarAoTopo()"
+    aria-label="Voltar ao topo"
+    title="Voltar ao topo"
+    (click)="voltarAoTopo()"
+  >
+    ↑
+  </button>
   <div class="rodape-conteudo">
     <div class="rodape-sobre">
       <a class="logo" routerLink="/" aria-label="Ir para a página inicial">
