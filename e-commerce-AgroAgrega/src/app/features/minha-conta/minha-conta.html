@@ -6,55 +6,90 @@
     </div>
   </div>
 
-  <section class="card card--dados">
-    <div class="card__title-row">
-      <h2 class="titulo-com-icone">
-        <img src="assets/images/icon-my-account.png" alt="" class="icone-titulo" />
-        Meus dados
-      </h2>
-    </div>
+ <section class="card card--dados">
+  <div class="card__title-row">
+    <h2 class="titulo-com-icone">
+      <img
+        src="assets/images/icon-my-account.png"
+        alt=""
+        class="icone-titulo"
+      />
+      Meus dados
+    </h2>
 
     @if (!editingProfile) {
-      <div class="info-list">
-        <div class="info-item">
-          <span>Nome</span>
-          <strong>{{ userName }}</strong>
-        </div>
-
-        <div class="info-item">
-          <span>E-mail</span>
-          <strong>{{ userEmail }}</strong>
-        </div>
-      </div>
-    } @else {
-      <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-        <label>
-          <span>Nome</span>
-          <input type="text" formControlName="name" />
-          @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
-            <small class="errorMessage">
-              {{ getErrorMessage(profileForm.get('name')!) }}
-            </small>
-          }
-        </label>
-
-        <label>
-          <span>E-mail</span>
-          <input type="email" formControlName="email" />
-          @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
-            <small class="errorMessage">
-              {{ getErrorMessage(profileForm.get('email')!) }}
-            </small>
-          }
-        </label>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn--primary">Salvar</button>
-          <button type="button" class="btn btn--ghost" (click)="cancelEdit()">Cancelar</button>
-        </div>
-      </form>
+      <button
+        type="button"
+        class="btn btn--secondary"
+        (click)="editProfile()"
+      >
+        Editar dados
+      </button>
     }
-  </section>
+  </div>
+
+  @if (!editingProfile) {
+    <div class="info-list">
+      <div class="info-item">
+        <span>Nome</span>
+        <strong>{{ userName }}</strong>
+      </div>
+
+      <div class="info-item">
+        <span>E-mail</span>
+        <strong>{{ userEmail }}</strong>
+      </div>
+    </div>
+  } @else {
+    <form
+      class="profile-form"
+      [formGroup]="profileForm"
+      (ngSubmit)="saveProfile()"
+    >
+      <label>
+        <span>Nome</span>
+        <input type="text" formControlName="name" />
+
+        @if (
+          profileForm.get('name')?.touched &&
+          profileForm.get('name')?.invalid
+        ) {
+          <small class="errorMessage">
+            {{ getErrorMessage(profileForm.get('name')!) }}
+          </small>
+        }
+      </label>
+
+      <label>
+        <span>E-mail</span>
+        <input type="email" formControlName="email" />
+
+        @if (
+          profileForm.get('email')?.touched &&
+          profileForm.get('email')?.invalid
+        ) {
+          <small class="errorMessage">
+            {{ getErrorMessage(profileForm.get('email')!) }}
+          </small>
+        }
+      </label>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">
+          Salvar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="cancelEdit()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  }
+</section>
 
   <section class="card">
     <div class="card__title-row">

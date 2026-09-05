@@ -108,6 +108,7 @@ label {
   padding: 12px 14px;
   font: inherit;
   background: #f9fbf9;
+  cursor: auto;
 }
 
 .profile-form input:focus {
