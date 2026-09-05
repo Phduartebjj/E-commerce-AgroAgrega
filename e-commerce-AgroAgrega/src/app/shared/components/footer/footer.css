@@ -48,23 +48,18 @@
 
   color: #d5ddd9;
   line-height: 1.6;
-  
 }
 
 .rodape-coluna {
   display: flex;
   flex-direction: column;
-  
 }
 
 .rodape-coluna h3 {
   margin: 0 0 22px;
 
   font-size: 17px;
-  
 }
-
-
 
 .rodape-coluna a {
   margin-bottom: 17px;
@@ -135,56 +130,55 @@
 }
 
 .voltar-ao-topo {
-  width: 100%;
-  min-height: 52px;
+  position: fixed;
 
-  border: 0;
-
-  background-color: #0b4a3a;
-  color: var(--white);
-
-  font-size: 0.9rem;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.voltar-ao-topo {
-  position: absolute;
-
-  top: -24px;
-  left: 50%;
+  right: 24px;
+  bottom: 28px;
 
   width: 48px;
   height: 48px;
+  padding: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  z-index: 1000;
+
   border: 1px solid #e2e2e2;
   border-radius: 50%;
 
-  background: var(--white);
+  background-color: var(--white);
   color: var(--green-dark);
 
   font-size: 1.3rem;
   font-weight: 700;
+  line-height: 1;
 
   cursor: pointer;
 
-  transform: translateX(-50%);
-
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
 
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(12px);
+
   transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease,
+    transform 0.25s ease,
     background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
+}
+
+.voltar-ao-topo.visivel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateY(0);
 }
 
 .voltar-ao-topo:hover {
@@ -193,5 +187,6 @@
 }
 
 .voltar-ao-topo:active {
-  transform: translateX(-50%) scale(0.92);
+  transform: translateY(0) scale(0.92);
 }
+
