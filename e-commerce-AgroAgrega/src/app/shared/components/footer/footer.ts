@@ -27,7 +27,11 @@ export class Footer implements AfterViewInit {
 
   @HostListener('window:scroll')
   verificarFooter(): void {
-    if (!this.footer) {
+    if (
+      !this.footer ||
+      typeof this.footer.nativeElement?.getBoundingClientRect !== 'function' ||
+      typeof window === 'undefined'
+    ) {
       return;
     }
 
