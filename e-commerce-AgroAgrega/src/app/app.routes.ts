@@ -1,47 +1,33 @@
 import { Routes } from '@angular/router';
 
-import { NotFoundComponent } from './features/not-found/not-found';
-import { Home } from './features/home/home';
-import { ProductsComponent } from './features/products/products';
-import { ProductDetails } from './features/product-details/product-details';
-import { CartComponent } from './features/cart/cart';
-import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
-import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
-import { ResetPassword } from './features/auth/reset-password/reset-password';
-import { CheckoutComponent } from './features/checkout/checkout';
-import { Orders } from './features/orders/orders/orders';
-import { OrderDetails } from './features/orders/order-details/order-details';
-import { AboutUsComponent } from '@features/about-us/about-us';
 import { authGuard, guestGuard, authAdminGuard } from '@core/services/auth/guards/';
-import { MinhaConta } from './features/minha-conta/minha-conta';
-import { AdminLoginComponent } from './features/admin/login/login';
-import { AdminComponent } from '@features/admin/admin';
 
 export const routes: Routes = [
   {
     path: '',
-    component: Home,
+    loadComponent: () => import('./features/home/home').then((module) => module.Home),
   },
 
   {
     path: 'products',
-    component: ProductsComponent,
+    loadComponent: () =>
+      import('./features/products/products').then((module) => module.ProductsComponent),
   },
 
   {
     path: 'products/:id',
-    component: ProductDetails,
+    loadComponent: () =>
+      import('./features/product-details/product-details').then((module) => module.ProductDetails),
   },
 
   {
     path: 'cart',
-    component: CartComponent,
+    loadComponent: () => import('./features/cart/cart').then((module) => module.CartComponent),
   },
 
   {
     path: 'login',
-    component: Login,
+    loadComponent: () => import('./features/auth/login/login').then((module) => module.Login),
     canActivate: [guestGuard],
     data: {
       hideFooter: true,
@@ -51,7 +37,7 @@ export const routes: Routes = [
 
   {
     path: 'register',
-    component: Register,
+    loadComponent: () => import('./features/auth/register/register').then((module) => module.Register),
     canActivate: [guestGuard],
     data: {
       hideFooter: true,
@@ -61,7 +47,10 @@ export const routes: Routes = [
 
   {
     path: 'forgot-password',
-    component: ForgotPassword,
+    loadComponent: () =>
+      import('./features/auth/forgot-password/forgot-password').then(
+        (module) => module.ForgotPassword,
+      ),
     canActivate: [guestGuard],
     data: {
       hideFooter: true,
@@ -72,7 +61,10 @@ export const routes: Routes = [
   {
     path: 'reset-password',
     canActivate: [guestGuard],
-    component: ResetPassword,
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password').then(
+        (module) => module.ResetPassword,
+      ),
     data: {
       hideFooter: true,
       hideHeader: true,
@@ -81,47 +73,53 @@ export const routes: Routes = [
 
   {
     path: 'checkout',
-    component: CheckoutComponent,
+    loadComponent: () =>
+      import('./features/checkout/checkout').then((module) => module.CheckoutComponent),
     canActivate: [authGuard],
   },
 
   {
     path: 'orders',
-    component: Orders,
+    loadComponent: () => import('./features/orders/orders/orders').then((module) => module.Orders),
     canActivate: [authGuard],
   },
 
   {
     path: 'about',
-    component: AboutUsComponent,
+    loadComponent: () =>
+      import('./features/about-us/about-us').then((module) => module.AboutUsComponent),
   },
 
   {
     path: 'orders/:id',
-    component: OrderDetails,
+    loadComponent: () =>
+      import('./features/orders/order-details/order-details').then((module) => module.OrderDetails),
   },
 
   {
     path: 'account',
-    component: MinhaConta,
+    loadComponent: () =>
+      import('./features/minha-conta/minha-conta').then((module) => module.MinhaConta),
     canActivate: [authGuard],
   },
 
   {
     path: 'admin/login',
-    component: AdminLoginComponent,
+    loadComponent: () =>
+      import('./features/admin/login/login').then((module) => module.AdminLoginComponent),
     data: { hideFooter: true, hideHeader: true },
   },
 
   {
     path: 'admin',
     canActivate: [authAdminGuard],
-    component: AdminComponent,
+    loadComponent: () => import('./features/admin/admin').then((module) => module.AdminComponent),
     data: { hideFooter: true, hideHeader: true },
   },
 
   {
     path: '**',
-    component: NotFoundComponent,
+    loadComponent: () =>
+      import('./features/not-found/not-found').then((module) => module.NotFoundComponent),
   },
 ];

@@ -1,7 +1,14 @@
 <h4>Produto</h4>
 <div class="product-row">
   <div class="product-image">
-    <img src="{{ item().imgSrc }}" alt="Produto comprado" />
+    <img
+      [src]="item().imgSrc"
+      alt="Produto comprado"
+      loading="lazy"
+      decoding="async"
+      width="96"
+      height="96"
+    />
   </div>
   <div class="product-info">
     <h3>{{ item().name }}</h3>

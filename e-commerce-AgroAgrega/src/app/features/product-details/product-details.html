@@ -48,7 +48,14 @@
               (click)="selectImage(i)"
               [attr.aria-label]="'Selecionar imagem ' + (i + 1)"
             >
-              <img [src]="image" [alt]="product.title + ' - imagem ' + (i + 1)" />
+              <img
+                [src]="image"
+                [alt]="product.title + ' - imagem ' + (i + 1)"
+                loading="lazy"
+                decoding="async"
+                width="96"
+                height="96"
+              />
             </button>
           }
         </div>

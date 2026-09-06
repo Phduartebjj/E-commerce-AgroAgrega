@@ -41,7 +41,17 @@ export class Cart {
       return [];
     }
     try {
-      return JSON.parse(cartItems) as CartItemModel[];
+      const parsedCartItems = JSON.parse(cartItems) as CartItemModel[];
+
+      return parsedCartItems.map((item) => ({
+        ...item,
+        product: {
+          ...item.product,
+          images: item.product.images.map((image) =>
+            image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp'),
+          ),
+        },
+      }));
     } catch {
       return [];
     }

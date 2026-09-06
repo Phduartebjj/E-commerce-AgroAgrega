@@ -167,7 +167,14 @@
               @for (product of featuredProducts(); track product.id) {
                 <article class="featured-card">
                   <a class="featured-image" [routerLink]="['/products', product.id]">
-                    <img [src]="product.images[0]" [alt]="product.title" width="180" height="180" />
+                    <img
+                      [src]="product.images[0]"
+                      [alt]="product.title"
+                      loading="eager"
+                      decoding="async"
+                      width="180"
+                      height="180"
+                    />
                   </a>
 
                   <div class="featured-info">
