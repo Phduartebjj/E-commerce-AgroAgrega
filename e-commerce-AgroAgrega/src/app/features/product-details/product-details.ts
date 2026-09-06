@@ -33,6 +33,8 @@ export class ProductDetails implements OnInit {
 
   selectedImageIndex = 0;
 
+  imageUnavailable = false;
+
   // =========================
   // AVALIAÇÕES
   // =========================
@@ -91,6 +93,7 @@ export class ProductDetails implements OnInit {
     }
 
     this.selectedImageIndex = index;
+    this.imageUnavailable = false;
   }
 
   nextImage(): void {
@@ -99,6 +102,7 @@ export class ProductDetails implements OnInit {
     }
 
     this.selectedImageIndex = (this.selectedImageIndex + 1) % this.product.images.length;
+    this.imageUnavailable = false;
   }
 
   previousImage(): void {
@@ -108,6 +112,7 @@ export class ProductDetails implements OnInit {
 
     this.selectedImageIndex =
       (this.selectedImageIndex - 1 + this.product.images.length) % this.product.images.length;
+    this.imageUnavailable = false;
   }
 
   // =========================
@@ -127,7 +132,12 @@ export class ProductDetails implements OnInit {
       this.product = products().find((product) => product.id === this.id);
 
       this.selectedImageIndex = 0;
+      this.imageUnavailable = false;
     });
+  }
+
+  handleImageError(): void {
+    this.imageUnavailable = true;
   }
 
   // =========================

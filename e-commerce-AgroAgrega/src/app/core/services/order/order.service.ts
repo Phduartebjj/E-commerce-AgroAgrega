@@ -96,11 +96,26 @@ export class OrderService {
     }
 
     try {
-      return JSON.parse(storage) as OrderModel[];
+      const orders = JSON.parse(storage) as OrderModel[];
+
+      return orders.map((order) => ({
+        ...order,
+        items: order.items.map((item) => ({
+          ...item,
+          imgSrc: this.normalizeImagePath(item.imgSrc),
+        })),
+      }));
     } catch (error) {
       console.error('Erro ao ler pedidos do localStorage:', error);
       return [];
     }
+  }
+
+  private normalizeImagePath(imagePath: string): string {
+    return imagePath.replace(
+      /\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i,
+      '.webp',
+    );
   }
 
   cancelOrder(orderId: string): void {

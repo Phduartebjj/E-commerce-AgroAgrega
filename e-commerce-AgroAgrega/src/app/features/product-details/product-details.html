@@ -24,7 +24,20 @@
           </button>
         }
 
-        <img [src]="selectedImage" [alt]="product.title" />
+        @if (selectedImage && !imageUnavailable) {
+          <img
+            [src]="selectedImage"
+            [alt]="product.title"
+            width="550"
+            height="550"
+            (error)="handleImageError()"
+          />
+        } @else {
+          <div class="image-fallback" role="img" [attr.aria-label]="'Imagem indisponível: ' + product.title">
+            <strong>AgroAgrega</strong>
+            <span>Imagem indisponível</span>
+          </div>
+        }
 
         @if (product.images.length > 1) {
           <button
