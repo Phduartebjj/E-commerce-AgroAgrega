@@ -5,7 +5,6 @@
   font-family: inherit;
 }
 
-/* Sidebar */
 .admin-sidebar {
   width: 260px;
   background: linear-gradient(180deg, #1a4d3f 0%, #0f3a2f 100%);
@@ -88,8 +87,6 @@
   background: rgba(239, 68, 68, 0.3);
   color: #fff;
 }
-
-/* Main Content */
 .admin-content {
   flex: 1;
   padding: 32px 40px;
@@ -121,7 +118,6 @@
   font-size: 0.95rem;
 }
 
-/* Metrics Grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -164,7 +160,6 @@
   font-weight: 800;
 }
 
-/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -229,7 +224,6 @@
   color: #1a4d3f;
 }
 
-/* Products Layout */
 .products-layout {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -404,7 +398,7 @@ textarea.form-input {
   background: #fca5a5;
 }
 
-/* Filters & Tables */
+
 .filters-bar {
   display: flex;
   flex-wrap: wrap;
@@ -548,7 +542,7 @@ textarea.form-input {
   color: #7f1d1d;
 }
 
-/* Settings */
+
 .settings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -606,8 +600,6 @@ textarea.form-input {
   margin: 0;
 }
 
-/* Responsive */
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;

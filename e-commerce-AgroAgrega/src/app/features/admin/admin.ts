@@ -37,40 +37,34 @@ export interface AdminClient {
   styleUrl: './admin.css',
 })
 export class AdminComponent implements OnInit {
-  // Signals
   activeTab = signal<AdminTab>('dashboard');
   orders = signal<AdminOrder[]>([]);
   clients = signal<AdminClient[]>([]);
   searchTerm = signal<string>('');
   selectedStatus = signal<'all' | OrderStatus>('all');
 
-  // Product form
   productName = signal<string>('');
   productPrice = signal<number>(0);
   productCategory = signal<string>('Agricultura de Precisão');
   productDescription = signal<string>('');
   editingProductId = signal<string | null>(null);
 
-  // Store profile
   storeName = signal<string>('AgroAgrega');
   storeEmail = signal<string>('contato@agroagrega.com.br');
   storePhone = signal<string>('(11) 99999-9999');
   storeCity = signal<string>('São Paulo, SP');
   
-  // Profile edit modal
   showProfileModal = signal<boolean>(false);
   editStoreName = signal<string>('');
   editStoreEmail = signal<string>('');
   editStorePhone = signal<string>('');
   editStoreCity = signal<string>('');
 
-  // Password modal
   showPasswordModal = signal<boolean>(false);
   currentPassword = signal<string>('');
   newPassword = signal<string>('');
   confirmPassword = signal<string>('');
 
-  // Computed values
   filteredOrders = computed(() => {
     const orders = this.orders();
     const status = this.selectedStatus();
@@ -168,14 +162,12 @@ export class AdminComponent implements OnInit {
     return map[status] ?? 'pending';
   }
 
-  // Tab navigation
   selectTab(tab: AdminTab): void {
     this.activeTab.set(tab);
     this.searchTerm.set('');
     this.selectedStatus.set('all');
   }
 
-  // Orders
   onStatusFilterChange(status: 'all' | OrderStatus): void {
     this.selectedStatus.set(status);
   }
@@ -192,13 +184,12 @@ export class AdminComponent implements OnInit {
     return `badge badge--${status}`;
   }
 
-  // Products
   addProduct(): void {
     if (!this.productName() || this.productPrice() <= 0) {
       alert('Nome e preço obrigatórios!');
       return;
     }
-    // Mock add - would call productService in real app
+ 
     this.clearProductForm();
   }
 
@@ -215,13 +206,13 @@ export class AdminComponent implements OnInit {
       alert('Nome e preço obrigatórios!');
       return;
     }
-    // Mock save - would call productService in real app
+
     this.clearProductForm();
   }
 
   deleteProduct(productId: string): void {
     if (confirm('Tem certeza que deseja deletar este produto?')) {
-      // Mock delete - would call productService in real app
+
     }
   }
 
@@ -233,7 +224,6 @@ export class AdminComponent implements OnInit {
     this.editingProductId.set(null);
   }
 
-  // Profile Management
   openProfileModal(): void {
     this.editStoreName.set(this.storeName());
     this.editStoreEmail.set(this.storeEmail());
@@ -309,7 +299,6 @@ export class AdminComponent implements OnInit {
     alert('✅ Histórico limpo com sucesso!');
   }
 
-  // Auth
   logout(): void {
     this.authAdminService.isLoggedIn = false;
     this.router.navigate(['/admin/login']);

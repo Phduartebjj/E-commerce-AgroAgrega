@@ -35,10 +35,6 @@ export class ProductDetails implements OnInit {
 
   imageUnavailable = false;
 
-  // =========================
-  // AVALIAÇÕES
-  // =========================
-
   activeTab: 'details' | 'reviews' = 'details';
 
   reviews: ProductReview[] = [];
@@ -74,10 +70,6 @@ export class ProductDetails implements OnInit {
     this.selectedRating = 0;
     this.reviewText = '';
   }
-
-  // =========================
-  // GALERIA
-  // =========================
 
   get selectedImage(): string | undefined {
     return this.product?.images[this.selectedImageIndex];
@@ -115,10 +107,6 @@ export class ProductDetails implements OnInit {
     this.imageUnavailable = false;
   }
 
-  // =========================
-  // PRODUTO
-  // =========================
-
   get productNotFound(): boolean {
     return this.product === undefined;
   }
@@ -140,9 +128,6 @@ export class ProductDetails implements OnInit {
     this.imageUnavailable = true;
   }
 
-  // =========================
-  // QUANTIDADE
-  // =========================
 
   increaseQuantity(): void {
     this.quantity += 1;
@@ -154,9 +139,6 @@ export class ProductDetails implements OnInit {
     }
   }
 
-  // =========================
-  // CARRINHO
-  // =========================
 
   addToCart(): void {
     if (!this.product || this.quantity <= 0) {
