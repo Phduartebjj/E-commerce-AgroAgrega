@@ -9,12 +9,13 @@ import { Auth } from '../auth/auth.service';
   providedIn: 'root',
 })
 export class Cart {
-  //Estado inicial do carrinho, mutável apenas por ele mesmo.
+  private readonly guestCartKey = 'my-storage-cart-guest';
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>([]);
   private readonly auth = inject(Auth);
-  //Retorna apenas os items do carrinho, para leitura
+  private initializedUserId: string | null | undefined = undefined;
+
   getCartItems() {
     return this.cartItems.asReadonly();
   }
@@ -22,7 +23,7 @@ export class Cart {
   private getStorageKey(): string | null {
     const userId = this.auth.currentUserId();
     if (!userId) {
-      return null;
+      return this.guestCartKey;
     }
     return `${this.keyStorage}-${userId}`;
   }
@@ -54,6 +55,45 @@ export class Cart {
       }));
     } catch {
       return [];
+    }
+  }
+
+  private migrateGuestCart(userId: string): void {
+    if (!this.isBrowser()) {
+      return;
+    }
+
+    const guestCart = localStorage.getItem(this.guestCartKey);
+
+    if (!guestCart) {
+      return;
+    }
+
+    const userCartKey = `${this.keyStorage}-${userId}`;
+    const existingUserCart = localStorage.getItem(userCartKey);
+
+    try {
+      const guestItems = JSON.parse(guestCart) as CartItemModel[];
+
+      const userItems = existingUserCart ? (JSON.parse(existingUserCart) as CartItemModel[]) : [];
+
+      const mergedItems = [...userItems];
+
+      for (const guestItem of guestItems) {
+        const existingItem = mergedItems.find((item) => item.product.id === guestItem.product.id);
+
+        if (existingItem) {
+          existingItem.quantity += guestItem.quantity;
+        } else {
+          mergedItems.push(guestItem);
+        }
+      }
+
+      localStorage.setItem(userCartKey, JSON.stringify(mergedItems));
+
+      localStorage.removeItem(this.guestCartKey);
+    } catch (error) {
+      console.error('Erro ao migrar carrinho:', error);
     }
   }
 
@@ -182,22 +222,34 @@ export class Cart {
         return;
       }
 
-      if (!userId) {
-        this.cartItems.set([]);
-        return;
+      if (userId) {
+        this.migrateGuestCart(userId);
       }
 
       this.cartItems.set(this.getStorageCart());
+
+      this.initializedUserId = userId;
     });
 
     effect(() => {
       const userId = this.auth.currentUserId();
-      this.cartItems();
-      if (!this.isBrowser() || !userId) {
+      const items = this.cartItems();
+
+      if (!this.isBrowser()) {
         return;
       }
 
-      this.updateStorageCart();
+      if (this.initializedUserId !== userId) {
+        return;
+      }
+
+      const key = this.getStorageKey();
+
+      if (!key) {
+        return;
+      }
+
+      localStorage.setItem(key, JSON.stringify(items));
     });
   }
 
