@@ -284,9 +284,9 @@
   background: linear-gradient(135deg, #fffdf7 0%, #f7fbf8 100%);
   isolation: isolate;
   transition:
-    border-color 260ms ease,
-    box-shadow 360ms ease,
-    transform 360ms cubic-bezier(0.2, 0.9, 0.25, 1.25);
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
 }
 
 .featured-card::after {
@@ -323,38 +323,13 @@
 .featured-card:is(:hover, :focus-within) {
   z-index: 1;
   border-color: rgba(69, 216, 24, 0.56);
-  box-shadow:
-    0 24px 42px -18px rgba(104, 179, 12, 0.525),
-    0 12px 24px rgba(26, 35, 29, 0.16);
-  animation: featured-card-pop 620ms cubic-bezier(0.2, 0.88, 0.25, 1) both;
-  transform: translateY(-8px) scale(1.025);
+  box-shadow: 0 12px 28px rgba(38, 105, 19, 0.18);
+  transform: translateY(-3px);
 }
 
 .featured-card:is(:hover, :focus-within)::after {
   animation: featured-neon-travel 1.7s linear infinite;
   opacity: 1;
-}
-
-@keyframes featured-card-pop {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-
-  44% {
-    transform: translateY(-13px) scale(1.045);
-  }
-
-  68% {
-    transform: translateY(-5px) scale(1.012);
-  }
-
-  84% {
-    transform: translateY(-9px) scale(1.032);
-  }
-
-  100% {
-    transform: translateY(-8px) scale(1.025);
-  }
 }
 
 @property --featured-neon-angle {
@@ -914,7 +889,6 @@ a:focus-visible {
   }
 
   .featured-card:is(:hover, :focus-within) {
-    animation: none;
     transform: none;
   }
 }
