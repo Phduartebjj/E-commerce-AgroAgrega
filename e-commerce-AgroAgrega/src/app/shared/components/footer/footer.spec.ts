@@ -1,24 +1,39 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { render, screen } from '@testing-library/angular';
 import { provideRouter } from '@angular/router';
 
 import { Footer } from './footer';
 
 describe('Footer', () => {
-  let component: Footer;
-  let fixture: ComponentFixture<Footer>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Footer],
+  it('deve exibir os títulos h3 do rodapé', async () => {
+    await render(Footer, {
       providers: [provideRouter([])],
-    }).compileComponents();
+    });
 
-    fixture = TestBed.createComponent(Footer);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
+    const titulos = screen.getAllByRole('heading', {
+      level: 3,
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(titulos.length).toBe(3);
+
+    expect(
+      screen.getByRole('heading', {
+        level: 3,
+        name: 'Nossas Categorias',
+      }),
+    ).toBeTruthy();
+
+    expect(
+      screen.getByRole('heading', {
+        level: 3,
+        name: 'Institucional',
+      }),
+    ).toBeTruthy();
+
+    expect(
+      screen.getByRole('heading', {
+        level: 3,
+        name: 'Contato & Suporte',
+      }),
+    ).toBeTruthy();
   });
 });
