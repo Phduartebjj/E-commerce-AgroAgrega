@@ -1,4 +1,11 @@
 <section class="orders-page">
+  <nav class="breadcrumb" aria-label="Navegação estrutural">
+    <a routerLink="/">Home</a>
+    <span aria-hidden="true">›</span>
+    <a routerLink="/account">Minha conta</a>
+    <span aria-hidden="true">›</span>
+    <strong>Meus pedidos</strong>
+  </nav>
   <header class="orders-header">
     <div class="header-copy">
       <h1>Meus pedidos</h1>
@@ -29,10 +36,13 @@
   <footer class="orders-footer">
     <span class="pagination-label">1–{{ orders().length }} de {{ orders().length }} pedidos</span>
     <nav class="pagination-controls" aria-label="Paginação">
-      <button class="page-button page-button-arrow" type="button" aria-label="Página anterior">‹</button>
+      <button class="page-button page-button-arrow" type="button" aria-label="Página anterior">
+        ‹
+      </button>
       <button class="page-button page-button-active" type="button" aria-current="page">1</button>
-      <button class="page-button page-button-arrow" type="button" aria-label="Próxima página">›</button>
+      <button class="page-button page-button-arrow" type="button" aria-label="Próxima página">
+        ›
+      </button>
     </nav>
   </footer>
 </section>
-  

@@ -59,7 +59,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Responsividade base */
 @media (max-width: 768px) {
   html,
   body {

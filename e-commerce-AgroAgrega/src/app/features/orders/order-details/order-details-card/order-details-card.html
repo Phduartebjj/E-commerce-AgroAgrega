@@ -1,7 +1,22 @@
 <h4>Produto</h4>
 <div class="product-row">
   <div class="product-image">
-    <img src="{{ item().imgSrc }}" alt="Produto comprado" />
+    @if (!imageUnavailable) {
+      <img
+        [src]="item().imgSrc"
+        alt="Produto comprado"
+        loading="lazy"
+        decoding="async"
+        width="96"
+        height="96"
+        (error)="handleImageError()"
+      />
+    } @else {
+      <div class="image-fallback" role="img" aria-label="Imagem do produto indisponível">
+        <strong>AgroAgrega</strong>
+        <span>Imagem indisponível</span>
+      </div>
+    }
   </div>
   <div class="product-info">
     <h3>{{ item().name }}</h3>

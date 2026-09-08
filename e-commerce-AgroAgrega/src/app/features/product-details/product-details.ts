@@ -33,9 +33,7 @@ export class ProductDetails implements OnInit {
 
   selectedImageIndex = 0;
 
-  // =========================
-  // AVALIAÇÕES
-  // =========================
+  imageUnavailable = false;
 
   activeTab: 'details' | 'reviews' = 'details';
 
@@ -73,10 +71,6 @@ export class ProductDetails implements OnInit {
     this.reviewText = '';
   }
 
-  // =========================
-  // GALERIA
-  // =========================
-
   get selectedImage(): string | undefined {
     return this.product?.images[this.selectedImageIndex];
   }
@@ -91,6 +85,7 @@ export class ProductDetails implements OnInit {
     }
 
     this.selectedImageIndex = index;
+    this.imageUnavailable = false;
   }
 
   nextImage(): void {
@@ -99,6 +94,7 @@ export class ProductDetails implements OnInit {
     }
 
     this.selectedImageIndex = (this.selectedImageIndex + 1) % this.product.images.length;
+    this.imageUnavailable = false;
   }
 
   previousImage(): void {
@@ -108,11 +104,8 @@ export class ProductDetails implements OnInit {
 
     this.selectedImageIndex =
       (this.selectedImageIndex - 1 + this.product.images.length) % this.product.images.length;
+    this.imageUnavailable = false;
   }
-
-  // =========================
-  // PRODUTO
-  // =========================
 
   get productNotFound(): boolean {
     return this.product === undefined;
@@ -127,12 +120,14 @@ export class ProductDetails implements OnInit {
       this.product = products().find((product) => product.id === this.id);
 
       this.selectedImageIndex = 0;
+      this.imageUnavailable = false;
     });
   }
 
-  // =========================
-  // QUANTIDADE
-  // =========================
+  handleImageError(): void {
+    this.imageUnavailable = true;
+  }
+
 
   increaseQuantity(): void {
     this.quantity += 1;
@@ -144,9 +139,6 @@ export class ProductDetails implements OnInit {
     }
   }
 
-  // =========================
-  // CARRINHO
-  // =========================
 
   addToCart(): void {
     if (!this.product || this.quantity <= 0) {

@@ -7,4 +7,10 @@ export const errorMessages = {
   charsInvalid: 'Não pode conter caracteres especiais',
   invalidCep: 'CEP inválido',
   invalidPhone: 'Telefone inválido',
+  invalidCardNumber: 'Número do cartão inválido.',
+  invalidCardExpiration: 'Validade inválida.',
+  expiredCard: 'Cartão expirado.',
+  invalidCardCvv: 'CVV inválido.',
+  invalidCpf: 'CPF inválido.',
+  invalidInstallments: 'Número de parcelas inválido.',
 };

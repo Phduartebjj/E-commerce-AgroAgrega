@@ -25,7 +25,6 @@ export class CartComponent {
 
   applyCoupon(couponCode: string): void {
     this.cart.applyCoupon(couponCode);
-    console.log('Cupom aplicado:', couponCode);
   }
 
   removeCoupon(): void {

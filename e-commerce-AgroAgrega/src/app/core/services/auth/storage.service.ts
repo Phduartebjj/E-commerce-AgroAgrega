@@ -6,7 +6,6 @@ import { UserModel } from '@models/user';
   providedIn: 'root',
 })
 export class StorageService {
-  //Seta os usúarios se baseando no modelo User.
   setUser(data: UserModel): ServiceResponse {
     try {
       const dtLocal = localStorage.getItem('db');
@@ -29,7 +28,6 @@ export class StorageService {
     }
   }
 
-  //Busca usuário pelo email | poderia ser pelo ID
   getUser(email: string): UserModel | null {
     try {
       const data = localStorage.getItem('db');
@@ -43,7 +41,6 @@ export class StorageService {
     }
   }
 
-  // Retorna todos os usuários
   getAllUsers(): UserModel[] | string {
     const data = localStorage.getItem('db');
     if (!data) return [];
@@ -51,7 +48,6 @@ export class StorageService {
     return data;
   }
 
-  // Atualiza usuário
   updatePasswordUser(email: string, newPassword: string): ServiceResponse {
     try {
       const data = localStorage.getItem('db');

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { StorageService } from './storage.service';
 import { TokenAuth } from './token.service';
 import * as crypt from 'crypto-js';
@@ -10,6 +10,13 @@ import { ServiceResponse } from '@models/serviceResponse';
 export class Auth {
   private Storage = inject(StorageService);
   private Token = inject(TokenAuth);
+
+  readonly currentUserId = signal<string | null>(this.getInitialUserId());
+
+  private getInitialUserId(): string | null {
+    const id = this.Token.getId();
+    return id || null;
+  }
 
   public isLoggedIn(): boolean {
     return this.Token.checkToken();
@@ -27,6 +34,8 @@ export class Auth {
       name: user.name,
       email: user.email,
     });
+
+    this.currentUserId.set(user.id);
 
     return true;
   }
@@ -49,6 +58,8 @@ export class Auth {
       name,
       email,
     });
+
+    this.currentUserId.set(id);
 
     return { res: user.res, message: user.message };
   }
@@ -93,6 +104,7 @@ export class Auth {
 
   logout(): void {
     this.Token.deleteToken();
+    this.currentUserId.set(null);
   }
 
   removeAccount(): boolean {
@@ -109,4 +121,3 @@ export class Auth {
     return removed;
   }
 }
-

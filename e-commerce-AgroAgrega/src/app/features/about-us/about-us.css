@@ -1,155 +1,421 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
+:host {
+  display: block;
 }
 
 .container {
-  width: 100%;
-  min-height: 100vh;
-  padding: 40px;
+  width: min(calc(100% - 32px), 1240px);
+  margin: 56px auto;
+  min-width: 0;
 }
 
 .container h1 {
+  margin: 0 0 40px;
   text-align: center;
-  margin-bottom: 40px;
-  color: #222;
+  color: #0b2f2a;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-  max-width: 1300px;
-  margin: auto;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
 }
-
-.card:hover {
-  transform: translateY(-8px);
-}
-
 
 .card {
-  width: 250px;
-  box-sizing: border-box;
-  overflow: hidden;
+  position: relative;
+  z-index: 0;
+
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid rgba(40, 48, 77, 0.12);
+  border-radius: 18px;
+
+  background-color: #ffffff;
+
+  overflow: visible;
+  isolation: isolate;
+
+  transition:
+    border-color 260ms ease,
+    box-shadow 360ms ease,
+    transform 360ms cubic-bezier(0.2, 0.9, 0.25, 1.25);
 }
 
+.card::after {
+  position: absolute;
+  z-index: 2;
+  inset: -2px;
+  padding: 2px;
+  border-radius: 20px;
+  content: '';
+
+  background: conic-gradient(
+    from var(--about-neon-angle),
+    rgba(89, 112, 255, 0.2) 0deg 230deg,
+    rgba(94, 92, 230, 0.62) 265deg,
+    #5b5bd6 300deg,
+    #9fa8ff 320deg,
+    #7c83ff 340deg,
+    rgba(89, 112, 255, 0.2) 360deg
+  );
+
+  filter: drop-shadow(0 0 5px rgba(91, 91, 214, 0.55))
+    drop-shadow(0 0 12px rgba(124, 131, 255, 0.32));
+
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  mask-composite: exclude;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  -webkit-mask-composite: xor;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.card:hover,
+.card:focus-within {
+  z-index: 2;
+  border-color: rgba(91, 91, 214, 0.45);
+
+  box-shadow:
+    0 24px 42px -18px rgba(91, 91, 214, 0.28),
+    0 12px 24px rgba(34, 41, 70, 0.16);
+
+  animation: about-card-pop 620ms cubic-bezier(0.2, 0.88, 0.25, 1) both;
+
+  transform: translateY(-8px) scale(1.02);
+}
+
+.card:hover::after,
+.card:focus-within::after {
+  animation: about-neon-travel 1.7s linear infinite;
+  opacity: 1;
+}
+
+.foto-frame {
+  width: 100%;
+  overflow: hidden;
+
+  border-radius: 17px 17px 0 0;
+}
 
 .foto {
   width: 100%;
-  border-radius: 10px;
-  height: 250px;
-  object-fit: contain;
+  height: 260px;
+
   display: block;
+
+  border-radius: 17px 17px 0 0;
+
+  object-fit: cover;
+
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+.card:hover .foto,
+.card:focus-within .foto {
+  transform: scale(1.035);
+}
 
 .card-content {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
   width: 100%;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+
+  padding: 20px;
+
   text-align: left;
 }
 
 .card-content h2 {
-  margin: 5px 0;
-  font-size: 20px;
-  color: #222;
+  margin: 0;
+
+  color: #14231c;
+
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
 .card-content h3 {
-  margin: 8px 0 15px;
-  font-size: 15px;
-  color: #666;
+  margin: 6px 0 14px;
+
+  color: #66716c;
+
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .card-content p {
-  color: #666;
-  font-size: 14px;
-  line-height: 1.5;
-  min-height: 65px;
+  flex: 1;
+
+  margin: 0;
+
+  color: #66716c;
+
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .tecnologias {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 7px;
-  margin: 15px 0;
+  justify-content: flex-start;
+  gap: 8px;
+
+  margin: 18px 0;
 }
 
 .tecnologias span {
-  background: #eeeeee;
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #333;
+  padding: 6px 11px;
+
+  border: 1px solid #e7e8ed;
+  border-radius: 999px;
+
+  background-color: #f7f7f9;
+
+  color: #4b5563;
+
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .links {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  width: 100%;
+  margin-top: auto;
+}
+
+.social-link {
+  position: relative;
+
+  min-height: 44px;
+
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
-  margin-top: 15px;
-}
+  gap: 8px;
 
-.links a {
+  padding: 0 12px;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  font-size: 0.78rem;
+  font-weight: 800;
+
   text-decoration: none;
-  color: #007bff;
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 4px;
+
+  overflow: hidden;
+
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    box-shadow 240ms ease,
+    transform 200ms ease;
 }
 
-.links a:hover {
-  border-radius: 4px;
-  padding: 4px 8px;
-  text-decoration: underline;
+.social-link svg {
+  width: 18px;
+  height: 18px;
+
+  flex: 0 0 auto;
 }
 
-/* Tablet */
-@media (max-width: 1000px) {
+.social-link.github {
+  border-color: #18181b;
+
+  background-color: #18181b;
+
+  color: #ffffff;
+
+  box-shadow: 0 6px 14px rgba(24, 24, 27, 0.16);
+}
+
+.social-link.github:hover {
+  background-color: #ffffff;
+
+  color: #18181b;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 10px 20px rgba(24, 24, 27, 0.18);
+}
+
+.social-link.linkedin {
+  border-color: #0a66c2;
+
+  background-color: #0a66c2;
+
+  color: #ffffff;
+
+  box-shadow: 0 6px 14px rgba(10, 102, 194, 0.16);
+}
+
+.social-link.linkedin:hover {
+  background-color: #ffffff;
+
+  color: #0a66c2;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 10px 20px rgba(10, 102, 194, 0.2);
+}
+
+.social-link:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.social-link:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    width: min(calc(100% - 32px), 920px);
+    margin: 48px auto;
+  }
+
   .cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
   }
 }
 
-/* Celular */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .container {
-    padding: 20px;
+    width: calc(100% - 32px);
+    margin: 40px auto;
+  }
+
+  .container h1 {
+    margin-bottom: 28px;
   }
 
   .cards {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .foto {
+    height: clamp(210px, 48vw, 260px);
+  }
+
+  .card-content {
+    padding: 18px;
+  }
+
+  .social-link {
+    min-height: 46px;
   }
 }
 
+@media (max-width: 480px) {
+  .container {
+    width: calc(100% - 24px);
+    margin: 32px auto;
+  }
 
-.links .github {
-  background-color: #1b1b26;
-  border-color: #6f42c1;
-  color: white;
+  .container h1 {
+    margin-bottom: 22px;
+  }
+
+  .card {
+    border-radius: 14px;
+  }
+
+  .foto-frame,
+  .foto {
+    border-radius: 13px 13px 0 0;
+  }
+
+  .foto {
+    height: 220px;
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+
+  .card-content h2 {
+    font-size: 1.15rem;
+  }
+
+  .links {
+    grid-template-columns: 1fr;
+  }
+
+  .social-link {
+    width: 100%;
+  }
 }
 
-.links .linkedin {
-  background-color: #0a66c2;
-  border-color: #0a66c2;
-  color: white;
+@keyframes about-card-pop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  44% {
+    transform: translateY(-13px) scale(1.04);
+  }
+
+  68% {
+    transform: translateY(-5px) scale(1.012);
+  }
+
+  84% {
+    transform: translateY(-9px) scale(1.028);
+  }
+
+  100% {
+    transform: translateY(-8px) scale(1.02);
+  }
 }
 
-.links .github:hover {
-  color: #121115;
-  background-color: white;
+@property --about-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
 }
 
-.links .linkedin:hover {
-  color: #0a66c2;
-  background-color: white;
+@keyframes about-neon-travel {
+  to {
+    --about-neon-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::after,
+  .links a {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover,
+  .card:focus-within {
+    animation: none;
+    transform: none;
+  }
 }

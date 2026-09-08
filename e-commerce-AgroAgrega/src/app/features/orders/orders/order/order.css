@@ -84,7 +84,7 @@
   font-weight: 800;
 }
 
-.status-success {
+.status-confirmed {
   background: rgba(28, 174, 103, 0.13);
   color: #1b8b5d;
 }
@@ -102,6 +102,11 @@
 .status-waiting {
   background: rgba(213, 134, 46, 0.16);
   color: #bf7a1d;
+}
+
+.status-cancelled {
+  background: rgba(220, 70, 70, 0.15);
+  color: #c03a3a;
 }
 
 .status-note {

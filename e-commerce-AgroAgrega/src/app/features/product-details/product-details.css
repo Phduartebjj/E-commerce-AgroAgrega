@@ -81,6 +81,28 @@
   display: block;
 }
 
+.image-fallback {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(145deg, #edf4ef, #dfeae3);
+  color: #315c43;
+  text-align: center;
+}
+
+.image-fallback strong {
+  font-size: 1.1rem;
+}
+
+.image-fallback span {
+  color: #718078;
+  font-size: 0.85rem;
+}
+
 .product-info {
   display: flex;
   flex-direction: column;
