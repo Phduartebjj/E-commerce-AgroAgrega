@@ -58,7 +58,6 @@
 
     <div class="form-wrap">
 
-      <!-- BRAND -->
       <div class="brand">
 
         <div class="brand__icon">
@@ -74,7 +73,6 @@
 
       </div>
 
-      <!-- HEADER -->
       <p class="area-label">
         ÁREA DO CLIENTE
       </p>
@@ -88,14 +86,12 @@
         do seu negócio.
       </p>
 
-      <!-- FORM -->
       <form
         class="form"
         [formGroup]="registerForm"
         (submit)="onSubmit($event)"
       >
 
-        <!-- NOME -->
         <div class="field">
 
           <label
@@ -126,7 +122,6 @@
 
         </div>
 
-        <!-- EMAIL -->
         <div class="field">
 
           <label
@@ -157,7 +152,6 @@
 
         </div>
 
-        <!-- SENHA -->
         <div class="field">
 
           <label
@@ -208,7 +202,6 @@
 
         </div>
 
-        <!-- CONFIRMAÇÃO DA SENHA -->
         <div class="field">
 
           <label
@@ -261,7 +254,6 @@
 
         </div>
 
-        <!-- TERMOS -->
         <label class="checkbox-label">
 
           <input
@@ -291,7 +283,6 @@
 
         </label>
 
-        <!-- ERRO DO AUTH -->
         @if (registerError()) {
           <div
             class="login-error"
@@ -301,7 +292,6 @@
           </div>
         }
 
-        <!-- BOTÃO -->
         <button
           type="submit"
           class="btn-primary"
@@ -320,7 +310,6 @@
 
       </form>
 
-      <!-- LOGIN -->
       <p class="register-line">
 
         Já tem uma conta?
@@ -334,7 +323,6 @@
 
       </p>
 
-      <!-- PRIVACIDADE -->
       <p class="terms">
 
         Seus dados são tratados com segurança

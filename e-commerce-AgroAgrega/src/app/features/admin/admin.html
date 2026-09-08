@@ -1,5 +1,4 @@
 <div class="admin-container">
-  <!-- Sidebar -->
   <aside class="admin-sidebar">
     <div class="sidebar-header">
       <h1 class="sidebar-title">🌿 AgroAgrega</h1>
@@ -49,9 +48,7 @@
     </div>
   </aside>
 
-  <!-- Main Content -->
   <main class="admin-content">
-    <!-- Dashboard Tab -->
     <section *ngIf="activeTab() === 'dashboard'" class="tab-section">
       <header class="section-header">
         <h2>Dashboard</h2>
@@ -128,7 +125,6 @@
       </div>
     </section>
 
-    <!-- Products Tab -->
     <section *ngIf="activeTab() === 'products'" class="tab-section">
       <header class="section-header">
         <h2>Gerenciar Produtos</h2>
@@ -229,7 +225,7 @@
       </div>
     </section>
 
-    <!-- Orders Tab -->
+
     <section *ngIf="activeTab() === 'orders'" class="tab-section">
       <header class="section-header">
         <h2>Gestão de Pedidos</h2>
@@ -310,7 +306,6 @@
       </div>
     </section>
 
-    <!-- Clients Tab -->
     <section *ngIf="activeTab() === 'clients'" class="tab-section">
       <header class="section-header">
         <h2>Gerenciar Clientes</h2>
@@ -357,7 +352,6 @@
       </div>
     </section>
 
-    <!-- Settings Tab -->
     <section *ngIf="activeTab() === 'settings'" class="tab-section">
       <header class="section-header">
         <h2>Configurações</h2>
@@ -423,7 +417,6 @@
     </section>
   </main>
 
-  <!-- Password Modal -->
   <div class="modal-overlay" *ngIf="showPasswordModal()" (click)="closePasswordModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -476,7 +469,6 @@
     </div>
   </div>
 
-  <!-- Profile Edit Modal -->
   <div class="modal-overlay" *ngIf="showProfileModal()" (click)="closeProfileModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">

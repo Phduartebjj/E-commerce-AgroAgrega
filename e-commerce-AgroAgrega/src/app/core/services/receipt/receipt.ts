@@ -18,10 +18,6 @@ export class ReceiptService {
 
     let y = 20;
 
-    // =========================
-    // CABEÇALHO
-    // =========================
-
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(22);
     doc.text('AGROAGREGA', 20, y);
@@ -44,10 +40,6 @@ export class ReceiptService {
 
     this.drawLine(doc, y);
 
-    // =========================
-    // STATUS E PAGAMENTO
-    // =========================
-
     y += 12;
 
     doc.setFont('helvetica', 'bold');
@@ -62,10 +54,6 @@ export class ReceiptService {
     doc.text(`Status: ${order.status}`, 20, y);
 
     doc.text(`Pagamento: ${order.paymentMethod}`, pageWidth - 20, y, { align: 'right' });
-
-    // =========================
-    // ENTREGA
-    // =========================
 
     y += 14;
 
@@ -97,10 +85,6 @@ export class ReceiptService {
 
     doc.text(`CEP: ${order.address.cep}`, 20, y);
 
-    // =========================
-    // ITENS
-    // =========================
-
     y += 14;
 
     this.drawLine(doc, y);
@@ -111,7 +95,6 @@ export class ReceiptService {
 
     y += 9;
 
-    // Cabeçalho da tabela
     doc.setFillColor(240, 244, 241);
     doc.rect(20, y - 5, pageWidth - 40, 9, 'F');
 
@@ -148,9 +131,6 @@ export class ReceiptService {
       y += 10;
     }
 
-    // =========================
-    // RESUMO
-    // =========================
 
     y += 6;
 
@@ -183,10 +163,6 @@ export class ReceiptService {
     doc.text('TOTAL', 20, y);
 
     doc.text(this.formatMoney(order.total), pageWidth - 20, y, { align: 'right' });
-
-    // =========================
-    // RODAPÉ
-    // =========================
 
     y += 16;
 

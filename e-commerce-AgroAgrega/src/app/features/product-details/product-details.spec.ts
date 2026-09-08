@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
@@ -250,5 +252,41 @@ describe('ProductDetails', () => {
     expect(notFoundComponent.id).toBe('999');
     expect(notFoundComponent.product).toBeUndefined();
     expect(notFoundComponent.productNotFound).toBe(true);
+  });
+});
+
+describe('ProductDetails com Angular Testing Library', () => {
+  const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
+
+  it('deve aumentar a quantidade e adicionar o produto ao carrinho pela tela', async () => {
+    const mockCartService = {
+      addCartItem: vi.fn(),
+    };
+
+    await render(ProductDetails, {
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: createActivatedRoute(productId),
+        },
+        {
+          provide: Cart,
+          useValue: mockCartService,
+        },
+      ],
+    });
+
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: 'Aumentar quantidade' }));
+    await user.click(screen.getByRole('button', { name: 'Adicionar ao carrinho' }));
+
+    expect(screen.getByText('2', { selector: '.quantity-control span' })).toBeTruthy();
+    expect(mockCartService.addCartItem).toHaveBeenCalledWith(
+      expect.objectContaining({ id: productId }),
+      2,
+    );
+    expect(screen.getByRole('status').textContent).toContain('Produto adicionado');
   });
 });

@@ -53,7 +53,6 @@ input {
   font-family: inherit;
 }
 
-/* O LAYOUT DA PARADA */
 .page {
   width: 100vw;
   height: 100vh;
@@ -65,7 +64,6 @@ input {
   overflow: hidden;
 }
 
-/* Hero */
 .hero {
   position: relative;
   display: flex;
@@ -178,7 +176,6 @@ input {
   padding-left: 2px;
 }
 
-/* Form panel */
 .form-panel {
   display: flex;
   align-items: center;
@@ -193,7 +190,6 @@ input {
   max-width: 420px;
 }
 
-/* Brand */
 .brand {
   display: flex;
   align-items: center;
@@ -230,7 +226,6 @@ input {
   font-weight: 700;
 }
 
-/* Headings */
 .area-label {
   margin-bottom: 12px;
   color: var(--green-600);
@@ -257,7 +252,6 @@ input {
   line-height: 1.5;
 }
 
-/* Form */
 .form {
   display: flex;
   flex-direction: column;
@@ -355,7 +349,6 @@ input {
   color: var(--green-600);
 }
 
-/* Row */
 .form__row {
   display: flex;
   align-items: center;
@@ -421,7 +414,6 @@ input {
   opacity: 1;
 }
 
-/* Botão principal */
 .btn-primary {
   transition:
     transform 0.15s ease,
@@ -458,7 +450,6 @@ input {
   box-shadow: none;
 }
 
-/* Divider */
 .divider {
   display: flex;
   align-items: center;
@@ -474,7 +465,6 @@ input {
   background: var(--gray-200);
 }
 
-/* Social */
 .social-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -502,14 +492,12 @@ input {
   border-color: var(--gray-400);
 }
 
-/* Register */
 .register-line {
   text-align: center;
   font-size: 13.5px;
   color: var(--gray-500);
 }
 
-/* Links */
 .link {
   color: var(--green-700);
   transition: color 0.15s;
@@ -526,7 +514,6 @@ input {
   font-weight: 500;
 }
 
-/* Empresa card */
 .empresa-card {
   display: flex;
   align-items: center;
@@ -572,7 +559,6 @@ input {
   line-height: 1.4;
 }
 
-/* Terms */
 .terms {
   margin-top: 20px;
   text-align: center;
@@ -580,8 +566,6 @@ input {
   color: var(--gray-400);
   line-height: 1.6;
 }
-
-/* ===== RESPONSIVIDADE NESSA PARADA 🤔​ ===== */
 
 @media (max-width: 1024px) {
   .page {

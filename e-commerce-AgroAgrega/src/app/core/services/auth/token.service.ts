@@ -7,11 +7,11 @@ import * as crypt from 'crypto-js';
   providedIn: 'root',
 })
 export class TokenAuth {
-  private readonly key: string = 'auth_token'; // Chave do cookie
+  private readonly key: string = 'auth_token';
   private readonly sessionKey: string = 'auth_session';
-  private readonly maxAge: number = 60 * 5; // Data de expiração da chave
+  private readonly maxAge: number = 60 * 5; 
   private readonly ultraSecretKey =
-    '7e9c3d4a2b1f8e6d9c0b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d'; // Chave secreta fictícia
+    '7e9c3d4a2b1f8e6d9c0b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d';
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly browser = isPlatformBrowser(this.platformId);
@@ -41,23 +41,22 @@ export class TokenAuth {
 
   private createToken(payload: UserTokenModel): string {
     const header = {
-      alg: 'HS256', // aLg: Algoritmo usado para a criptografia do token
-      typ: 'JWT', // Type: JWT
+      alg: 'HS256', 
+      typ: 'JWT', 
     };
 
-    // codificando header e payload em base64
+
     const encHeader = btoa(JSON.stringify(header).toString());
-    const encPayload = btoa(JSON.stringify(payload)); //btoa codifica para base64 e
+    const encPayload = btoa(JSON.stringify(payload)); 
 
     const tokenData = `${encHeader}.${encPayload}`;
     const signature = crypt
       .HmacSHA256(tokenData, this.ultraSecretKey)
-      .toString(crypt.enc.Base64url); // Criptografia em Sha256.
+      .toString(crypt.enc.Base64url);
 
     return `${tokenData}.${signature}`;
   }
 
-  // Recupera o cookie e pega só o token.
   private getToken(): string | null {
     if (!this.browser) return null;
     const cookie = document.cookie
@@ -88,7 +87,6 @@ export class TokenAuth {
     return this.tokenData()?.email ?? '';
   }
 
-  // Sobe o cookie.
   setToken(userPayload: UserTokenModel): void {
     if (!this.browser) return;
 
@@ -97,7 +95,6 @@ export class TokenAuth {
     this.saveSessionData(userPayload);
   }
 
-  // Verifica se o token não foi modificado.
   checkToken(): boolean {
     if (!this.browser) return false;
     const token = this.getToken();
@@ -121,7 +118,6 @@ export class TokenAuth {
     return newSignature === signature;
   }
 
-  // Deleta o cookie.
   deleteToken(): void {
     if (!this.browser) return;
     document.cookie = `${this.key}=; max-age=0; path=/; SameSite=Strict`;

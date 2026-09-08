@@ -134,15 +134,12 @@ export class Cart {
   removeCoupon(): void {
     this.coupon.set(null);
   }
-
-  //Adiciona um produto ao carrinho
   addCartItem(product: ProductModel, quantity: number = 1): void {
     this.cartItems.update((items) => {
-      //Encontra produto
       const productFind = items.find((p) => p.product.id === product.id);
 
       if (productFind) {
-        //retorna um novo array baseado no carrinho, procura o produto e adiciona a quantidade
+
         return items.map((item) => {
           if (item.product.id === product.id) {
             return { ...item, quantity: item.quantity + quantity };
@@ -150,7 +147,7 @@ export class Cart {
           return item;
         });
       } else {
-        //Se não encontrar, cria o produto.
+
         return [...items, { product: product, quantity: quantity }];
       }
     });
@@ -158,10 +155,9 @@ export class Cart {
 
   decreaseQuantity(product: ProductModel): void {
     this.cartItems.update((items) => {
-      //Procura produto que vai ser removido no array
+
       const productFind = items.find((p) => p.product.id === product.id);
 
-      //Remove o possível tipo undefined
       if (!productFind) {
         return items;
       }
@@ -180,11 +176,11 @@ export class Cart {
       return items.filter((item) => item.product.id !== product.id);
     });
   }
-  //Por enquanto só joga os itens fora.
+
   cleanCartItem(): void {
     this.cartItems.set([]);
   }
-  //calcula o valor total do carrinho
+
   total = computed(() => {
     let valorTotal = this.cartItems().reduce((total, item) => {
       return total + item.product.price * item.quantity;
@@ -203,7 +199,7 @@ export class Cart {
     return discount > 0 ? discount : 0;
   });
 
-  //calcula o total de produtos do carrinho
+
   totalCartItens = computed(() => {
     return this.cartItems().reduce((total, item) => {
       return total + item.quantity;
