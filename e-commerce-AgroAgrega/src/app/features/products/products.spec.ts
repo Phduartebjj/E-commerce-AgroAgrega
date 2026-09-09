@@ -77,6 +77,48 @@ describe('ProductsComponent', () => {
     expect(navigationButtons[0].disabled).toBe(true);
     expect(navigationButtons[1].disabled).toBe(false);
     expect(host.textContent).not.toContain('Carregar mais');
-    expect(host.textContent).not.toContain('produtos encontrados');
+    expect(host.textContent).toContain('52 produtos encontrados');
+  });
+
+  it('should expose active filters as individually removable chips', () => {
+    component.selectedBrands.set(['AgroSense']);
+    component.setMinRating(4);
+    component.maxPriceFilter.set(500);
+
+    const chips = component.activeFilterChips();
+    expect(chips.map((chip) => chip.type)).toEqual(['brand', 'rating', 'price']);
+
+    const brandChip = chips.find((chip) => chip.type === 'brand');
+    expect(brandChip).toBeDefined();
+    component.removeActiveFilter(brandChip!);
+
+    expect(component.selectedBrands()).toEqual([]);
+    expect(component.activeFilterChips().some((chip) => chip.type === 'brand')).toBe(false);
+  });
+
+  it('should compare between two and three products and enforce the selection limit', () => {
+    const [first, second, third, fourth] = component.products();
+
+    component.toggleProductComparison(first);
+    component.openComparison();
+    expect(component.comparisonOpen()).toBe(false);
+
+    component.toggleProductComparison(second);
+    component.openComparison();
+    expect(component.comparisonOpen()).toBe(true);
+
+    component.toggleProductComparison(third);
+    component.toggleProductComparison(fourth);
+
+    expect(component.comparedProducts()).toHaveLength(3);
+    expect(component.isProductCompared(fourth.id)).toBe(false);
+    expect(component.comparisonAnnouncement()).toContain('até 3 produtos');
+
+    component.removeComparedProduct(first.id);
+    expect(component.comparedProducts()).toHaveLength(2);
+
+    component.clearComparison();
+    expect(component.comparedProducts()).toEqual([]);
+    expect(component.comparisonOpen()).toBe(false);
   });
 });
