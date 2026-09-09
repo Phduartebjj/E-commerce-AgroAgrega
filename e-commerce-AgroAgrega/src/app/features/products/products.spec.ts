@@ -25,8 +25,8 @@ describe('ProductsComponent', () => {
   it('should start with all categories and numbered pagination', () => {
     expect(component.selectedCategory()).toBe('Todos');
     expect(component.filteredProducts()).toHaveLength(52);
-    expect(component.featuredProducts()).toHaveLength(2);
-    expect(component.visibleProducts()).toHaveLength(10);
+    expect(component.featuredProducts()).toHaveLength(8);
+    expect(component.visibleProducts()).toHaveLength(4);
     expect(component.currentPage()).toBe(1);
     expect(component.totalPages()).toBe(5);
     expect(component.pageNumbers()).toEqual([1, 2, 3, 4, 5]);
@@ -71,6 +71,7 @@ describe('ProductsComponent', () => {
     const host = fixture.nativeElement as HTMLElement;
     const currentButtons = host.querySelectorAll('[aria-current="page"]');
     const navigationButtons = host.querySelectorAll<HTMLButtonElement>('.pagination-navigation');
+    const featuredCards = host.querySelectorAll('.featured-carousel .featured-card');
 
     expect(currentButtons).toHaveLength(1);
     expect(currentButtons[0].getAttribute('aria-label')).toBe('Página 1, atual');
@@ -78,6 +79,9 @@ describe('ProductsComponent', () => {
     expect(navigationButtons[1].disabled).toBe(false);
     expect(host.textContent).not.toContain('Carregar mais');
     expect(host.textContent).toContain('52 produtos encontrados');
+    expect(featuredCards).toHaveLength(8);
+    expect(host.querySelectorAll('.carousel-controls button')).toHaveLength(2);
+    expect(host.querySelector('#catalog-search-input')).toBeNull();
   });
 
   it('should expose active filters as individually removable chips', () => {

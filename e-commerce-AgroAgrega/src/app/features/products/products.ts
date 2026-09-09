@@ -141,7 +141,7 @@ export class ProductsComponent {
   readonly featuredProducts = computed(() =>
     [...this.products()]
       .sort((first, second) => (second.weeklySales ?? 0) - (first.weeklySales ?? 0))
-      .slice(0, 2),
+      .slice(0, 8),
   );
 
   private readonly featureProductsOnFirstPage = computed(
@@ -271,17 +271,6 @@ export class ProductsComponent {
     });
   }
 
-  submitCatalogSearch(input: HTMLInputElement): void {
-    const search = input.value.trim();
-
-    this.resetPagination();
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { search: search || null },
-      queryParamsHandling: 'merge',
-    });
-  }
-
   clearCatalogSearch(): void {
     this.resetPagination();
     this.router.navigate([], {
@@ -401,6 +390,17 @@ export class ProductsComponent {
 
   closeComparison(): void {
     this.comparisonOpen.set(false);
+  }
+
+  scrollFeaturedProducts(carousel: HTMLElement, direction: -1 | 1): void {
+    const prefersReducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    carousel.scrollBy({
+      left: direction * Math.max(300, carousel.clientWidth * 0.82),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    });
   }
 
   setViewMode(mode: 'grid' | 'list'): void {

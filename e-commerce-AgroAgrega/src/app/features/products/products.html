@@ -160,17 +160,40 @@
                 <span>Preferidos dos clientes</span>
                 <h2 id="featured-products-title">Mais procurados da semana</h2>
               </div>
-              <small>Seleção com base nas vendas recentes</small>
+              <div class="featured-heading-actions">
+                <small>Seleção com base nas vendas recentes</small>
+                <div class="carousel-controls" role="group" aria-label="Navegar pelos mais procurados">
+                  <button
+                    type="button"
+                    aria-label="Ver produtos anteriores"
+                    (click)="scrollFeaturedProducts(featuredCarousel, -1)"
+                  >
+                    <span aria-hidden="true">←</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Ver próximos produtos"
+                    (click)="scrollFeaturedProducts(featuredCarousel, 1)"
+                  >
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="featured-grid">
-              @for (product of featuredProducts(); track product.id) {
-                <article class="featured-card">
+            <div
+              #featuredCarousel
+              class="featured-carousel"
+              tabindex="0"
+              aria-label="Carrossel dos produtos mais procurados da semana"
+            >
+              @for (product of featuredProducts(); track product.id; let index = $index) {
+                <article class="featured-card" [attr.aria-label]="'Produto ' + (index + 1) + ' de ' + featuredProducts().length">
                   <a class="featured-image" [routerLink]="['/products', product.id]">
                     <img
                       [src]="product.images[0]"
                       [alt]="product.title"
-                      loading="eager"
+                      [attr.loading]="index < 2 ? 'eager' : 'lazy'"
                       decoding="async"
                       width="180"
                       height="180"
@@ -221,36 +244,6 @@
         }
 
         <div class="products-toolbar">
-          <form
-            class="catalog-search"
-            role="search"
-            (submit)="$event.preventDefault(); submitCatalogSearch(catalogSearchInput)"
-          >
-            <label for="catalog-search-input">Buscar neste catálogo</label>
-            <div class="catalog-search-field">
-              <span aria-hidden="true">⌕</span>
-              <input
-                #catalogSearchInput
-                id="catalog-search-input"
-                type="search"
-                [value]="searchTerm()"
-                placeholder="Produto, marca ou categoria"
-                autocomplete="off"
-              />
-              @if (searchTerm()) {
-                <button
-                  class="clear-catalog-search"
-                  type="button"
-                  aria-label="Limpar busca do catálogo"
-                  (click)="clearCatalogSearch()"
-                >
-                  ×
-                </button>
-              }
-              <button class="submit-catalog-search" type="submit">Buscar</button>
-            </div>
-          </form>
-
           <div class="toolbar-row">
             <div class="results-summary" aria-live="polite">
               <strong>{{ resultsLabel() }}</strong>
