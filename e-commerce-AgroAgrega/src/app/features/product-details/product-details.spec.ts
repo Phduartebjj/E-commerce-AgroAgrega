@@ -52,7 +52,7 @@ describe('ProductDetails', () => {
 
     fixture.detectChanges();
   });
-  it('should select a valid product image', () => {
+  it('deve selecionar uma imagem válida do produto', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
@@ -63,7 +63,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(1);
     expect(component.selectedImage).toBe('image-2.jpg');
   });
-  it('should ignore an invalid image index', () => {
+  it('deve ignorar um índice de imagem inválido', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg'],
@@ -74,7 +74,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(0);
     expect(component.selectedImage).toBe('image-1.jpg');
   });
-  it('should ignore a negative image index', () => {
+  it('deve ignorar um índice de imagem negativo', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg'],
@@ -86,20 +86,20 @@ describe('ProductDetails', () => {
     expect(component.selectedImage).toBe('image-1.jpg');
   });
 
-  it('should create', () => {
+  it('deve ser criado', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should read the product id from the route', () => {
+  it('deve ler o ID do produto a partir da rota', () => {
     expect(component.id).toBe(productId);
   });
 
-  it('should find the product by id', () => {
+  it('deve encontrar o produto pelo ID', () => {
     expect(component.product).toBeTruthy();
     expect(component.product?.id).toBe(productId);
     expect(component.product?.title).toBe('Kit Estação Meteorológica Inteligente AgroSense Pro');
   });
-  it('should move to the next image', () => {
+  it('deve mover para a próxima imagem', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
@@ -110,7 +110,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(1);
     expect(component.selectedImage).toBe('image-2.jpg');
   });
-  it('should return to the first image after the last image', () => {
+  it('deve retornar para a primeira imagem após a última imagem', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
@@ -122,7 +122,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(0);
     expect(component.selectedImage).toBe('image-1.jpg');
   });
-  it('should move to the previous image', () => {
+  it('deve mover para a imagem anterior', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
@@ -134,7 +134,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(1);
     expect(component.selectedImage).toBe('image-2.jpg');
   });
-  it('should return to the last image when moving previous from the first image', () => {
+  it('deve retornar para a última imagem ao mover anterior a partir da primeira imagem', () => {
     component.product = {
       ...component.product!,
       images: ['image-1.jpg', 'image-2.jpg', 'image-3.jpg'],
@@ -145,7 +145,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(2);
     expect(component.selectedImage).toBe('image-3.jpg');
   });
-  it('should not change image when product has no images', () => {
+  it('deve não alterar a imagem quando o produto não tem imagens', () => {
     component.product = {
       ...component.product!,
       images: [],
@@ -160,7 +160,7 @@ describe('ProductDetails', () => {
     expect(component.selectedImageIndex).toBe(0);
   });
 
-  it('should increase and decrease quantity within valid range', () => {
+  it('deve aumentar e diminuir a quantidade dentro do intervalo válido', () => {
     expect(component.quantity).toBe(1);
 
     component.increaseQuantity();
@@ -176,11 +176,11 @@ describe('ProductDetails', () => {
     expect(component.quantity).toBe(1);
   });
 
-  it('should identify when product exists', () => {
+  it('deve identificar quando o produto não existe', () => {
     expect(component.productNotFound).toBeFalsy();
   });
 
-  it('should render product details', () => {
+  it('deve renderizar os detalhes do produto', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain(`ID do produto: ${productId}`);
@@ -188,7 +188,7 @@ describe('ProductDetails', () => {
     expect(compiled.textContent).toContain('Adicionar ao carrinho');
   });
 
-  it('should call addCartItem with current product and quantity', () => {
+  it('deve chamar addCartItem com o produto e a quantidade atuais', () => {
     component.addToCart();
 
     expect(mockCartService.addCartItem).toHaveBeenCalledWith(component.product, component.quantity);
@@ -196,7 +196,7 @@ describe('ProductDetails', () => {
     expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
-  it('should call addCartItem once with the selected quantity', () => {
+  it('deve chamar addCartItem uma vez com a quantidade selecionada', () => {
     component.quantity = 3;
 
     component.addToCart();
@@ -206,7 +206,7 @@ describe('ProductDetails', () => {
     expect(mockCartService.addCartItem).toHaveBeenCalledTimes(1);
   });
 
-  it('should not call addCartItem when product does not exist', () => {
+  it('deve não chamar addCartItem quando o produto não existe', () => {
     component.product = undefined;
 
     component.addToCart();
@@ -214,7 +214,7 @@ describe('ProductDetails', () => {
     expect(mockCartService.addCartItem).not.toHaveBeenCalled();
   });
 
-  it('should not add product when quantity is invalid', () => {
+  it('deve não adicionar o produto quando a quantidade é inválida', () => {
     component.quantity = 0;
 
     component.addToCart();
@@ -222,7 +222,7 @@ describe('ProductDetails', () => {
     expect(mockCartService.addCartItem).not.toHaveBeenCalled();
   });
 
-  it('should identify when product does not exist', async () => {
+  it('deve identificar quando o produto não existe', async () => {
     await TestBed.resetTestingModule();
 
     const mockCartServiceNotFound = {

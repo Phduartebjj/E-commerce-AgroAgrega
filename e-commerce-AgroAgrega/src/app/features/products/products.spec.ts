@@ -18,11 +18,11 @@ describe('ProductsComponent', () => {
     await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('deve ser criado', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should start with all categories and numbered pagination', () => {
+  it('deve iniciar com todas as categorias e paginação numerada', () => {
     expect(component.selectedCategory()).toBe('Todos');
     expect(component.filteredProducts()).toHaveLength(52);
     expect(component.featuredProducts()).toHaveLength(2);
@@ -44,7 +44,7 @@ describe('ProductsComponent', () => {
     expect(component.visibleProducts().some((product) => firstPageIds.has(product.id))).toBe(false);
   });
 
-  it('should keep a partial final page and reject invalid page numbers', () => {
+  it('deve manter uma página final parcial e rejeitar números de página inválidos', () => {
     component.goToPage(5);
 
     expect(component.currentPage()).toBe(5);
@@ -56,7 +56,7 @@ describe('ProductsComponent', () => {
     }
   });
 
-  it('should reset to the first page when sorting changes', () => {
+  it('deve reiniciar para a primeira página quando a ordenação mudar', () => {
     component.goToPage(3);
     expect(component.currentPage()).toBe(3);
 
@@ -65,7 +65,7 @@ describe('ProductsComponent', () => {
     expect(component.currentPage()).toBe(1);
   });
 
-  it('should render one current page and disabled navigation limits', () => {
+  it('deve renderizar uma página atual e limites de navegação desativados', () => {
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
