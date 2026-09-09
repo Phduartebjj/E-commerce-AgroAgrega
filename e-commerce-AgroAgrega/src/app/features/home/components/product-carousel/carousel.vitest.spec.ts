@@ -7,7 +7,7 @@ import { Cart } from '@core/services/cart/cart.service';
 
 import { ProductCarousel } from './product-carousel';
 
-describe('ProductCarousel - caixa branca com Vitest', () => {
+describe('ProductCarousel - Vitest Padrão', () => {
   it('deve habilitar somente a seta esquerda no final do carrossel', () => {
     const cartMock = { addCartItem: vi.fn() };
 
