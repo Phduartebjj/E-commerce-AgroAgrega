@@ -255,38 +255,65 @@ describe('ProductDetails', () => {
   });
 });
 
+describe('ProductDetails com Vitest', () => {
+  it('deve aumentar e diminuir a quantidade', () => {
+    // Cria uma instância simples para testar somente a lógica da classe.
+    const component = Object.create(ProductDetails.prototype) as ProductDetails;
+    component.quantity = 1;
+
+    // Chama os métodos diretamente, sem renderizar HTML ou simular cliques.
+    component.increaseQuantity();
+    component.decreaseQuantity();
+    component.decreaseQuantity();
+
+    // O Vitest verifica o estado final da propriedade quantity.
+    expect(component.quantity).toBe(1);
+  });
+});
+
 describe('ProductDetails com Angular Testing Library', () => {
   const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
 
   it('deve aumentar a quantidade e adicionar o produto ao carrinho pela tela', async () => {
+    // Mock do serviço: permite verificar a chamada sem usar o carrinho real.
     const mockCartService = {
       addCartItem: vi.fn(),
     };
 
+    // Renderiza o componente com os providers necessários para a tela funcionar.
     await render(ProductDetails, {
       providers: [
         provideRouter([]),
         {
+          // Simula o ID do produto recebido pela rota.
           provide: ActivatedRoute,
           useValue: createActivatedRoute(productId),
         },
         {
+          // Substitui o serviço real pelo mock criado acima.
           provide: Cart,
           useValue: mockCartService,
         },
       ],
     });
 
+    // Cria um usuário simulado para executar ações como no navegador.
     const user = userEvent.setup();
 
+    // Acessa os botões pelo nome acessível e simula as ações do usuário.
     await user.click(screen.getByRole('button', { name: 'Aumentar quantidade' }));
     await user.click(screen.getByRole('button', { name: 'Adicionar ao carrinho' }));
 
+    // Confirma que a quantidade exibida foi alterada de 1 para 2.
     expect(screen.getByText('2', { selector: '.quantity-control span' })).toBeTruthy();
+
+    // Confirma que o produto e a quantidade correta foram enviados ao carrinho.
     expect(mockCartService.addCartItem).toHaveBeenCalledWith(
       expect.objectContaining({ id: productId }),
       2,
     );
+
+    // Confirma que a mensagem de sucesso foi exibida na interface.
     expect(screen.getByRole('status').textContent).toContain('Produto adicionado');
   });
 });
