@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 
 import { ProductCardComponent } from './product-card';
 import { ProductModel } from '../../../models/product';
@@ -31,5 +32,27 @@ describe('ProductCardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should emit the product when comparison is toggled', () => {
+    const emitSpy = vi.spyOn(component.toggleCompare, 'emit');
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+
+    host.querySelector<HTMLButtonElement>('.compare-toggle')?.click();
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith(component.product());
+  });
+
+  it('should expose the selected comparison state accessibly', () => {
+    fixture.componentRef.setInput('compareSelected', true);
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+
+    const compareButton = host.querySelector<HTMLButtonElement>('.compare-toggle');
+
+    expect(compareButton?.getAttribute('aria-pressed')).toBe('true');
+    expect(compareButton?.textContent).toContain('Selecionado');
   });
 });

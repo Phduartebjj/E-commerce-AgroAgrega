@@ -11,7 +11,9 @@ import { RouterLink } from '@angular/router';
 })
 export class ProductCardComponent {
   product = input.required<ProductModel>();
+  compareSelected = input(false);
   addToCart = output<ProductModel>();
+  toggleCompare = output<ProductModel>();
 
   adicionado = signal(false);
   imageUnavailable = signal(false);

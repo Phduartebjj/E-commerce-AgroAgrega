@@ -3,6 +3,21 @@
     <span class="product-card-tag">
       {{ (product().weeklySales ?? 0) >= 80 ? 'Mais vendido' : 'Pronta entrega' }}
     </span>
+    <button
+      class="compare-toggle"
+      type="button"
+      [class.active]="compareSelected()"
+      [attr.aria-pressed]="compareSelected()"
+      [attr.aria-label]="
+        compareSelected()
+          ? 'Remover ' + product().title + ' da comparação'
+          : 'Adicionar ' + product().title + ' à comparação'
+      "
+      (click)="toggleCompare.emit(product())"
+    >
+      <span aria-hidden="true">{{ compareSelected() ? '✓' : '+' }}</span>
+      {{ compareSelected() ? 'Selecionado' : 'Comparar' }}
+    </button>
   </div>
 
   <div class="product-card-visual">
