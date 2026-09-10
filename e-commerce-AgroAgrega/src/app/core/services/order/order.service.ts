@@ -116,8 +116,8 @@ export class OrderService {
       /\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i,
       '.webp',
     );
-    if (!img.startsWith('/') && !img.startsWith('http')) {
-      img = '/' + img;
+    if (!img.startsWith('http')) {
+      img = img.replace(/^\/+/, '');
     }
     return img;
   }

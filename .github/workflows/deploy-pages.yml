@@ -43,7 +43,7 @@ jobs:
 
       - name: Enable SPA routes
         working-directory: e-commerce-AgroAgrega
-        run: cp dist/e-commerce-AgroAgrega/browser/index.html dist/e-commerce-AgroAgrega/browser/404.html
+        run: cp dist/e-commerce-AgroAgrega/browser/index.csr.html dist/e-commerce-AgroAgrega/browser/404.html 2>/dev/null || cp dist/e-commerce-AgroAgrega/browser/index.html dist/e-commerce-AgroAgrega/browser/404.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

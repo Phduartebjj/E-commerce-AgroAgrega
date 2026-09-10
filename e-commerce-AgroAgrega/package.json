@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build && node scripts/prepare-sites-build.mjs",
-    "build:github": "ng build --configuration github-pages",
+    "build:github": "ng build --configuration github-pages && node scripts/prepare-github-pages.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:e-commerce-AgroAgrega": "node dist/e-commerce-AgroAgrega/server/server.mjs"

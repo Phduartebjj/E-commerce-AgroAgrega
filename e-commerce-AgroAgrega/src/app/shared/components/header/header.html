@@ -4,8 +4,8 @@
   </div>
   <div class="cabecalho-principal">
     <a class="logo-marca" routerLink="/" aria-label="Ir para a página inicial">
-      <img class="logo-icone" src="/assets/images/agroagrega-icon.webp" alt="AgroAgrega ícone" />
-      <img class="logo-nome" src="/assets/images/AgroAgrega-logo.svg" alt="AgroAgrega" />
+      <img class="logo-icone" src="assets/images/agroagrega-icon.webp" alt="AgroAgrega ícone" />
+      <img class="logo-nome" src="assets/images/AgroAgrega-logo.svg" alt="AgroAgrega" />
     </a>
     <div class="area-busca">
       <input
@@ -24,7 +24,7 @@
       <a class="conta-link" [routerLink]="loggedIn() ? '/account' : '/login'">
         @if (loggedIn()) {
           <span class="icone-perfil">
-            <img src="/assets/images/profile.webp" alt="Minha Conta" />
+            <img src="assets/images/profile.webp" alt="Minha Conta" />
           </span>
         }
         <span class="conta-texto">
@@ -36,7 +36,7 @@
       </a>
 
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
-        <img src="/assets/images/cart.webp" alt="Carrinho de Compras" />
+        <img src="assets/images/cart.webp" alt="Carrinho de Compras" />
         @if (totalItens() > 0) {
           <span class="contador-carrinho">
             {{ totalItens() }}
@@ -45,7 +45,7 @@
       </a>
 
       <a class="icone-pedidos" routerLink="/orders" aria-label="Pedidos">
-        <img src="/assets/images/pedidos.webp" alt="Meus pedidos" />
+        <img src="assets/images/pedidos.webp" alt="Meus pedidos" />
       
       </a>
 
@@ -55,7 +55,7 @@
     <div class="conteudo-do-menu">
       <a class="todas-categorias" routerLink="/products">
         <span class="icone-categorias">
-          <img src="/assets/images/todas-categorias.svg" alt="Todas categorias" />
+          <img src="assets/images/todas-categorias.svg" alt="Todas categorias" />
           Todas as Categorias
         </span>
       </a>

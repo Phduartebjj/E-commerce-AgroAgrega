@@ -50,8 +50,8 @@ export class Cart {
           ...item.product,
           images: item.product.images.map((image) => {
             let img = image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp');
-            if (!img.startsWith('/') && !img.startsWith('http')) {
-              img = '/' + img;
+            if (!img.startsWith('http')) {
+              img = img.replace(/^\/+/, '');
             }
             return img;
           }),
