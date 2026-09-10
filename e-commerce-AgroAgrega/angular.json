@@ -31,6 +31,7 @@
               }
             ],
             "styles": ["src/styles.css"],
+            "baseHref": "/",
             "server": "src/main.server.ts",
             "outputMode": "static",
             "security": {
@@ -62,7 +63,7 @@
               "sourceMap": true
             },
             "github-pages": {
-              "baseHref": "./",
+              "baseHref": "/E-commerce-AgroAgrega/",
               "outputMode": "static",
               "outputHashing": "all"
             }

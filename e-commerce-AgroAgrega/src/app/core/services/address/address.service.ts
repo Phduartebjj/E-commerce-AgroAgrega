@@ -13,12 +13,25 @@
     }
 
     getAddresses(userId: string): AddressModel[] {
-      const storage = localStorage.getItem(this.getStorageKey(userId));
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+        return [];
+      }
 
-      return storage ? (JSON.parse(storage) as AddressModel[]) : [];
+      try {
+        const storage = localStorage.getItem(this.getStorageKey(userId));
+        return storage ? (JSON.parse(storage) as AddressModel[]) : [];
+      } catch {
+        return [];
+      }
     }
 
     saveAddresses(userId: string, addresses: AddressModel[]): void {
-      localStorage.setItem(this.getStorageKey(userId), JSON.stringify(addresses));
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+        return;
+      }
+
+      try {
+        localStorage.setItem(this.getStorageKey(userId), JSON.stringify(addresses));
+      } catch {}
     }
   }

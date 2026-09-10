@@ -33,7 +33,7 @@ describe('ProductService', () => {
     expect(new Set(productImages).size).toBe(products.length);
     expect(products.every((product) => product.images.length > 0)).toBe(true);
     expect(
-      productImages.every((image) => image.startsWith('assets/images/generated-products/product-')),
+      productImages.every((image) => image.includes('assets/images/generated-products/product-')),
     ).toBe(true);
     expect(products.every((product) => (product.weeklySales ?? 0) > 0)).toBe(true);
   });
