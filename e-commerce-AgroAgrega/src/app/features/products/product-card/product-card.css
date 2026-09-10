@@ -54,6 +54,38 @@
   text-transform: uppercase;
 }
 
+.compare-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid rgba(21, 95, 57, 0.2);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #426052;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.65rem;
+  font-weight: 750;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.compare-toggle span {
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.compare-toggle:hover,
+.compare-toggle.active {
+  border-color: #17673b;
+  background: #e9f3ec;
+  color: #155f39;
+}
+
 .product-card-visual {
   grid-area: visual;
   min-width: 0;

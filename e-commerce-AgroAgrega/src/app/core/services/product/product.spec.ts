@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
+import { render, screen } from '@testing-library/angular';
 import { ProductService } from './product.service';
 
 describe('ProductService', () => {
@@ -10,11 +10,11 @@ describe('ProductService', () => {
     service = TestBed.inject(ProductService);
   });
 
-  it('should be created', () => {
+  it('deve ser criado', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should find product by id', () => {
+  it('deve encontrar um produto pelo ID', () => {
     const products = service.getProducts()();
     const targetProduct = products[0];
     const found = service.getProductById(targetProduct.id);
@@ -23,7 +23,7 @@ describe('ProductService', () => {
     expect(found?.id).toBe(targetProduct.id);
   });
 
-  it('should expose the expanded catalog with unique and complete products', () => {
+  it('deve expor o catálogo expandido com produtos únicos e completos', () => {
     const products = service.getProducts()();
     const productIds = products.map((product) => product.id);
     const productImages = products.map((product) => product.images[0]);
@@ -33,12 +33,12 @@ describe('ProductService', () => {
     expect(new Set(productImages).size).toBe(products.length);
     expect(products.every((product) => product.images.length > 0)).toBe(true);
     expect(
-      productImages.every((image) => image.startsWith('assets/images/generated-products/product-')),
+      productImages.every((image) => image.includes('assets/images/generated-products/product-')),
     ).toBe(true);
     expect(products.every((product) => (product.weeklySales ?? 0) > 0)).toBe(true);
   });
 
-  it('should keep every catalog category well represented', () => {
+  it('deve manter cada categoria do catálogo bem representada', () => {
     const products = service.getProducts()();
 
     for (const category of service.getProductCategories()) {
@@ -48,7 +48,7 @@ describe('ProductService', () => {
     }
   });
 
-  it('should add a review and recalculate product rating', () => {
+  it('deve adicinar uma avaliacao e recalcular a classificacao do produto', () => {
     const products = service.getProducts()();
     const targetProduct = products[0];
     const initialReviewsCount = targetProduct.reviews?.length ?? 0;

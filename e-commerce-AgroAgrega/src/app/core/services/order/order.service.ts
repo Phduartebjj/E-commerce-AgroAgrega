@@ -112,10 +112,14 @@ export class OrderService {
   }
 
   private normalizeImagePath(imagePath: string): string {
-    return imagePath.replace(
+    let img = imagePath.replace(
       /\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i,
       '.webp',
     );
+    if (!img.startsWith('/') && !img.startsWith('http')) {
+      img = '/' + img;
+    }
+    return img;
   }
 
   cancelOrder(orderId: string): void {

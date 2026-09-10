@@ -48,9 +48,13 @@ export class Cart {
         ...item,
         product: {
           ...item.product,
-          images: item.product.images.map((image) =>
-            image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp'),
-          ),
+          images: item.product.images.map((image) => {
+            let img = image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp');
+            if (!img.startsWith('/') && !img.startsWith('http')) {
+              img = '/' + img;
+            }
+            return img;
+          }),
         },
       }));
     } catch {
