@@ -462,10 +462,32 @@ pointer-events: none;
 }
 
 .menu-icon--livestock::before {
-  content: '♉';
-  font-family: Arial, sans-serif;
-  font-size: 20px;
-  line-height: 1;
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: 3px;
+  width: 10px;
+  height: 11px;
+  border: 1.7px solid currentColor;
+  border-radius: 45% 45% 52% 52%;
+  background:
+    radial-gradient(circle at 31% 43%, currentColor 0 1px, transparent 1.2px),
+    radial-gradient(circle at 69% 43%, currentColor 0 1px, transparent 1.2px),
+    var(--white);
+  content: '';
+}
+
+.menu-icon--livestock::after {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 16px;
+  height: 7px;
+  border-right: 1.7px solid currentColor;
+  border-bottom: 1.7px solid currentColor;
+  border-left: 1.7px solid currentColor;
+  border-radius: 0 0 50% 50%;
+  content: '';
 }
 
 .menu-icon--inputs::before {
