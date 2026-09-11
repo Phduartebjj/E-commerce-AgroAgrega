@@ -1,311 +1,524 @@
-<main class="product-details">
+<main class="product-page">
   @if (product) {
-
-    <nav class="breadcrumb">
-      <p>
-        <a routerLink="/">Home</a>
-        >
+    <div class="product-page__shell">
+      <nav class="breadcrumb" aria-label="Navegação estrutural">
+        <a routerLink="/">Início</a>
+        <span aria-hidden="true">›</span>
         <a routerLink="/products">Produtos</a>
-        >
-        <span class="destaque">{{ product.title }}</span>
-      </p>
-    </nav>
-
-    <section class="product-gallery">
-      <div class="main-image">
-        @if (product.images.length > 1) {
-          <button
-            type="button"
-            class="image-navigation previous"
-            (click)="previousImage()"
-            aria-label="Imagem anterior"
-          >
-            ‹
-          </button>
-        }
-
-        @if (selectedImage && !imageUnavailable) {
-          <img
-            [src]="selectedImage"
-            [alt]="product.title"
-            width="550"
-            height="550"
-            (error)="handleImageError()"
-          />
-        } @else {
-          <div class="image-fallback" role="img" [attr.aria-label]="'Imagem indisponível: ' + product.title">
-            <strong>AgroAgrega</strong>
-            <span>Imagem indisponível</span>
-          </div>
-        }
-
-        @if (product.images.length > 1) {
-          <button
-            type="button"
-            class="image-navigation next"
-            (click)="nextImage()"
-            aria-label="Próxima imagem"
-          >
-            ›
-          </button>
-        }
-      </div>
-
-      @if (product.images.length > 1) {
-        <div class="image-thumbnails">
-          @for (image of product.images; track image; let i = $index) {
-            <button
-              type="button"
-              class="thumbnail"
-              [class.selected]="selectedImageIndex === i"
-              (click)="selectImage(i)"
-              [attr.aria-label]="'Selecionar imagem ' + (i + 1)"
-            >
-              <img
-                [src]="image"
-                [alt]="product.title + ' - imagem ' + (i + 1)"
-                loading="lazy"
-                decoding="async"
-                width="96"
-                height="96"
-              />
-            </button>
-          }
-        </div>
-      }
-    </section>
-
-    <section class="product-info">
-      <a routerLink="/products" class="back-to-products"> ← Voltar para produtos </a>
-
-      <p class="product-id">ID do produto: {{ id }}</p>
-
-      <span class="product-category">
-        {{ product.category }}
-      </span>
-
-      <h1>{{ product.title }}</h1>
-
-      <div class="product-price-group">
-        @if (product.originalPrice) {
-          <span class="product-offer-badge">Oferta</span>
-          <s>{{ product.originalPrice | precoFormatado }}</s>
-        }
-        <p class="product-price">
-          {{ product.price | precoFormatado }}
-        </p>
-      </div>
-
-      <p class="product-description">
-        {{ product.description }}
-      </p>
-
-      <div class="product-quantity">
-        <span>Quantidade:</span>
-
-        <div class="quantity-control">
-          <button
-            type="button"
-            (click)="decreaseQuantity()"
-            [disabled]="quantity === 1"
-            aria-label="Diminuir quantidade"
-          >
-            -
-          </button>
-
-          <span>{{ quantity }}</span>
-
-          <button type="button" (click)="increaseQuantity()" aria-label="Aumentar quantidade">
-            +
-          </button>
-        </div>
-      </div>
-
-      <button type="button" class="add-to-cart" (click)="addToCart()">Adicionar ao carrinho</button>
-
-      <a routerLink="/cart" class="go-to-cart"> Ver carrinho → </a>
-    </section>
-
-    <section class="product-extra">
-      <nav class="product-tabs">
-        <button
-          type="button"
-          class="product-tab"
-          [class.active]="activeTab === 'details'"
-          (click)="selectTab('details')"
-        >
-          Detalhes
-        </button>
-
-        <button
-          type="button"
-          class="product-tab"
-          [class.active]="activeTab === 'reviews'"
-          (click)="selectTab('reviews')"
-        >
-          Avaliações
-        </button>
+        <span aria-hidden="true">›</span>
+        <a routerLink="/products" [queryParams]="{ category: product.category }">{{
+          product.category
+        }}</a>
+        <span aria-hidden="true">›</span>
+        <strong>{{ product.title }}</strong>
       </nav>
 
-      @if (activeTab === 'details') {
-        <section class="product-details-content">
-          <h2>Detalhes do produto</h2>
-
-          <p>
-            {{ product.description }}
-          </p>
-
-          <div class="product-details-grid">
-            <div class="detail-item">
-              <span>Categoria</span>
-              <strong>{{ product.category }}</strong>
-            </div>
-
-            <div class="detail-item">
-              <span>ID do produto</span>
-              <strong>{{ product.id }}</strong>
-            </div>
-          </div>
-        </section>
-      }
-
-      @if (activeTab === 'reviews') {
-        <section class="product-reviews">
-
-          <div class="reviews-header">
-            <div class="reviews-summary">
-              <h2>Avaliações</h2>
-
-              @if (reviews.length === 0) {
-                <div class="rating-score">
-                  <strong>—</strong>
-                  <span>Sem avaliações</span>
-                </div>
-              } @else {
-                <div class="rating-score">
-                  <strong>
-                    {{ reviewAverage.toFixed(1) }}
-                  </strong>
-
-                  <div class="rating-stars">
-                    @for (star of [1, 2, 3, 4, 5]; track star) {
-                      <span [class.filled]="star <= reviewAverage"> ★ </span>
-                    }
-                  </div>
-
-                  <span> {{ reviewCount }} avaliação(ões) </span>
-                </div>
+      <section class="product-hero" aria-labelledby="product-title">
+        <div class="gallery-panel">
+          <div class="gallery-layout">
+            <div class="image-thumbnails" aria-label="Imagens do produto">
+              @for (view of galleryViews; track view.label; let index = $index) {
+                <button
+                  type="button"
+                  class="thumbnail"
+                  [class.selected]="selectedImageIndex === index"
+                  (click)="selectImage(index)"
+                  [attr.aria-label]="view.label"
+                >
+                  <img [src]="view.src" [alt]="''" width="76" height="76" />
+                  <span>{{ view.label }}</span>
+                </button>
               }
             </div>
 
-            <div class="rating-bars">
-              @for (star of [5, 4, 3, 2, 1]; track star) {
-                <div class="rating-row">
-                  <span>{{ star }}</span>
-
-                  <div class="rating-bar">
-                    <div class="rating-fill" [style.width.%]="getRatingPercentage(star)"></div>
-                  </div>
-
-                  <span>
-                    {{ getRatingCount(star) }}
-                  </span>
-                </div>
+            <div class="main-image">
+              @if (galleryViews.length > 1) {
+                <button
+                  type="button"
+                  class="image-navigation previous"
+                  (click)="previousImage()"
+                  aria-label="Imagem anterior"
+                >
+                  ‹
+                </button>
               }
-            </div>
-          </div>
 
-          <div class="review-form">
-            <h3>Avalie este produto</h3>
-
-            <div class="rating-selector">
-              <span>Sua avaliação:</span>
-
-              <div class="selectable-stars">
-                @for (star of [1, 2, 3, 4, 5]; track star) {
+              @if (selectedGalleryView; as currentView) {
+                @if (!imageUnavailable) {
                   <button
                     type="button"
-                    [class.selected]="star <= selectedRating"
-                    (click)="selectRating(star)"
-                    [attr.aria-label]="star + ' estrelas'"
+                    class="gallery-visual"
+                    [class.gallery-visual--detail]="currentView.mode === 'detail'"
+                    [class.gallery-visual--context]="currentView.mode === 'context'"
+                    [class.gallery-visual--specification]="currentView.mode === 'specification'"
+                    (click)="openZoom()"
+                    [attr.aria-label]="'Ampliar ' + currentView.label.toLocaleLowerCase('pt-BR')"
                   >
-                    ★
+                    <img
+                      [src]="currentView.src"
+                      [alt]="product.title + ' — ' + currentView.label"
+                      width="620"
+                      height="620"
+                      (error)="handleImageError()"
+                    />
+
+                    @if (currentView.mode === 'context') {
+                      <span class="visual-card-copy">
+                        <small>Uso recomendado</small>
+                        <strong>{{ categoryProfile.application }}</strong>
+                      </span>
+                    }
+
+                    @if (currentView.mode === 'specification') {
+                      <span class="visual-specs">
+                        <span
+                          ><small>Marca</small><strong>{{ brandLabel }}</strong></span
+                        >
+                        <span
+                          ><small>Apresentação</small><strong>{{ productMeasure }}</strong></span
+                        >
+                        <span
+                          ><small>Categoria</small><strong>{{ product.category }}</strong></span
+                        >
+                      </span>
+                    }
+
+                    <span class="zoom-hint"><span aria-hidden="true">⌕</span> Ampliar imagem</span>
                   </button>
+                } @else {
+                  <div
+                    class="image-fallback"
+                    role="img"
+                    [attr.aria-label]="'Imagem indisponível: ' + product.title"
+                  >
+                    <strong>AgroAgrega</strong>
+                    <span>Imagem em atualização</span>
+                  </div>
                 }
-              </div>
+              }
+
+              @if (galleryViews.length > 1) {
+                <button
+                  type="button"
+                  class="image-navigation next"
+                  (click)="nextImage()"
+                  aria-label="Próxima imagem"
+                >
+                  ›
+                </button>
+              }
             </div>
+          </div>
+        </div>
 
-            <textarea
-              [(ngModel)]="reviewText"
-              maxlength="300"
-              rows="4"
-              placeholder="Escreva uma breve avaliação sobre este produto..."
-            ></textarea>
+        <aside class="purchase-panel">
+          <a routerLink="/products" class="back-to-products">← Voltar ao catálogo</a>
 
-            <div class="review-form-footer">
-              <span> {{ reviewText.length }}/300 </span>
+          <div class="product-meta">
+            <span>{{ product.category }}</span>
+            <span>ID do produto: {{ product.id }}</span>
+          </div>
 
+          <h1 id="product-title">{{ product.title }}</h1>
+
+          <div class="product-reputation">
+            <a
+              href="#reviews"
+              [attr.aria-label]="'Avaliação ' + product.rating.toFixed(1) + ' de 5'"
+            >
+              <strong>{{ product.rating.toFixed(1) }}</strong>
+              <span class="stars" aria-hidden="true">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <span [class.filled]="star - 0.5 <= product.rating">★</span>
+                }
+              </span>
+              <span>{{ reviewCount }} avaliações</span>
+            </a>
+            <span>{{ soldCount }} vendidos</span>
+          </div>
+
+          <div class="product-price-block">
+            @if (product.originalPrice) {
+              <div class="previous-price">
+                <s>{{ product.originalPrice | precoFormatado }}</s>
+                <span>Economize {{ discountPercent }}%</span>
+              </div>
+            }
+            <strong class="product-price">{{ product.price | precoFormatado }}</strong>
+            <span class="installments"
+              >em até 10x de {{ installmentValue | precoFormatado }} sem juros</span
+            >
+            <a routerLink="/coupons" class="coupon-callout">
+              <span aria-hidden="true">%</span>
+              Veja os cupons disponíveis
+            </a>
+          </div>
+
+          <section class="quick-facts" aria-labelledby="quick-facts-title">
+            <h2 id="quick-facts-title">O que você precisa saber</h2>
+            <ul>
+              @for (highlight of productHighlights.slice(0, 3); track highlight) {
+                <li>{{ highlight }}</li>
+              }
+            </ul>
+            <a href="#specifications">Ver características completas</a>
+          </section>
+
+          <div class="delivery-card">
+            <span class="delivery-icon" aria-hidden="true"></span>
+            <div>
+              <strong>Entrega para todo o Brasil</strong>
+              <span>Prazo e valor calculados no carrinho</span>
+            </div>
+          </div>
+
+          <div class="stock-line">
+            <strong>Estoque disponível</strong>
+            <span>{{ stockQuantity }} unidades para envio</span>
+          </div>
+
+          <div class="product-quantity">
+            <span>Quantidade</span>
+            <div class="quantity-control">
               <button
                 type="button"
-                class="submit-review"
-                (click)="submitReview()"
-                [disabled]="selectedRating === 0 || !reviewText.trim()"
+                (click)="decreaseQuantity()"
+                [disabled]="quantity === 1"
+                aria-label="Diminuir quantidade"
               >
-                Enviar avaliação
+                −
+              </button>
+              <span>{{ quantity }}</span>
+              <button type="button" (click)="increaseQuantity()" aria-label="Aumentar quantidade">
+                +
               </button>
             </div>
           </div>
 
-          @if (reviews.length > 0) {
-            <div class="reviews-list">
-              <h3>Avaliações dos clientes</h3>
+          <a routerLink="/cart" class="buy-now" (click)="addToCart()">Comprar agora</a>
+          <button type="button" class="add-to-cart" (click)="addToCart()">
+            Adicionar ao carrinho
+          </button>
 
-              @for (review of reviews; track $index) {
-                <article class="review-item">
-                  <div class="review-item-header">
-                    <div class="review-stars">
-                      @for (star of [1, 2, 3, 4, 5]; track star) {
-                        <span [class.filled]="star <= review.stars"> ★ </span>
-                      }
-                    </div>
-                  </div>
+          <div class="purchase-protection">
+            <span class="protection-icon" aria-hidden="true">✓</span>
+            <p>
+              <strong>Compra protegida</strong> Acompanhe seu pedido e conte com nosso atendimento.
+            </p>
+          </div>
 
-                  <p>
-                    {{ review.text }}
-                  </p>
+          <div class="seller-card">
+            <span class="seller-logo" aria-hidden="true">{{ brandLabel.charAt(0) }}</span>
+            <div>
+              <small>Vendido por</small>
+              <strong>{{ sellerName }}</strong>
+              <span>Parceiro verificado AgroAgrega</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="trust-strip" aria-label="Benefícios da compra">
+        <div>
+          <span aria-hidden="true">✓</span>
+          <p><strong>Compra segura</strong><small>Pagamento protegido</small></p>
+        </div>
+        <div>
+          <span aria-hidden="true">↗</span>
+          <p><strong>Rastreamento</strong><small>Acompanhe cada etapa</small></p>
+        </div>
+        <div>
+          <span aria-hidden="true">◎</span>
+          <p><strong>Suporte especializado</strong><small>Ajuda para sua compra</small></p>
+        </div>
+        <div>
+          <span aria-hidden="true">+</span>
+          <p><strong>Benefícios Agro+</strong><small>Vantagens para membros</small></p>
+        </div>
+      </section>
+
+      <div class="product-content">
+        <div class="product-content__main">
+          <section class="content-section product-overview" aria-labelledby="overview-title">
+            <span class="section-kicker">Resumo do produto</span>
+            <h2 id="overview-title">Informação para comprar com confiança</h2>
+            <div class="highlight-grid">
+              @for (highlight of productHighlights; track highlight; let index = $index) {
+                <article>
+                  <span>{{ index + 1 }}</span>
+                  <p>{{ highlight }}</p>
                 </article>
               }
             </div>
-          } @else {
-            <div class="reviews-empty">
-              <h3>Ainda não há avaliações</h3>
+          </section>
 
-              <p>Seja o primeiro a avaliar este produto.</p>
+          <section
+            class="content-section"
+            id="specifications"
+            aria-labelledby="specifications-title"
+          >
+            <span class="section-kicker">Ficha completa</span>
+            <h2 id="specifications-title">Características do produto</h2>
+            <div class="specification-table">
+              @for (
+                specification of productSpecifications;
+                track specification.label;
+                let index = $index
+              ) {
+                <div [class.specification-row--alternate]="index % 2 === 0">
+                  <span>{{ specification.label }}</span>
+                  <strong>{{ specification.value }}</strong>
+                </div>
+              }
             </div>
+          </section>
+
+          <section class="content-section description-section" aria-labelledby="description-title">
+            <span class="section-kicker">Conheça melhor</span>
+            <h2 id="description-title">Descrição completa</h2>
+            @for (paragraph of productDescriptionParagraphs; track paragraph) {
+              <p>{{ paragraph }}</p>
+            }
+            <aside>
+              <strong>Orientação importante</strong>
+              <p>{{ categoryProfile.care }} {{ categoryProfile.support }}</p>
+            </aside>
+          </section>
+
+          <section class="content-section questions-section" aria-labelledby="questions-title">
+            <span class="section-kicker">Tire suas dúvidas</span>
+            <h2 id="questions-title">Perguntas sobre o produto</h2>
+            <div class="question-form">
+              <input
+                type="text"
+                [(ngModel)]="questionText"
+                maxlength="180"
+                placeholder="Digite sua pergunta..."
+                aria-label="Pergunta sobre o produto"
+                (keydown.enter)="submitQuestion()"
+              />
+              <button type="button" (click)="submitQuestion()" [disabled]="!questionText.trim()">
+                Perguntar
+              </button>
+            </div>
+            @if (questionFeedback) {
+              <p class="question-feedback" role="status">✓ {{ questionFeedback }}</p>
+            }
+            <div class="question-list">
+              @for (item of questions; track item.question) {
+                <article>
+                  <h3><span>P</span>{{ item.question }}</h3>
+                  <p><span>R</span>{{ item.answer }}</p>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section
+            class="content-section reviews-section"
+            id="reviews"
+            aria-labelledby="reviews-title"
+          >
+            <span class="section-kicker">Experiência de compra</span>
+            <h2 id="reviews-title">Avaliações do produto</h2>
+
+            <div class="reviews-dashboard">
+              <div class="rating-score">
+                <strong>{{ reviewAverage.toFixed(1) }}</strong>
+                <div class="rating-stars" aria-hidden="true">
+                  @for (star of [1, 2, 3, 4, 5]; track star) {
+                    <span [class.filled]="star - 0.5 <= reviewAverage">★</span>
+                  }
+                </div>
+                <span>{{ reviewCount }} avaliações</span>
+              </div>
+
+              <div class="rating-bars">
+                @for (star of [5, 4, 3, 2, 1]; track star) {
+                  <div class="rating-row">
+                    <span>{{ star }} ★</span>
+                    <div class="rating-bar">
+                      <span [style.width.%]="getRatingPercentage(star)"></span>
+                    </div>
+                    <small>{{ getRatingCount(star) }}</small>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="review-form">
+              <h3>Avalie este produto</h3>
+              <div class="rating-selector">
+                <span>Sua nota</span>
+                <div class="selectable-stars">
+                  @for (star of [1, 2, 3, 4, 5]; track star) {
+                    <button
+                      type="button"
+                      [class.selected]="star <= selectedRating"
+                      (click)="selectRating(star)"
+                      [attr.aria-label]="star + ' estrelas'"
+                    >
+                      ★
+                    </button>
+                  }
+                </div>
+              </div>
+              <textarea
+                [(ngModel)]="reviewText"
+                maxlength="300"
+                rows="4"
+                placeholder="Conte como foi sua experiência com o produto..."
+              ></textarea>
+              <div class="review-form-footer">
+                <span>{{ reviewText.length }}/300</span>
+                <button
+                  type="button"
+                  (click)="submitReview()"
+                  [disabled]="selectedRating === 0 || !reviewText.trim()"
+                >
+                  Enviar avaliação
+                </button>
+              </div>
+            </div>
+
+            <div class="reviews-list">
+              @for (review of reviews; track $index) {
+                <article class="review-item">
+                  <div class="review-item__header">
+                    <div>
+                      <strong>{{ review.author }}</strong>
+                      @if (review.verified) {
+                        <span>Compra verificada</span>
+                      }
+                    </div>
+                    <small>{{ review.createdAt }}</small>
+                  </div>
+                  <div class="review-stars" aria-label="Avaliação de {{ review.stars }} estrelas">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <span [class.filled]="star <= review.stars">★</span>
+                    }
+                  </div>
+                  <p>{{ review.text }}</p>
+                </article>
+              }
+            </div>
+          </section>
+        </div>
+
+        <aside class="product-content__aside">
+          <div class="aside-card">
+            <span class="seller-logo" aria-hidden="true">{{ brandLabel.charAt(0) }}</span>
+            <h2>{{ brandLabel }}</h2>
+            <p>Produtos selecionados para o campo com atendimento AgroAgrega.</p>
+            <a routerLink="/products" [queryParams]="{ search: brandLabel }"
+              >Ver produtos da marca</a
+            >
+          </div>
+          <div class="aside-card aside-card--green">
+            <span>Agro+</span>
+            <h2>Mais vantagens para sua produção</h2>
+            <p>Ative benefícios exclusivos e aproveite condições especiais.</p>
+            <a routerLink="/agro-plus">Conhecer o Agro+</a>
+          </div>
+        </aside>
+      </div>
+
+      <section class="related-section" aria-labelledby="related-title">
+        <div class="related-heading">
+          <div>
+            <span class="section-kicker">Continue explorando</span>
+            <h2 id="related-title">Quem viu este produto também comprou</h2>
+          </div>
+          <a routerLink="/products" [queryParams]="{ category: product.category }">Ver todos</a>
+        </div>
+        <div class="related-grid">
+          @for (related of relatedProducts; track related.id) {
+            <article class="related-card">
+              <a [routerLink]="['/products', related.id]" class="related-card__image">
+                <img
+                  [src]="related.images[0]"
+                  [alt]="related.title"
+                  loading="lazy"
+                  width="280"
+                  height="220"
+                />
+              </a>
+              <div>
+                <span>{{ related.rating.toFixed(1) }} ★</span>
+                <a [routerLink]="['/products', related.id]"
+                  ><h3>{{ related.title }}</h3></a
+                >
+                <strong>{{ related.price | precoFormatado }}</strong>
+                <button
+                  type="button"
+                  (click)="addRelatedProduct(related)"
+                  [attr.aria-label]="'Adicionar ' + related.title + ' ao carrinho'"
+                >
+                  Adicionar
+                </button>
+              </div>
+            </article>
           }
-        </section>
-      }
-    </section>
-  } @else {
-
-    <div class="error-container">
-      <h2>Produto não encontrado</h2>
-
-      <p>O produto com ID {{ id }} não existe.</p>
-
-      <a routerLink="/products"> Voltar para produtos </a>
+        </div>
+      </section>
     </div>
+
+    @if (zoomOpen && selectedGalleryView; as zoomView) {
+      <div
+        class="zoom-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Imagem ampliada do produto"
+        (click)="closeZoom()"
+      >
+        <button
+          type="button"
+          class="zoom-close"
+          (click)="closeZoom()"
+          aria-label="Fechar imagem ampliada"
+        >
+          ×
+        </button>
+        <button
+          type="button"
+          class="zoom-previous"
+          (click)="$event.stopPropagation(); previousImage()"
+          aria-label="Imagem anterior"
+        >
+          ‹
+        </button>
+        <figure (click)="$event.stopPropagation()">
+          <img [src]="zoomView.src" [alt]="product.title + ' ampliado'" />
+          <figcaption>{{ zoomView.label }}</figcaption>
+        </figure>
+        <button
+          type="button"
+          class="zoom-next"
+          (click)="$event.stopPropagation(); nextImage()"
+          aria-label="Próxima imagem"
+        >
+          ›
+        </button>
+      </div>
+    }
+  } @else {
+    <section class="error-container">
+      <span aria-hidden="true">?</span>
+      <h1>Produto não encontrado</h1>
+      <p>O produto com ID {{ id }} não existe ou não está mais disponível.</p>
+      <a routerLink="/products">Voltar para produtos</a>
+    </section>
   }
 
-  <div class="cart-notifications">
+  <div class="cart-notifications" aria-live="polite">
     @for (notification of cartNotifications; track notification) {
-      <div class="cart-notification" role="status" aria-live="polite">
+      <div class="cart-notification" role="status">
         <span class="cart-notification-icon">✓</span>
-
         <div>
           <strong>Produto adicionado</strong>
-          <p>Produto adicionado ao carrinho com sucesso.</p>
+          <p>O item já está no seu carrinho.</p>
         </div>
+        <a routerLink="/cart">Ver carrinho</a>
       </div>
     }
   </div>

@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 import { ProductDetails } from './product-details';
 import { Cart } from '../../core/services/cart/cart.service';
+import { ProductService } from '../../core/services/product/product.service';
 
 function createActivatedRoute(id: string) {
   return {
@@ -98,6 +99,43 @@ describe('ProductDetails', () => {
     expect(component.product).toBeTruthy();
     expect(component.product?.id).toBe(productId);
     expect(component.product?.title).toBe('Kit Estação Meteorológica Inteligente AgroSense Pro');
+  });
+
+  it('deve oferecer quatro visualizações enriquecidas quando há uma imagem do produto', () => {
+    expect(component.product?.images).toHaveLength(1);
+    expect(component.galleryViews).toHaveLength(4);
+    expect(component.galleryViews.map((view) => view.mode)).toEqual([
+      'main',
+      'detail',
+      'context',
+      'specification',
+    ]);
+  });
+
+  it('deve gerar galeria e informações completas para todos os produtos do catálogo', () => {
+    const products = TestBed.inject(ProductService).getProducts()();
+
+    expect(products).toHaveLength(52);
+
+    for (const product of products) {
+      component.product = product;
+
+      expect(component.galleryViews.length).toBeGreaterThanOrEqual(4);
+      expect(component.productSpecifications).toHaveLength(8);
+      expect(component.productHighlights).toHaveLength(4);
+      expect(component.productDescriptionParagraphs).toHaveLength(3);
+      expect(component.relatedProducts.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('deve registrar uma pergunta do cliente na página do produto', () => {
+    component.questionText = 'Este produto pode ser usado diariamente?';
+
+    component.submitQuestion();
+
+    expect(component.questions[0].question).toBe('Este produto pode ser usado diariamente?');
+    expect(component.questionFeedback).toContain('sucesso');
+    expect(component.questionText).toBe('');
   });
   it('deve mover para a próxima imagem', () => {
     component.product = {
