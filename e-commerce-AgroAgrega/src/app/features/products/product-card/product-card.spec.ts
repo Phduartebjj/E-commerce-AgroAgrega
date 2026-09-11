@@ -55,4 +55,17 @@ describe('ProductCardComponent', () => {
     expect(compareButton?.getAttribute('aria-pressed')).toBe('true');
     expect(compareButton?.textContent).toContain('Selecionado');
   });
+
+  it('should highlight a promotional product and show its previous price', () => {
+    fixture.componentRef.setInput('product', {
+      ...component.product(),
+      price: 80,
+      originalPrice: 100,
+    });
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+
+    expect(host.querySelector('.product-card-tag')?.textContent).toContain('Oferta −20%');
+    expect(host.querySelector('.product-card-amount s')?.textContent).toContain('R$ 100.00');
+  });
 });

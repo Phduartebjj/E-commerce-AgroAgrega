@@ -25,7 +25,6 @@
   line-height: 1.4;
   text-align: center;
 }
-
 .cabecalho-principal {
   width: min(calc(100% - 32px), 1240px);
   min-height: clamp(88px, 9vw, 124px);
@@ -376,17 +375,23 @@ pointer-events: none;
 }
 
 .conteudo-do-menu {
-  width: min(calc(100% - 32px), 1240px);
-  min-height: 42px;
+  width: max-content;
+  min-width: min(calc(100% - 32px), 1240px);
+  min-height: 48px;
   margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
 
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 32px;
+  gap: clamp(18px, 2vw, 28px);
 }
 
-.conteudo-do-menu a {
+.conteudo-do-menu .menu-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: var(--green-dark);
   text-decoration: none;
   font-size: 0.8rem;
@@ -400,22 +405,124 @@ pointer-events: none;
   opacity: 0.5;
 }
 
-.todas-categorias {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.conteudo-do-menu .menu-link--feature {
+  font-weight: 750;
 }
 
-.icone-categorias {
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.conteudo-do-menu .menu-link--offers {
+  color: #b84908;
+  font-weight: 800;
 }
 
-.icone-categorias img {
-  width: 15px;
+.menu-icon {
+  position: relative;
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  place-items: center;
+  color: currentColor;
+}
+
+.menu-icon--all img {
+  width: 16px;
+  height: 16px;
+}
+
+.menu-icon--precision {
+  border: 1.7px solid currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 4px var(--white), inset 0 0 0 5.5px currentColor;
+}
+
+.menu-icon--precision::before,
+.menu-icon--precision::after {
+  position: absolute;
+  content: '';
+  background: currentColor;
+}
+
+.menu-icon--precision::before {
+  width: 22px;
+  height: 1.5px;
+}
+
+.menu-icon--precision::after {
+  width: 1.5px;
+  height: 22px;
+}
+
+.menu-icon--irrigation::before {
+  width: 10px;
+  height: 14px;
+  border: 1.8px solid currentColor;
+  border-radius: 60% 45% 60% 45%;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.menu-icon--livestock::before {
+  content: '♉';
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.menu-icon--inputs::before {
+  width: 12px;
   height: 15px;
+  border: 1.7px solid currentColor;
+  border-radius: 12px 2px 12px 2px;
+  content: '';
+  transform: rotate(-38deg);
+}
+
+.menu-icon--inputs::after {
+  position: absolute;
+  width: 1.5px;
+  height: 15px;
+  background: currentColor;
+  content: '';
+  transform: rotate(38deg);
+}
+
+.menu-icon--tools::before {
+  content: '⚒';
+  font-family: 'Segoe UI Symbol', sans-serif;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.menu-icon--coupon {
+  width: 19px;
+  height: 14px;
+  border: 1.6px dashed currentColor;
+  border-radius: 3px;
+}
+
+.menu-icon--coupon::after,
+.menu-icon--offers::after {
+  content: '%';
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.menu-icon--agro-plus {
+  width: 19px;
+  height: 18px;
+  border: 1.6px solid currentColor;
+  border-radius: 6px;
+}
+
+.menu-icon--agro-plus::after {
+  content: 'A+';
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.menu-icon--offers {
+  border: 1.7px solid currentColor;
+  border-radius: 50%;
 }
 
 @media (max-width: 768px) {
@@ -500,4 +607,3 @@ pointer-events: none;
     display: none;
   }
 }
- 

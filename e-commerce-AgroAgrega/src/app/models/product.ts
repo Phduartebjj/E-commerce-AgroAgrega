@@ -10,6 +10,7 @@ export interface ProductModel {
   id: string;
   title: string;
   price: number;
+  originalPrice?: number;
   description: string;
   category: ProductCategory;
   images: string[];

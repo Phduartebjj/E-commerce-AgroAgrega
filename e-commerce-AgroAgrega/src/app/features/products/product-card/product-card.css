@@ -210,7 +210,17 @@
 }
 
 .product-card-amount {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 9px;
   color: #101a15;
+}
+
+.product-card-amount s {
+  color: #87948d;
+  font-size: 0.72rem;
+  font-weight: 650;
 }
 
 .product-card-amount strong {

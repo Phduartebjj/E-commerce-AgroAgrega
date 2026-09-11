@@ -132,8 +132,32 @@
 .product-price {
   font-size: 1.8rem;
   font-weight: bold;
-  margin: 0 0 1.5rem;
+  margin: 0;
   color: #1b1b1b;
+}
+
+.product-price-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 1.5rem;
+}
+
+.product-price-group s {
+  color: #768079;
+  font-size: 1rem;
+}
+
+.product-offer-badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #fff1e8;
+  color: #b84908;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .product-description {

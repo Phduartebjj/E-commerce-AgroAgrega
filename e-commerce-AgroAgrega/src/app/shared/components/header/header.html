@@ -53,19 +53,44 @@
   </div>
   <nav class="navegar-categorias" aria-label="Categorias de produtos" [class.navegar-categorias-fixa]="navegacaoFixa()">
     <div class="conteudo-do-menu">
-      <a class="todas-categorias" routerLink="/products">
-        <span class="icone-categorias">
-          <img src="/assets/images/todas-categorias.svg" alt="Todas categorias" />
-          Todas as Categorias
+      <a class="menu-link" routerLink="/products">
+        <span class="menu-icon menu-icon--all" aria-hidden="true">
+          <img src="/assets/images/todas-categorias.svg" alt="" />
         </span>
+        <span>Todas as Categorias</span>
       </a>
-      <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
-        >Agricultura de Precisão</a
-      >
-      <a routerLink="/products" [queryParams]="{ category: 'Irrigação' }">Irrigação</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Pecuária' }">Pecuária</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Insumos' }">Insumos</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">Ferramentas</a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }">
+        <span class="menu-icon menu-icon--precision" aria-hidden="true"></span>
+        <span>Agricultura de Precisão</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Irrigação' }">
+        <span class="menu-icon menu-icon--irrigation" aria-hidden="true"></span>
+        <span>Irrigação</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Pecuária' }">
+        <span class="menu-icon menu-icon--livestock" aria-hidden="true"></span>
+        <span>Pecuária</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Insumos' }">
+        <span class="menu-icon menu-icon--inputs" aria-hidden="true"></span>
+        <span>Insumos</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">
+        <span class="menu-icon menu-icon--tools" aria-hidden="true"></span>
+        <span>Ferramentas</span>
+      </a>
+      <a class="menu-link menu-link--feature" routerLink="/coupons">
+        <span class="menu-icon menu-icon--coupon" aria-hidden="true"></span>
+        <span>Cupons</span>
+      </a>
+      <a class="menu-link menu-link--feature" routerLink="/agro-plus">
+        <span class="menu-icon menu-icon--agro-plus" aria-hidden="true"></span>
+        <span>Agro+</span>
+      </a>
+      <a class="menu-link menu-link--offers" routerLink="/products" [queryParams]="{ offers: 'true' }">
+        <span class="menu-icon menu-icon--offers" aria-hidden="true"></span>
+        <span>Ofertas</span>
+      </a>
     </div>
   </nav>
 </header>

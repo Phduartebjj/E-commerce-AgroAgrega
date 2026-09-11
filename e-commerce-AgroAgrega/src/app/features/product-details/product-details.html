@@ -86,9 +86,15 @@
 
       <h1>{{ product.title }}</h1>
 
-      <p class="product-price">
-        {{ product.price | precoFormatado }}
-      </p>
+      <div class="product-price-group">
+        @if (product.originalPrice) {
+          <span class="product-offer-badge">Oferta</span>
+          <s>{{ product.originalPrice | precoFormatado }}</s>
+        }
+        <p class="product-price">
+          {{ product.price | precoFormatado }}
+        </p>
+      </div>
 
       <p class="product-description">
         {{ product.description }}

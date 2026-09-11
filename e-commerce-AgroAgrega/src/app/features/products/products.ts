@@ -11,7 +11,7 @@ import { ProductComparisonComponent } from './product-comparison/product-compari
 
 type CategoryFilter = ProductCategory | 'Todos';
 type CatalogSortOrder = 'mais_vendidos' | 'melhor_avaliados' | 'menor_preco' | 'maior_preco';
-type CatalogFilterType = 'category' | 'search' | 'brand' | 'rating' | 'price';
+type CatalogFilterType = 'category' | 'search' | 'brand' | 'rating' | 'price' | 'offers';
 
 interface CatalogFilterChip {
   key: string;
@@ -65,6 +65,7 @@ export class ProductsComponent {
   });
 
   readonly searchTerm = computed(() => (this.queryParams().get('search') ?? '').trim());
+  readonly offersOnly = computed(() => this.queryParams().get('offers') === 'true');
   readonly viewMode = signal<'grid' | 'list'>('grid');
   readonly filtersOpen = signal(false);
   readonly selectedBrands = signal<BrandOption[]>([]);
@@ -96,6 +97,7 @@ export class ProductsComponent {
 
     if (this.selectedCategory() !== 'Todos') count += 1;
     if (this.searchTerm()) count += 1;
+    if (this.offersOnly()) count += 1;
     if (this.minRating() > 0) count += 1;
     if (this.maxPriceFilter() < this.maxCatalogPrice()) count += 1;
 
@@ -113,6 +115,10 @@ export class ProductsComponent {
 
     if (search) {
       chips.push({ key: 'search', label: `Busca: “${search}”`, type: 'search' });
+    }
+
+    if (this.offersOnly()) {
+      chips.push({ key: 'offers', label: 'Ofertas', type: 'offers' });
     }
 
     for (const brand of this.selectedBrands()) {
@@ -172,6 +178,12 @@ export class ProductsComponent {
 
         return searchableText.includes(search);
       });
+    }
+
+    if (this.offersOnly()) {
+      filtered = filtered.filter(
+        (product) => product.originalPrice !== undefined && product.originalPrice > product.price,
+      );
     }
 
     filtered = filtered.filter((product) => product.price <= maxPrice);
@@ -289,7 +301,7 @@ export class ProductsComponent {
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { category: null, search: null },
+      queryParams: { category: null, search: null, offers: null },
       queryParamsHandling: 'merge',
     });
   }
@@ -313,6 +325,13 @@ export class ProductsComponent {
       case 'price':
         this.maxPriceFilter.set(this.maxCatalogPrice());
         break;
+      case 'offers':
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { offers: null },
+          queryParamsHandling: 'merge',
+        });
+        return;
     }
 
     this.resetPagination();

@@ -1,0 +1,145 @@
+<main class="benefits-page">
+  @if (mode === 'coupons') {
+    <section class="benefits-hero benefits-hero--coupons" aria-labelledby="coupons-title">
+      <div class="benefits-hero__content">
+        <span class="eyebrow">Economize na sua compra</span>
+        <h1 id="coupons-title">Cupons AgroAgrega</h1>
+        <p>Escolha um benefício, aplique com um clique e confira o desconto no carrinho.</p>
+      </div>
+      <div class="hero-symbol hero-symbol--ticket" aria-hidden="true"><span>%</span></div>
+    </section>
+
+    <section class="content-section" aria-labelledby="available-coupons-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Benefícios disponíveis</span>
+          <h2 id="available-coupons-title">Cupons para aproveitar agora</h2>
+        </div>
+        <a class="text-link" routerLink="/products">Explorar produtos <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="coupon-grid">
+        @for (coupon of coupons; track coupon.code) {
+          <article class="coupon-card" [class.coupon-card--member]="isAgroPlusCoupon(coupon)">
+            <div class="coupon-card__discount">
+              <strong>{{ coupon.discountPercentage }}%</strong>
+              <span>de desconto</span>
+            </div>
+            <div class="coupon-card__body">
+              <span class="coupon-card__label">{{ couponTitle(coupon) }}</span>
+              <h3>{{ coupon.code }}</h3>
+              <p>{{ couponDescription(coupon) }}</p>
+              <button
+                type="button"
+                class="primary-action"
+                [class.primary-action--applied]="isCouponApplied(coupon)"
+                (click)="applyCoupon(coupon)"
+              >
+                @if (isCouponApplied(coupon)) {
+                  Aplicado ao carrinho
+                } @else if (isAgroPlusCoupon(coupon) && !agroPlusActive()) {
+                  Conhecer o Agro+
+                } @else {
+                  Aplicar cupom
+                }
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+
+      @if (feedbackMessage()) {
+        <div class="feedback" role="status">
+          <span aria-hidden="true">✓</span>
+          <p>{{ feedbackMessage() }}</p>
+          <a routerLink="/cart">Ver carrinho</a>
+        </div>
+      }
+    </section>
+
+    <section class="how-it-works" aria-labelledby="how-coupons-work">
+      <div>
+        <span class="step-number">1</span>
+        <h3>Escolha</h3>
+        <p>Confira o benefício ideal para a sua compra.</p>
+      </div>
+      <div>
+        <span class="step-number">2</span>
+        <h3>Aplique</h3>
+        <p>Ative o cupom aqui com apenas um clique.</p>
+      </div>
+      <div>
+        <span class="step-number">3</span>
+        <h3>Economize</h3>
+        <p>O desconto entra automaticamente no carrinho.</p>
+      </div>
+      <h2 id="how-coupons-work">Como usar seus cupons</h2>
+    </section>
+  } @else {
+    <section class="benefits-hero benefits-hero--plus" aria-labelledby="agro-plus-title">
+      <div class="benefits-hero__content">
+        <span class="eyebrow">Clube de vantagens</span>
+        <h1 id="agro-plus-title">Agro<span>+</span></h1>
+        <p>Mais economia e benefícios para quem movimenta o campo todos os dias.</p>
+        @if (!agroPlusActive()) {
+          <button type="button" class="hero-action" (click)="activateAgroPlus()">
+            {{ auth.isLoggedIn() ? 'Ativar Agro+ grátis' : 'Entrar para ativar' }}
+          </button>
+        } @else {
+          <span class="membership-status"><span aria-hidden="true">✓</span> Sua conta é Agro+</span>
+        }
+      </div>
+      <div class="hero-symbol hero-symbol--plus" aria-hidden="true">A+</div>
+    </section>
+
+    <section class="content-section" aria-labelledby="agro-benefits-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Feito para você</span>
+          <h2 id="agro-benefits-title">Vantagens que ajudam a produzir mais</h2>
+        </div>
+      </div>
+
+      <div class="advantage-grid">
+        <article>
+          <span class="advantage-icon" aria-hidden="true">%</span>
+          <h3>Descontos exclusivos</h3>
+          <p>Use o cupom AGRO20 e economize 20% em produtos participantes.</p>
+        </article>
+        <article>
+          <span class="advantage-icon advantage-icon--leaf" aria-hidden="true"></span>
+          <h3>Seleção para o campo</h3>
+          <p>Encontre recomendações e ofertas alinhadas à rotina da sua produção.</p>
+        </article>
+        <article>
+          <span class="advantage-icon" aria-hidden="true">★</span>
+          <h3>Novidades primeiro</h3>
+          <p>Tenha acesso prioritário a campanhas e lançamentos AgroAgrega.</p>
+        </article>
+      </div>
+
+      @if (agroPlusActive()) {
+        <article class="member-coupon">
+          <div>
+            <span>Seu benefício exclusivo</span>
+            <strong>AGRO20</strong>
+            <p>20% de desconto em produtos participantes.</p>
+          </div>
+          <button type="button" class="primary-action" (click)="applyAgroPlusCoupon()">
+            {{ isCouponApplied(agroPlusCoupon) ? 'Aplicado ao carrinho' : 'Aplicar AGRO20' }}
+          </button>
+        </article>
+      }
+
+      @if (feedbackMessage()) {
+        <div class="feedback" role="status">
+          <span aria-hidden="true">✓</span>
+          <p>{{ feedbackMessage() }}</p>
+          @if (isCouponApplied(agroPlusCoupon)) {
+            <a routerLink="/cart">Ver carrinho</a>
+          }
+        </div>
+      }
+    </section>
+  }
+</main>

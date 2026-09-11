@@ -21,4 +21,17 @@ describe('Header', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render icons for every catalog shortcut', () => {
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    const links = host.querySelectorAll('.conteudo-do-menu .menu-link');
+    const icons = host.querySelectorAll('.conteudo-do-menu .menu-icon');
+
+    expect(links).toHaveLength(9);
+    expect(icons).toHaveLength(9);
+    expect(host.textContent).toContain('Cupons');
+    expect(host.textContent).toContain('Agro+');
+    expect(host.textContent).toContain('Ofertas');
+  });
 });

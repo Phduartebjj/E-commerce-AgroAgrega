@@ -31,6 +31,12 @@ export class ProductCardComponent {
     this.imageUnavailable.set(true);
   }
 
+  getDiscountPercent(product: ProductModel): number {
+    if (!product.originalPrice || product.originalPrice <= product.price) return 0;
+
+    return Math.round((1 - product.price / product.originalPrice) * 100);
+  }
+
   getStars(rating: number): boolean[] {
     const roundedRating = Math.round(rating);
 
