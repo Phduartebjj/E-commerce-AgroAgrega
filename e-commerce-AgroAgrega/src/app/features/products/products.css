@@ -239,6 +239,10 @@
   scroll-margin-top: 72px;
 }
 
+.catalog-shell.has-comparison {
+  padding-bottom: 132px;
+}
+
 .featured-products {
   margin-bottom: 26px;
 }
@@ -916,6 +920,10 @@ a:focus-visible {
   .catalog-shell {
     padding: 15px;
     border-radius: 18px;
+  }
+
+  .catalog-shell.has-comparison {
+    padding-bottom: 180px;
   }
 
   .section-heading {

@@ -125,4 +125,15 @@ describe('ProductsComponent', () => {
     expect(component.comparedProducts()).toEqual([]);
     expect(component.comparisonOpen()).toBe(false);
   });
+
+  it('should render the floating comparison tray while products are selected', () => {
+    component.toggleProductComparison(component.products()[0]);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+
+    expect(host.querySelector('.catalog-shell')?.classList).toContain('has-comparison');
+    expect(host.querySelector('.comparison-tray')).not.toBeNull();
+    expect(host.textContent).toContain('1 de 3 selecionados');
+  });
 });

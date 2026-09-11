@@ -149,6 +149,7 @@
 
       <section
         class="catalog-shell"
+        [class.has-comparison]="comparedProducts().length > 0"
         id="catalog-results"
         tabindex="-1"
         aria-label="Resultados do catálogo"
