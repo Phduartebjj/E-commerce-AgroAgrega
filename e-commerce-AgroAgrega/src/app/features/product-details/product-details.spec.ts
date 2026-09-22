@@ -257,11 +257,11 @@ describe('ProductDetails', () => {
 
 describe('ProductDetails com Vitest', () => {
   it('deve aumentar e diminuir a quantidade', () => {
-    // Cria uma instância simples para testar somente a lógica da classe.
-    const component = Object.create(ProductDetails.prototype) as ProductDetails;
+    // Cria uma instância simples para testar a lógica da classe.
+    const component = Object.create(ProductDetails.prototype) as ProductDetails; // Cria um novo objeto JavaScript puro, e define o protótipo desse novo objeto como o protótipo da classe ProductDetails
     component.quantity = 1;
 
-    // Chama os métodos diretamente, sem renderizar HTML ou simular cliques.
+    // Chama os métodos diretamente
     component.increaseQuantity();
     component.decreaseQuantity();
     component.decreaseQuantity();
@@ -302,18 +302,20 @@ describe('ProductDetails com Angular Testing Library', () => {
 
     // Acessa os botões pelo nome acessível e simula as ações do usuário.
     await user.click(screen.getByRole('button', { name: 'Aumentar quantidade' }));
-    await user.click(screen.getByRole('button', { name: 'Adicionar ao carrinho' }));
 
     // Confirma que a quantidade exibida foi alterada de 1 para 2.
     expect(screen.getByText('2', { selector: '.quantity-control span' })).toBeTruthy();
+
+    // Clica no botão "Adicionar ao carrinho".
+    await user.click(screen.getByRole('button', { name: 'Adicionar ao carrinho' }));
+
+    // Confirma que a mensagem de sucesso foi exibida na interface.
+    expect(screen.getByRole('status').textContent).toContain('Produto adicionado');
 
     // Confirma que o produto e a quantidade correta foram enviados ao carrinho.
     expect(mockCartService.addCartItem).toHaveBeenCalledWith(
       expect.objectContaining({ id: productId }),
       2,
     );
-
-    // Confirma que a mensagem de sucesso foi exibida na interface.
-    expect(screen.getByRole('status').textContent).toContain('Produto adicionado');
   });
 });
