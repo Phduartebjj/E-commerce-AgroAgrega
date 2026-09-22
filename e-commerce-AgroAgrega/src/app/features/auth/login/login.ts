@@ -1,19 +1,9 @@
-import {
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+declare const google: any;
 
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-
-import {
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 import { Auth } from '@core/services/auth/auth.service';
 
@@ -21,15 +11,13 @@ import { Auth } from '@core/services/auth/auth.service';
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrl: './login.css',
-  imports: [
-    RouterLink,
-    ReactiveFormsModule,
-  ],
+  imports: [RouterLink, ReactiveFormsModule],
 })
-export class Login {
+export class Login implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly showPassword = signal(false);
 
@@ -38,40 +26,99 @@ export class Login {
   readonly loginError = signal('');
 
   readonly loginForm = this.fb.nonNullable.group({
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.email,
-      ],
-    ],
+    email: ['', [Validators.required, Validators.email]],
 
-    password: [
-      '',
-      Validators.required,
-    ],
+    password: ['', Validators.required],
 
-    remember: [
-      true,
-    ],
+    remember: [true],
   });
 
   get passwordValue(): string {
     return this.loginForm.controls.password.value;
   }
 
+
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.initGoogleLogin();
+  }
+
+  private initGoogleLogin(): void {
+    if (typeof google === 'undefined') {
+      console.error(
+        'Google Identity Services não foi carregado.'
+      );
+
+      return;
+    }
+
+    const googleButton =
+      document.getElementById('google-btn');
+
+    if (!googleButton) {
+      console.warn(
+        'Elemento #google-btn não encontrado.'
+      );
+
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: '740887151146-vhcosdbujqt0iigquqecnj9b1b94pnl3.apps.googleusercontent.com',
+
+      callback: (response: any) => {
+        this.handleGoogleLogin(response);
+      },
+    });
+
+    google.accounts.id.renderButton(
+      googleButton,
+      {
+        theme: 'outline',
+        size: 'large',
+        text: 'signin_with',
+        shape: 'rectangular',
+        width: 300,
+        locale: 'pt-BR',
+      }
+    );
+  }
+
+  private handleGoogleLogin(response: any): void {
+    console.log('Resposta Google:', response);
+
+    const credential = response?.credential;
+
+    if (!credential) {
+      console.error(
+        'Google não retornou o credential.'
+      );
+
+      this.loginError.set(
+        'Não foi possível realizar o login com o Google.'
+      );
+
+      return;
+    }
+
+    console.log('Google ID token:', credential);
+  }
+
+
+
+
   onSubmit(event: SubmitEvent): void {
     event.preventDefault();
 
     this.clearErrors();
 
-    const email = this.sanitizeEmail(
-      this.loginForm.controls.email.value,
-    );
+    const email = this.sanitizeEmail(this.loginForm.controls.email.value);
 
-    const password = this.sanitizePassword(
-      this.loginForm.controls.password.value,
-    );
+    const password = this.sanitizePassword(this.loginForm.controls.password.value);
 
     this.loginForm.controls.email.setValue(email);
     this.loginForm.controls.password.setValue(password);
@@ -91,22 +138,15 @@ export class Login {
       return;
     }
 
-    const authenticated = this.auth.login(
-      email,
-      password,
-    );
+    const authenticated = this.auth.login(email, password);
 
     if (!authenticated) {
-      this.loginError.set(
-        'E-mail ou senha inválidos.',
-      );
+      this.loginError.set('E-mail ou senha inválidos.');
 
       return;
     }
 
-    this.router.navigateByUrl(
-      this.lastUrl() || '/',
-    );
+    this.router.navigateByUrl(this.lastUrl() || '/');
   }
 
   togglePassword(): void {
@@ -115,9 +155,7 @@ export class Login {
       return;
     }
 
-    this.showPassword.update(
-      value => !value,
-    );
+    this.showPassword.update((value) => !value);
   }
 
   onPasswordInput(): void {
@@ -136,21 +174,15 @@ export class Login {
   }
 
   private lastUrl(): string {
-    const queryString =
-      this.router.url.split('?')[1] ?? '';
+    const queryString = this.router.url.split('?')[1] ?? '';
 
-    const params = new URLSearchParams(
-      queryString,
-    );
+    const params = new URLSearchParams(queryString);
 
     return params.get('returnUrl') ?? '';
   }
 
   private sanitizeEmail(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '');
+    return value.trim().toLowerCase().replace(/\s+/g, '');
   }
 
   private sanitizePassword(value: string): string {
