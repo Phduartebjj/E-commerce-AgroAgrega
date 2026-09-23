@@ -1,9 +1,19 @@
 declare const google: any;
 
-import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  PLATFORM_ID,
+  NgZone,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 import { Auth } from '@core/services/auth/auth.service';
 
@@ -13,11 +23,12 @@ import { Auth } from '@core/services/auth/auth.service';
   styleUrl: './login.css',
   imports: [RouterLink, ReactiveFormsModule],
 })
-export class Login implements OnInit {
+export class Login implements AfterViewInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly ngZone = inject(NgZone);
 
   readonly showPassword = signal(false);
 
@@ -37,55 +48,44 @@ export class Login implements OnInit {
     return this.loginForm.controls.password.value;
   }
 
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
 
-
-  ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    this.initGoogleLogin();
+    setTimeout(() => this.initGoogleLogin());
   }
 
   private initGoogleLogin(): void {
-    if (typeof google === 'undefined') {
-      console.error(
-        'Google Identity Services não foi carregado.'
-      );
+    const googleButton = document.getElementById('google-btn');
 
+    if (!googleButton) {
+      console.error('#google-btn não encontrado');
       return;
     }
 
-    const googleButton =
-      document.getElementById('google-btn');
-
-    if (!googleButton) {
-      console.warn(
-        'Elemento #google-btn não encontrado.'
-      );
-
+    if (!google?.accounts?.id) {
+      console.error('Google Identity Services não carregado');
       return;
     }
 
     google.accounts.id.initialize({
       client_id: '740887151146-vhcosdbujqt0iigquqecnj9b1b94pnl3.apps.googleusercontent.com',
-
       callback: (response: any) => {
-        this.handleGoogleLogin(response);
+        this.ngZone.run(() => {
+          this.handleGoogleLogin(response);
+        });
       },
     });
 
-    google.accounts.id.renderButton(
-      googleButton,
-      {
-        theme: 'outline',
-        size: 'large',
-        text: 'signin_with',
-        shape: 'rectangular',
-        width: 300,
-        locale: 'pt-BR',
-      }
-    );
+    googleButton.innerHTML = '';
+
+    google.accounts.id.renderButton(googleButton, {
+      theme: 'outline',
+      size: 'large',
+      text: 'signin_with',
+      shape: 'rectangular',
+      width: 1200,
+      locale: 'pt-BR',
+    });
   }
 
   private handleGoogleLogin(response: any): void {
@@ -94,22 +94,39 @@ export class Login implements OnInit {
     const credential = response?.credential;
 
     if (!credential) {
-      console.error(
-        'Google não retornou o credential.'
-      );
+      console.error('Google não retornou o credential.');
 
-      this.loginError.set(
-        'Não foi possível realizar o login com o Google.'
-      );
+      this.loginError.set('Não foi possível realizar o login com o Google.');
 
       return;
     }
 
     console.log('Google ID token:', credential);
+
+    try {
+      // Decodifica os dados do usuário contidos no token do Google
+      const payload = jwtDecode<{
+        sub: string;
+        name: string;
+        email: string;
+      }>(credential);
+
+      console.log('Dados do usuário autenticado no Google:', payload);
+
+      // Registra a sessão no AuthService
+      this.auth.loginWithGoogle({
+        id: payload.sub,
+        name: payload.name || payload.email.split('@')[0],
+        email: payload.email,
+      });
+
+      // Redireciona para a página anterior ou Home
+      this.router.navigateByUrl(this.lastUrl() || '/');
+    } catch (err) {
+      console.error('Erro ao decodificar token do Google:', err);
+      this.loginError.set('Erro ao processar o login com o Google.');
+    }
   }
-
-
-
 
   onSubmit(event: SubmitEvent): void {
     event.preventDefault();
