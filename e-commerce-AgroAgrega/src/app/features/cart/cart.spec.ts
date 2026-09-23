@@ -6,6 +6,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { Cart } from '../../core/services/cart/cart.service';
 import { ProductModel } from '../../models/product';
 
+// Verifica a renderização do carrinho, a seleção e o resumo reativo.
 describe('CartComponent', () => {
   let component: CartComponent;
   let fixture: ComponentFixture<CartComponent>;

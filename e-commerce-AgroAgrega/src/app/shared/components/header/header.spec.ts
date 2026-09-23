@@ -7,6 +7,7 @@ import { Cart } from '@core/services/cart/cart.service';
 import { ProductModel } from '@models/product';
 import { Header } from './header';
 
+// Verifica busca, atalhos, menu da conta e indicadores do cabeçalho.
 describe('Header', () => {
   let component: Header;
   let fixture: ComponentFixture<Header>;

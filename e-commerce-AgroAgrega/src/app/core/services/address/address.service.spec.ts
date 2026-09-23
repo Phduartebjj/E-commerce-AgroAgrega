@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { AddressService } from './address.service';
 
+// Verifica o salvamento, a leitura e o tratamento de endereços do usuário.
 describe('AddressService', () => {
   let service: AddressService;
 

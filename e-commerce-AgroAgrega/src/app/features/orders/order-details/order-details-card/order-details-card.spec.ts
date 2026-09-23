@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OrderDetailsCard } from './order-details-card';
 
+// Verifica se o cartão de detalhes do pedido é criado corretamente.
 describe('OrderDetailsCard', () => {
   let component: OrderDetailsCard;
   let fixture: ComponentFixture<OrderDetailsCard>;

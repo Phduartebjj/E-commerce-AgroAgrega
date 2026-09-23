@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BestSellerCaroseul } from './best-seller-caroseul';
 
+// Verifica se o carrossel de produtos mais vendidos é criado corretamente.
 describe('BestSellerCaroseul', () => {
   let component: BestSellerCaroseul;
   let fixture: ComponentFixture<BestSellerCaroseul>;

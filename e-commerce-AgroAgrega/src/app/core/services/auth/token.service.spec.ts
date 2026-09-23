@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TokenAuth } from './token.service';
 
+// Verifica a criação, leitura e rejeição de tokens de autenticação.
 describe('TokenAuth', () => {
   let service: TokenAuth;
 

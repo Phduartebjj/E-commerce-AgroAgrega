@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { Home } from './home';
 
+// Verifica se a página inicial é criada corretamente.
 describe('Home', () => {
   let component: Home;
   let fixture: ComponentFixture<Home>;

@@ -19,6 +19,7 @@ function createActivatedRoute(id: string) {
   };
 }
 
+// Verifica galeria, quantidade, perguntas, carrinho e conteúdo do produto.
 describe('ProductDetails', () => {
   const productId = '1dsoifjasdf-1234-5678-90ab-cdefghijklmn';
   let component: ProductDetails;

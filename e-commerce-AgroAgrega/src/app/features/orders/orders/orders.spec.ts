@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { OrderService } from '@core/services/order/order.service';
 import { Orders } from './orders';
 
+// Verifica se a listagem de pedidos é criada com o serviço de pedidos.
 describe('Orders', () => {
   let component: Orders;
   let fixture: ComponentFixture<Orders>;

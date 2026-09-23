@@ -5,6 +5,7 @@ import { Auth } from '@core/services/auth/auth.service';
 
 import { Login } from './login';
 
+// Verifica a validação do formulário e o fluxo de autenticação do login.
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;

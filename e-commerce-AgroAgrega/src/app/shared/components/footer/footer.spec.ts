@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { Footer } from './footer';
 
+// Verifica os títulos exibidos no rodapé da aplicação.
 describe('Footer', () => {
   it('deve exibir os títulos h3 do rodapé', async () => {
     await render(Footer, {

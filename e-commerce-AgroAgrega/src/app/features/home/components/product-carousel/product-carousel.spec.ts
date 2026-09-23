@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { ProductCarousel } from './product-carousel';
 import { ProductModel } from '@models/product';
 
+// Verifica a criação do carrossel e a exibição detalhada dos preços.
 describe('ProductCarousel', () => {
   let component: ProductCarousel;
   let fixture: ComponentFixture<ProductCarousel>;

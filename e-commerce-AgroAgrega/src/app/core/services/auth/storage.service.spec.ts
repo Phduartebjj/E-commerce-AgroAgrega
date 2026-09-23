@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserModel } from '@models/user';
 import { StorageService } from './storage.service';
 
+// Verifica a persistência, consulta, atualização e validação dos usuários.
 describe('StorageService', () => {
   let service: StorageService;
 

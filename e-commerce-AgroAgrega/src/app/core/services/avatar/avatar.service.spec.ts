@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { Auth } from '@core/services/auth/auth.service';
 import { AvatarService } from './avatar.service';
 
+// Verifica o avatar padrão e a persistência do avatar escolhido.
 describe('AvatarService', () => {
   beforeEach(() => {
     localStorage.clear();

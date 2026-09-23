@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { OrderDetails } from './order-details';
 
+// Verifica se a página de detalhes do pedido é criada corretamente.
 describe('OrderDetails', () => {
   let component: OrderDetails;
   let fixture: ComponentFixture<OrderDetails>;

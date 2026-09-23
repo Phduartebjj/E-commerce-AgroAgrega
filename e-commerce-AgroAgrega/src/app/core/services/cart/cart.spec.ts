@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Cart } from './cart.service';
 import { ProductModel } from '../../../models/product';
 
+// Verifica as operações do carrinho, seus totais, cupons e itens selecionados.
 describe('Cart', () => {
   let service: Cart;
 

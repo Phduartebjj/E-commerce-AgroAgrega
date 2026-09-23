@@ -8,6 +8,7 @@ import {
   getDeliveryEstimate,
 } from './checkout';
 
+// Verifica o checkout, o cálculo de entrega e a formatação do boleto.
 describe('Checkout', () => {
   let component: CheckoutComponent;
   let fixture: ComponentFixture<CheckoutComponent>;

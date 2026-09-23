@@ -6,6 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Auth } from '@core/services/auth/auth.service';
 
+// Verifica a validação, a confirmação de senha e o cadastro de usuários.
 describe('Register', () => {
   let component: Register;
   let fixture: ComponentFixture<Register>

@@ -4,6 +4,7 @@ import { AdminComponent } from './admin';
 import { ProductService } from '@core/services/product/product.service';
 import { AuthAdminService } from '@core/services/auth/auth-admin.service';
 
+// Verifica a criação da área administrativa e a alteração de senha.
 describe('AdminComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({

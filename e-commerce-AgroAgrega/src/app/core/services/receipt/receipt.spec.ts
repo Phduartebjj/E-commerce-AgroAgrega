@@ -18,6 +18,7 @@ vi.mock('jspdf', () => ({ jsPDF: JsPDFMock }));
 
 import { ReceiptService } from './receipt';
 
+// Verifica a criação e a geração de comprovantes completos de pedidos.
 describe('Receipt', () => {
   let service: ReceiptService;
 

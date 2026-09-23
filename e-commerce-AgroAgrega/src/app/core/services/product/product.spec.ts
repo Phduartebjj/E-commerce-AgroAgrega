@@ -7,6 +7,7 @@ import {
   selectDailyPopularProducts,
 } from './product.service';
 
+// Verifica o catálogo, a busca de produtos e as ofertas diárias.
 describe('ProductService', () => {
   let service: ProductService;
 

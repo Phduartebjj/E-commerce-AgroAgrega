@@ -7,6 +7,7 @@ import { ProductModel } from '@models/product';
 
 import { OrderService } from './order.service';
 
+// Verifica a criação, persistência, consulta e cancelamento de pedidos.
 describe('OrderService', () => {
   let service: OrderService;
 

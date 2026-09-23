@@ -9,6 +9,7 @@ import {
   getWeeklySalesLabel,
 } from './product-card-display';
 
+// Verifica os cálculos e formatos exibidos nos cartões de produto.
 describe('product card display helpers', () => {
   it('calculates the Pix price, installments and discount', () => {
     expect(calculatePixPrice(119.9)).toBe(107.91);

@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { NotFoundComponent } from './not-found';
 
+// Verifica se a página de rota não encontrada é criada corretamente.
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
   let fixture: ComponentFixture<NotFoundComponent>;

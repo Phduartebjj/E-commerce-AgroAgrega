@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import { ProductCardComponent } from './product-card';
 import { ProductModel } from '../../../models/product';
 
+// Verifica a criação, comparação e exibição promocional do cartão de produto.
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;
   let fixture: ComponentFixture<ProductCardComponent>;

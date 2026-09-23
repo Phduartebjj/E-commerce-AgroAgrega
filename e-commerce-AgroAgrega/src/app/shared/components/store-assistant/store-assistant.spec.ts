@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { Cart } from '../../../core/services/cart/cart.service';
 import { StoreAssistant } from './store-assistant';
 
+// Verifica a interação do assistente com ofertas, produtos e carrinho.
 describe('StoreAssistant', () => {
   let fixture: ComponentFixture<StoreAssistant>;
   let component: StoreAssistant;

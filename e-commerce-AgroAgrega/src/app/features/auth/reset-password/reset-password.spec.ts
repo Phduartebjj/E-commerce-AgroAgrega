@@ -5,6 +5,7 @@ import { Auth } from '@core/services/auth/auth.service';
 
 import { ResetPassword } from './reset-password';
 
+// Verifica a validação e o envio do formulário de redefinição de senha.
 describe('ResetPassword', () => {
   let component: ResetPassword;
   let fixture: ComponentFixture<ResetPassword>;

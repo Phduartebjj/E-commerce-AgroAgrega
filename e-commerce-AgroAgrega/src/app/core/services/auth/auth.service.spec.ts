@@ -6,6 +6,7 @@ import { TokenAuth } from './token.service';
 import { SHA256 } from 'crypto-js';
 import { UserModel } from '@models/user';
 
+// Verifica login, cadastro, recuperação de senha, logout e remoção de conta.
 describe('Teste de autenticação', () => {
   it('Deve retornar true se login for efetuado com sucesso', () => {
     const user: UserModel = {

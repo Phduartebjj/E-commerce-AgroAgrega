@@ -1,5 +1,6 @@
 import { getPartnerStoreLogo } from './partner-stores';
 
+// Verifica a escolha da logo da loja parceira ou da imagem padrão.
 describe('getPartnerStoreLogo', () => {
   it.each([
     ['AgroSense', 'agrosense.png'],

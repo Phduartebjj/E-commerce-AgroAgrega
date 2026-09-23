@@ -1,6 +1,7 @@
 import { productsItems } from '../../../core/data/products';
 import { findAssistantProducts, interpretAssistantMessage } from './assistant-intent';
 
+// Verifica a interpretação dos comandos enviados ao assistente da loja.
 describe('assistant commands', () => {
   it('understands catalog, offers and coupon requests', () => {
     expect(interpretAssistantMessage('Ver ofertas de hoje').type).toBe('offers');

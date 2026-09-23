@@ -8,6 +8,7 @@ import { Cart } from '@core/services/cart/cart.service';
 import { CouponModel } from '@models/coupon';
 import { StoreBenefitsComponent } from './store-benefits';
 
+// Verifica cupons, benefícios Agro+ e navegação entre benefícios da loja.
 describe('StoreBenefitsComponent', () => {
   let component: StoreBenefitsComponent;
   let fixture: ComponentFixture<StoreBenefitsComponent>;

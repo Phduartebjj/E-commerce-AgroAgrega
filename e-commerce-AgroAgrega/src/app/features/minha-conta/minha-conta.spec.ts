@@ -9,6 +9,7 @@ import { OrderService } from '@core/services/order/order.service';
 
 import { MinhaConta } from './minha-conta';
 
+// Verifica a criação e o comportamento principal da área da conta do usuário.
 describe('MinhaConta', () => {
   let component: MinhaConta;
   let fixture: ComponentFixture<MinhaConta>;

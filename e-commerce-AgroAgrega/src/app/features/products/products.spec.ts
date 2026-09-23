@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { formatFlashOfferCountdown, ProductsComponent } from './products';
 
+// Verifica filtros, paginação, comparação e ofertas da listagem de produtos.
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
