@@ -21,6 +21,24 @@ export const routes: Routes = [
   },
 
   {
+    path: 'coupons',
+    loadComponent: () =>
+      import('./features/store-benefits/store-benefits').then(
+        (module) => module.StoreBenefitsComponent,
+      ),
+    data: { storeBenefitMode: 'coupons' },
+  },
+
+  {
+    path: 'agro-plus',
+    loadComponent: () =>
+      import('./features/store-benefits/store-benefits').then(
+        (module) => module.StoreBenefitsComponent,
+      ),
+    data: { storeBenefitMode: 'agroPlus' },
+  },
+
+  {
     path: 'cart',
     loadComponent: () => import('./features/cart/cart').then((module) => module.CartComponent),
   },

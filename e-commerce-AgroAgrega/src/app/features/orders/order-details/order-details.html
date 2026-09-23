@@ -84,8 +84,13 @@
             <h2><span>▤</span> Pagamento</h2>
             <div class="payment-content">
               <div>
-                <strong class="pix"
-                  >❖ {{ currentOrder.paymentMethod }}
+                <strong class="payment-method"
+                  ><span
+                    class="payment-method-icon"
+                    [attr.data-method]="currentOrder.paymentMethod"
+                    aria-hidden="true"
+                  ></span>
+                  {{ currentOrder.paymentMethod }}
                   <small>{{ currentOrder.status }}</small></strong
                 >
               </div>

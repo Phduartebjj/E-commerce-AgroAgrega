@@ -25,6 +25,14 @@ describe('Cart', () => {
     rating: 5,
     images: [],
   };
+  const product2: ProductModel = {
+    ...product1,
+    id: '2',
+    title: 'Produto em oferta',
+    price: 20,
+    originalPrice: 25,
+    brand: 'AgroSense',
+  };
   it('deve adicionar um produto ao carrinho', () => {
     service.addCartItem(product1);
     const items = service.getCartItems()();
@@ -57,6 +65,17 @@ describe('Cart', () => {
     expect(cartItems.length).toBe(1);
     expect(cartItems[0].product).toEqual(product1);
     expect(cartItems[0].quantity).toBe(2);
+  });
+
+  it('deve ajustar a quantidade sem criar itens negativos ou acima do limite', () => {
+    service.addCartItem(product1);
+
+    expect(service.setItemQuantity(product1.id, 3)).toBe(true);
+    expect(service.getCartItems()()[0].quantity).toBe(3);
+    expect(service.setItemQuantity(product1.id, 0)).toBe(false);
+    expect(service.setItemQuantity(product1.id, 100)).toBe(false);
+    expect(service.setItemQuantity('inexistente', 2)).toBe(false);
+    expect(service.getCartItems()()[0].quantity).toBe(3);
   });
 
   it('Deve deixar o carrinho vazio', () => {
@@ -129,5 +148,54 @@ describe('Cart', () => {
     service.removeCoupon();
     expect(service.coupon()).toBeNull();
     expect(service.total()).toBe(10);
+  });
+  it('deve calcular o resumo somente com os produtos selecionados', () => {
+    service.addCartItem(product1);
+    service.addCartItem(product2);
+    service.setProductSelected(product1.id, false);
+    service.applyCoupon('BEMVINDO10');
+
+    expect(service.selectedItemsCount()).toBe(1);
+    expect(service.selectedSubtotal()).toBe(20);
+    expect(service.selectedOriginalSubtotal()).toBe(25);
+    expect(service.selectedProductDiscount()).toBe(5);
+    expect(service.selectedCouponDiscount()).toBe(2);
+    expect(service.selectedTotal()).toBe(18);
+    expect(service.selectedPixDiscount()).toBeCloseTo(1.8);
+    expect(service.selectedPixTotal()).toBeCloseTo(16.2);
+  });
+
+  it('deve remover após a compra apenas os produtos selecionados', () => {
+    service.addCartItem(product1);
+    service.addCartItem(product2);
+    service.setProductSelected(product1.id, false);
+
+    service.removeSelectedItems();
+
+    expect(service.getCartItems()()).toEqual([{ product: product1, quantity: 1 }]);
+    expect(service.allItemsSelected()).toBe(true);
+  });
+
+  it('Deve ignorar cupom inválido e calcular desconto', () => {
+    service.addCartItem(product1, 3);
+    service.applyCoupon('cupom-inexistente');
+
+    expect(service.coupon()).toBeNull();
+    expect(service.subtotal()).toBe(30);
+    expect(service.discountValue()).toBe(0);
+
+    service.applyCoupon('bemvindo10');
+    expect(service.total()).toBe(27);
+    expect(service.discountValue()).toBe(3);
+  });
+
+  it('Deve preservar quantidade ao adicionar e não alterar produto ausente', () => {
+    service.addCartItem(product1, 3);
+    service.addCartItem(product1, 2);
+    expect(service.getCartItems()()[0].quantity).toBe(5);
+
+    const otherProduct = { ...product1, id: '2' };
+    service.decreaseQuantity(otherProduct);
+    expect(service.getCartItems()()[0].quantity).toBe(5);
   });
 });

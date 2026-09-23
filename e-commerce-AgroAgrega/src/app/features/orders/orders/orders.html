@@ -18,6 +18,24 @@
       </select>
     </label>
   </header>
+  @if (paymentStatus === 'success') {
+    <div class="payment-feedback payment-success" role="status">
+      <strong>Pagamento aprovado!</strong>
+      <span>Seu pagamento foi confirmado pelo Mercado Pago.</span>
+    </div>
+  }
+  @if (paymentStatus === 'pending') {
+    <div class="payment-feedback payment-pending" role="status">
+      <strong>Pagamento pendente.</strong>
+      <span>Estamos aguardando a confirmação do Mercado Pago.</span>
+    </div>
+  }
+  @if (paymentStatus === 'failure') {
+    <div class="payment-feedback payment-failure" role="alert">
+      <strong>Pagamento não concluído.</strong>
+      <span>Não foi possível confirmar o pagamento.</span>
+    </div>
+  }
 
   <div class="orders-table" role="table" aria-label="Lista de pedidos">
     <div class="orders-table-header" role="row">

@@ -13,11 +13,98 @@ export class Cart {
   private platformId = inject(PLATFORM_ID);
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>([]);
+  private selectedProductIds = signal<string[] | null>(null);
+  readonly coupon = signal<CouponModel | null>(null);
   private readonly auth = inject(Auth);
   private initializedUserId: string | null | undefined = undefined;
 
   getCartItems() {
     return this.cartItems.asReadonly();
+  }
+
+  readonly selectedCartItems = computed(() => {
+    const selectedIds = this.selectedProductIds();
+    const items = this.cartItems();
+
+    if (selectedIds === null) {
+      return items;
+    }
+
+    const selection = new Set(selectedIds);
+    return items.filter((item) => selection.has(item.product.id));
+  });
+
+  readonly selectedItemsCount = computed(() =>
+    this.selectedCartItems().reduce((total, item) => total + item.quantity, 0),
+  );
+
+  readonly selectedSubtotal = computed(() =>
+    this.selectedCartItems().reduce((total, item) => total + item.product.price * item.quantity, 0),
+  );
+
+  readonly selectedOriginalSubtotal = computed(() =>
+    this.selectedCartItems().reduce(
+      (total, item) => total + (item.product.originalPrice ?? item.product.price) * item.quantity,
+      0,
+    ),
+  );
+
+  readonly selectedProductDiscount = computed(() =>
+    Math.max(0, this.selectedOriginalSubtotal() - this.selectedSubtotal()),
+  );
+
+  readonly selectedCouponDiscount = computed(() => {
+    const coupon = this.coupon();
+    return coupon ? (this.selectedSubtotal() * coupon.discountPercentage) / 100 : 0;
+  });
+
+  readonly selectedTotal = computed(() =>
+    Math.max(0, this.selectedSubtotal() - this.selectedCouponDiscount()),
+  );
+
+  readonly selectedPixDiscount = computed(() => this.selectedTotal() * 0.1);
+
+  readonly selectedPixTotal = computed(() =>
+    Math.max(0, this.selectedTotal() - this.selectedPixDiscount()),
+  );
+
+  readonly allItemsSelected = computed(
+    () =>
+      this.cartItems().length > 0 && this.selectedCartItems().length === this.cartItems().length,
+  );
+
+  isProductSelected(productId: string): boolean {
+    return this.selectedCartItems().some((item) => item.product.id === productId);
+  }
+
+  setProductSelected(productId: string, selected: boolean): void {
+    const ids = new Set(this.selectedCartItems().map((item) => item.product.id));
+
+    if (selected) {
+      ids.add(productId);
+    } else {
+      ids.delete(productId);
+    }
+
+    this.selectedProductIds.set([...ids]);
+  }
+
+  setProductsSelected(productIds: string[], selected: boolean): void {
+    const ids = new Set(this.selectedCartItems().map((item) => item.product.id));
+
+    for (const productId of productIds) {
+      if (selected) {
+        ids.add(productId);
+      } else {
+        ids.delete(productId);
+      }
+    }
+
+    this.selectedProductIds.set([...ids]);
+  }
+
+  selectAllItems(selected: boolean): void {
+    this.selectedProductIds.set(selected ? null : []);
   }
 
   private getStorageKey(): string | null {
@@ -48,9 +135,13 @@ export class Cart {
         ...item,
         product: {
           ...item.product,
-          images: item.product.images.map((image) =>
-            image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp'),
-          ),
+          images: item.product.images.map((image) => {
+            let img = image.replace(/\.(png|jpe?g|gif|bmp|tiff?|avif)(?=([?#]|$))/i, '.webp');
+            if (!img.startsWith('/') && !img.startsWith('http')) {
+              img = '/' + img;
+            }
+            return img;
+          }),
         },
       }));
     } catch {
@@ -110,8 +201,6 @@ export class Cart {
     localStorage.setItem(key, JSON.stringify(this.cartItems()));
   }
 
-  coupon = signal<CouponModel | null>(null);
-
   applyCoupon(couponCode: string): void {
     const coupon = couponCode.toUpperCase();
     const couponFind = COUPONS.find((c) => c.code === coupon);
@@ -139,7 +228,6 @@ export class Cart {
       const productFind = items.find((p) => p.product.id === product.id);
 
       if (productFind) {
-
         return items.map((item) => {
           if (item.product.id === product.id) {
             return { ...item, quantity: item.quantity + quantity };
@@ -147,15 +235,30 @@ export class Cart {
           return item;
         });
       } else {
-
         return [...items, { product: product, quantity: quantity }];
       }
     });
+
+    const selection = this.selectedProductIds();
+    if (selection !== null && !selection.includes(product.id)) {
+      this.selectedProductIds.set([...selection, product.id]);
+    }
+  }
+
+  setItemQuantity(productId: string, quantity: number): boolean {
+    if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) return false;
+    if (!this.cartItems().some((item) => item.product.id === productId)) return false;
+
+    this.cartItems.update((items) =>
+      items.map((item) =>
+        item.product.id === productId ? { ...item, quantity } : item,
+      ),
+    );
+    return true;
   }
 
   decreaseQuantity(product: ProductModel): void {
     this.cartItems.update((items) => {
-
       const productFind = items.find((p) => p.product.id === product.id);
 
       if (!productFind) {
@@ -179,6 +282,13 @@ export class Cart {
 
   cleanCartItem(): void {
     this.cartItems.set([]);
+    this.selectedProductIds.set(null);
+  }
+
+  removeSelectedItems(): void {
+    const selectedIds = new Set(this.selectedCartItems().map((item) => item.product.id));
+    this.cartItems.update((items) => items.filter((item) => !selectedIds.has(item.product.id)));
+    this.selectedProductIds.set(null);
   }
 
   total = computed(() => {
@@ -198,7 +308,6 @@ export class Cart {
     const discount = this.subtotal() - this.total();
     return discount > 0 ? discount : 0;
   });
-
 
   totalCartItens = computed(() => {
     return this.cartItems().reduce((total, item) => {

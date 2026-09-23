@@ -1,108 +1,271 @@
 <main class="cart-container">
-  <nav class="breadcrumb">
-    <p><a routerLink="/">Home</a> > <span class="destaque">Cart</span></p>
+  <nav class="breadcrumb" aria-label="Navegação estrutural">
+    <p><a routerLink="/">Home</a> <span aria-hidden="true">›</span> <span>Carrinho</span></p>
   </nav>
+
   <section class="cart-title">
     <div>
       <span>SUA COMPRA</span>
-
-      <h2>Carrinho</h2>
-
+      <h1>Carrinho</h1>
       <p>
         {{ totalItens() }}
-        @if (totalItens() === 1) {
-          item reservado para você
-        } @else {
-          itens reservados para você
-        }
+        {{ totalItens() === 1 ? 'item reservado para você' : 'itens reservados para você' }}
       </p>
     </div>
+    <a class="continue-shopping" routerLink="/products">Continuar comprando</a>
   </section>
-  <a class="linkToCatalogy" routerLink="/products">Continuar Comprando -></a>
 
-  <div class="cart-content">
-    <section class="cart-items">
-      <div class="cart-header">
-        <span>PRODUTOS</span>
-        <div class="cart-header-values">
-          <span>QUANTIDADE</span>
-          <span>SUBTOTAL</span>
-        </div>
-      </div>
-      @for (item of cartItems(); track item.product.id) {
-        <div class="product-item">
-          <div class="product-info">
-            <img
-              [src]="item.product.images[0]"
-              [alt]="item.product.title"
-              loading="lazy"
-              decoding="async"
-              width="96"
-              height="96"
-            />
-            <div class="product-details">
-              <p class="product-category">{{ item.product.category }}</p>
-              <a [routerLink]="['/products', item.product.id]"> {{ item.product.title }}</a>
-
-              <p class="product-description">{{ item.product.description }}</p>
-              <button class="btn btn-remove" (click)="removeProduct(item.product)">Remover</button>
-            </div>
-          </div>
-          <div class="product-quantity">
-            @if (item.quantity === 1) {
-              <button (click)="removeProduct(item.product)">-</button>
-            } @else {
-              <button (click)="decreaseProductQuantity(item.product)">-</button>
-            }
-            <span>{{ item.quantity }}</span>
-            <button (click)="addProduct(item.product)">+</button>
-          </div>
-          <p class="product-price">{{ item.product.price * item.quantity | precoFormatado }}</p>
-        </div>
-      }
+  @if (isEmpty()) {
+    <section class="empty-cart" aria-labelledby="empty-cart-title">
+      <span class="empty-cart__icon" aria-hidden="true"></span>
+      <h2 id="empty-cart-title">Seu carrinho está vazio</h2>
+      <p>Explore o catálogo e encontre soluções para o seu campo.</p>
+      <a routerLink="/products">Ver produtos</a>
     </section>
+  } @else {
+    <section class="cart-toolbar" aria-label="Ações do carrinho">
+      <label class="selection-control selection-control--all">
+        <input
+          type="checkbox"
+          [checked]="allItemsSelected()"
+          [indeterminate]="selectedItemsCount() > 0 && !allItemsSelected()"
+          (change)="toggleAll($any($event.target).checked)"
+        />
+        <span>Todos os produtos</span>
+      </label>
 
-    <div class="cart-summary">
-      <h3>Resumo do Pedido</h3>
-      <div class="summary-infos">
-        <p>
-          <span>Subtotal</span> <span>{{ subTotal() | precoFormatado }}</span>
-        </p>
-        <p><span>Frete</span> <span>Grátis</span></p>
-        <p>
-          <span>Descontos</span>
-          <span class="redword">{{ discountValue() | precoFormatado }}</span>
-        </p>
-      </div>
-
-      <div class="summary-total">
-        @if (isEmpty()) {
-          <p>Seu carrinho está vazio</p>
-        } @else {
-          <div style="display: flex; justify-content: space-between; align-items: baseline">
-            <span class="total-label">Total</span>
-            <span class="total-value">{{ totalValue() | precoFormatado }}</span>
-          </div>
-          <p class="total-info">Inclui impostos</p>
-          <a class="btn btn-checkout" routerLink="/checkout">Ir para o checkout → </a>
-          <p style="font-size: 12px; color: #666; text-align: center">
-            ✓ Pagamento protegido e seguro
-          </p>
+      <div class="share-wrapper">
+        <button class="share-cart" type="button" (click)="shareCart()">
+          <span class="share-cart__icon" aria-hidden="true"></span>
+          Compartilhar carrinho
+        </button>
+        @if (shareFeedback()) {
+          <span class="action-feedback" role="status">{{ shareFeedback() }}</span>
         }
       </div>
-    </div>
-  </div>
-  <section class="coupon-section">
-    <p>Tem um cupom?</p>
-    <div class="coupon-action">
-      <input class="inpu2t" #couponInput type="text" placeholder="Digite seu cupom" />
+    </section>
 
-      <button
-        class="btn btn-ApplyCoupon"
-        (click)="applyCoupon(couponInput.value); cleanInputValue(couponInput)"
-      >
-        Aplicar
-      </button>
+    <div class="cart-content">
+      <section class="cart-groups" aria-label="Produtos no carrinho">
+        @for (group of cartGroups(); track group.seller) {
+          <article class="cart-group">
+            <header class="cart-group__header">
+              <label class="selection-control">
+                <input
+                  type="checkbox"
+                  [checked]="isGroupSelected(group)"
+                  [indeterminate]="isGroupPartiallySelected(group)"
+                  (change)="toggleGroup(group, $any($event.target).checked)"
+                />
+                <img
+                  class="partner-store-logo"
+                  [src]="partnerStoreLogo(group.seller)"
+                  [alt]="group.seller + ' — loja parceira'"
+                  width="42"
+                  height="42"
+                />
+                <span>
+                  Produtos de <strong>{{ group.seller }}</strong>
+                  <small>Loja parceira verificada</small>
+                </span>
+              </label>
+              <span class="verified-badge" aria-label="Vendedor verificado">✓</span>
+            </header>
+
+            @for (item of group.items; track item.product.id) {
+              <div
+                class="product-item"
+                [class.product-item--unselected]="!isProductSelected(item.product.id)"
+              >
+                <label class="product-selector">
+                  <input
+                    type="checkbox"
+                    [checked]="isProductSelected(item.product.id)"
+                    [attr.aria-label]="'Selecionar ' + item.product.title"
+                    (change)="toggleProduct(item.product.id, $any($event.target).checked)"
+                  />
+                </label>
+
+                <a
+                  class="product-image"
+                  [routerLink]="['/products', item.product.id]"
+                  [attr.aria-label]="'Ver ' + item.product.title"
+                >
+                  <img
+                    [src]="item.product.images[0]"
+                    [alt]="item.product.title"
+                    loading="lazy"
+                    decoding="async"
+                    width="132"
+                    height="132"
+                  />
+                </a>
+
+                <div class="product-details">
+                  @if (getDiscountPercent(item.product) > 0) {
+                    <span class="offer-badge">Oferta −{{ getDiscountPercent(item.product) }}%</span>
+                  }
+                  <a class="product-name" [routerLink]="['/products', item.product.id]">
+                    {{ item.product.title }}
+                  </a>
+                  <p>{{ item.product.category }}</p>
+                  <small>Vendido por {{ group.seller }}</small>
+
+                  <div class="product-actions">
+                    <div class="product-quantity" aria-label="Quantidade do produto">
+                      <button
+                        type="button"
+                        [attr.aria-label]="
+                          item.quantity === 1 ? 'Remover produto' : 'Diminuir quantidade'
+                        "
+                        (click)="
+                          item.quantity === 1
+                            ? removeProduct(item.product)
+                            : decreaseProductQuantity(item.product)
+                        "
+                      >
+                        {{ item.quantity === 1 ? '×' : '−' }}
+                      </button>
+                      <span>{{ item.quantity }}</span>
+                      <button
+                        type="button"
+                        aria-label="Aumentar quantidade"
+                        (click)="addProduct(item.product)"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <span class="stock-info"
+                      >{{ 24 + ((item.product.weeklySales ?? 0) % 57) }} disponíveis</span
+                    >
+                    <button
+                      class="remove-product"
+                      type="button"
+                      (click)="removeProduct(item.product)"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                </div>
+
+                <div class="product-price">
+                  @if (item.product.originalPrice; as originalPrice) {
+                    <s>{{ originalPrice * item.quantity | precoFormatado }}</s>
+                  }
+                  <strong>{{ item.product.price * item.quantity | precoFormatado }}</strong>
+                  <small>ou 10x sem juros</small>
+                </div>
+              </div>
+            }
+
+            <footer class="cart-group__shipping">
+              <span class="shipping-icon" aria-hidden="true"></span>
+              <div>
+                <strong>Frete grátis</strong>
+                <p>Entrega acompanhada e protegida pela AgroAgrega.</p>
+              </div>
+              <span>Grátis</span>
+            </footer>
+          </article>
+        }
+
+        <button class="clear-cart" type="button" (click)="clearCart()">Limpar carrinho</button>
+      </section>
+
+      <aside class="cart-summary" aria-labelledby="summary-title">
+        <h2 id="summary-title">Resumo da compra</h2>
+
+        @if (selectedItemsCount() === 0) {
+          <div class="nothing-selected">
+            <strong>Nenhum produto selecionado</strong>
+            <p>Selecione pelo menos um item para continuar.</p>
+          </div>
+        } @else {
+          <div class="summary-infos">
+            <p>
+              <span>Produtos ({{ selectedItemsCount() }})</span>
+              <span>{{ selectedOriginalSubtotal() | precoFormatado }}</span>
+            </p>
+            @if (selectedProductDiscount() > 0) {
+              <p class="discount-line">
+                <span>Desconto de produtos</span>
+                <span>− {{ selectedProductDiscount() | precoFormatado }}</span>
+              </p>
+            }
+            <p><span>Frete</span> <span class="free-shipping">Grátis</span></p>
+            @if (coupon()) {
+              <p class="discount-line">
+                <span>Cupom {{ coupon()?.code }}</span>
+                <span>− {{ selectedCouponDiscount() | precoFormatado }}</span>
+              </p>
+            }
+            <p class="discount-line">
+              <span>Desconto no Pix</span>
+              <span>− {{ selectedPixDiscount() | precoFormatado }}</span>
+            </p>
+          </div>
+
+          <div class="coupon-box">
+            <label for="cart-coupon">Inserir código do cupom</label>
+            <div>
+              <input id="cart-coupon" #couponInput type="text" placeholder="Ex.: AGRO20" />
+              <button type="button" (click)="applyCoupon(couponInput.value)">Aplicar</button>
+            </div>
+            @if (coupon()) {
+              <button class="remove-coupon" type="button" (click)="removeCoupon()">
+                Remover cupom
+              </button>
+            }
+            @if (couponFeedback()) {
+              <small role="status">{{ couponFeedback() }}</small>
+            }
+          </div>
+
+          <div class="summary-total">
+            <div>
+              <span>Total no Pix</span>
+              <strong>{{ selectedPixTotal() | precoFormatado }}</strong>
+            </div>
+            <p>
+              Você economiza
+              {{
+                selectedProductDiscount() + selectedCouponDiscount() + selectedPixDiscount()
+                  | precoFormatado
+              }}
+              e tem frete grátis
+            </p>
+          </div>
+        }
+
+        <a
+          class="checkout-button"
+          [class.checkout-button--disabled]="selectedItemsCount() === 0"
+          [attr.aria-disabled]="selectedItemsCount() === 0"
+          [routerLink]="selectedItemsCount() > 0 ? '/checkout' : null"
+          (click)="preventEmptyCheckout($event)"
+        >
+          Continuar ({{ selectedItemsCount() }})
+        </a>
+        <small class="secure-purchase">Compra segura e pagamento protegido</small>
+      </aside>
     </div>
-  </section>
+  }
+
+  @if (recommendations().length > 0) {
+    <section class="recommendations" aria-labelledby="recommendations-title">
+      <div class="recommendations__heading">
+        <div>
+          <span>PARA COMPLETAR SUA COMPRA</span>
+          <h2 id="recommendations-title">Produtos que podem te interessar</h2>
+        </div>
+        <a routerLink="/products">Ver todo o catálogo</a>
+      </div>
+
+      <div class="recommendations__grid">
+        @for (product of recommendations(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    </section>
+  }
 </main>

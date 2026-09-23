@@ -17,7 +17,10 @@ function createProduct(
     title,
     price,
     description,
-    images: [`assets/images/generated-products/product-${id.toString().padStart(3, '0')}.webp`],
+    images: [
+      `/assets/images/generated-products/product-${id.toString().padStart(3, '0')}.webp`,
+      `/assets/images/generated-product-views/product-${id.toString().padStart(3, '0')}-angle.jpg`,
+    ],
     rating,
     brand,
     weeklySales,

@@ -54,6 +54,38 @@
   text-transform: uppercase;
 }
 
+.compare-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid rgba(21, 95, 57, 0.2);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #426052;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.65rem;
+  font-weight: 750;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.compare-toggle span {
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.compare-toggle:hover,
+.compare-toggle.active {
+  border-color: #17673b;
+  background: #e9f3ec;
+  color: #155f39;
+}
+
 .product-card-visual {
   grid-area: visual;
   min-width: 0;
@@ -172,58 +204,139 @@
   font-size: 0.68rem;
 }
 
-.product-card-price {
+.product-card-offer {
   margin-top: auto;
   padding-top: 13px;
 }
 
-.product-card-amount {
+.product-card-discount-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.product-card-discount-line span {
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #0ca34a;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.product-card-discount-line s {
+  color: #87948d;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.product-card-main-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 9px;
+  margin-top: 7px;
   color: #101a15;
 }
 
-.product-card-amount strong {
+.product-card-main-price strong {
   font-size: clamp(1.45rem, 2vw, 1.9rem);
   font-weight: 900;
   letter-spacing: -0.055em;
   line-height: 1;
 }
 
+.product-card-main-price small {
+  color: #77827c;
+  font-size: 0.67rem;
+}
+
+.product-card-pix {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0 0;
+  color: #079447;
+}
+
+.product-card-pix strong {
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.product-card-pix span {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
 .product-card-installment {
-  display: block;
-  margin-top: 6px;
-  color: #66736c;
+  margin: 5px 0 0;
+  color: #4f5f56;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.product-card-installment strong {
+  color: #079447;
+  font-weight: 800;
+}
+
+.product-card-coupon {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  margin: 10px 0 0;
+}
+
+.product-card-coupon span {
+  display: inline-flex;
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: #dff5e6;
+  color: #087f43;
   font-size: 0.7rem;
+  font-weight: 850;
 }
 
-.product-card-button {
-  width: 100%;
-  min-height: 46px;
-  margin-top: 14px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #1b6d3d 0%, #155633 100%);
-  color: #ffffff;
-  cursor: pointer;
-  font: inherit;
-  font-size: 0.93rem;
-  font-weight: 750;
-  box-shadow: 0 10px 17px rgba(17, 84, 47, 0.17);
-  transition:
-    background 180ms ease,
-    box-shadow 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+.product-card-coupon small {
+  color: #66736c;
+  font-size: 0.67rem;
 }
 
-.product-card-button:hover {
-  box-shadow: 0 12px 22px rgba(17, 84, 47, 0.25);
-  transform: translateY(-1px);
+.product-card-delivery {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 0 0;
+  color: #079447;
+  font-size: 0.72rem;
 }
 
-.product-card-button.product-added {
-  background: #9bd52b;
-  color: var(--green-dark, #073d2d);
+.product-card-full-label {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1px;
+  color: #06a64f;
+  font-style: italic;
+  line-height: 1;
+}
+
+.product-card-full-label > span {
+  font-size: 0.9rem;
+}
+
+.product-card-full-label > strong {
+  font-size: 0.69rem;
+  font-weight: 950;
+  letter-spacing: 0.035em;
+}
+
+.product-card-delivery-date {
+  font-weight: 800;
 }
 
 .product-card a:focus-visible,
@@ -266,10 +379,6 @@
   -webkit-line-clamp: 2;
 }
 
-:host-context(.catalog-grid.list-view) .product-card-button {
-  width: min(100%, 250px);
-}
-
 @media (max-width: 640px) {
   .product-card:hover {
     transform: none;
@@ -307,16 +416,11 @@
     min-height: calc(2 * 1.25em);
     font-size: clamp(1.02rem, 1.25vw, 1.2rem);
   }
-
-  :host-context(.catalog-grid.list-view) .product-card-button {
-    width: 100%;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .product-card,
-  .product-card-figure,
-  .product-card-button {
+  .product-card-figure {
     transition: none;
   }
 }

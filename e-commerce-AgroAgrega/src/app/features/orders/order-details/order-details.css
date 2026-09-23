@@ -204,17 +204,98 @@
   align-items: flex-start;
 }
 
-.pix {
+.payment-method {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: #168046;
   font-size: 12px;
 }
 
-.pix small {
+.payment-method small {
   margin-left: 8px;
   padding: 4px 7px;
   border-radius: 999px;
   background: #e8f7ed;
   font-size: 10px;
+}
+
+.payment-method-icon {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: currentColor;
+}
+
+.payment-method-icon[data-method='Cartão de Crédito']::before,
+.payment-method-icon[data-method='Cartão de Débito']::before {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  width: 16px;
+  height: 11px;
+  border: 1.6px solid currentColor;
+  border-radius: 2px;
+  content: '';
+}
+
+.payment-method-icon[data-method='Cartão de Crédito']::after,
+.payment-method-icon[data-method='Cartão de Débito']::after {
+  position: absolute;
+  top: 7px;
+  left: 1.6px;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  content: '';
+}
+
+.payment-method-icon[data-method='Boleto']::before {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 12px;
+  height: 16px;
+  border: 1.6px solid currentColor;
+  border-radius: 1px;
+  content: '';
+}
+
+.payment-method-icon[data-method='Boleto']::after {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  width: 7px;
+  height: 1.4px;
+  background: currentColor;
+  box-shadow: 0 3px currentColor, 0 6px currentColor;
+  content: '';
+}
+
+.payment-method-icon[data-method='Pix']::before {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 9px;
+  height: 9px;
+  border: 1.6px solid currentColor;
+  border-radius: 2px;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.payment-method-icon[data-method='Pix']::after {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 4px;
+  height: 4px;
+  border: 1.4px solid currentColor;
+  border-radius: 1px;
+  content: '';
+  transform: rotate(45deg);
 }
 
 .paid-total {

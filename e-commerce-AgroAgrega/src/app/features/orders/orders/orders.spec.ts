@@ -1,5 +1,8 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
+import { OrderService } from '@core/services/order/order.service';
 import { Orders } from './orders';
 
 describe('Orders', () => {
@@ -9,6 +12,15 @@ describe('Orders', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Orders],
+      providers: [
+        provideRouter([]),
+        {
+          provide: OrderService,
+          useValue: {
+            getOrders: () => signal([]),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Orders);

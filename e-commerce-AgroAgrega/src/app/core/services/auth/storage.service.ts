@@ -42,10 +42,15 @@ export class StorageService {
   }
 
   getAllUsers(): UserModel[] | string {
-    const data = localStorage.getItem('db');
-    if (!data) return [];
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return [];
 
-    return data;
+    try {
+      const data = localStorage.getItem('db');
+      if (!data) return [];
+      return data;
+    } catch {
+      return [];
+    }
   }
 
   updatePasswordUser(email: string, newPassword: string): ServiceResponse {
@@ -111,13 +116,17 @@ export class StorageService {
   }
 
   removeUser(id: string): boolean {
-    const data = localStorage.getItem('db');
-
-    if (!data || !id) {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
       return false;
     }
 
     try {
+      const data = localStorage.getItem('db');
+
+      if (!data || !id) {
+        return false;
+      }
+
       const users: UserModel[] = JSON.parse(data);
       const originalLength = users.length;
       const remainingUsers = users.filter((user) => user.id !== id);
@@ -135,6 +144,11 @@ export class StorageService {
   }
 
   clear(): void {
-    localStorage.clear();
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
+    try {
+      localStorage.clear();
+    } catch {}
   }
 }

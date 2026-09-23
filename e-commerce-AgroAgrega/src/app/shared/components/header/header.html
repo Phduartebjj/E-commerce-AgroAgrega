@@ -4,68 +4,203 @@
   </div>
   <div class="cabecalho-principal">
     <a class="logo-marca" routerLink="/" aria-label="Ir para a página inicial">
-      <img class="logo-icone" src="assets/images/agroagrega-icon.webp" alt="AgroAgrega ícone" />
-      <img class="logo-nome" src="assets/images/AgroAgrega-logo.svg" alt="AgroAgrega" />
+      <img class="logo-icone" src="/assets/images/agroagrega-icon.webp" alt="AgroAgrega ícone" />
+      <img class="logo-nome" src="/assets/images/AgroAgrega-logo.svg" alt="AgroAgrega" />
     </a>
-    <div class="area-busca">
+    <form
+      class="area-busca"
+      role="search"
+      (submit)="$event.preventDefault(); buscarProdutos(searchInput.value)"
+    >
+      <span class="icone-busca" aria-hidden="true"></span>
       <input
         #searchInput
         class="campo-busca"
         type="search"
         placeholder="Busque sementes, ferramentas e agroprodutos"
         aria-label="Buscar produtos"
-        (keydown.enter)="buscarProdutos(searchInput.value)"
       />
-      <button class="botao-busca" type="button" (click)="buscarProdutos(searchInput.value)">
-        Buscar
+      <button class="botao-busca" type="submit">
+        <span class="botao-busca__wheat" aria-hidden="true"></span>
+        <span>Buscar</span>
       </button>
-    </div>
-    <div class="acoes-header" [class.acoes-header-fixas]="navegacaoFixa()">
-      <a class="conta-link" [routerLink]="loggedIn() ? '/account' : '/login'">
+    </form>
+    <div class="acoes-header">
+      <div class="account-menu-wrapper">
         @if (loggedIn()) {
-          <span class="icone-perfil"
-            ><img src="assets/images/profile.webp" alt="Minha Conta"
-          /></span>
-        }
-        <span class="conta-texto">
-          <small class="nome-usuario">{{ name() }}</small>
-          @if (loggedIn()) {
-            <strong>Minha conta</strong>
+          <button
+            class="conta-link conta-link--button"
+            type="button"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="accountMenuOpen()"
+            (click)="toggleAccountMenu($event)"
+          >
+            <span
+              class="account-avatar account-avatar--header"
+              [attr.data-avatar]="avatar.selectedAvatar().id"
+              aria-hidden="true"
+            >
+              {{ avatar.selectedAvatar().glyph }}
+            </span>
+            <span class="conta-texto">
+              <small class="nome-usuario">{{ name() }}</small>
+              <strong>Minha conta</strong>
+            </span>
+            <span
+              class="account-chevron"
+              [class.account-chevron--open]="accountMenuOpen()"
+              aria-hidden="true"
+            ></span>
+          </button>
+
+          @if (accountMenuOpen()) {
+            <div class="account-dropdown" role="menu" (click)="$event.stopPropagation()">
+              <div class="account-dropdown__identity">
+                <span
+                  class="account-avatar account-avatar--large"
+                  [attr.data-avatar]="avatar.selectedAvatar().id"
+                  aria-hidden="true"
+                >
+                  {{ avatar.selectedAvatar().glyph }}
+                </span>
+                <span>
+                  <strong>{{ accountName() }}</strong>
+                  <small>{{ accountEmail() }}</small>
+                </span>
+              </div>
+
+              <a routerLink="/account" role="menuitem" (click)="closeAccountMenu()">
+                <span
+                  class="account-shortcut-icon account-shortcut-icon--profile"
+                  aria-hidden="true"
+                ></span>
+                Meus dados e avatar
+              </a>
+              <a routerLink="/orders" role="menuitem" (click)="closeAccountMenu()">
+                <span
+                  class="account-shortcut-icon account-shortcut-icon--orders"
+                  aria-hidden="true"
+                ></span>
+                Compras e histórico
+              </a>
+              <a
+                routerLink="/account"
+                fragment="account-addresses"
+                role="menuitem"
+                (click)="closeAccountMenu()"
+              >
+                <span
+                  class="account-shortcut-icon account-shortcut-icon--location"
+                  aria-hidden="true"
+                ></span>
+                Meus endereços
+              </a>
+              <div class="account-dropdown__divider"></div>
+
+              <a routerLink="/coupons" role="menuitem" (click)="closeAccountMenu()">
+                <span class="account-shortcut-icon account-shortcut-icon--coupon" aria-hidden="true"
+                  >%</span
+                >
+                Cupons disponíveis
+              </a>
+              <a routerLink="/agro-plus" role="menuitem" (click)="closeAccountMenu()">
+                <span class="account-shortcut-icon account-shortcut-icon--plus" aria-hidden="true"
+                  >A+</span
+                >
+                Benefícios Agro+
+              </a>
+
+              <div class="account-dropdown__divider"></div>
+
+              <button
+                class="account-dropdown__logout"
+                type="button"
+                role="menuitem"
+                (click)="logout()"
+              >
+                <span
+                  class="account-shortcut-icon account-shortcut-icon--logout"
+                  aria-hidden="true"
+                ></span>
+                Sair da conta
+              </button>
+            </div>
           }
-        </span>
-      </a>
+        } @else {
+          <a class="conta-link" routerLink="/login">
+            <span class="conta-texto">
+              <small class="nome-usuario">{{ name() }}</small>
+            </span>
+          </a>
+        }
+      </div>
+
+      <a class="compra-link" routerLink="/orders" aria-label="Minhas compras"> Compra </a>
 
       <a class="icone-carrinho" routerLink="/cart" aria-label="Carrinho de Compras">
-        <img src="assets/images/cart.webp" alt="Carrinho de Compras" />
+        <span class="agro-cart-icon" aria-hidden="true">
+          <span class="agro-cart-icon__handle"></span>
+          <span class="agro-cart-icon__basket"></span>
+          <span class="agro-cart-icon__wheel agro-cart-icon__wheel--left"></span>
+          <span class="agro-cart-icon__wheel agro-cart-icon__wheel--right"></span>
+          <span class="agro-cart-icon__leaf"></span>
+        </span>
         @if (totalItens() > 0) {
           <span class="contador-carrinho">
             {{ totalItens() }}
           </span>
         }
       </a>
-
-      <a class="icone-pedidos" routerLink="/orders" aria-label="Pedidos">
-        <img src="assets/images/pedidos.webp" alt="Meus pedidos" />
-      
-      </a>
-
     </div>
   </div>
-  <nav class="navegar-categorias" aria-label="Categorias de produtos"[class.navegar-categorias-fixa]="navegacaoFixa()">
+  <nav class="navegar-categorias" aria-label="Categorias de produtos">
     <div class="conteudo-do-menu">
-      <a class="todas-categorias" routerLink="/products">
-        <span class="icone-categorias"
-          ><img src="assets/images/todas-categorias.svg" alt="Todas categorias" />Todas as
-          Categorias</span
-        >
+      <a class="menu-link" routerLink="/products">
+        <span class="menu-icon menu-icon--all" aria-hidden="true">
+          <img src="/assets/images/todas-categorias.svg" alt="" />
+        </span>
+        <span>Todas as Categorias</span>
       </a>
-      <a routerLink="/products" [queryParams]="{ category: 'Agricultura de Precisão' }"
-        >Agricultura de Precisão</a
+      <a
+        class="menu-link"
+        routerLink="/products"
+        [queryParams]="{ category: 'Agricultura de Precisão' }"
       >
-      <a routerLink="/products" [queryParams]="{ category: 'Irrigação' }">Irrigação</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Pecuária' }">Pecuária</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Insumos' }">Insumos</a>
-      <a routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">Ferramentas</a>
+        <span class="menu-icon menu-icon--precision" aria-hidden="true"></span>
+        <span>Agricultura de Precisão</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Irrigação' }">
+        <span class="menu-icon menu-icon--irrigation" aria-hidden="true"></span>
+        <span>Irrigação</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Pecuária' }">
+        <span class="menu-icon menu-icon--livestock" aria-hidden="true"></span>
+        <span>Pecuária</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Insumos' }">
+        <span class="menu-icon menu-icon--inputs" aria-hidden="true"></span>
+        <span>Insumos</span>
+      </a>
+      <a class="menu-link" routerLink="/products" [queryParams]="{ category: 'Ferramentas' }">
+        <span class="menu-icon menu-icon--tools" aria-hidden="true"></span>
+        <span>Ferramentas</span>
+      </a>
+      <a class="menu-link menu-link--feature" routerLink="/coupons">
+        <span class="menu-icon menu-icon--coupon" aria-hidden="true"></span>
+        <span>Cupons</span>
+      </a>
+      <a class="menu-link menu-link--feature" routerLink="/agro-plus">
+        <span class="menu-icon menu-icon--agro-plus" aria-hidden="true"></span>
+        <span>Agro+</span>
+      </a>
+      <a
+        class="menu-link menu-link--offers"
+        routerLink="/products"
+        [queryParams]="{ offers: 'true' }"
+      >
+        <span class="menu-icon menu-icon--offers" aria-hidden="true"></span>
+        <span>Ofertas</span>
+      </a>
     </div>
   </nav>
 </header>

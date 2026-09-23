@@ -1,7 +1,8 @@
-import { Component, inject, Signal, signal, HostListener } from '@angular/core';
+import { Component, inject, signal, HostListener } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Cart } from '@core/services/cart/cart.service';
 import { Auth } from '@core/services/auth/auth.service';
+import { AvatarService } from '@core/services/avatar/avatar.service';
 import { FavoritesService } from '@core/services/favorites/favorites.service';
 import { FavoritesComponent } from '../favorites/favorites.component';
 
@@ -12,27 +13,14 @@ import { FavoritesComponent } from '../favorites/favorites.component';
   styleUrl: './header.css',
 })
 export class Header {
-
-  navegacaoFixa = signal(false);
-
-  
-  @HostListener('window:scroll')
-aoRolarPagina(): void {
-  const rotaAtual = this.router.url.split('?')[0];
-
-  const estaNoCatalogo = rotaAtual === '/products';
-
-  this.navegacaoFixa.set(
-    estaNoCatalogo && window.scrollY > 180
-  );
-}
-
   private readonly router = inject(Router);
   private readonly cart = inject(Cart);
   private readonly favoritesService = inject(FavoritesService);
   private readonly auth = inject(Auth);
+  readonly avatar = inject(AvatarService);
 
   readonly favoritesOpen = signal(false);
+  readonly accountMenuOpen = signal(false);
   readonly favoritesCount = this.favoritesService.count;
 
   readonly totalItens = this.cart.totalCartItens;
@@ -43,6 +31,39 @@ aoRolarPagina(): void {
 
   public loggedIn(): boolean {
     return this.auth.isLoggedIn();
+  }
+
+  public accountName(): string {
+    return this.auth.getName();
+  }
+
+  public accountEmail(): string {
+    return this.auth.getEmail();
+  }
+
+  toggleAccountMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.accountMenuOpen.update((open) => !open);
+  }
+
+  closeAccountMenu(): void {
+    this.accountMenuOpen.set(false);
+  }
+
+  @HostListener('document:click')
+  closeAccountMenuOnOutsideClick(): void {
+    this.closeAccountMenu();
+  }
+
+  @HostListener('document:keydown.escape')
+  closeAccountMenuOnEscape(): void {
+    this.closeAccountMenu();
+  }
+
+  logout(): void {
+    this.closeAccountMenu();
+    this.auth.logout();
+    this.router.navigateByUrl('/');
   }
 
   buscarProdutos(termo: string): void {
@@ -64,7 +85,7 @@ aoRolarPagina(): void {
       return;
     }
 
-    this.favoritesOpen.update(open => !open);
+    this.favoritesOpen.update((open) => !open);
   }
 
   closeFavorites(): void {

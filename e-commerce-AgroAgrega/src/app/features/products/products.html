@@ -1,9 +1,37 @@
 <main class="product-page" id="catalog-content">
-  <header class="catalog-header">
-    <span class="catalog-eyebrow">AgroAgrega</span>
-    <h1>Encontre o que sua produção precisa</h1>
-    <p class="catalog-intro">Soluções para agricultura, pecuária e o dia a dia no campo.</p>
-  </header>
+  @if (offersOnly()) {
+    <header class="flash-offers-hero">
+      <div class="flash-offers-hero__copy">
+        <span class="flash-offers-kicker"><b aria-hidden="true">⚡</b> Seleção diária</span>
+        <h1>Ofertas relâmpago</h1>
+        <p>
+          Produtos diferentes, descontos novos e só até o fim do dia. Amanhã a vitrine muda
+          automaticamente.
+        </p>
+        <div class="flash-offers-facts" aria-label="Resumo das ofertas de hoje">
+          <span
+            ><strong>{{ flashOfferProducts().length }}</strong> produtos hoje</span
+          >
+          <span
+            ><strong>até {{ highestFlashDiscount() }}%</strong> de desconto</span
+          >
+          <span><strong>frete grátis</strong> em itens elegíveis</span>
+        </div>
+      </div>
+
+      <div class="flash-offers-clock" aria-live="off">
+        <span>As ofertas mudam em</span>
+        <strong>{{ flashOfferCountdown() }}</strong>
+        <small>{{ flashOfferDateLabel() }}</small>
+      </div>
+    </header>
+  } @else {
+    <header class="catalog-header">
+      <span class="catalog-eyebrow">AgroAgrega</span>
+      <h1>Encontre o que sua produção precisa</h1>
+      <p class="catalog-intro">Soluções para agricultura, pecuária e o dia a dia no campo.</p>
+    </header>
+  }
 
   <div class="catalog-layout">
     <div class="catalog-main-content">
@@ -149,10 +177,24 @@
 
       <section
         class="catalog-shell"
+        [class.has-comparison]="comparedProducts().length > 0"
         id="catalog-results"
         tabindex="-1"
         aria-label="Resultados do catálogo"
       >
+        @if (offersOnly()) {
+          <div class="daily-offer-notice">
+            <span aria-hidden="true">↻</span>
+            <div>
+              <strong>Vitrine renovada automaticamente</strong>
+              <p>
+                A seleção usa a data atual: à meia-noite, estes produtos saem e uma nova rodada de
+                ofertas entra no lugar.
+              </p>
+            </div>
+          </div>
+        }
+
         @if (showFeaturedProducts()) {
           <section class="featured-products" aria-labelledby="featured-products-title">
             <div class="section-heading">
@@ -160,17 +202,47 @@
                 <span>Preferidos dos clientes</span>
                 <h2 id="featured-products-title">Mais procurados da semana</h2>
               </div>
-              <small>Seleção com base nas vendas recentes</small>
+              <div class="featured-heading-actions">
+                <small>Destaques renovados diariamente</small>
+                <div
+                  class="carousel-controls"
+                  role="group"
+                  aria-label="Navegar pelos mais procurados"
+                >
+                  <button
+                    type="button"
+                    aria-label="Ver produtos anteriores"
+                    (click)="scrollFeaturedProducts(featuredCarousel, -1)"
+                  >
+                    <span aria-hidden="true">←</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Ver próximos produtos"
+                    (click)="scrollFeaturedProducts(featuredCarousel, 1)"
+                  >
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="featured-grid">
-              @for (product of featuredProducts(); track product.id) {
-                <article class="featured-card">
+            <div
+              #featuredCarousel
+              class="featured-carousel"
+              tabindex="0"
+              aria-label="Carrossel dos produtos mais procurados da semana"
+            >
+              @for (product of featuredProducts(); track product.id; let index = $index) {
+                <article
+                  class="featured-card"
+                  [attr.aria-label]="'Produto ' + (index + 1) + ' de ' + featuredProducts().length"
+                >
                   <a class="featured-image" [routerLink]="['/products', product.id]">
                     <img
                       [src]="product.images[0]"
                       [alt]="product.title"
-                      loading="eager"
+                      [attr.loading]="index < 2 ? 'eager' : 'lazy'"
                       decoding="async"
                       width="180"
                       height="180"
@@ -189,19 +261,52 @@
                       <span aria-hidden="true">★</span>
                       {{ product.rating.toFixed(1) }} de 5
                     </p>
-                    <p class="new-price">{{ product.price | precoFormatado }}</p>
-                    <button
-                      class="add-btn-small"
-                      type="button"
-                      [class.product-added]="isProductAdded(product.id)"
-                      (click)="addProductToCart(product)"
-                    >
-                      @if (isProductAdded(product.id)) {
-                        Adicionado ✓
-                      } @else {
-                        Adicionar ao carrinho
+                    <div class="featured-offer">
+                      @if (product.originalPrice; as originalPrice) {
+                        <p class="featured-discount">
+                          <span>
+                            {{ calculateDiscountPercent(product.price, originalPrice) }}% OFF
+                          </span>
+                          <s>{{ originalPrice | precoFormatado }}</s>
+                        </p>
                       }
-                    </button>
+                      <p class="featured-main-price">
+                        <strong>{{ product.price | precoFormatado }}</strong>
+                        <small>{{ getWeeklySalesLabel(product.weeklySales) }}</small>
+                      </p>
+                      <p class="featured-pix">
+                        {{ calculatePixPrice(product.price) | precoFormatado }}
+                        <strong>no Pix</strong>
+                      </p>
+                      <p class="featured-installment">
+                        ou 10x de
+                        <strong>
+                          {{ calculateInstallmentPrice(product.price) | precoFormatado }}
+                        </strong>
+                        sem juros
+                      </p>
+                      <p class="featured-delivery">
+                        <span class="featured-full-label" aria-label="Entrega Full">
+                          <span aria-hidden="true">⚡</span>
+                          <strong aria-hidden="true">FULL</strong>
+                        </span>
+                        <span>{{ freeDeliveryLabel }}</span>
+                      </p>
+                    </div>
+                    <div class="featured-actions">
+                      <button
+                        class="compare-btn-small"
+                        type="button"
+                        [class.active]="isProductCompared(product.id)"
+                        [attr.aria-pressed]="isProductCompared(product.id)"
+                        (click)="toggleProductComparison(product)"
+                      >
+                        {{ isProductCompared(product.id) ? 'Selecionado' : 'Comparar' }}
+                      </button>
+                      <a class="details-link-small" [routerLink]="['/products', product.id]">
+                        Ver detalhes
+                      </a>
+                    </div>
                   </div>
                 </article>
               }
@@ -210,41 +315,72 @@
         }
 
         <div class="products-toolbar">
-          <div class="toolbar-actions">
-            <label class="sort-label">
-              <span>Ordenar por</span>
-              <select class="sort-select" [value]="sortOrder()" (change)="updateSortOrder($event)">
-                <option value="mais_vendidos">Mais vendidos</option>
-                <option value="melhor_avaliados">Melhor avaliados</option>
-                <option value="menor_preco">Menor preço</option>
-                <option value="maior_preco">Maior preço</option>
-              </select>
-            </label>
+          <div class="toolbar-row">
+            <div class="results-summary" aria-live="polite">
+              <strong>{{ resultsLabel() }}</strong>
+              <small>Página {{ currentPage() }} de {{ totalPages() }}</small>
+            </div>
 
-            <div class="view-toggles" role="group" aria-label="Modo de visualização">
-              <button
-                class="view-btn"
-                type="button"
-                [class.active]="viewMode() === 'grid'"
-                [attr.aria-pressed]="viewMode() === 'grid'"
-                (click)="setViewMode('grid')"
-                aria-label="Visualização em grade"
-              >
-                <span aria-hidden="true">▦</span>
-              </button>
-              <button
-                class="view-btn"
-                type="button"
-                [class.active]="viewMode() === 'list'"
-                [attr.aria-pressed]="viewMode() === 'list'"
-                (click)="setViewMode('list')"
-                aria-label="Visualização em lista"
-              >
-                <span aria-hidden="true">☰</span>
-              </button>
+            <div class="toolbar-actions">
+              <label class="sort-label">
+                <span>Ordenar por</span>
+                <select
+                  class="sort-select"
+                  [value]="sortOrder()"
+                  (change)="updateSortOrder($event)"
+                >
+                  <option value="mais_vendidos">Mais vendidos</option>
+                  <option value="melhor_avaliados">Melhor avaliados</option>
+                  <option value="menor_preco">Menor preço</option>
+                  <option value="maior_preco">Maior preço</option>
+                </select>
+              </label>
+
+              <div class="view-toggles" role="group" aria-label="Modo de visualização">
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'grid'"
+                  [attr.aria-pressed]="viewMode() === 'grid'"
+                  (click)="setViewMode('grid')"
+                  aria-label="Visualização em grade"
+                >
+                  <span aria-hidden="true">▦</span>
+                </button>
+                <button
+                  class="view-btn"
+                  type="button"
+                  [class.active]="viewMode() === 'list'"
+                  [attr.aria-pressed]="viewMode() === 'list'"
+                  (click)="setViewMode('list')"
+                  aria-label="Visualização em lista"
+                >
+                  <span aria-hidden="true">☰</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        @if (activeFilterChips().length > 0) {
+          <div class="active-filters" aria-label="Filtros ativos">
+            <span>Filtros ativos</span>
+            <div>
+              @for (filter of activeFilterChips(); track filter.key) {
+                <button
+                  type="button"
+                  (click)="removeActiveFilter(filter)"
+                  [attr.aria-label]="'Remover filtro ' + filter.label"
+                >
+                  {{ filter.label }} <span aria-hidden="true">×</span>
+                </button>
+              }
+            </div>
+            <button class="clear-active-filters" type="button" (click)="clearFilters()">
+              Limpar todos
+            </button>
+          </div>
+        }
 
         <div
           class="catalog-grid"
@@ -254,7 +390,8 @@
           @for (product of visibleProducts(); track product.id) {
             <app-product-card
               [product]="product"
-              (addToCart)="addProductToCart($event)"
+              [compareSelected]="isProductCompared(product.id)"
+              (toggleCompare)="toggleProductComparison($event)"
             ></app-product-card>
           } @empty {
             <div class="empty-products">
@@ -265,6 +402,16 @@
             </div>
           }
         </div>
+
+        <app-product-comparison
+          [products]="comparedProducts()"
+          [open]="comparisonOpen()"
+          [announcement]="comparisonAnnouncement()"
+          (removeProduct)="removeComparedProduct($event)"
+          (clearProducts)="clearComparison()"
+          (openComparison)="openComparison()"
+          (closeComparison)="closeComparison()"
+        ></app-product-comparison>
 
         <p class="pagination-status" aria-live="polite" aria-atomic="true">
           {{ pageAnnouncement() }}

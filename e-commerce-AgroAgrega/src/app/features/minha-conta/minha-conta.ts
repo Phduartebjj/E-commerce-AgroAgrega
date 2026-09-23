@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@
 import { Router, RouterLink } from '@angular/router';
 import { AddressService } from '@core/services/address/address.service';
 import { Auth } from '@core/services/auth/auth.service';
+import { AvatarId, AvatarService } from '@core/services/avatar/avatar.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderService } from '@core/services/order/order.service';
 import { AddressModel } from '@models/address.model';
@@ -21,11 +22,13 @@ export class MinhaConta {
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly addressService = inject(AddressService);
+  readonly avatar = inject(AvatarService);
 
   userName = this.auth.getName();
   userEmail = this.auth.getEmail();
   userAddresses: AddressModel[] = [];
   editingProfile = false;
+  avatarPickerOpen = false;
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;
 
@@ -81,6 +84,15 @@ export class MinhaConta {
 
   editProfile(): void {
     this.editingProfile = true;
+  }
+
+  toggleAvatarPicker(): void {
+    this.avatarPickerOpen = !this.avatarPickerOpen;
+  }
+
+  selectAvatar(avatarId: AvatarId): void {
+    this.avatar.selectAvatar(avatarId);
+    this.avatarPickerOpen = false;
   }
 
   saveProfile(): void {

@@ -1,0 +1,128 @@
+@if (products().length > 0) {
+  <aside class="comparison-tray" aria-label="Produtos selecionados para comparação">
+    <div class="comparison-summary">
+      <span class="comparison-icon" aria-hidden="true">⇄</span>
+      <div>
+        <strong>{{ products().length }} de 3 selecionados</strong>
+        <small>
+          {{ products().length < 2 ? 'Escolha mais um produto' : 'Pronto para comparar' }}
+        </small>
+      </div>
+    </div>
+
+    <div class="selected-products">
+      @for (product of products(); track product.id) {
+        <div class="selected-product">
+          <img [src]="product.images[0]" alt="" width="44" height="44" />
+          <span>{{ product.title }}</span>
+          <button
+            type="button"
+            (click)="removeProduct.emit(product.id)"
+            [attr.aria-label]="'Remover ' + product.title + ' da comparação'"
+          >
+            ×
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="comparison-actions">
+      <button class="clear-comparison" type="button" (click)="clearProducts.emit()">
+        Limpar
+      </button>
+      <button
+        class="open-comparison"
+        type="button"
+        [disabled]="products().length < 2"
+        (click)="openComparison.emit()"
+      >
+        Comparar agora
+      </button>
+    </div>
+  </aside>
+}
+
+<p class="comparison-live-region" aria-live="polite" aria-atomic="true">
+  {{ announcement() }}
+</p>
+
+@if (open() && products().length >= 2) {
+  <div class="comparison-backdrop" (click)="closeOnBackdrop($event)">
+    <section
+      class="comparison-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="comparison-title"
+    >
+      <header>
+        <div>
+          <span>Decida com mais segurança</span>
+          <h2 id="comparison-title">Compare os produtos</h2>
+        </div>
+        <button
+          class="close-dialog"
+          type="button"
+          aria-label="Fechar comparação"
+          (click)="closeComparison.emit()"
+          autofocus
+        >
+          ×
+        </button>
+      </header>
+
+      <div class="comparison-table-scroll">
+        <table>
+          <caption class="visually-hidden">
+            Comparação de preço, marca, categoria, avaliação e procura semanal
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Característica</th>
+              @for (product of products(); track product.id) {
+                <th scope="col">
+                  <img [src]="product.images[0]" alt="" width="110" height="90" />
+                  <strong>{{ product.title }}</strong>
+                  <button type="button" (click)="removeProduct.emit(product.id)">
+                    Remover
+                  </button>
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Preço</th>
+              @for (product of products(); track product.id) {
+                <td class="price-cell">{{ product.price | precoFormatado }}</td>
+              }
+            </tr>
+            <tr>
+              <th scope="row">Marca</th>
+              @for (product of products(); track product.id) {
+                <td>{{ product.brand && product.brand !== 'none' ? product.brand : 'AgroAgrega' }}</td>
+              }
+            </tr>
+            <tr>
+              <th scope="row">Categoria</th>
+              @for (product of products(); track product.id) {
+                <td>{{ product.category }}</td>
+              }
+            </tr>
+            <tr>
+              <th scope="row">Avaliação</th>
+              @for (product of products(); track product.id) {
+                <td><span class="rating-star" aria-hidden="true">★</span> {{ product.rating.toFixed(1) }}</td>
+              }
+            </tr>
+            <tr>
+              <th scope="row">Procura semanal</th>
+              @for (product of products(); track product.id) {
+                <td>{{ product.weeklySales ?? 0 }} vendas</td>
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+}

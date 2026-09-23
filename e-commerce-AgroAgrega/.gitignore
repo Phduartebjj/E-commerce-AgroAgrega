@@ -44,3 +44,27 @@ __screenshots__/
 Thumbs.db
 
 /temp
+
+# Arquivo de dados local preservado após a reversão
+/.local/
+
+
+# =========================
+# Segurança / variáveis de ambiente
+# =========================
+
+.env
+.env.*
+
+# Permite versionar apenas arquivos de exemplo
+!.env.example
+
+
+# =========================
+# Chaves e certificados privados
+# =========================
+
+*.pem
+*.key
+*.p12
+*.pfx

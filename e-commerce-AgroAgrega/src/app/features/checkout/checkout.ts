@@ -1,5 +1,72 @@
-import { Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+
+const bwipjs = {
+  toCanvas(
+    canvas: HTMLCanvasElement,
+    options: {
+      bcid: string;
+      text: string;
+      scale?: number;
+      padding?: number;
+      backgroundcolor?: string;
+      barcolor?: string;
+      height?: number;
+    },
+  ): void {
+    const scale = options.scale ?? 2;
+    const padding = options.padding ?? 0;
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Canvas is not supported');
+    }
+
+    const isQrCode = options.bcid === 'qrcode';
+    const size = isQrCode ? 29 : options.text.length * 11;
+
+    canvas.width = size * scale + padding * 2;
+    canvas.height =
+      (isQrCode ? size : (options.height ?? 16)) * scale + padding * 2;
+
+    context.fillStyle = `#${options.backgroundcolor ?? 'FFFFFF'}`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.fillStyle = `#${options.barcolor ?? '000000'}`;
+
+    if (isQrCode) {
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const index = (x + y * size) % options.text.length;
+
+          if ((options.text.charCodeAt(index) + x * 3 + y * 7) % 5 < 2) {
+            context.fillRect(
+              padding + x * scale,
+              padding + y * scale,
+              scale,
+              scale,
+            );
+          }
+        }
+      }
+    } else {
+      for (let index = 0; index < options.text.length * 8; index++) {
+        if (
+          (options.text.charCodeAt(index % options.text.length) + index) % 3 !==
+          0
+        ) {
+          context.fillRect(
+            padding + index * scale,
+            padding,
+            scale,
+            (options.height ?? 16) * scale,
+          );
+        }
+      }
+    }
+  },
+};
 
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
@@ -14,6 +81,7 @@ import {
 } from '@angular/forms';
 
 import { OrderService } from '@core/services/order/order.service';
+import { PaymentApiService } from '@core/services/payment-api.service';
 import { CepService } from '@core/services/cep/cep';
 import { OrderPaymentMethod, OrderStatus } from '@models/order';
 import { AddressModel } from '@models/address.model';
@@ -31,16 +99,44 @@ export class CheckoutComponent {
   private cart = inject(Cart);
   private readonly cepService = inject(CepService);
   private orderService = inject(OrderService);
+  private readonly paymentApiService = inject(PaymentApiService);
   private auth = inject(Auth);
   private readonly addressService = inject(AddressService);
+  private readonly platformId = inject(PLATFORM_ID);
+
   readonly PaymentMethod = OrderPaymentMethod;
   readonly router = inject(Router);
 
-  readonly subTotal = this.cart.subtotal;
-  readonly discountValue = this.cart.discountValue;
+  readonly checkoutItems = this.cart.selectedCartItems;
+  readonly subTotal = this.cart.selectedSubtotal;
+  readonly discountValue = this.cart.selectedCouponDiscount;
+  readonly deliveryEstimate = getDeliveryEstimate();
+  readonly boletoDueDate = formatLongDate(addBusinessDays(new Date(), 3));
+
+  pixCopyPasteCode = '';
+  pixExpiresAt = '';
+  boletoBarcodeValue = '';
+  boletoDigitableLine = '';
+  paymentCodeFeedback = '';
+
+  private pixCanvas?: HTMLCanvasElement;
+  private boletoCanvas?: HTMLCanvasElement;
+
+  @ViewChild('pixCanvas')
+  set pixCanvasRef(element: ElementRef<HTMLCanvasElement> | undefined) {
+    this.pixCanvas = element?.nativeElement;
+    this.renderPixQrCode();
+  }
+
+  @ViewChild('boletoCanvas')
+  set boletoCanvasRef(element: ElementRef<HTMLCanvasElement> | undefined) {
+    this.boletoCanvas = element?.nativeElement;
+    this.renderBoletoBarcode();
+  }
 
   savedAddresses: AddressModel[] = [];
   selectedAddressId: string | null = null;
+
   private loadSavedAddresses(): void {
     const userId = this.auth.getId();
 
@@ -57,7 +153,9 @@ export class CheckoutComponent {
   }
 
   selectSavedAddress(addressId: string): void {
-    const address = this.savedAddresses.find((address) => address.id === addressId);
+    const address = this.savedAddresses.find(
+      (address) => address.id === addressId,
+    );
 
     if (!address) {
       return;
@@ -80,7 +178,11 @@ export class CheckoutComponent {
   checkoutForm = new FormGroup({
     fullName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3), nameNoSpecialChars],
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        nameNoSpecialChars,
+      ],
     }),
 
     cep: new FormControl('', {
@@ -184,7 +286,6 @@ export class CheckoutComponent {
     'RO',
     'RR',
     'SC',
-    'SP',
     'SE',
     'TO',
   ];
@@ -223,17 +324,18 @@ export class CheckoutComponent {
   }
 
   get paymentDiscountValue(): number {
-    return this.checkoutForm.controls.paymentMethod.value === OrderPaymentMethod.Pix
-      ? this.cart.subtotal() * 0.1
+    return this.checkoutForm.controls.paymentMethod.value ===
+      OrderPaymentMethod.Pix
+      ? this.cart.selectedPixDiscount()
       : 0;
   }
 
   get discountTotalValue(): number {
-    return this.cart.discountValue() + this.paymentDiscountValue;
+    return this.cart.selectedCouponDiscount() + this.paymentDiscountValue;
   }
 
   get totalValue(): number {
-    return this.cart.total() - this.paymentDiscountValue;
+    return this.cart.selectedTotal() - this.paymentDiscountValue;
   }
 
   selectPaymentMethod(paymentMethod: OrderPaymentMethod): void {
@@ -250,7 +352,8 @@ export class CheckoutComponent {
 
     const installments = this.checkoutForm.controls.installments;
 
-    const isCreditCard = paymentMethod === OrderPaymentMethod.CreditCard;
+    const isCreditCard =
+      paymentMethod === OrderPaymentMethod.CreditCard;
 
     const isCard =
       paymentMethod === OrderPaymentMethod.CreditCard ||
@@ -276,6 +379,130 @@ export class CheckoutComponent {
     }
 
     installments.updateValueAndValidity();
+
+    if (paymentMethod === OrderPaymentMethod.Pix) {
+      this.generatePixCode();
+    } else if (paymentMethod === OrderPaymentMethod.Boleto) {
+      this.generateBoletoCode();
+    }
+  }
+
+  regeneratePaymentCode(): void {
+    const paymentMethod =
+      this.checkoutForm.controls.paymentMethod.value;
+
+    if (paymentMethod === OrderPaymentMethod.Pix) {
+      this.generatePixCode();
+    } else if (paymentMethod === OrderPaymentMethod.Boleto) {
+      this.generateBoletoCode();
+    }
+  }
+
+  async copyPaymentCode(
+    value: string,
+    label: string,
+  ): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
+      this.paymentCodeFeedback =
+        'Selecione e copie o código manualmente.';
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(value);
+      this.paymentCodeFeedback = `${label} copiado.`;
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível copiar. Selecione o código manualmente.';
+    }
+  }
+
+  private generatePixCode(): void {
+    const now = new Date();
+    const expiresAt = new Date(
+      now.getTime() + 30 * 60 * 1000,
+    );
+
+    const reference = `AGPIX${now
+      .getTime()
+      .toString(36)
+      .toUpperCase()}${randomDigits(4)}`;
+
+    this.pixExpiresAt = new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(expiresAt);
+
+    this.pixCopyPasteCode = [
+      'AGROAGREGA',
+      'PIX-DEMONSTRACAO',
+      `REF=${reference}`,
+      `VALOR=${this.totalValue.toFixed(2)}`,
+      `EXPIRA=${expiresAt.toISOString()}`,
+    ].join('|');
+
+    this.paymentCodeFeedback = '';
+    this.renderPixQrCode();
+  }
+
+  private generateBoletoCode(): void {
+    const digits = randomDigits(47);
+
+    this.boletoBarcodeValue = digits.slice(0, 44);
+    this.boletoDigitableLine = formatDigitableLine(digits);
+    this.paymentCodeFeedback = '';
+    this.renderBoletoBarcode();
+  }
+
+  private renderPixQrCode(): void {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.pixCanvas ||
+      !this.pixCopyPasteCode
+    ) {
+      return;
+    }
+
+    try {
+      bwipjs.toCanvas(this.pixCanvas, {
+        bcid: 'qrcode',
+        text: this.pixCopyPasteCode,
+        scale: 4,
+        padding: 10,
+        backgroundcolor: 'FFFFFF',
+        barcolor: '123C2C',
+      });
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível desenhar o QR Code neste navegador.';
+    }
+  }
+
+  private renderBoletoBarcode(): void {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.boletoCanvas ||
+      !this.boletoBarcodeValue
+    ) {
+      return;
+    }
+
+    try {
+      bwipjs.toCanvas(this.boletoCanvas, {
+        bcid: 'code128',
+        text: this.boletoBarcodeValue,
+        scale: 2,
+        height: 16,
+        padding: 8,
+        backgroundcolor: 'FFFFFF',
+        barcolor: '10271F',
+      });
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível desenhar o código de barras neste navegador.';
+    }
   }
 
   getErrorMessage(control: AbstractControl): string {
@@ -285,7 +512,9 @@ export class CheckoutComponent {
 
     const errorKey = Object.keys(control.errors)[0];
 
-    return errorMessages[errorKey as keyof typeof errorMessages] ?? '';
+    return (
+      errorMessages[errorKey as keyof typeof errorMessages] ?? ''
+    );
   }
 
   finishOrder(): void {
@@ -294,7 +523,8 @@ export class CheckoutComponent {
       return;
     }
 
-    const paymentMethod = this.checkoutForm.controls.paymentMethod.value;
+    const paymentMethod =
+      this.checkoutForm.controls.paymentMethod.value;
 
     if (!paymentMethod) {
       this.checkoutForm.controls.paymentMethod.markAsTouched();
@@ -307,20 +537,61 @@ export class CheckoutComponent {
       cep: this.checkoutForm.controls.cep.value,
       address: this.checkoutForm.controls.address.value,
       number: this.checkoutForm.controls.number.value,
-      neighborhood: this.checkoutForm.controls.neighborhood.value,
+      neighborhood:
+        this.checkoutForm.controls.neighborhood.value,
       city: this.checkoutForm.controls.city.value,
       state: this.checkoutForm.controls.state.value,
-      complement: this.checkoutForm.controls.complement.value,
+      complement:
+        this.checkoutForm.controls.complement.value,
     };
 
     const customerName =
-      this.checkoutForm.get('fullName')?.value?.trim() || this.auth.getName() || 'Cliente';
+      this.checkoutForm.get('fullName')?.value?.trim() ||
+      this.auth.getName() ||
+      'Cliente';
 
-    if (paymentMethod === OrderPaymentMethod.Pix || paymentMethod === OrderPaymentMethod.Boleto) {
+    if (paymentMethod === OrderPaymentMethod.CreditCard) {
+      this.paymentApiService
+        .criarPedidoTeste(this.totalValue)
+        .subscribe({
+          next: (payment) => {
+            this.orderService.createOrder(
+              this.cart.selectedCartItems(),
+              customerName,
+              this.cart.selectedSubtotal(),
+              this.discountTotalValue,
+              0,
+              paymentMethod,
+              address,
+              OrderStatus.Pending,
+              payment.id,
+            );
+
+            this.cart.removeCoupon();
+            this.cart.removeSelectedItems();
+
+            window.location.href = payment.checkoutUrl;
+          },
+
+          error: (error) => {
+            console.error(
+              'Erro ao iniciar pagamento:',
+              error,
+            );
+          },
+        });
+
+      return;
+    }
+
+    if (
+      paymentMethod === OrderPaymentMethod.Pix ||
+      paymentMethod === OrderPaymentMethod.Boleto
+    ) {
       this.orderService.createOrder(
-        this.cart.getCartItems()(),
+        this.cart.selectedCartItems(),
         customerName,
-        this.cart.subtotal(),
+        this.cart.selectedSubtotal(),
         this.discountTotalValue,
         0,
         paymentMethod,
@@ -329,9 +600,9 @@ export class CheckoutComponent {
       );
     } else {
       this.orderService.createOrder(
-        this.cart.getCartItems()(),
+        this.cart.selectedCartItems(),
         customerName,
-        this.cart.subtotal(),
+        this.cart.selectedSubtotal(),
         this.discountTotalValue,
         0,
         paymentMethod,
@@ -340,16 +611,20 @@ export class CheckoutComponent {
     }
 
     this.cart.removeCoupon();
-    this.cart.cleanCartItem();
+    this.cart.removeSelectedItems();
 
     this.router.navigate(['/orders']);
   }
 }
 
-function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
+function nameNoSpecialChars(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(value)) {
     return { charsInvalid: true };
@@ -358,10 +633,14 @@ function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validCep(control: AbstractControl): ValidationErrors | null {
+function validCep(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^\d{5}-?\d{3}$/.test(value)) {
     return { invalidCep: true };
@@ -370,10 +649,14 @@ function validCep(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validPhone(control: AbstractControl): ValidationErrors | null {
+function validPhone(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
     return { invalidPhone: true };
@@ -382,10 +665,14 @@ function validPhone(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function nameNoNumbers(control: AbstractControl): ValidationErrors | null {
+function nameNoNumbers(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (/\d/.test(value)) {
     return { numberInvalid: true };
@@ -394,7 +681,9 @@ function nameNoNumbers(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validCardNumber(control: AbstractControl): ValidationErrors | null {
+function validCardNumber(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value?.replace(/\D/g, '');
 
   if (!value) {
@@ -423,10 +712,14 @@ function validCardNumber(control: AbstractControl): ValidationErrors | null {
     shouldDouble = !shouldDouble;
   }
 
-  return sum % 10 === 0 ? null : { invalidCardNumber: true };
+  return sum % 10 === 0
+    ? null
+    : { invalidCardNumber: true };
 }
 
-function validCardExpiration(control: AbstractControl): ValidationErrors | null {
+function validCardExpiration(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
   if (!value) {
@@ -444,14 +737,19 @@ function validCardExpiration(control: AbstractControl): ValidationErrors | null 
   const currentMonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear() % 100;
 
-  if (year < currentYear || (year === currentYear && month < currentMonth)) {
+  if (
+    year < currentYear ||
+    (year === currentYear && month < currentMonth)
+  ) {
     return { expiredCard: true };
   }
 
   return null;
 }
 
-function validCardCvv(control: AbstractControl): ValidationErrors | null {
+function validCardCvv(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
   if (!value) {
@@ -465,7 +763,9 @@ function validCardCvv(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validCpf(control: AbstractControl): ValidationErrors | null {
+function validCpf(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value?.replace(/\D/g, '');
 
   if (!value) {
@@ -515,7 +815,9 @@ function validCpf(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validInstallments(control: AbstractControl): ValidationErrors | null {
+function validInstallments(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
   if (value === null || value === '') {
@@ -527,4 +829,80 @@ function validInstallments(control: AbstractControl): ValidationErrors | null {
   }
 
   return null;
+}
+
+export function addBusinessDays(
+  startDate: Date,
+  businessDays: number,
+): Date {
+  const result = new Date(startDate);
+  let remainingDays = Math.max(
+    0,
+    Math.trunc(businessDays),
+  );
+
+  while (remainingDays > 0) {
+    result.setDate(result.getDate() + 1);
+
+    const dayOfWeek = result.getDay();
+
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      remainingDays -= 1;
+    }
+  }
+
+  return result;
+}
+
+export function formatLongDate(date: Date): string {
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
+
+export function getDeliveryEstimate(
+  startDate = new Date(),
+): string {
+  const firstDate = addBusinessDays(startDate, 5);
+  const lastDate = addBusinessDays(startDate, 8);
+
+  return `Receba entre ${formatLongDate(firstDate)} e ${formatLongDate(lastDate)}`;
+}
+
+export function formatDigitableLine(
+  digits: string,
+): string {
+  const normalizedDigits = digits
+    .replace(/\D/g, '')
+    .padEnd(47, '0')
+    .slice(0, 47);
+
+  return [
+    `${normalizedDigits.slice(0, 5)}.${normalizedDigits.slice(5, 10)}`,
+    `${normalizedDigits.slice(10, 15)}.${normalizedDigits.slice(15, 21)}`,
+    `${normalizedDigits.slice(21, 26)}.${normalizedDigits.slice(26, 32)}`,
+    normalizedDigits.slice(32, 33),
+    normalizedDigits.slice(33, 47),
+  ].join(' ');
+}
+
+function randomDigits(length: number): string {
+  const values = new Uint8Array(length);
+
+  if (
+    typeof crypto !== 'undefined' &&
+    crypto.getRandomValues
+  ) {
+    crypto.getRandomValues(values);
+  } else {
+    for (let index = 0; index < length; index += 1) {
+      values[index] = Math.floor(Math.random() * 256);
+    }
+  }
+
+  return Array.from(values, (value) =>
+    String(value % 10),
+  ).join('');
 }

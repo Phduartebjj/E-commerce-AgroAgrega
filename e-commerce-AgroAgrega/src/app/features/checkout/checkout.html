@@ -233,7 +233,7 @@
 
               <div class="delivery-text">
                 <span class="delivery-name">Entrega padrão</span>
-                <small>Receba em casa até 22 de agosto</small>
+                <small>{{ deliveryEstimate }}</small>
               </div>
             </div>
 
@@ -369,7 +369,7 @@
 
               <div class="payment-text">
                 <span class="payment-name">Boleto</span>
-                <small>Vencimento em 3 dias úteis</small>
+                <small>Vencimento em {{ boletoDueDate }}</small>
               </div>
             </div>
 
@@ -384,15 +384,99 @@
         </div>
 
         @if (checkoutForm.controls.paymentMethod.value === PaymentMethod.Pix) {
-          <div class="pix-qrcode-container">
-            <img
-              src="assets/images/QrCode.webp"
-              width="100"
-              height="100"
-              alt="QR Code Pix"
-              class="pix-qrcode"
-            />
-          </div>
+          <section class="payment-code-card" aria-labelledby="pix-code-title">
+            <div class="payment-code-header">
+              <div>
+                <span class="payment-code-kicker">Gerado automaticamente</span>
+                <h3 id="pix-code-title">Pague com Pix</h3>
+                <p>Escaneie o QR Code ou copie o código abaixo.</p>
+              </div>
+              <span class="payment-code-status">Expira em 30 min</span>
+            </div>
+
+            <div class="pix-code-content">
+              <div class="code-canvas-frame code-canvas-frame--qr">
+                <canvas
+                  #pixCanvas
+                  role="img"
+                  aria-label="QR Code Pix gerado para esta compra"
+                ></canvas>
+              </div>
+
+              <div class="payment-code-details">
+                <span class="payment-code-label">Pix copia e cola</span>
+                <div class="copy-code-row">
+                  <input
+                    type="text"
+                    readonly
+                    [value]="pixCopyPasteCode"
+                    aria-label="Código Pix copia e cola"
+                  />
+                  <button
+                    type="button"
+                    class="btn-copy-code"
+                    (click)="copyPaymentCode(pixCopyPasteCode, 'Código Pix')"
+                  >
+                    Copiar código
+                  </button>
+                </div>
+                <small>Válido até {{ pixExpiresAt }}.</small>
+                <button type="button" class="btn-regenerate-code" (click)="regeneratePaymentCode()">
+                  Gerar novo QR Code
+                </button>
+              </div>
+            </div>
+
+            <p class="payment-demo-notice">
+              Ambiente de demonstração: este QR Code não gera uma cobrança bancária real.
+            </p>
+            <p class="copy-feedback" aria-live="polite">{{ paymentCodeFeedback }}</p>
+          </section>
+        }
+        @if (checkoutForm.controls.paymentMethod.value === PaymentMethod.Boleto) {
+          <section class="payment-code-card" aria-labelledby="boleto-code-title">
+            <div class="payment-code-header">
+              <div>
+                <span class="payment-code-kicker">Gerado automaticamente</span>
+                <h3 id="boleto-code-title">Boleto para pagamento</h3>
+                <p>Use o código de barras ou copie a linha digitável.</p>
+              </div>
+              <span class="payment-code-status">Vence em {{ boletoDueDate }}</span>
+            </div>
+
+            <div class="code-canvas-frame code-canvas-frame--barcode">
+              <canvas
+                #boletoCanvas
+                role="img"
+                aria-label="Código de barras do boleto gerado para esta compra"
+              ></canvas>
+            </div>
+
+            <span class="payment-code-label">Linha digitável</span>
+            <div class="copy-code-row copy-code-row--boleto">
+              <input
+                type="text"
+                readonly
+                [value]="boletoDigitableLine"
+                aria-label="Linha digitável do boleto"
+              />
+              <button
+                type="button"
+                class="btn-copy-code"
+                (click)="copyPaymentCode(boletoDigitableLine, 'Linha digitável')"
+              >
+                Copiar código
+              </button>
+            </div>
+            <button type="button" class="btn-regenerate-code" (click)="regeneratePaymentCode()">
+              Gerar novo boleto
+            </button>
+
+            <p class="payment-demo-notice">
+              Ambiente de demonstração: este boleto não gera uma cobrança bancária real.
+            </p>
+            <p class="copy-feedback" aria-live="polite">{{ paymentCodeFeedback }}</p>
+          </section>
         }
         @if (
           checkoutForm.controls.paymentMethod.value === PaymentMethod.CreditCard ||
@@ -523,9 +607,9 @@
         </div>
 
         <div class="payment-safe">
-          <span class="icon-lock"
-            ><img src="assets/icones/lock_30dp_1A3D2A_FILL0_wght400_GRAD0_opsz24.svg" alt=""
-          /></span>
+          <span class="icon-lock">
+            <img src="/assets/icones/lock_30dp_1A3D2A_FILL0_wght400_GRAD0_opsz24.svg" alt="" />
+          </span>
           <span>Pagamento protegido e seguro</span>
         </div>
       </div>
@@ -534,9 +618,9 @@
         <button (click)="finishOrder()" class="btn-finish" type="button">Finalizar Compra</button>
       </div>
       <div class="support-section">
-        <span class="icon-chat"
-          ><img src="assets/icones/chat_30dp_E8F5E9_FILL0_wght400_GRAD0_opsz24.svg" alt=""
-        /></span>
+        <span class="icon-chat">
+          <img src="/assets/icones/chat_30dp_E8F5E9_FILL0_wght400_GRAD0_opsz24.svg" alt="" />
+        </span>
         <div>
           <h4>Precisa de ajuda?</h4>
           <p>Nosso time acompanha você durante a compra.</p>

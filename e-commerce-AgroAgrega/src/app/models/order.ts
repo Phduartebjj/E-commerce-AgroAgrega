@@ -2,6 +2,7 @@ import { AddressModel } from './address.model';
 
 export interface OrderModel {
   id: string;
+  mercadoPagoOrderId?: string;
   userId: string;
   customerName: string;
   items: OrderItemModel[];

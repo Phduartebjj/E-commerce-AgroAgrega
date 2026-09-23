@@ -3,6 +3,9 @@
     <app-header></app-header>
 }
 <router-outlet></router-outlet>
+@if (mostrarHeader()) {
+    <app-store-assistant></app-store-assistant>
+}
 @if (mostrarFooter()) {
     <app-footer></app-footer>
 }

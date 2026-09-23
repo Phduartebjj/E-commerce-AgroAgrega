@@ -1,8 +1,29 @@
 <article class="product-card">
   <div class="product-card-top">
     <span class="product-card-tag">
-      {{ (product().weeklySales ?? 0) >= 80 ? 'Mais vendido' : 'Pronta entrega' }}
+      @if (product().flashOffer) {
+        Relâmpago −{{ getDiscountPercent(product()) }}%
+      } @else if (getDiscountPercent(product()) > 0) {
+        Oferta −{{ getDiscountPercent(product()) }}%
+      } @else {
+        {{ (product().weeklySales ?? 0) >= 80 ? 'Mais vendido' : 'Pronta entrega' }}
+      }
     </span>
+    <button
+      class="compare-toggle"
+      type="button"
+      [class.active]="compareSelected()"
+      [attr.aria-pressed]="compareSelected()"
+      [attr.aria-label]="
+        compareSelected()
+          ? 'Remover ' + product().title + ' da comparação'
+          : 'Adicionar ' + product().title + ' à comparação'
+      "
+      (click)="toggleCompare.emit(product())"
+    >
+      <span aria-hidden="true">{{ compareSelected() ? '✓' : '+' }}</span>
+      {{ compareSelected() ? 'Selecionado' : 'Comparar' }}
+    </button>
   </div>
 
   <div class="product-card-visual">
@@ -50,26 +71,42 @@
       <span class="review">{{ product().rating.toFixed(1) }}</span>
     </div>
 
-    <div class="product-card-price">
-      <div class="product-card-amount">
-        <strong>{{ product().price | precoFormatado }}</strong>
-      </div>
-    </div>
-
-    <small class="product-card-installment">ou em até 10x sem juros</small>
-
-    <button
-      class="product-card-button"
-      [class.product-added]="adicionado()"
-      type="button"
-      [attr.aria-label]="'Adicionar ' + product().title + ' ao carrinho'"
-      (click)="adicionarAoCarrinho()"
-    >
-      @if (adicionado()) {
-        Adicionado ✓
-      } @else {
-        Adicionar
+    <div class="product-card-offer">
+      @if (product().originalPrice; as originalPrice) {
+        <div class="product-card-discount-line">
+          <span>{{ getDiscountPercent(product()) }}% OFF</span>
+          <s>{{ originalPrice | precoFormatado }}</s>
+        </div>
       }
-    </button>
+
+      <div class="product-card-main-price">
+        <strong>{{ product().price | precoFormatado }}</strong>
+        <small>{{ getWeeklySalesLabel(product().weeklySales) }}</small>
+      </div>
+
+      <p class="product-card-pix">
+        <strong>{{ calculatePixPrice(product().price) | precoFormatado }}</strong>
+        <span>no Pix</span>
+      </p>
+
+      <p class="product-card-installment">
+        ou 10x de
+        <strong>{{ calculateInstallmentPrice(product().price) | precoFormatado }}</strong>
+        sem juros
+      </p>
+
+      <p class="product-card-coupon">
+        <span>10% OFF no Pix</span>
+        <small>Cupons disponíveis no carrinho</small>
+      </p>
+
+      <p class="product-card-delivery">
+        <span class="product-card-full-label" aria-label="Entrega Full">
+          <span aria-hidden="true">⚡</span>
+          <strong aria-hidden="true">FULL</strong>
+        </span>
+        <strong class="product-card-delivery-date">{{ freeDeliveryLabel }}</strong>
+      </p>
+    </div>
   </div>
 </article>

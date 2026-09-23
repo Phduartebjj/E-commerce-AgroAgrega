@@ -1,0 +1,102 @@
+<button
+  class="assistant-launcher"
+  type="button"
+  aria-label="{{ open() ? 'Fechar' : 'Abrir' }} assistente AgroAgrega"
+  aria-controls="agro-assistant-panel"
+  [attr.aria-expanded]="open()"
+  (click)="toggle()"
+>
+  <span class="assistant-face" aria-hidden="true"></span>
+  <span class="assistant-online" aria-hidden="true"></span>
+</button>
+
+@if (open()) {
+  <section id="agro-assistant-panel" class="assistant-panel" role="dialog" aria-label="Assistente AgroAgrega">
+    <header class="assistant-header">
+      <span class="assistant-face assistant-face--small" aria-hidden="true"></span>
+      <span class="assistant-header__title">
+        <strong>Assistente AgroAgrega</strong>
+        <small>Seu guia pelo catálogo</small>
+      </span>
+      <button class="assistant-close" type="button" aria-label="Fechar assistente" (click)="close()">×</button>
+    </header>
+
+    <div #messageList class="assistant-messages" role="log" aria-label="Conversa com o assistente" aria-live="polite">
+      @for (message of messages(); track message.id) {
+        <article class="assistant-message" [class.assistant-message--user]="message.role === 'user'">
+          <p>{{ message.text }}</p>
+
+          @if (message.products?.length) {
+            <div class="assistant-product-list">
+              @for (product of message.products; track product.id) {
+                <div class="assistant-product">
+                  <a [routerLink]="['/products', product.id]" (click)="close()" [attr.aria-label]="'Ver ' + product.title">
+                    <img [src]="product.images[0]" [alt]="product.title" loading="lazy" width="48" height="48" />
+                  </a>
+                  <div class="assistant-product__text">
+                    <a [routerLink]="['/products', product.id]" (click)="close()">{{ product.title }}</a>
+                    <small>{{ price(product.price) }} @if (product.flashOffer) { · Oferta-relâmpago }</small>
+                  </div>
+                  <button
+                    type="button"
+                    class="assistant-product__add"
+                    [attr.aria-label]="(message.productAction === 'remove' ? 'Remover ' : message.productAction ? 'Selecionar ' : 'Adicionar ') + product.title"
+                    (click)="addFromResult(product, message.productAction ?? 'add', message.quantity ?? 1)"
+                  >{{ message.productAction === 'remove' ? '−' : '+' }}</button>
+                </div>
+              }
+            </div>
+          }
+
+          @if (message.showCart) {
+            <div class="assistant-cart">
+              @for (item of cartItems(); track item.product.id) {
+                <div class="assistant-cart__item">
+                  <span>{{ item.product.title }}</span>
+                  <div class="assistant-cart__controls">
+                    <button type="button" [attr.aria-label]="'Diminuir ' + item.product.title" [disabled]="item.quantity <= 1" (click)="changeCartQuantity(item.product, -1)">−</button>
+                    <strong>{{ item.quantity }}</strong>
+                    <button type="button" [attr.aria-label]="'Aumentar ' + item.product.title" [disabled]="item.quantity >= 99" (click)="changeCartQuantity(item.product, 1)">+</button>
+                    <button type="button" class="assistant-cart__remove" [attr.aria-label]="'Remover ' + item.product.title" (click)="removeFromCart(item.product)">×</button>
+                  </div>
+                </div>
+              }
+              @if (cartItems().length) {
+                <div class="assistant-cart__total"><span>Total</span><strong>{{ price(cartTotal()) }}</strong></div>
+                @if (currentCoupon()) { <small>Cupom {{ currentCoupon()!.code }} aplicado</small> }
+              }
+            </div>
+          }
+
+          @if (message.showCoupons) {
+            <div class="assistant-coupons">
+              @for (coupon of coupons; track coupon.code) {
+                <button type="button" (click)="applyCoupon(coupon.code)">
+                  <strong>{{ coupon.code }}</strong><span>{{ coupon.discountPercentage }}% OFF</span>
+                </button>
+              }
+            </div>
+          }
+
+          @if (message.link) {
+            <a class="assistant-link" [routerLink]="message.link.path" [queryParams]="message.link.queryParams ?? null" (click)="close()">{{ message.link.label }} <span aria-hidden="true">→</span></a>
+          }
+        </article>
+      }
+    </div>
+
+    @if (messages().length < 3) {
+      <div class="assistant-suggestions" aria-label="Sugestões de perguntas">
+        @for (suggestion of suggestions; track suggestion) {
+          <button type="button" (click)="submitPrompt(suggestion)">{{ suggestion }}</button>
+        }
+      </div>
+    }
+
+    <form class="assistant-composer" (ngSubmit)="send()">
+      <input #composer name="message" type="text" [(ngModel)]="draft" maxlength="240" autocomplete="off" placeholder="Peça um produto, oferta ou ajuda..." aria-label="Mensagem para o assistente" />
+      <button type="submit" [disabled]="!draft.trim()" aria-label="Enviar mensagem">➜</button>
+    </form>
+    <p class="assistant-note">Respostas e ações baseadas nos dados deste catálogo.</p>
+  </section>
+}

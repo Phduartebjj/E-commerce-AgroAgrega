@@ -236,7 +236,7 @@ main {
 .card-form.card-group {
   display: flex;
   flex-direction: column;
-  gap: 25px
+  gap: 25px;
 }
 
 .cep-input {
@@ -372,7 +372,9 @@ main {
   border-radius: 10px;
   background: #f9fbf9;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .saved-address-option:hover {
@@ -509,7 +511,7 @@ main {
   background: #f2faf4;
 }
 
-.payment-option+.payment-option {
+.payment-option + .payment-option {
   border-top: 1px solid #edf0ed;
 }
 
@@ -547,7 +549,7 @@ main {
   transition: all 0.2s ease;
 }
 
-.delivery-radio input:checked+.radio-mark {
+.delivery-radio input:checked + .radio-mark {
   border-color: #2d5a3d;
   box-shadow: inset 0 0 0 5px #2d5a3d;
 }
@@ -788,15 +790,212 @@ main {
   }
 }
 
-
-.pix-qrcode-container {
-  width: 100%;
+.payment-code-card {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid #cfe0d4;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fbfefc 0%, #f0f8f3 100%);
+  box-shadow: 0 10px 28px rgba(27, 86, 57, 0.08);
 }
 
-.pix-qrcode-container img {
-  width: 300px;
-  height: 300px;
+.payment-code-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.payment-code-header h3 {
+  margin: 3px 0 4px;
+  color: #173d2e;
+  font-size: 20px;
+}
+
+.payment-code-header p {
+  margin: 0;
+  color: #617068;
+  font-size: 13px;
+}
+
+.payment-code-kicker {
+  color: #2e7d4f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.payment-code-status {
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #dff2e5;
+  color: #17643b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pix-code-content {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 22px;
+}
+
+.code-canvas-frame {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #dce8df;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.code-canvas-frame--qr {
+  width: 224px;
+  min-height: 224px;
+  align-items: center;
+  padding: 12px;
+}
+
+.code-canvas-frame--qr canvas {
+  display: block;
+  max-width: 200px;
+  height: auto;
+}
+
+.code-canvas-frame--barcode {
+  width: 100%;
+  min-height: 126px;
+  align-items: center;
+  padding: 16px;
+}
+
+.code-canvas-frame--barcode canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.payment-code-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+}
+
+.payment-code-label {
+  color: #284a3c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.copy-code-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.copy-code-row input {
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #ccd9d0;
+  border-radius: 9px;
+  background: #fff;
+  color: #4b5e55;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.btn-copy-code,
+.btn-regenerate-code {
+  min-height: 42px;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-copy-code {
+  padding: 0 16px;
+  border: 1px solid #236f48;
+  background: #236f48;
+  color: #fff;
+}
+
+.btn-copy-code:hover {
+  background: #195c3a;
+}
+
+.btn-regenerate-code {
+  align-self: flex-start;
+  padding: 0 14px;
+  border: 1px solid #b9d2c1;
+  background: #fff;
+  color: #246a46;
+}
+
+.btn-regenerate-code:hover {
+  background: #edf7f0;
+}
+
+.btn-copy-code:active,
+.btn-regenerate-code:active {
+  transform: scale(0.98);
+}
+
+.payment-code-details small {
+  color: #66776e;
+  font-size: 12px;
+}
+
+.payment-demo-notice {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff5db;
+  color: #765416;
+  font-size: 12px;
+}
+
+.copy-feedback {
+  min-height: 16px;
+  margin: -10px 0 0;
+  color: #1f7047;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .payment-code-header,
+  .pix-code-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .payment-code-status {
+    align-self: flex-start;
+  }
+
+  .code-canvas-frame--qr {
+    align-self: center;
+    width: min(224px, 100%);
+  }
+
+  .copy-code-row {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-copy-code {
+    min-height: 44px;
+  }
 }

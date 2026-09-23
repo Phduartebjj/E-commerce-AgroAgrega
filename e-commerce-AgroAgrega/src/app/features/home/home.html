@@ -2,6 +2,83 @@
 
 <app-benefits></app-benefits>
 
+<section class="weather-section">
+  <div class="weather-header">
+    <span class="weather-label">CLIMA NO CAMPO</span>
+    <h2>Condições atuais</h2>
+  </div>
+
+  @if (weatherLoading()) {
+    <div class="weather-card weather-state">
+      <p>Carregando informações do clima...</p>
+    </div>
+  } @else if (errorWeather()) {
+    <div class="weather-card weather-state weather-error">
+      <p>Não foi possível carregar as informações do clima.</p>
+    </div>
+  } @else if (weather(); as currentWeather) {
+    <div class="weather-card">
+      <div class="weather-main">
+        <div>
+          <span class="weather-location">Rio de Janeiro</span>
+
+          <div class="weather-condition">
+            <span class="weather-condition-icon" aria-hidden="true">
+              {{ weatherCondition().icon }}
+            </span>
+
+            <span>
+              {{ weatherCondition().label }}
+            </span>
+          </div>
+
+          <strong class="weather-temperature">
+            {{ currentWeather.current.temperature_2m }}
+            {{ currentWeather.current_units.temperature_2m }}
+          </strong>
+        </div>
+
+        <p class="weather-feels-like">
+          Sensação térmica:
+          <strong>
+            {{ currentWeather.current.apparent_temperature }}
+            {{ currentWeather.current_units.apparent_temperature }}
+          </strong>
+        </p>
+      </div>
+
+      <div class="weather-details">
+        <div class="weather-info">
+          <span>Umidade</span>
+
+          <strong>
+            {{ currentWeather.current.relative_humidity_2m }}
+            {{ currentWeather.current_units.relative_humidity_2m }}
+          </strong>
+        </div>
+
+        <div class="weather-info">
+          <span>Vento</span>
+
+          <strong>
+            {{ currentWeather.current.wind_speed_10m }}
+            {{ currentWeather.current_units.wind_speed_10m }}
+          </strong>
+        </div>
+
+        <div class="weather-info">
+          <span>Precipitação</span>
+
+          <strong>
+            {{ currentWeather.current.precipitation }}
+            {{ currentWeather.current_units.precipitation }}
+          </strong>
+        </div>
+      </div>
+    </div>
+  }
+</section>
+
 <app-product-carousel
   titulo="Produtos em destaque"
   label="SELEÇÃO AGROAGREGA"

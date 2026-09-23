@@ -1,0 +1,262 @@
+.agro-plus-hero {
+  position: relative;
+  min-height: 590px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(38px, 7vw, 76px);
+  border-radius: 30px;
+  background: #0b2e22;
+  color: #fff;
+  box-shadow: 0 24px 60px rgba(9, 52, 35, 0.2);
+  isolation: isolate;
+}
+
+.agro-plus-hero__image,
+.agro-plus-hero__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.agro-plus-hero__image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.agro-plus-hero__shade {
+  z-index: -1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 31, 22, 0.96) 0%,
+      rgba(4, 31, 22, 0.77) 46%,
+      rgba(4, 31, 22, 0.12) 84%
+    ),
+    linear-gradient(0deg, rgba(4, 31, 22, 0.88) 0%, transparent 52%);
+}
+
+.agro-plus-hero__content {
+  width: min(720px, 70%);
+}
+
+.agro-plus-brand {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 24px;
+  color: #c9ff48;
+  font-size: 1.7rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.agro-plus-brand span {
+  color: #fff;
+}
+
+.agro-plus-hero__eyebrow {
+  display: block;
+  margin-bottom: 13px;
+  color: #c9ff48;
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.agro-plus-hero h1 {
+  max-width: 700px;
+  margin: 0;
+  font-size: clamp(2.35rem, 5.4vw, 4.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.agro-plus-hero__content > p {
+  max-width: 620px;
+  margin: 22px 0 0;
+  color: #e7f2eb;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.6;
+}
+
+.agro-plus-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.agro-plus-primary-cta,
+.agro-plus-secondary-cta,
+.agro-plus-offer__action button {
+  min-height: 50px;
+  border-radius: 13px;
+  font: inherit;
+  font-weight: 850;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.agro-plus-primary-cta {
+  padding: 0 22px;
+  border: 1px solid #c9ff48;
+  background: #c9ff48;
+  color: #123d2a;
+  box-shadow: 0 12px 28px rgba(182, 239, 47, 0.2);
+}
+
+.agro-plus-secondary-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 0;
+  color: #fff;
+}
+
+.agro-plus-primary-cta:hover,
+.agro-plus-offer__action button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(124, 190, 30, 0.24);
+}
+
+.membership-status--hero {
+  margin-top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #174c36;
+}
+
+.agro-plus-hero__proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 38px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.agro-plus-hero__proof div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.agro-plus-hero__proof strong {
+  color: #c9ff48;
+  font-size: 1.25rem;
+}
+
+.agro-plus-hero__proof span {
+  color: #d8e7de;
+  font-size: 0.76rem;
+}
+
+.agro-orbit {
+  position: relative;
+  width: min(330px, 100%);
+  aspect-ratio: 1;
+  margin: 20px auto -52px;
+}
+
+.agro-orbit__ring,
+.agro-orbit__center,
+.agro-orbit__dot,
+.agro-orbit__caption {
+  position: absolute;
+}
+
+.agro-orbit__ring {
+  inset: 50%;
+  border: 1px solid rgba(201, 255, 72, 0.27);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.agro-orbit__ring--outer {
+  width: 100%;
+  height: 100%;
+  border-style: dashed;
+  animation: orbit-spin 22s linear infinite;
+}
+
+.agro-orbit__ring--middle {
+  width: 73%;
+  height: 73%;
+}
+
+.agro-orbit__ring--inner {
+  width: 44%;
+  height: 44%;
+  border-color: rgba(255, 255, 255, 0.23);
+}
+
+.agro-orbit__center {
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 102px;
+  height: 102px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 31px;
+  background: #c9ff48;
+  color: #123d2a;
+  box-shadow: 0 0 46px rgba(201, 255, 72, 0.24);
+  font-size: 2.3rem;
+  transform: translate(-50%, -50%) rotate(-5deg);
+}
+
+.agro-orbit__center i {
+  font-style: normal;
+}
+
+.agro-orbit__dot {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #173d2e;
+  border-radius: 50%;
+  background: #c9ff48;
+  box-shadow: 0 0 0 4px rgba(201, 255, 72, 0.15);
+}
+
+.agro-orbit__dot--one {
+  top: 10%;
+  left: 46%;
+}
+
+.agro-orbit__dot--two {
+  right: 10%;
+  bottom: 30%;
+}
+
+.agro-orbit__dot--three {
+  bottom: 16%;
+  left: 18%;
+}
+
+.agro-orbit__caption {
+  right: 0;
+  bottom: 42px;
+  left: 0;
+  color: #9bb7a6;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@keyframes orbit-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

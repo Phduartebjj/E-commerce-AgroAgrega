@@ -11,105 +11,138 @@
     </div>
   </div>
 
- <section class="card card--dados">
-  <div class="card__title-row">
-    <h2 class="titulo-com-icone">
-      <img
-        src="assets/images/icon-my-account.webp"
-        loading="lazy"
-        decoding="async"
-        alt=""
-        class="icone-titulo"
-      />
-      Meus dados
-    </h2>
-
-    @if (!editingProfile) {
+  <section class="profile-overview" aria-labelledby="profile-overview-title">
+    <div
+      class="profile-avatar profile-avatar--current"
+      [attr.data-avatar]="avatar.selectedAvatar().id"
+      aria-hidden="true"
+    >
+      {{ avatar.selectedAvatar().glyph }}
+    </div>
+    <div class="profile-overview__identity">
+      <p class="profile-overview__label">Conta conectada</p>
+      <h2 id="profile-overview-title">{{ userName }}</h2>
+      <span>{{ userEmail }}</span>
+    </div>
+    <div class="profile-overview__actions">
+      <a class="membership-pill" routerLink="/agro-plus">Agro+ <span>Ver benefícios</span></a>
       <button
         type="button"
         class="btn btn--secondary"
-        (click)="editProfile()"
+        [attr.aria-expanded]="avatarPickerOpen"
+        aria-controls="avatar-picker"
+        (click)="toggleAvatarPicker()"
       >
-        Editar dados
+        Escolher avatar
       </button>
-    }
-  </div>
-
-  @if (!editingProfile) {
-    <div class="info-list">
-      <div class="info-item">
-        <span>Nome</span>
-        <strong>{{ userName }}</strong>
-      </div>
-
-      <div class="info-item">
-        <span>E-mail</span>
-        <strong>{{ userEmail }}</strong>
-      </div>
     </div>
-  } @else {
-    <form
-      class="profile-form"
-      [formGroup]="profileForm"
-      (ngSubmit)="saveProfile()"
-    >
-      <label>
-        <span>Nome</span>
-        <input type="text" formControlName="name" />
 
-        @if (
-          profileForm.get('name')?.touched &&
-          profileForm.get('name')?.invalid
-        ) {
-          <small class="errorMessage">
-            {{ getErrorMessage(profileForm.get('name')!) }}
-          </small>
-        }
-      </label>
-
-      <label>
-        <span>E-mail</span>
-        <input type="email" formControlName="email" />
-
-        @if (
-          profileForm.get('email')?.touched &&
-          profileForm.get('email')?.invalid
-        ) {
-          <small class="errorMessage">
-            {{ getErrorMessage(profileForm.get('email')!) }}
-          </small>
-        }
-      </label>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn--primary">
-          Salvar
-        </button>
-
-        <button
-          type="button"
-          class="btn btn--ghost"
-          (click)="cancelEdit()"
-        >
-          Cancelar
-        </button>
+    @if (avatarPickerOpen) {
+      <div class="avatar-picker" id="avatar-picker">
+        <div>
+          <strong>Escolha como você quer aparecer</strong>
+          <small
+            >{{ avatar.options.length }} opções disponíveis. A seleção fica salva neste
+            dispositivo.</small
+          >
+        </div>
+        <div class="avatar-options" role="list" aria-label="Avatares disponíveis">
+          @for (option of avatar.options; track option.id) {
+            <button
+              type="button"
+              role="listitem"
+              [class.avatar-option--selected]="avatar.isSelected(option.id)"
+              [attr.aria-pressed]="avatar.isSelected(option.id)"
+              (click)="selectAvatar(option.id)"
+            >
+              <span class="profile-avatar" [attr.data-avatar]="option.id" aria-hidden="true">
+                {{ option.glyph }}
+              </span>
+              <span>{{ option.label }}</span>
+            </button>
+          }
+        </div>
       </div>
-    </form>
-  }
-</section>
+    }
+  </section>
 
-  <section class="card">
+  <section class="card card--dados" id="account-profile">
     <div class="card__title-row">
       <h2 class="titulo-com-icone">
-  <img
-    src="assets/images/icon-my-loc.webp"
-    loading="lazy"
-    decoding="async"
-    alt=""
-    class="icone-titulo"
-  />
-  Meus endereços
-</h2>
+        <img
+          src="/assets/images/icon-my-account.webp"
+          loading="lazy"
+          decoding="async"
+          alt=""
+          class="icone-titulo"
+        />
+        Meus dados
+      </h2>
+
+      @if (!editingProfile) {
+        <button type="button" class="btn btn--secondary" (click)="editProfile()">
+          Editar dados
+        </button>
+      }
+    </div>
+
+    @if (!editingProfile) {
+      <div class="info-list">
+        <div class="info-item">
+          <span>Nome</span>
+          <strong>{{ userName }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span>E-mail</span>
+          <strong>{{ userEmail }}</strong>
+        </div>
+      </div>
+    } @else {
+      <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <label>
+          <span>Nome</span>
+          <input type="text" formControlName="name" />
+
+          @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('name')!) }}
+            </small>
+          }
+        </label>
+
+        <label>
+          <span>E-mail</span>
+          <input type="email" formControlName="email" />
+
+          @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
+            <small class="errorMessage">
+              {{ getErrorMessage(profileForm.get('email')!) }}
+            </small>
+          }
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Salvar</button>
+
+          <button type="button" class="btn btn--ghost" (click)="cancelEdit()">Cancelar</button>
+        </div>
+      </form>
+    }
+  </section>
+
+  <section class="card" id="account-addresses">
+    <div class="card__title-row">
+      <h2 class="titulo-com-icone">
+        <img
+          src="/assets/images/icon-my-loc.webp"
+          loading="lazy"
+          decoding="async"
+          alt=""
+          class="icone-titulo"
+        />
+        Meus endereços
+      </h2>
       @if (!isAddressFormOpen) {
         <button type="button" class="btn btn--secondary" (click)="startAddAddress()">
           + Adicionar endereço
@@ -260,17 +293,17 @@
     }
   </section>
 
-  <section class="card card--account">
+  <section class="card card--account" id="account-security">
     <h2 class="titulo-com-icone">
-  <img
-    src="assets/images/icon-my-config.webp"
-    loading="lazy"
-    decoding="async"
-    alt=""
-    class="icone-titulo"
-  />
-  Conta
-</h2>
+      <img
+        src="/assets/images/icon-my-config.webp"
+        loading="lazy"
+        decoding="async"
+        alt=""
+        class="icone-titulo"
+      />
+      Conta
+    </h2>
 
     <div class="account-actions">
       <button type="button" class="btn btn--secondary" (click)="logout()">Logout</button>

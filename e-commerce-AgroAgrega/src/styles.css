@@ -72,3 +72,13 @@ html {
     font-size: 13px;
   }
 }
+
+@media (max-width: 840px) {
+  body:has(.comparison-tray) app-store-assistant {
+    bottom: max(148px, calc(130px + env(safe-area-inset-bottom)));
+  }
+
+  body:has(.comparison-tray) app-store-assistant .assistant-panel {
+    max-height: calc(100dvh - 245px);
+  }
+}

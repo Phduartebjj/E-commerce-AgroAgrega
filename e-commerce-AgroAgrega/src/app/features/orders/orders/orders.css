@@ -57,6 +57,45 @@
   border-bottom: 0;
 }
 
+
+.payment-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 8px 24px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid;
+}
+
+.payment-feedback strong {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.payment-feedback span {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.payment-success {
+  border-color: #b7dfc8;
+  background: #eefaf3;
+  color: #17633b;
+}
+
+.payment-pending {
+  border-color: #ead9a6;
+  background: #fff9e8;
+  color: #7a5a00;
+}
+
+.payment-failure {
+  border-color: #e4b8b8;
+  background: #fff1f1;
+  color: #9b2c2c;
+}
+
 .header-copy h1 {
   margin: 0;
   font-size: 2.5rem;
