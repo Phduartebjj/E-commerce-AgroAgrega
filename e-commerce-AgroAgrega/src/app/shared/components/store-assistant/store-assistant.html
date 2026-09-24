@@ -6,8 +6,14 @@
   [attr.aria-expanded]="open()"
   (click)="toggle()"
 >
-  <span class="assistant-face" aria-hidden="true"></span>
-  <span class="assistant-online" aria-hidden="true"></span>
+  <img
+    class="assistant-launcher-art"
+    src="assets/images/catalog/assistant.png"
+    alt=""
+    width="1672"
+    height="941"
+    decoding="async"
+  />
 </button>
 
 @if (open()) {

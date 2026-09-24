@@ -14,13 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { BrandOption, ProductCategory, ProductModel } from '@models/product';
 import { ProductService } from '../../core/services/product/product.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
-import {
-  calculateDiscountPercent,
-  calculateInstallmentPrice,
-  calculatePixPrice,
-  getFreeDeliveryLabel,
-  getWeeklySalesLabel,
-} from '../../shared/utils/product-card-display';
+import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { ProductCardComponent } from './product-card/product-card';
 import { ProductComparisonComponent } from './product-comparison/product-comparison';
 
@@ -62,12 +56,30 @@ export class ProductsComponent {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
+  readonly assistant = inject(StoreAssistantState);
+  readonly categoryArtwork: Record<ProductCategory, { image: string; icon: string }> = {
+    'Agricultura de Precisão': {
+      image: 'assets/images/generated-products/product-001.webp',
+      icon: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2',
+    },
+    Irrigação: {
+      image: 'assets/images/generated-products/product-004.webp',
+      icon: 'M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13ZM9 15a3 3 0 0 0 3 3',
+    },
+    Pecuária: {
+      image: 'assets/images/generated-products/product-009.webp',
+      icon: 'M6 8 3 4 2 10l4 2v6l3 3h6l3-3v-6l4-2-1-6-3 4ZM9 13h.01M15 13h.01M9 18h6',
+    },
+    Ferramentas: {
+      image: 'assets/images/generated-products/product-010.webp',
+      icon: 'm14 6 4-4a6 6 0 0 1-7 8L4 21l-3-3 10-8a6 6 0 0 1 7-8l-4 4Z',
+    },
+    Insumos: {
+      image: 'assets/images/generated-products/product-002.webp',
+      icon: 'M12 22V10M12 16C4 16 2 11 3 5c6 0 9 4 9 11ZM12 11c0-6 4-9 10-9 0 6-4 10-10 9',
+    },
+  };
   readonly products = this.productService.getProducts();
-  readonly freeDeliveryLabel = getFreeDeliveryLabel();
-  readonly calculateDiscountPercent = calculateDiscountPercent;
-  readonly calculateInstallmentPrice = calculateInstallmentPrice;
-  readonly calculatePixPrice = calculatePixPrice;
-  readonly getWeeklySalesLabel = getWeeklySalesLabel;
   readonly productCategories = this.productService.getProductCategories();
   readonly categoryFilters: CategoryFilter[] = ['Todos', ...this.productCategories];
   readonly categoryProductCounts = computed(() =>
@@ -441,6 +453,13 @@ export class ProductsComponent {
       left: direction * Math.max(300, carousel.clientWidth * 0.82),
       behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
+  }
+
+  scrollToProducts(targetId = 'catalog-results'): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const target = document.getElementById(targetId);
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    target?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
   setViewMode(mode: 'grid' | 'list'): void {

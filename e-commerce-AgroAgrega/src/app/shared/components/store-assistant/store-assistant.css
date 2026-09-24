@@ -14,25 +14,27 @@
 
 .assistant-launcher {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: 74px;
-  height: 74px;
-  padding: 4px;
-  overflow: visible;
-  border: 3px solid #188458;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 8px 28px rgba(6, 58, 36, 0.27), 0 0 0 4px rgba(117, 201, 94, 0.22);
+  display: block;
+  width: 220px;
+  aspect-ratio: 1672 / 480;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  filter: drop-shadow(0 5px 8px #063a3629);
+  transition: transform 180ms ease;
 }
-
 .assistant-launcher:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(6, 58, 36, 0.3), 0 0 0 6px rgba(117, 201, 94, 0.3);
 }
-
+.assistant-launcher-art {
+  position: absolute;
+  top: -42%;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
 .assistant-launcher:focus-visible,
 .assistant-panel button:focus-visible,
 .assistant-panel a:focus-visible,
@@ -374,8 +376,7 @@
   }
 
   .assistant-launcher {
-    width: 65px;
-    height: 65px;
+    width: 176px;
   }
 
   .assistant-panel {

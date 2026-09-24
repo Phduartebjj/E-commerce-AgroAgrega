@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -6,6 +6,7 @@ import { COUPONS } from '../../../core/data/coupons';
 import { Cart } from '../../../core/services/cart/cart.service';
 import { ProductService } from '../../../core/services/product/product.service';
 import { ProductModel } from '../../../models/product';
+import { StoreAssistantState } from './store-assistant-state';
 import {
   findAssistantProducts,
   interpretAssistantMessage,
@@ -42,7 +43,7 @@ export class StoreAssistant {
   @ViewChild('composer') private composer?: ElementRef<HTMLInputElement>;
   @ViewChild('messageList') private messageList?: ElementRef<HTMLElement>;
 
-  readonly open = signal(false);
+  readonly open = inject(StoreAssistantState).open;
   readonly messages = signal<ChatMessage[]>([{
     id: 0,
     role: 'assistant',
@@ -62,9 +63,14 @@ export class StoreAssistant {
 
   draft = '';
 
+  constructor() {
+    effect(() => {
+      if (this.open()) setTimeout(() => this.composer?.nativeElement.focus());
+    });
+  }
+
   toggle(): void {
     this.open.update((value) => !value);
-    if (this.open()) setTimeout(() => this.composer?.nativeElement.focus());
   }
 
   close(): void {

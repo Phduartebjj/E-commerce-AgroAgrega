@@ -67,7 +67,9 @@ describe('ProductCardComponent', () => {
     fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
 
-    expect(host.querySelector('.product-card-tag')?.textContent).toContain('Oferta −20%');
+    expect(host.querySelector('.product-card-discount-line span')?.textContent).toContain(
+      '20% OFF',
+    );
     expect(host.querySelector('.product-card-discount-line s')?.textContent).toContain('R$ 100.00');
   });
 

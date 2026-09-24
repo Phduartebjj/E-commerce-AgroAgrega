@@ -26,10 +26,23 @@
       </div>
     </header>
   } @else {
-    <header class="catalog-header">
-      <span class="catalog-eyebrow">AgroAgrega</span>
-      <h1>Encontre o que sua produção precisa</h1>
-      <p class="catalog-intro">Soluções para agricultura, pecuária e o dia a dia no campo.</p>
+    <header class="catalog-hero">
+      <h1 class="visually-hidden">Tudo para o seu campo em um só lugar!</h1>
+      <button
+        class="catalog-hero-art"
+        type="button"
+        (click)="scrollToProducts()"
+        aria-label="Ver produtos: insumos, ferramentas e soluções para o seu campo"
+      >
+        <img
+          src="assets/images/catalog/hero.png"
+          alt="Tudo para o seu campo em um só lugar! Insumos, ferramentas e soluções para você produzir mais e melhor. Qualidade comprovada, entrega em todo Brasil e suporte especializado."
+          width="1672"
+          height="941"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </button>
     </header>
   }
 
@@ -57,121 +70,140 @@
         </button>
 
         <div class="sidebar-content" id="advanced-filters" [class.open]="filtersOpen()">
-          <div class="sidebar-header">
-            <div>
-              <span>Refine sua busca</span>
-              <h2>Filtros</h2>
-            </div>
-
-            @if (activeFilterCount() > 0) {
-              <button class="clear-filters" type="button" (click)="clearFilters()">
-                Limpar tudo
+          <nav class="category-panel" aria-label="Categorias de produtos">
+            <div class="sidebar-heading">
+              <h2>Categorias</h2>
+              <button class="text-link" type="button" (click)="selectCategory('Todos')">
+                Ver todas
               </button>
-            }
-          </div>
-
-          <fieldset class="filter-group category-filter">
-            <legend>Categorias</legend>
-            <label for="catalog-category-all">
-              <input
-                id="catalog-category-all"
-                type="radio"
-                name="catalog-category"
-                [checked]="selectedCategory() === 'Todos'"
-                (change)="selectCategory('Todos')"
-              />
-              <span>Todos</span>
-              <strong>{{ products().length }}</strong>
-            </label>
-            @for (item of categoryProductCounts(); track item.category; let index = $index) {
-              <label [for]="'catalog-category-' + index">
-                <input
-                  [id]="'catalog-category-' + index"
-                  type="radio"
-                  name="catalog-category"
-                  [checked]="selectedCategory() === item.category"
-                  (change)="selectCategory(item.category)"
-                />
-                <span>{{ item.category }}</span>
-                <strong>{{ item.count }}</strong>
-              </label>
-            }
-          </fieldset>
-
-          <fieldset class="filter-group price-filter">
-            <legend>Faixa de preço</legend>
-            <label for="catalog-max-price">
-              Até <strong>{{ maxPriceFilter() | precoFormatado }}</strong>
-            </label>
-            <input
-              id="catalog-max-price"
-              type="range"
-              min="0"
-              [max]="maxCatalogPrice()"
-              step="50"
-              class="slider"
-              [value]="maxPriceFilter()"
-              [attr.aria-valuetext]="'Até ' + (maxPriceFilter() | precoFormatado)"
-              (input)="updateMaxPrice($event)"
-            />
-            <div class="price-range" aria-hidden="true">
-              <span>R$ 0</span>
-              <span>{{ maxCatalogPrice() | precoFormatado }}</span>
             </div>
-          </fieldset>
+            <div class="category-links">
+              <button
+                type="button"
+                [class.active]="selectedCategory() === 'Todos' && !offersOnly()"
+                [attr.aria-pressed]="selectedCategory() === 'Todos' && !offersOnly()"
+                (click)="selectCategory('Todos')"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />
+                </svg>
+                <span>Todos os produtos</span
+                ><span class="category-chevron" aria-hidden="true">›</span>
+              </button>
+              @for (item of categoryProductCounts(); track item.category) {
+                <button
+                  type="button"
+                  [class.active]="selectedCategory() === item.category"
+                  [attr.aria-pressed]="selectedCategory() === item.category"
+                  (click)="selectCategory(item.category)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path [attr.d]="categoryArtwork[item.category].icon" />
+                  </svg>
+                  <span>{{ item.category }}</span
+                  ><span class="category-chevron" aria-hidden="true">›</span>
+                </button>
+              }
+              <a
+                routerLink="/products"
+                [queryParams]="{ offers: 'true' }"
+                [class.active]="offersOnly()"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m3 3 8 0 10 10-8 8L3 11V3Zm4 4h.01M10 15l5-5M10 10h.01M15 15h.01" />
+                </svg>
+                <span>Ofertas</span><span class="category-chevron" aria-hidden="true">›</span>
+              </a>
+            </div>
+          </nav>
+          <div class="filter-panel">
+            <div class="sidebar-header">
+              <div>
+                <h2>Filtros</h2>
+              </div>
 
-          <fieldset class="filter-group">
-            <legend>Marcas</legend>
-            @for (brand of availableBrands(); track brand; let index = $index) {
-              <label [for]="'catalog-brand-' + index">
-                <input
-                  [id]="'catalog-brand-' + index"
-                  type="checkbox"
-                  [checked]="selectedBrands().includes(brand)"
-                  (change)="toggleBrand(brand, $event)"
-                />
-                <span>{{ brand }}</span>
+              @if (activeFilterCount() > 0) {
+                <button class="clear-filters" type="button" (click)="clearFilters()">
+                  Limpar tudo
+                </button>
+              }
+            </div>
+
+            <fieldset class="filter-group price-filter">
+              <legend>Faixa de preço</legend>
+              <label for="catalog-max-price">
+                Até <strong>{{ maxPriceFilter() | precoFormatado }}</strong>
               </label>
-            }
-          </fieldset>
+              <input
+                id="catalog-max-price"
+                type="range"
+                min="0"
+                [max]="maxCatalogPrice()"
+                step="50"
+                class="slider"
+                [value]="maxPriceFilter()"
+                [attr.aria-valuetext]="'Até ' + (maxPriceFilter() | precoFormatado)"
+                (input)="updateMaxPrice($event)"
+              />
+              <div class="price-range" aria-hidden="true">
+                <span>R$ 0</span>
+                <span>{{ maxCatalogPrice() | precoFormatado }}</span>
+              </div>
+            </fieldset>
 
-          <fieldset class="filter-group">
-            <legend>Avaliação mínima</legend>
-            <label for="rating-all">
-              <input
-                id="rating-all"
-                type="radio"
-                name="advanced-rating"
-                [checked]="minRating() === 0"
-                (change)="setMinRating(0)"
-              />
-              <span>Todas as avaliações</span>
-            </label>
-            <label for="rating-four">
-              <input
-                id="rating-four"
-                type="radio"
-                name="advanced-rating"
-                [checked]="minRating() === 4"
-                (change)="setMinRating(4)"
-              />
-              <span class="stars" aria-hidden="true">★★★★☆</span>
-              <span>4 ou mais</span>
-            </label>
-            <label for="rating-five">
-              <input
-                id="rating-five"
-                type="radio"
-                name="advanced-rating"
-                [checked]="minRating() === 5"
-                (change)="setMinRating(5)"
-              />
-              <span class="stars" aria-hidden="true">★★★★★</span>
-              <span>Nota 5</span>
-            </label>
-          </fieldset>
+            <fieldset class="filter-group">
+              <legend>Marcas</legend>
+              @for (brand of availableBrands(); track brand; let index = $index) {
+                <label [for]="'catalog-brand-' + index">
+                  <input
+                    [id]="'catalog-brand-' + index"
+                    type="checkbox"
+                    [checked]="selectedBrands().includes(brand)"
+                    (change)="toggleBrand(brand, $event)"
+                  />
+                  <span>{{ brand }}</span>
+                </label>
+              }
+            </fieldset>
 
-          <p class="filter-hint">Os resultados são atualizados automaticamente.</p>
+            <fieldset class="filter-group">
+              <legend>Avaliação mínima</legend>
+              <label for="rating-all">
+                <input
+                  id="rating-all"
+                  type="radio"
+                  name="advanced-rating"
+                  [checked]="minRating() === 0"
+                  (change)="setMinRating(0)"
+                />
+                <span>Todas as avaliações</span>
+              </label>
+              <label for="rating-four">
+                <input
+                  id="rating-four"
+                  type="radio"
+                  name="advanced-rating"
+                  [checked]="minRating() === 4"
+                  (change)="setMinRating(4)"
+                />
+                <span class="stars" aria-hidden="true">★★★★☆</span>
+                <span>4 ou mais</span>
+              </label>
+              <label for="rating-five">
+                <input
+                  id="rating-five"
+                  type="radio"
+                  name="advanced-rating"
+                  [checked]="minRating() === 5"
+                  (change)="setMinRating(5)"
+                />
+                <span class="stars" aria-hidden="true">★★★★★</span>
+                <span>Nota 5</span>
+              </label>
+            </fieldset>
+
+            <p class="filter-hint">Os resultados são atualizados automaticamente.</p>
+          </div>
         </div>
       </aside>
 
@@ -196,120 +228,136 @@
         }
 
         @if (showFeaturedProducts()) {
-          <section class="featured-products" aria-labelledby="featured-products-title">
-            <div class="section-heading">
-              <div>
-                <span>Preferidos dos clientes</span>
-                <h2 id="featured-products-title">Mais procurados da semana</h2>
-              </div>
-              <div class="featured-heading-actions">
-                <small>Destaques renovados diariamente</small>
-                <div
-                  class="carousel-controls"
-                  role="group"
-                  aria-label="Navegar pelos mais procurados"
-                >
+          <div class="catalog-showcase">
+            <section class="featured-products" aria-labelledby="featured-products-title">
+              <div class="section-heading">
+                <div class="featured-title">
+                  <span aria-hidden="true">🔥</span>
+                  <div>
+                    <h2 id="featured-products-title">Produtos em destaque</h2>
+                    <p>Os mais procurados da semana</p>
+                  </div>
+                </div>
+                <div class="featured-heading-actions">
                   <button
+                    class="section-link"
                     type="button"
-                    aria-label="Ver produtos anteriores"
-                    (click)="scrollFeaturedProducts(featuredCarousel, -1)"
+                    (click)="scrollToProducts('catalog-product-grid')"
                   >
-                    <span aria-hidden="true">←</span>
+                    Ver todos <span aria-hidden="true">→</span>
                   </button>
-                  <button
-                    type="button"
-                    aria-label="Ver próximos produtos"
-                    (click)="scrollFeaturedProducts(featuredCarousel, 1)"
+                  <div
+                    class="carousel-controls"
+                    role="group"
+                    aria-label="Navegar pelos mais procurados"
                   >
-                    <span aria-hidden="true">→</span>
-                  </button>
+                    <button
+                      type="button"
+                      aria-label="Ver produtos anteriores"
+                      (click)="scrollFeaturedProducts(featuredCarousel, -1)"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Ver próximos produtos"
+                      (click)="scrollFeaturedProducts(featuredCarousel, 1)"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
               </div>
+              <div
+                class="featured-carousel"
+                #featuredCarousel
+                tabindex="0"
+                aria-label="Produtos em destaque"
+              >
+                @for (product of featuredProducts(); track product.id) {
+                  <app-product-card
+                    class="featured-card"
+                    [product]="product"
+                    [compareSelected]="isProductCompared(product.id)"
+                    (toggleCompare)="toggleProductComparison($event)"
+                  ></app-product-card>
+                }
+              </div>
+            </section>
+            <aside class="catalog-promotions" aria-label="Atendimento e equipamentos">
+              <button
+                class="support-banner"
+                type="button"
+                aria-label="Precisa de ajuda? Fale com o assistente AgroAgrega"
+                aria-controls="agro-assistant-panel"
+                [attr.aria-expanded]="assistant.open()"
+                (click)="assistant.show()"
+              >
+                <img
+                  src="assets/images/catalog/support.png"
+                  alt="Precisa de ajuda? Nosso time está pronto para te atender! Fale conosco."
+                  width="1448"
+                  height="1086"
+                  decoding="async"
+                />
+              </button>
+              <a
+                class="equipment-banner"
+                routerLink="/products"
+                [queryParams]="{ category: 'Ferramentas' }"
+              >
+                <img
+                  src="assets/images/trator.webp"
+                  alt=""
+                  width="420"
+                  height="280"
+                  loading="lazy"
+                />
+                <strong>Equipamentos<br />para grandes<br />resultados.</strong>
+                <span>Ver linha completa <b aria-hidden="true">→</b></span>
+              </a>
+            </aside>
+          </div>
+          <section class="category-highlights" aria-labelledby="category-highlights-title">
+            <div class="section-heading">
+              <h2 id="category-highlights-title">Categorias em destaque</h2>
+              <button
+                class="section-link"
+                type="button"
+                (click)="selectCategory('Todos'); scrollToProducts('catalog-product-grid')"
+              >
+                Ver todas <span aria-hidden="true">→</span>
+              </button>
             </div>
-
-            <div
-              #featuredCarousel
-              class="featured-carousel"
-              tabindex="0"
-              aria-label="Carrossel dos produtos mais procurados da semana"
-            >
-              @for (product of featuredProducts(); track product.id; let index = $index) {
-                <article
-                  class="featured-card"
-                  [attr.aria-label]="'Produto ' + (index + 1) + ' de ' + featuredProducts().length"
+            <div class="category-tiles">
+              @for (category of productCategories; track category) {
+                <a
+                  class="category-tile"
+                  routerLink="/products"
+                  [queryParams]="{ category: category }"
                 >
-                  <a class="featured-image" [routerLink]="['/products', product.id]">
-                    <img
-                      [src]="product.images[0]"
-                      [alt]="product.title"
-                      [attr.loading]="index < 2 ? 'eager' : 'lazy'"
-                      decoding="async"
-                      width="180"
-                      height="180"
-                    />
-                  </a>
-
-                  <div class="featured-info">
-                    <div class="tags">
-                      <span class="highlight">Mais vendido</span>
-                      <span>{{ product.category }}</span>
-                    </div>
-                    <a [routerLink]="['/products', product.id]">
-                      <h3>{{ product.title }}</h3>
-                    </a>
-                    <p class="featured-rating">
-                      <span aria-hidden="true">★</span>
-                      {{ product.rating.toFixed(1) }} de 5
-                    </p>
-                    <div class="featured-offer">
-                      @if (product.originalPrice; as originalPrice) {
-                        <p class="featured-discount">
-                          <span>
-                            {{ calculateDiscountPercent(product.price, originalPrice) }}% OFF
-                          </span>
-                          <s>{{ originalPrice | precoFormatado }}</s>
-                        </p>
-                      }
-                      <p class="featured-main-price">
-                        <strong>{{ product.price | precoFormatado }}</strong>
-                        <small>{{ getWeeklySalesLabel(product.weeklySales) }}</small>
-                      </p>
-                      <p class="featured-pix">
-                        {{ calculatePixPrice(product.price) | precoFormatado }}
-                        <strong>no Pix</strong>
-                      </p>
-                      <p class="featured-installment">
-                        ou 10x de
-                        <strong>
-                          {{ calculateInstallmentPrice(product.price) | precoFormatado }}
-                        </strong>
-                        sem juros
-                      </p>
-                      <p class="featured-delivery">
-                        <span class="featured-full-label" aria-label="Entrega Full">
-                          <span aria-hidden="true">⚡</span>
-                          <strong aria-hidden="true">FULL</strong>
-                        </span>
-                        <span>{{ freeDeliveryLabel }}</span>
-                      </p>
-                    </div>
-                    <div class="featured-actions">
-                      <button
-                        class="compare-btn-small"
-                        type="button"
-                        [class.active]="isProductCompared(product.id)"
-                        [attr.aria-pressed]="isProductCompared(product.id)"
-                        (click)="toggleProductComparison(product)"
-                      >
-                        {{ isProductCompared(product.id) ? 'Selecionado' : 'Comparar' }}
-                      </button>
-                      <a class="details-link-small" [routerLink]="['/products', product.id]">
-                        Ver detalhes
-                      </a>
-                    </div>
-                  </div>
-                </article>
+                  <img
+                    [src]="categoryArtwork[category].image"
+                    alt=""
+                    width="200"
+                    height="120"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span>{{ category }}</span>
+                </a>
               }
+              <a class="category-tile" routerLink="/products" [queryParams]="{ offers: 'true' }">
+                <span class="offers-tile-art" aria-hidden="true"
+                  ><svg viewBox="0 0 72 72">
+                    <path fill="#ef443e" d="M21 3h30l16 23-14 41H13L5 26Z" />
+                    <circle cx="36" cy="13" r="4" fill="#e5efcf" />
+                    <path d="m24 48 24-21" stroke="#fff" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="26" cy="29" r="6" fill="none" stroke="#fff" stroke-width="4" />
+                    <circle cx="46" cy="48" r="6" fill="none" stroke="#fff" stroke-width="4" /></svg
+                ></span>
+                <span>Ofertas</span>
+              </a>
             </div>
           </section>
         }
@@ -317,6 +365,15 @@
         <div class="products-toolbar">
           <div class="toolbar-row">
             <div class="results-summary" aria-live="polite">
+              <h2>
+                {{
+                  showFeaturedProducts()
+                    ? 'Mais produtos'
+                    : offersOnly()
+                      ? 'Ofertas de hoje'
+                      : 'Produtos'
+                }}
+              </h2>
               <strong>{{ resultsLabel() }}</strong>
               <small>Página {{ currentPage() }} de {{ totalPages() }}</small>
             </div>
