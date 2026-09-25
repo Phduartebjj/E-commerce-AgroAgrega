@@ -43,8 +43,7 @@
           (click)="scrollToProducts()"
           aria-label="Ver todos os produtos do catálogo"
         >
-          <span class="visually-hidden">Ver produtos</span>
-          <span class="png-action__mobile-label" aria-hidden="true">Ver produtos →</span>
+          <span class="png-action__label" aria-hidden="true">Ver produtos <b>→</b></span>
         </button>
       </div>
     </header>
@@ -305,7 +304,7 @@
                   [attr.aria-expanded]="assistant.open()"
                   (click)="assistant.show()"
                 >
-                  <span class="visually-hidden">Fale conosco</span>
+                  <span class="png-action__label" aria-hidden="true">Fale conosco <b>→</b></span>
                 </button>
               </div>
               <a
