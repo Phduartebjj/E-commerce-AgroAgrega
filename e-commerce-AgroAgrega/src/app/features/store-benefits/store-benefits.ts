@@ -6,9 +6,14 @@ import { COUPONS } from '@core/data/coupons';
 import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
 import { CouponModel } from '@models/coupon';
+import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
+import { CouponShowcaseStylesComponent } from './coupon-showcase-styles';
 
 type StoreBenefitMode = 'coupons' | 'agroPlus';
 type AgroPlusBenefitCategory = 'economy' | 'exclusive' | 'support' | 'partners';
+type CouponFilter =
+  'all' | 'first-order' | 'inputs' | 'tools' | 'irrigation' | 'livestock' | 'expiring';
+type CouponSort = 'relevance' | 'discount' | 'code';
 
 interface AgroPlusBenefit {
   id: string;
@@ -23,7 +28,7 @@ interface AgroPlusBenefit {
 
 @Component({
   selector: 'app-store-benefits',
-  imports: [RouterLink],
+  imports: [RouterLink, CouponShowcaseStylesComponent],
   templateUrl: './store-benefits.html',
   styleUrls: ['./store-benefits-visuals.css', './store-benefits.css'],
 })
@@ -32,6 +37,7 @@ export class StoreBenefitsComponent {
   private readonly router = inject(Router);
   private readonly cart = inject(Cart);
   readonly auth = inject(Auth);
+  readonly assistant = inject(StoreAssistantState);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly mode = (this.route.snapshot.data['storeBenefitMode'] ?? 'coupons') as StoreBenefitMode;
@@ -39,6 +45,19 @@ export class StoreBenefitsComponent {
   readonly agroPlusCoupon = COUPONS.find((coupon) => coupon.code === 'AGRO20')!;
   readonly agroPlusActive = signal(false);
   readonly feedbackMessage = signal('');
+  readonly selectedCouponFilter = signal<CouponFilter>('all');
+  readonly couponSearch = signal('');
+  readonly couponSort = signal<CouponSort>('relevance');
+  readonly expandedCouponCode = signal<string | null>(null);
+  readonly couponFilters: Array<{ id: CouponFilter; label: string; icon: string }> = [
+    { id: 'all', label: 'Todos os cupons', icon: '▦' },
+    { id: 'first-order', label: 'Primeira compra', icon: '♙' },
+    { id: 'inputs', label: 'Insumos', icon: '⌁' },
+    { id: 'tools', label: 'Ferramentas', icon: '⌕' },
+    { id: 'irrigation', label: 'Irrigação', icon: '◉' },
+    { id: 'livestock', label: 'Pecuária', icon: '♧' },
+    { id: 'expiring', label: 'Expirando em breve', icon: '◷' },
+  ];
   readonly selectedBenefitId = signal('cashback');
   readonly selectedBenefitCategory = signal<'all' | AgroPlusBenefitCategory>('all');
   readonly monthlyPurchaseValue = signal(500);
@@ -200,6 +219,34 @@ export class StoreBenefitsComponent {
     return this.estimatedMonthlyAdvantage * 12;
   }
 
+  get visibleCoupons(): CouponModel[] {
+    const query = this.normalizeText(this.couponSearch());
+    const selectedFilter = this.selectedCouponFilter();
+    const relevanceOrder = new Map(this.coupons.map((coupon, index) => [coupon.code, index]));
+
+    return this.coupons
+      .filter((coupon) => {
+        const matchesFilter =
+          selectedFilter === 'all' || this.couponCategories(coupon).includes(selectedFilter);
+        const searchableText = this.normalizeText(
+          `${coupon.code} ${this.couponTitle(coupon)} ${this.couponDescription(coupon)} ${this.couponApplicability(coupon)}`,
+        );
+
+        return matchesFilter && (!query || searchableText.includes(query));
+      })
+      .sort((first, second) => {
+        if (this.couponSort() === 'discount') {
+          return second.discountPercentage - first.discountPercentage;
+        }
+
+        if (this.couponSort() === 'code') {
+          return first.code.localeCompare(second.code, 'pt-BR');
+        }
+
+        return (relevanceOrder.get(first.code) ?? 0) - (relevanceOrder.get(second.code) ?? 0);
+      });
+  }
+
   constructor() {
     this.agroPlusActive.set(this.readAgroPlusMembership());
   }
@@ -236,6 +283,46 @@ export class StoreBenefitsComponent {
     };
 
     return descriptions[coupon.code] ?? 'Desconto disponível por tempo limitado.';
+  }
+
+  couponApplicability(coupon: CouponModel): string {
+    const applicability: Record<string, string> = {
+      AGRO20: 'Válido para produtos selecionados',
+      BEMVINDO10: 'Válido para toda a loja',
+      CAMPO15: 'Válido para produtos selecionados',
+      SAFRA12: 'Válido para produtos selecionados',
+      EQUIPA10: 'Válido para ferramentas e acessórios',
+      AGUA8: 'Válido para produtos de irrigação',
+    };
+
+    return applicability[coupon.code] ?? 'Consulte os produtos participantes';
+  }
+
+  couponBadge(coupon: CouponModel): string | null {
+    if (coupon.code === 'AGRO20') return 'Mais popular';
+    if (coupon.code === 'BEMVINDO10') return 'Primeira compra';
+    if (coupon.code === 'EQUIPA10') return 'Termina em breve';
+    return null;
+  }
+
+  selectCouponFilter(filter: CouponFilter): void {
+    this.selectedCouponFilter.set(filter);
+  }
+
+  updateCouponSearch(event: Event): void {
+    this.couponSearch.set((event.target as HTMLInputElement).value);
+  }
+
+  updateCouponSort(event: Event): void {
+    this.couponSort.set((event.target as HTMLSelectElement).value as CouponSort);
+  }
+
+  toggleCouponDetails(code: string): void {
+    this.expandedCouponCode.update((current) => (current === code ? null : code));
+  }
+
+  openCouponSupport(): void {
+    this.assistant.show();
   }
 
   applyCoupon(coupon: CouponModel): void {
@@ -328,5 +415,26 @@ export class StoreBenefitsComponent {
 
   private membershipKey(userId: string): string {
     return `agro-plus-membership-${userId}`;
+  }
+
+  private couponCategories(coupon: CouponModel): CouponFilter[] {
+    const categories: Record<string, CouponFilter[]> = {
+      AGRO20: ['inputs'],
+      BEMVINDO10: ['first-order'],
+      CAMPO15: ['livestock'],
+      SAFRA12: ['inputs'],
+      EQUIPA10: ['tools', 'expiring'],
+      AGUA8: ['irrigation'],
+    };
+
+    return categories[coupon.code] ?? [];
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 }

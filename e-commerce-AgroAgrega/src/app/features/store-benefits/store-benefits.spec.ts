@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
 import { CouponModel } from '@models/coupon';
+import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { StoreBenefitsComponent } from './store-benefits';
 
 // Verifica cupons, benefícios Agro+ e navegação entre benefícios da loja.
@@ -49,7 +50,7 @@ describe('StoreBenefitsComponent', () => {
   it('should render all coupons from the cart service catalog', () => {
     const host = fixture.nativeElement as HTMLElement;
 
-    expect(host.querySelectorAll('.coupon-card')).toHaveLength(6);
+    expect(host.querySelectorAll('.coupon-showcase-card')).toHaveLength(6);
     expect(host.textContent).toContain('AGRO20');
     expect(host.textContent).toContain('BEMVINDO10');
     expect(host.textContent).toContain('CAMPO15');
@@ -66,6 +67,36 @@ describe('StoreBenefitsComponent', () => {
     expect(applyCoupon).toHaveBeenCalledWith('BEMVINDO10');
     expect(component.isCouponApplied(welcomeCoupon)).toBe(true);
     expect(component.feedbackMessage()).toContain('aplicado');
+  });
+
+  it('should filter and search the coupon catalog', () => {
+    component.selectCouponFilter('tools');
+    expect(component.visibleCoupons.map((coupon) => coupon.code)).toEqual(['EQUIPA10']);
+
+    component.selectCouponFilter('all');
+    component.couponSearch.set('irrigação');
+    expect(component.visibleCoupons.map((coupon) => coupon.code)).toEqual(['AGUA8']);
+  });
+
+  it('should render the supplied artwork and open the store assistant from the help button', () => {
+    const assistant = TestBed.inject(StoreAssistantState);
+    const host = fixture.nativeElement as HTMLElement;
+    const imageSources = Array.from(
+      host.querySelectorAll<HTMLImageElement>('.coupon-showcase img'),
+    ).map((image) => image.getAttribute('src'));
+    const helpButton = host.querySelector<HTMLButtonElement>('.coupon-help-button');
+
+    expect(imageSources).toEqual(
+      expect.arrayContaining([
+        '/assets/images/coupons/coupons-hero.png',
+        '/assets/images/coupons/coupons-help.png',
+        '/assets/images/coupons/coupons-tip.png',
+      ]),
+    );
+    expect(helpButton?.textContent).toContain('Falar com o time AgroAgrega');
+
+    helpButton?.click();
+    expect(assistant.open()).toBe(true);
   });
 
   it('should send non-members to the Agro+ area for the exclusive coupon', () => {
