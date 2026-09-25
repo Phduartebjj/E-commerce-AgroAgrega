@@ -85,6 +85,19 @@ describe('ProductsComponent', () => {
     expect(host.querySelector('#catalog-search-input')).toBeNull();
   });
 
+  it('deve tornar funcionais os botões desenhados nos banners PNG', () => {
+    const scrollSpy = vi.spyOn(component, 'scrollToProducts').mockImplementation(() => undefined);
+    const assistantSpy = vi.spyOn(component.assistant, 'show');
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    host.querySelector<HTMLButtonElement>('.png-action--hero')?.click();
+    host.querySelector<HTMLButtonElement>('.png-action--support')?.click();
+
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
+    expect(assistantSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('should expose active filters as individually removable chips', () => {
     component.selectedBrands.set(['AgroSense']);
     component.setMinRating(4);

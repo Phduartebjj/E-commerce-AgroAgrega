@@ -38,6 +38,66 @@
   width: 100%;
   height: auto;
 }
+.png-action {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.01);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease,
+    transform 180ms ease;
+}
+.png-action::before {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 20%, rgb(255 255 255 / 0.34) 48%, transparent 74%);
+  content: '';
+  pointer-events: none;
+  transform: translateX(-125%);
+  transition: transform 480ms ease;
+}
+.png-action::after {
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgb(220 255 217 / 0.24);
+  border-radius: inherit;
+  content: '';
+  pointer-events: none;
+}
+.png-action:hover,
+.png-action:focus-visible {
+  border-color: rgb(223 255 218 / 0.78);
+  box-shadow:
+    0 0 0 3px rgb(83 205 100 / 0.22),
+    0 10px 24px rgb(4 64 33 / 0.34);
+  filter: saturate(1.12) brightness(1.05);
+  transform: translateY(-2px) scale(1.02);
+}
+.png-action:hover::before,
+.png-action:focus-visible::before {
+  transform: translateX(125%);
+}
+.png-action:active {
+  box-shadow: 0 4px 10px rgb(4 64 33 / 0.28);
+  transform: translateY(0) scale(0.985);
+}
+.png-action--hero {
+  top: 61.5%;
+  left: 55%;
+  width: 12.8%;
+  height: 14%;
+}
+.png-action__mobile-label {
+  display: none;
+}
 .catalog-main-content {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -309,6 +369,12 @@
   left: 0;
   width: 100%;
   height: auto;
+}
+.png-action--support {
+  top: 73.5%;
+  left: 6.1%;
+  width: 42.1%;
+  height: 15.5%;
 }
 .equipment-banner {
   position: relative;
@@ -998,6 +1064,25 @@ input:focus-visible {
   .catalog-hero-art img {
     width: 190%;
     max-width: none;
+  }
+  .png-action--hero {
+    top: auto;
+    bottom: 14px;
+    left: 18px;
+    width: auto;
+    height: 42px;
+    padding: 0 16px;
+    border-color: rgb(223 255 218 / 0.62);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2d9d4f, #12693a);
+    box-shadow: 0 8px 20px rgb(4 64 33 / 0.3);
+  }
+  .png-action__mobile-label {
+    display: inline-flex;
+    align-items: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 850;
   }
   .sidebar-content.open {
     grid-template-columns: 1fr;

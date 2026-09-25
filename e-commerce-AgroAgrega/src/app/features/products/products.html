@@ -28,12 +28,7 @@
   } @else {
     <header class="catalog-hero">
       <h1 class="visually-hidden">Tudo para o seu campo em um só lugar!</h1>
-      <button
-        class="catalog-hero-art"
-        type="button"
-        (click)="scrollToProducts()"
-        aria-label="Ver produtos: insumos, ferramentas e soluções para o seu campo"
-      >
+      <div class="catalog-hero-art">
         <img
           src="assets/images/catalog/hero.png"
           alt="Tudo para o seu campo em um só lugar! Insumos, ferramentas e soluções para você produzir mais e melhor. Qualidade comprovada, entrega em todo Brasil e suporte especializado."
@@ -42,7 +37,16 @@
           fetchpriority="high"
           decoding="async"
         />
-      </button>
+        <button
+          class="png-action png-action--hero"
+          type="button"
+          (click)="scrollToProducts()"
+          aria-label="Ver todos os produtos do catálogo"
+        >
+          <span class="visually-hidden">Ver produtos</span>
+          <span class="png-action__mobile-label" aria-hidden="true">Ver produtos →</span>
+        </button>
+      </div>
     </header>
   }
 
@@ -285,14 +289,7 @@
               </div>
             </section>
             <aside class="catalog-promotions" aria-label="Atendimento e equipamentos">
-              <button
-                class="support-banner"
-                type="button"
-                aria-label="Precisa de ajuda? Fale com o assistente AgroAgrega"
-                aria-controls="agro-assistant-panel"
-                [attr.aria-expanded]="assistant.open()"
-                (click)="assistant.show()"
-              >
+              <div class="support-banner">
                 <img
                   src="assets/images/catalog/support.png"
                   alt="Precisa de ajuda? Nosso time está pronto para te atender! Fale conosco."
@@ -300,7 +297,17 @@
                   height="1086"
                   decoding="async"
                 />
-              </button>
+                <button
+                  class="png-action png-action--support"
+                  type="button"
+                  aria-label="Fale conosco pelo assistente AgroAgrega"
+                  aria-controls="agro-assistant-panel"
+                  [attr.aria-expanded]="assistant.open()"
+                  (click)="assistant.show()"
+                >
+                  <span class="visually-hidden">Fale conosco</span>
+                </button>
+              </div>
               <a
                 class="equipment-banner"
                 routerLink="/products"
