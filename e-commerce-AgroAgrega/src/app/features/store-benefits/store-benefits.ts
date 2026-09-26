@@ -10,7 +10,7 @@ import { StoreAssistantState } from '../../shared/components/store-assistant/sto
 import { CouponShowcaseStylesComponent } from './coupon-showcase-styles';
 
 type StoreBenefitMode = 'coupons' | 'agroPlus';
-type AgroPlusBenefitCategory = 'economy' | 'exclusive' | 'support' | 'partners';
+type AgroPlusBenefitCategory = 'economy' | 'exclusive' | 'shipping' | 'points';
 type CouponFilter =
   'all' | 'first-order' | 'inputs' | 'tools' | 'irrigation' | 'livestock' | 'expiring';
 type CouponSort = 'relevance' | 'discount' | 'code';
@@ -30,7 +30,7 @@ interface AgroPlusBenefit {
   selector: 'app-store-benefits',
   imports: [RouterLink, CouponShowcaseStylesComponent],
   templateUrl: './store-benefits.html',
-  styleUrls: ['./store-benefits-visuals.css', './store-benefits.css'],
+  styleUrls: ['./store-benefits-visuals.css', './store-benefits.css', './agro-plus-showcase.css'],
 })
 export class StoreBenefitsComponent {
   private readonly route = inject(ActivatedRoute);
@@ -59,129 +59,127 @@ export class StoreBenefitsComponent {
     { id: 'expiring', label: 'Expirando em breve', icon: '◷' },
   ];
   readonly selectedBenefitId = signal('cashback');
+  readonly benefitDetailsOpen = signal(false);
+  readonly benefitIcons: Record<string, string> = {
+    cashback:
+      'M8 4h16l4 5v15l-4 4H8l-4-4V9ZM11 21l10-10M12 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM20 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
+    points:
+      'M14 8c0-3 14-3 14 0s-14 3-14 0ZM14 8v6c0 3 14 3 14 0V8M18 18c5 1 10-1 10-3M28 14v6c0 2-5 3-9 3M3 17c0-3 14-3 14 0s-14 3-14 0ZM3 17v6c0 3 14 3 14 0v-6M3 23v5c0 3 14 3 14 0v-5',
+    shipping:
+      'M3 7h16v17H3ZM19 13h6l5 6v5H19M8 21a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM24 21a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z',
+    'early-access': 'M5 12h7L25 6v20l-13-6H5ZM8 20l3 9h5l-3-9M28 11l2 2v6l-2 2',
+    discount: 'M3 4h13l14 14-12 12L3 15ZM9 9a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
+    partners:
+      'm2 15 5-9 7 2 4-2 7 2 5 8-6 9-4 3-4-2-4 1-5-5Zm9 0 6-6 5 3M11 15l3 2 5-4M11 21l6 5M15 18l8 6M21 17l5 4',
+    content: 'M16 8C12 4 5 4 2 6v21c5-2 10-2 14 1 4-3 9-3 14-1V6c-3-2-10-2-14 2ZM16 8v20',
+    support:
+      'M5 18v-5a11 11 0 0 1 22 0v10c0 5-3 6-8 6M5 15H2v10h6V15ZM27 15h3v10h-6V15ZM15 27h5v4h-5Z',
+    economy: 'm16 2 11 5v8c0 7-11 14-11 14S5 22 5 15V7ZM10 15l4 4 8-9',
+    exclusive: 'm16 2 11 5v8c0 7-11 14-11 14S5 22 5 15V7Z',
+  };
   readonly selectedBenefitCategory = signal<'all' | AgroPlusBenefitCategory>('all');
   readonly monthlyPurchaseValue = signal(500);
   readonly subscriptionPrice = 20.9;
   readonly benefitFilters: Array<{
     id: 'all' | AgroPlusBenefitCategory;
     label: string;
+    icon?: string;
   }> = [
-    { id: 'all', label: 'Todas' },
-    { id: 'economy', label: 'Economia' },
-    { id: 'exclusive', label: 'Exclusividade' },
-    { id: 'support', label: 'Tranquilidade' },
-    { id: 'partners', label: 'Parceiros' },
+    { id: 'all', label: 'Todos' },
+    { id: 'economy', label: 'Economia', icon: 'economy' },
+    { id: 'shipping', label: 'Frete', icon: 'shipping' },
+    { id: 'exclusive', label: 'Exclusividades', icon: 'exclusive' },
+    { id: 'points', label: 'Agropontos', icon: 'discount' },
   ];
   readonly agroPlusBenefits: AgroPlusBenefit[] = [
     {
       id: 'cashback',
       category: 'economy',
-      icon: 'R$',
-      label: 'Comece economizando',
-      title: '20% de cashback nas primeiras compras',
-      summary: 'Parte do valor volta para você usar novamente no catálogo.',
+      icon: '%',
+      label: 'Benefício principal',
+      title: '20% de volta em cashback',
+      summary:
+        'Receba 20% do valor das suas primeiras compras em crédito AgroAgrega e use nas próximas compras.',
       detail:
-        'Nas compras iniciais elegíveis, você recebe 20% do valor em crédito AgroAgrega. O saldo aparece na sua conta e pode reduzir o custo dos próximos insumos e equipamentos.',
+        'Nas compras iniciais elegíveis, você recebe 20% do valor em crédito AgroAgrega. O saldo pode reduzir o custo dos próximos insumos e equipamentos, conforme as condições da campanha.',
       stat: '20% de volta',
     },
     {
-      id: 'discount',
-      category: 'economy',
-      icon: '%',
-      label: 'Preço de membro',
-      title: 'Desconto exclusivo AGRO20',
-      summary: 'Economize 20% em uma seleção de produtos participantes.',
+      id: 'points',
+      category: 'points',
+      icon: '2x',
+      label: 'Cada compra vale mais',
+      title: '2x mais Agropontos',
+      summary: 'Acumule o dobro de pontos em suas compras e troque por descontos exclusivos.',
       detail:
-        'Membros Agro+ liberam o cupom AGRO20 e identificam facilmente os itens participantes. A economia é calculada no carrinho antes de concluir o pedido.',
-      stat: '20% OFF',
+        'Produtos e campanhas participantes rendem pontos em dobro para membros Agro+. Eles podem ser trocados por cupons e vantagens dentro da loja, conforme a elegibilidade de cada campanha.',
+      stat: '2x mais Agropontos',
+    },
+    {
+      id: 'shipping',
+      category: 'shipping',
+      icon: 'frete',
+      label: 'Mais economia',
+      title: 'Frete grátis em compras elegíveis',
+      summary: 'Economize no frete e receba seus produtos com mais vantagens.',
+      detail:
+        'Pedidos elegíveis acima de R$ 399 recebem frete padrão grátis nas regiões atendidas pela campanha. Confira a condição no carrinho antes de concluir a compra.',
+      stat: 'Frete R$ 0',
     },
     {
       id: 'early-access',
       category: 'exclusive',
-      icon: '48h',
+      icon: 'acesso',
       label: 'Chegue primeiro',
-      title: 'Acesso antecipado aos lançamentos',
-      summary: 'Conheça novidades antes da abertura para todo o público.',
+      title: 'Acesso antecipado a lançamentos',
+      summary: 'Seja o primeiro a conhecer novos produtos, tecnologias e ofertas especiais.',
       detail:
-        'Receba uma janela antecipada de até 48 horas para avaliar e comprar produtos recém-adicionados, inclusive em lançamentos com estoque inicial limitado.',
+        'Conheça novidades antes da abertura para todo o público e aproveite uma janela antecipada de até 48 horas nos lançamentos participantes.',
       stat: 'Até 48h antes',
     },
     {
-      id: 'limited',
+      id: 'discount',
+      category: 'economy',
+      icon: 'ofertas',
+      label: 'Preço de membro',
+      title: 'Ofertas exclusivas para membros',
+      summary: 'Tenha acesso a descontos especiais em uma seleção de produtos.',
+      detail:
+        'Membros Agro+ liberam o cupom AGRO20 para os itens participantes. O desconto é calculado no carrinho antes de concluir o pedido.',
+      stat: '20% OFF com AGRO20',
+    },
+    {
+      id: 'partners',
+      category: 'economy',
+      icon: 'parceiros',
+      label: 'Vantagens que se somam',
+      title: 'Condições especiais com parceiros',
+      summary: 'Vantagens e descontos em marcas parceiras do agro.',
+      detail:
+        'Acompanhe campanhas e condições especiais oferecidas por marcas parceiras. Produtos, prazos e limites de cada oferta são informados antes da compra.',
+      stat: 'Condições exclusivas',
+    },
+    {
+      id: 'content',
       category: 'exclusive',
-      icon: '★',
-      label: 'Só para membros',
-      title: 'Produtos e edições limitadas',
-      summary: 'Acesse lotes especiais e combinações que não ficam no catálogo aberto.',
+      icon: 'conteudo',
+      label: 'Conhecimento para produzir',
+      title: 'Conteúdos e dicas exclusivas',
+      summary: 'Receba conteúdos técnicos, novidades e orientações para o dia a dia no campo.',
       detail:
-        'Descubra equipamentos, kits sazonais e séries especiais reservados ao clube. Quando uma edição chegar, você será avisado pela sua conta.',
-      stat: 'Acesso exclusivo',
-    },
-    {
-      id: 'shipping',
-      category: 'economy',
-      icon: '↗',
-      label: 'Mais economia',
-      title: 'Frete grátis em compras elegíveis',
-      summary: 'Reduza o custo de entrega nos pedidos participantes acima de R$ 399.',
-      detail:
-        'Pedidos elegíveis acima de R$ 399 recebem frete padrão grátis nas regiões atendidas pela campanha. A condição aparece automaticamente no carrinho.',
-      stat: 'Frete R$ 0',
-    },
-    {
-      id: 'points',
-      category: 'economy',
-      icon: '2x',
-      label: 'Cada compra vale mais',
-      title: 'AgroPontos em dobro',
-      summary: 'Acumule duas vezes mais pontos em campanhas selecionadas.',
-      detail:
-        'Durante campanhas Agro+, produtos sinalizados rendem pontos em dobro. Depois, eles podem ser trocados por cupons e vantagens dentro da loja.',
-      stat: '2x pontos',
+        'Conteúdos do clube reúnem dicas de uso, novidades e orientações para aproveitar melhor os insumos e equipamentos da sua propriedade.',
+      stat: 'Mais conhecimento',
     },
     {
       id: 'support',
-      category: 'support',
-      icon: '1º',
+      category: 'exclusive',
+      icon: 'suporte',
       label: 'Atendimento prioritário',
-      title: 'Ajuda especializada com prioridade',
-      summary: 'Tire dúvidas de compra e uso sem ficar no fim da fila.',
+      title: 'Atendimento prioritário',
+      summary: 'Fale com nosso time de forma mais rápida e tenha suporte dedicado.',
       detail:
-        'Membros entram na fila prioritária para receber orientação sobre compatibilidade, características e escolha de produtos para a rotina da propriedade.',
+        'Receba orientação com prioridade sobre compatibilidade, características e escolha de produtos para a rotina da propriedade.',
       stat: 'Fila prioritária',
-    },
-    {
-      id: 'price-protection',
-      category: 'support',
-      icon: '7d',
-      label: 'Compra protegida',
-      title: 'Proteção de preço por 7 dias',
-      summary: 'Se o item baixar de preço, a diferença pode voltar como cupom.',
-      detail:
-        'Quando um produto elegível entrar em promoção até sete dias depois da compra, o membro pode receber a diferença em um cupom para o próximo pedido.',
-      stat: '7 dias',
-    },
-    {
-      id: 'returns',
-      category: 'support',
-      icon: '30',
-      label: 'Mais tranquilidade',
-      title: 'Prazo estendido para devolução',
-      summary: 'Tenha até 30 dias para devolver produtos elegíveis.',
-      detail:
-        'Produtos participantes ganham uma janela ampliada de devolução, dando mais tempo para conferir o pedido e decidir com segurança.',
-      stat: 'Até 30 dias',
-    },
-    {
-      id: 'yield',
-      category: 'partners',
-      icon: '120',
-      label: 'Benefício parceiro',
-      title: 'Cofrinhos com rendimento ampliado',
-      summary: 'Organize reservas em campanhas de até 120% do CDI.',
-      detail:
-        'Ofertas de instituições financeiras parceiras podem liberar cofrinhos promocionais de até 120% do CDI, sujeitos a elegibilidade, prazo e limites de cada campanha.',
-      stat: 'Até 120% CDI',
     },
   ];
 
@@ -362,12 +360,16 @@ export class StoreBenefitsComponent {
 
   selectBenefit(benefitId: string): void {
     if (this.agroPlusBenefits.some((benefit) => benefit.id === benefitId)) {
+      this.benefitDetailsOpen.set(
+        this.selectedBenefitId() !== benefitId || !this.benefitDetailsOpen(),
+      );
       this.selectedBenefitId.set(benefitId);
     }
   }
 
   selectBenefitCategory(category: 'all' | AgroPlusBenefitCategory): void {
     this.selectedBenefitCategory.set(category);
+    this.benefitDetailsOpen.set(false);
     const selectedStillVisible = this.visibleBenefits.some(
       (benefit) => benefit.id === this.selectedBenefitId(),
     );
@@ -394,7 +396,17 @@ export class StoreBenefitsComponent {
 
   updateMonthlyPurchaseValue(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.monthlyPurchaseValue.set(Number(input.value));
+    const value = Number(input.value);
+    if (!Number.isFinite(value)) return;
+    this.monthlyPurchaseValue.set(Math.min(2000, Math.max(100, Math.round(value / 50) * 50)));
+  }
+
+  scrollToBenefits(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const target = document.getElementById('vantagens-agro-plus');
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    target?.scrollIntoView?.({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    target?.focus({ preventScroll: true });
   }
 
   formatCurrency(value: number): string {

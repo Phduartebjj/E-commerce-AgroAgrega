@@ -109,10 +109,10 @@ describe('StoreBenefitsComponent', () => {
     expect(applyCoupon).not.toHaveBeenCalled();
   });
 
-  it('should offer an expanded set of Agro+ benefits', () => {
-    expect(component.agroPlusBenefits).toHaveLength(10);
+  it('should offer the eight Agro+ benefits from the new showcase', () => {
+    expect(component.agroPlusBenefits).toHaveLength(8);
     expect(component.agroPlusBenefits.map((benefit) => benefit.id)).toEqual(
-      expect.arrayContaining(['cashback', 'shipping', 'points', 'support', 'price-protection']),
+      expect.arrayContaining(['cashback', 'shipping', 'points', 'support', 'partners', 'content']),
     );
   });
 
@@ -141,5 +141,15 @@ describe('StoreBenefitsComponent', () => {
     expect(component.subscriptionPrice).toBe(20.9);
     expect(component.estimatedMonthlyAdvantage).toBeCloseTo(119);
     expect(component.estimatedYearlyAdvantage).toBeCloseTo(1428);
+  });
+  it('should keep simulated purchases within the slider limits and ignore invalid values', () => {
+    component.updateMonthlyPurchaseValue({ target: { value: '-500' } } as unknown as Event);
+    expect(component.monthlyPurchaseValue()).toBe(100);
+    component.updateMonthlyPurchaseValue({ target: { value: '9000' } } as unknown as Event);
+    expect(component.monthlyPurchaseValue()).toBe(2000);
+    component.updateMonthlyPurchaseValue({ target: { value: 'invalid' } } as unknown as Event);
+    expect(component.monthlyPurchaseValue()).toBe(2000);
+    component.updateMonthlyPurchaseValue({ target: { value: '750' } } as unknown as Event);
+    expect(component.estimatedMonthlyAdvantage).toBeCloseTo(169);
   });
 });
