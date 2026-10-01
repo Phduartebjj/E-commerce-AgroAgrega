@@ -17,10 +17,12 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { ProductCardComponent } from './product-card/product-card';
 import { ProductComparisonComponent } from './product-comparison/product-comparison';
+import { OfferProductCardComponent } from './offer-product-card/offer-product-card';
 
 type CategoryFilter = ProductCategory | 'Todos';
 type CatalogSortOrder = 'mais_vendidos' | 'melhor_avaliados' | 'menor_preco' | 'maior_preco';
-type CatalogFilterType = 'category' | 'search' | 'brand' | 'rating' | 'price' | 'offers';
+type CatalogFilterType =
+  'category' | 'search' | 'brand' | 'rating' | 'price' | 'offers' | 'discount';
 
 interface CatalogFilterChip {
   key: string;
@@ -40,9 +42,15 @@ function normalizeCatalogText(value: string): string {
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent, ProductComparisonComponent, RouterLink, PrecoFormatadoPipe],
+  imports: [
+    ProductCardComponent,
+    OfferProductCardComponent,
+    ProductComparisonComponent,
+    RouterLink,
+    PrecoFormatadoPipe,
+  ],
   templateUrl: './products.html',
-  styleUrl: './products.css',
+  styleUrls: ['./products.css', './offers-showcase.css'],
 })
 export class ProductsComponent {
   private readonly route = inject(ActivatedRoute);
@@ -99,6 +107,11 @@ export class ProductsComponent {
 
   readonly searchTerm = computed(() => (this.queryParams().get('search') ?? '').trim());
   readonly offersOnly = computed(() => this.queryParams().get('offers') === 'true');
+  readonly offerCategories: ProductCategory[] = ['Insumos', 'Ferramentas', 'Irrigação', 'Pecuária'];
+  readonly selectedOfferTab = signal<'all' | 'popular' | 'ending'>('all');
+  readonly offerNoticeVisible = signal(true);
+  readonly discountOnly = signal(false);
+  readonly cartFeedback = signal('');
   readonly currentTime = signal(new Date());
   readonly flashOfferProducts = computed(() =>
     this.products().filter((product) => product.flashOffer),
@@ -111,6 +124,7 @@ export class ProductsComponent {
     }).format(this.currentTime()),
   );
   readonly flashOfferCountdown = computed(() => formatFlashOfferCountdown(this.currentTime()));
+  readonly countdownParts = computed(() => this.flashOfferCountdown().split(':'));
   readonly highestFlashDiscount = computed(() =>
     Math.max(...this.flashOfferProducts().map((product) => product.flashOfferDiscount ?? 0), 0),
   );
@@ -148,6 +162,7 @@ export class ProductsComponent {
     if (this.offersOnly()) count += 1;
     if (this.minRating() > 0) count += 1;
     if (this.maxPriceFilter() < this.maxCatalogPrice()) count += 1;
+    if (this.offersOnly() && this.discountOnly()) count += 1;
 
     return count;
   });
@@ -167,6 +182,9 @@ export class ProductsComponent {
 
     if (this.offersOnly()) {
       chips.push({ key: 'offers', label: 'Ofertas relâmpago de hoje', type: 'offers' });
+      if (this.discountOnly()) {
+        chips.push({ key: 'discount', label: '20% de desconto ou mais', type: 'discount' });
+      }
     }
 
     for (const brand of this.selectedBrands()) {
@@ -193,6 +211,9 @@ export class ProductsComponent {
   });
 
   readonly featuredProducts = this.productService.getDailyPopularProducts(8);
+  readonly visibleFilterChips = computed(() =>
+    this.activeFilterChips().filter((chip) => !this.offersOnly() || chip.type !== 'offers'),
+  );
 
   private readonly featureProductsOnFirstPage = computed(
     () => this.activeFilterCount() === 0 && this.sortOrder() === 'mais_vendidos',
@@ -226,6 +247,9 @@ export class ProductsComponent {
 
     if (this.offersOnly()) {
       filtered = filtered.filter((product) => product.flashOffer);
+      if (this.discountOnly()) {
+        filtered = filtered.filter((product) => (product.flashOfferDiscount ?? 0) >= 20);
+      }
     }
 
     filtered = filtered.filter((product) => product.price <= maxPrice);
@@ -344,22 +368,27 @@ export class ProductsComponent {
     });
   }
 
-  clearFilters(): void {
+  clearFilters(keepOffers = this.offersOnly()): void {
     this.selectedBrands.set([]);
     this.minRating.set(0);
     this.maxPriceFilter.set(this.maxCatalogPrice());
     this.sortOrder.set('mais_vendidos');
+    this.discountOnly.set(false);
+    this.selectedOfferTab.set('all');
     this.resetPagination();
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { category: null, search: null, offers: null },
+      queryParams: { category: null, search: null, offers: keepOffers ? 'true' : null },
       queryParamsHandling: 'merge',
     });
   }
 
   removeActiveFilter(filter: CatalogFilterChip): void {
     switch (filter.type) {
+      case 'discount':
+        this.discountOnly.set(false);
+        break;
       case 'category':
         this.selectCategory('Todos');
         return;
@@ -466,6 +495,30 @@ export class ProductsComponent {
     this.viewMode.set(mode);
   }
 
+  selectOfferTab(tab: 'all' | 'popular' | 'ending'): void {
+    this.selectedOfferTab.set(tab);
+    if (tab === 'popular') this.sortOrder.set('mais_vendidos');
+    this.selectCategory('Todos');
+  }
+
+  routerToCatalog(): void {
+    this.clearFilters(false);
+  }
+
+  toggleOfferDiscount(event: Event): void {
+    this.discountOnly.set((event.target as HTMLInputElement).checked);
+    this.resetPagination();
+  }
+
+  showAllOffers(): void {
+    this.clearFilters();
+    this.scrollToProducts();
+  }
+
+  onOfferAdded(product: ProductModel): void {
+    this.cartFeedback.set(`${product.title} adicionado ao carrinho.`);
+  }
+
   updateMaxPrice(event: Event): void {
     this.maxPriceFilter.set(Number((event.target as HTMLInputElement).value));
     this.resetPagination();
@@ -541,7 +594,7 @@ export class ProductsComponent {
     this.currentPage.set(1);
   }
 
-  private formatCurrency(value: number): string {
+  formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',

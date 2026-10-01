@@ -466,56 +466,46 @@
 .coupon-help-card {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 1.42 / 1;
-  border: 1px solid #dce9de;
   border-radius: 18px;
-  background: #e9f9dc;
-  box-shadow: 0 12px 30px rgba(18, 66, 45, 0.06);
+  align-self: start;
+  background: #fff;
 }
 
 .coupon-help-card img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  object-fit: contain;
 }
 
 .coupon-help-button {
   position: absolute;
-  right: 7%;
-  bottom: 6%;
-  left: 7%;
-  display: flex;
-  min-height: 42px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 10px;
-  background: linear-gradient(135deg, #07814d, #045b38);
-  color: #fff;
-  font-size: 0.72rem;
-  box-shadow: 0 10px 24px rgba(6, 83, 50, 0.23);
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
+  top: 72.2%;
+  left: 6.4%;
+  width: 62.3%;
+  height: 16.7%;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  transition: background 160ms ease;
 }
 
 .coupon-help-button:hover {
-  box-shadow: 0 13px 28px rgba(6, 83, 50, 0.3);
-  transform: translateY(-2px);
+  background: rgb(255 255 255 / 10%);
 }
 
-.coupon-help-button__icon {
-  position: relative;
-  display: inline-flex;
-  padding: 0 6px 6px;
-  border: 2px solid currentColor;
-  border-radius: 999px;
-  font-size: 0.66rem;
-  line-height: 1;
+.coupon-help-button:focus-visible {
+  outline-color: #004d32;
+}
+
+.coupon-help-button__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .coupon-benefits-summary {
@@ -784,10 +774,6 @@
     grid-template-columns: 1fr;
   }
 
-  .coupon-help-card {
-    aspect-ratio: 1.62 / 1;
-  }
-
   .coupon-how ol {
     grid-template-columns: 1fr;
   }
@@ -833,14 +819,6 @@
 
   .coupon-showcase-card__actions {
     grid-template-columns: 1fr;
-  }
-
-  .coupon-help-card {
-    aspect-ratio: 1.3 / 1;
-  }
-
-  .coupon-help-button {
-    font-size: 0.66rem;
   }
 
   .coupon-how header img {

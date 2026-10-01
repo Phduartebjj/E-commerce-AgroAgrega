@@ -89,7 +89,7 @@ describe('StoreBenefitsComponent', () => {
     expect(imageSources).toEqual(
       expect.arrayContaining([
         '/assets/images/coupons/coupons-hero.png',
-        '/assets/images/coupons/coupons-help.png',
+        '/assets/images/coupons/coupons-help-team.png',
         '/assets/images/coupons/coupons-tip.png',
       ]),
     );

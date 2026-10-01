@@ -1,31 +1,23 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { CurrencyPipe } from '@angular/common';
 import { FavoritesService } from '@core/services/favorites/favorites.service';
+import { FavoriteProduct } from '@models/favorite';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [
-    CurrencyPipe
-  ],
+  imports: [CurrencyPipe],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoritesComponent {
-
   readonly favoritesService = inject(FavoritesService);
 
-  readonly favorites =
-    this.favoritesService.favorites;
+  readonly favorites = this.favoritesService.favorites;
 
-  remove(id: number): void {
+  remove(id: FavoriteProduct['id']): void {
     this.favoritesService.remove(id);
   }
-
 }

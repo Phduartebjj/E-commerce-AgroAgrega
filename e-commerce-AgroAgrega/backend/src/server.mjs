@@ -10,21 +10,6 @@ const PORT = process.env.PORT || 3000;
 
 const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
-if (!accessToken) {
-  throw new Error(
-    'MERCADOPAGO_ACCESS_TOKEN não foi configurado no arquivo .env',
-  );
-}
-
-const mercadoPago = new MercadoPagoConfig({
-  accessToken,
-  options: { timeout: 5000 },
-});
-
-const paymentService = new PaymentService(mercadoPago);
-
-app.use(express.json());
-
 const allowedOrigins = [
   'http://localhost:4200',
   'https://phduartebjj.github.io',
@@ -48,7 +33,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/payments', createPaymentRouter(paymentService));
+app.use(express.json());
+
+const mercadoPago = new MercadoPagoConfig({ accessToken, options: { timeout: 5000 } });
+app.use('/api/payments', createPaymentRouter(new PaymentService(mercadoPago)));
 app.use('/api/payments/webhook', createWebhookRouter());
 
 app.get('/api/health', (req, res) => {
@@ -60,5 +48,4 @@ app.get('/api/health', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API AgroAgrega rodando em http://localhost:${PORT}`);
-  console.log('Mercado Pago configurado com credencial de teste.');
 });

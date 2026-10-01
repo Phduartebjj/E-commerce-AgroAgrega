@@ -1,30 +1,119 @@
-<main class="product-page" id="catalog-content">
+<main class="product-page" [class.product-page--offers]="offersOnly()" id="catalog-content">
   @if (offersOnly()) {
-    <header class="flash-offers-hero">
-      <div class="flash-offers-hero__copy">
-        <span class="flash-offers-kicker"><b aria-hidden="true">⚡</b> Seleção diária</span>
-        <h1>Ofertas relâmpago</h1>
-        <p>
-          Produtos diferentes, descontos novos e só até o fim do dia. Amanhã a vitrine muda
-          automaticamente.
-        </p>
-        <div class="flash-offers-facts" aria-label="Resumo das ofertas de hoje">
-          <span
-            ><strong>{{ flashOfferProducts().length }}</strong> produtos hoje</span
-          >
-          <span
-            ><strong>até {{ highestFlashDiscount() }}%</strong> de desconto</span
-          >
-          <span><strong>frete grátis</strong> em itens elegíveis</span>
-        </div>
+    <header class="offer-hero" aria-labelledby="offers-title">
+      <div class="offer-hero__art">
+        <img
+          src="assets/images/offers/hero.png"
+          alt=""
+          width="1672"
+          height="941"
+          fetchpriority="high"
+          decoding="async"
+        />
       </div>
-
-      <div class="flash-offers-clock" aria-live="off">
-        <span>As ofertas mudam em</span>
-        <strong>{{ flashOfferCountdown() }}</strong>
-        <small>{{ flashOfferDateLabel() }}</small>
+      <div class="offer-hero__copy">
+        <div class="offer-hero__kicker">
+          <span aria-hidden="true">ϟ</span><strong>Seleção diária</strong>
+        </div>
+        <h1 id="offers-title">Ofertas <span>relâmpago</span></h1>
+        <p>
+          Produtos de qualidade, com descontos por tempo limitado<br class="offers-desktop-break" />
+          para impulsionar o seu negócio no campo.
+        </p>
+      </div>
+      <div
+        class="offer-countdown"
+        aria-live="off"
+        role="timer"
+        [attr.aria-label]="'As ofertas mudam em ' + flashOfferCountdown()"
+      >
+        <strong>As ofertas mudam em</strong>
+        <div class="offer-countdown__digits" aria-hidden="true">
+          @for (part of countdownParts(); track $index) {
+            <div>
+              <b>{{ part }}</b
+              ><small>{{ ['Horas', 'Minutos', 'Segundos'][$index] }}</small>
+            </div>
+          }
+        </div>
+        <button type="button" (click)="scrollToProducts()">
+          Aproveite antes que acabe! <span aria-hidden="true">◴</span>
+        </button>
       </div>
     </header>
+    <div class="offer-trust" aria-label="Vantagens da loja">
+      <div>
+        <span
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6Zm-4 9 3 3 5-6" /></svg
+        ></span>
+        <p><strong>Produtos de qualidade</strong><small>das melhores marcas</small></p>
+      </div>
+      <div>
+        <span
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M2 4h12v14H2ZM14 9h4l4 5v4h-8M6 16a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm12 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+            /></svg
+        ></span>
+        <p><strong>Frete grátis</strong><small>em itens selecionados</small></p>
+      </div>
+      <div>
+        <span
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 3 8 0 10 10-8 8L3 11V3Zm4 4h.01M10 15l5-5M10 10h.01M15 15h.01" /></svg
+        ></span>
+        <p><strong>Descontos reais e limitados</strong><small>para o seu negócio</small></p>
+      </div>
+      <div>
+        <span
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2 5h20v14H2ZM2 10h20M5 15h5" /></svg
+        ></span>
+        <p><strong>Pagamento facilitado</strong><small>em até 10x sem juros</small></p>
+      </div>
+    </div>
+    <nav class="offer-tabs" aria-label="Explorar ofertas">
+      <button
+        type="button"
+        [class.active]="selectedCategory() === 'Todos' && selectedOfferTab() === 'all'"
+        [attr.aria-pressed]="selectedCategory() === 'Todos' && selectedOfferTab() === 'all'"
+        (click)="selectOfferTab('all')"
+      >
+        <span class="offer-tabs__bolt" aria-hidden="true">ϟ</span>Ofertas relâmpago
+      </button>
+      <button
+        type="button"
+        [class.active]="selectedCategory() === 'Todos' && selectedOfferTab() === 'popular'"
+        [attr.aria-pressed]="selectedCategory() === 'Todos' && selectedOfferTab() === 'popular'"
+        (click)="selectOfferTab('popular')"
+      >
+        <span aria-hidden="true">🔥</span>Mais vendidas
+      </button>
+      @for (category of offerCategories; track category) {
+        <button
+          type="button"
+          [class.active]="selectedCategory() === category"
+          [attr.aria-pressed]="selectedCategory() === category"
+          (click)="selectCategory(category)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path [attr.d]="categoryArtwork[category].icon" /></svg
+          >{{ category }}
+        </button>
+      }
+      <button
+        type="button"
+        [class.active]="selectedCategory() === 'Todos' && selectedOfferTab() === 'ending'"
+        [attr.aria-pressed]="selectedCategory() === 'Todos' && selectedOfferTab() === 'ending'"
+        (click)="selectOfferTab('ending')"
+      >
+        <svg class="offer-tabs__clock" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 6v6l4 2" /></svg
+        >Terminando hoje
+      </button>
+    </nav>
   } @else {
     <header class="catalog-hero">
       <h1 class="visually-hidden">Tudo para o seu campo em um só lugar!</h1>
@@ -85,7 +174,7 @@
                 type="button"
                 [class.active]="selectedCategory() === 'Todos' && !offersOnly()"
                 [attr.aria-pressed]="selectedCategory() === 'Todos' && !offersOnly()"
-                (click)="selectCategory('Todos')"
+                (click)="offersOnly() ? routerToCatalog() : selectCategory('Todos')"
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />
@@ -135,7 +224,12 @@
             <fieldset class="filter-group price-filter">
               <legend>Faixa de preço</legend>
               <label for="catalog-max-price">
-                Até <strong>{{ maxPriceFilter() | precoFormatado }}</strong>
+                Até
+                <strong>{{
+                  offersOnly()
+                    ? formatCurrency(maxPriceFilter())
+                    : (maxPriceFilter() | precoFormatado)
+                }}</strong>
               </label>
               <input
                 id="catalog-max-price"
@@ -145,12 +239,16 @@
                 step="50"
                 class="slider"
                 [value]="maxPriceFilter()"
-                [attr.aria-valuetext]="'Até ' + (maxPriceFilter() | precoFormatado)"
+                [attr.aria-valuetext]="'Até ' + formatCurrency(maxPriceFilter())"
                 (input)="updateMaxPrice($event)"
               />
               <div class="price-range" aria-hidden="true">
                 <span>R$ 0</span>
-                <span>{{ maxCatalogPrice() | precoFormatado }}</span>
+                <span>{{
+                  offersOnly()
+                    ? formatCurrency(maxCatalogPrice())
+                    : (maxCatalogPrice() | precoFormatado)
+                }}</span>
               </div>
             </fieldset>
 
@@ -203,9 +301,48 @@
                 <span class="stars" aria-hidden="true">★★★★★</span>
                 <span>Nota 5</span>
               </label>
+              @if (offersOnly()) {
+                <label for="rating-three"
+                  ><input
+                    id="rating-three"
+                    type="radio"
+                    name="advanced-rating"
+                    [checked]="minRating() === 3"
+                    (change)="setMinRating(3)"
+                  /><span class="stars" aria-hidden="true">★★★☆☆</span><span>3 ou mais</span></label
+                >
+                <label for="rating-two"
+                  ><input
+                    id="rating-two"
+                    type="radio"
+                    name="advanced-rating"
+                    [checked]="minRating() === 2"
+                    (change)="setMinRating(2)"
+                  /><span class="stars" aria-hidden="true">★★☆☆☆</span><span>2 ou mais</span></label
+                >
+              }
             </fieldset>
 
             <p class="filter-hint">Os resultados são atualizados automaticamente.</p>
+            @if (offersOnly()) {
+              <fieldset class="filter-group offer-type-filter">
+                <legend>Tipo de oferta</legend>
+                <label
+                  ><input
+                    type="checkbox"
+                    [checked]="discountOnly()"
+                    (change)="toggleOfferDiscount($event)"
+                  />Desconto de 20% ou mais</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    [checked]="selectedOfferTab() === 'ending'"
+                    (change)="selectOfferTab(selectedOfferTab() === 'ending' ? 'all' : 'ending')"
+                  />Terminando hoje</label
+                >
+              </fieldset>
+            }
           </div>
         </div>
       </aside>
@@ -217,16 +354,20 @@
         tabindex="-1"
         aria-label="Resultados do catálogo"
       >
-        @if (offersOnly()) {
+        @if (offersOnly() && offerNoticeVisible()) {
           <div class="daily-offer-notice">
             <span aria-hidden="true">↻</span>
             <div>
-              <strong>Vitrine renovada automaticamente</strong>
-              <p>
-                A seleção usa a data atual: à meia-noite, estes produtos saem e uma nova rodada de
-                ofertas entra no lugar.
-              </p>
+              <strong>Ofertas renovadas automaticamente!</strong>
+              <p>Novas ofertas todos os dias. Aproveite os preços de hoje até a meia-noite.</p>
             </div>
+            <button
+              type="button"
+              aria-label="Fechar aviso de ofertas"
+              (click)="offerNoticeVisible.set(false)"
+            >
+              ×
+            </button>
           </div>
         }
 
@@ -380,8 +521,16 @@
                       : 'Produtos'
                 }}
               </h2>
-              <strong>{{ resultsLabel() }}</strong>
-              <small>Página {{ currentPage() }} de {{ totalPages() }}</small>
+              @if (offersOnly()) {
+                <strong>{{
+                  selectedOfferTab() === 'ending'
+                    ? 'Últimas horas: estas ofertas encerram à meia-noite.'
+                    : 'Produtos selecionados para você aproveitar agora.'
+                }}</strong>
+              } @else {
+                <strong>{{ resultsLabel() }}</strong>
+                <small>Página {{ currentPage() }} de {{ totalPages() }}</small>
+              }
             </div>
 
             <div class="toolbar-actions">
@@ -425,11 +574,19 @@
           </div>
         </div>
 
-        @if (activeFilterChips().length > 0) {
+        @if (offersOnly()) {
+          <div class="offer-results-line">
+            <span>{{ resultsLabel() }}</span
+            ><a routerLink="/products"
+              >Ver todos os {{ products().length }} produtos <span aria-hidden="true">→</span></a
+            >
+          </div>
+        }
+        @if (visibleFilterChips().length > 0) {
           <div class="active-filters" aria-label="Filtros ativos">
             <span>Filtros ativos</span>
             <div>
-              @for (filter of activeFilterChips(); track filter.key) {
+              @for (filter of visibleFilterChips(); track filter.key) {
                 <button
                   type="button"
                   (click)="removeActiveFilter(filter)"
@@ -451,11 +608,21 @@
           [class.list-view]="viewMode() === 'list'"
         >
           @for (product of visibleProducts(); track product.id) {
-            <app-product-card
-              [product]="product"
-              [compareSelected]="isProductCompared(product.id)"
-              (toggleCompare)="toggleProductComparison($event)"
-            ></app-product-card>
+            @if (offersOnly()) {
+              <app-offer-product-card
+                [product]="product"
+                [listView]="viewMode() === 'list'"
+                [compareSelected]="isProductCompared(product.id)"
+                (toggleCompare)="toggleProductComparison($event)"
+                (added)="onOfferAdded($event)"
+              />
+            } @else {
+              <app-product-card
+                [product]="product"
+                [compareSelected]="isProductCompared(product.id)"
+                (toggleCompare)="toggleProductComparison($event)"
+              ></app-product-card>
+            }
           } @empty {
             <div class="empty-products">
               <span aria-hidden="true">⌕</span>
@@ -465,6 +632,66 @@
             </div>
           }
         </div>
+
+        @if (offersOnly()) {
+          <section class="offer-banners" aria-label="Mais vantagens para o seu campo">
+            <article class="offer-productivity">
+              <div class="offer-productivity__art">
+                <img
+                  src="assets/images/offers/productivity.png"
+                  alt=""
+                  width="1672"
+                  height="941"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="offer-banner-copy visually-hidden">
+                <h2>Mais produtividade para o seu dia a dia!</h2>
+                <p>Aproveite as ofertas e equipe o seu campo com qualidade e economia.</p>
+                <p>
+                  Entrega em todo o Brasil, produtos das melhores marcas do agro, compra segura e
+                  suporte especializado.
+                </p>
+              </div>
+              <button type="button" (click)="showAllOffers()">
+                Ver todas as ofertas <span aria-hidden="true">→</span>
+              </button>
+            </article>
+            <article class="offer-specials">
+              <div class="offer-specials__art">
+                <img
+                  src="assets/images/offers/specials.png"
+                  alt=""
+                  width="1672"
+                  height="941"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="offer-banner-copy visually-hidden">
+                <h2>Ofertas que impulsionam o campo</h2>
+                <p>Equipamentos, insumos e muito mais com preços especiais por tempo limitado.</p>
+              </div>
+              <button type="button" (click)="scrollToProducts()">
+                Aproveitar agora <span aria-hidden="true">→</span>
+              </button>
+            </article>
+          </section>
+          @if (cartFeedback()) {
+            <div class="offer-cart-feedback" role="status">
+              <span>{{ cartFeedback() }}</span
+              ><a routerLink="/cart">Ver carrinho →</a
+              ><button
+                type="button"
+                aria-label="Fechar confirmação do carrinho"
+                (click)="cartFeedback.set('')"
+              >
+                ×
+              </button>
+            </div>
+          }
+        }
 
         <app-product-comparison
           [products]="comparedProducts()"

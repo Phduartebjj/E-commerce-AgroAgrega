@@ -17,38 +17,104 @@
 </button>
 
 @if (open()) {
-  <section id="agro-assistant-panel" class="assistant-panel" role="dialog" aria-label="Assistente AgroAgrega">
+  <section
+    id="agro-assistant-panel"
+    class="assistant-panel"
+    role="dialog"
+    aria-label="Assistente AgroAgrega Tourino"
+  >
     <header class="assistant-header">
-      <span class="assistant-face assistant-face--small" aria-hidden="true"></span>
-      <span class="assistant-header__title">
-        <strong>Assistente AgroAgrega</strong>
-        <small>Seu guia pelo catálogo</small>
-      </span>
-      <button class="assistant-close" type="button" aria-label="Fechar assistente" (click)="close()">×</button>
+      <img
+        src="assets/images/assistant/tourino-header.png"
+        alt="Assistente AgroAgrega Tourino, seu guia para o cultivo"
+        width="2203"
+        height="714"
+        decoding="async"
+      />
+      <button
+        class="assistant-close"
+        type="button"
+        aria-label="Fechar assistente"
+        (click)="close()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
     </header>
 
-    <div #messageList class="assistant-messages" role="log" aria-label="Conversa com o assistente" aria-live="polite">
+    <div
+      #messageList
+      class="assistant-messages"
+      role="log"
+      aria-label="Conversa com o assistente"
+      aria-live="polite"
+    >
       @for (message of messages(); track message.id) {
-        <article class="assistant-message" [class.assistant-message--user]="message.role === 'user'">
-          <p>{{ message.text }}</p>
+        <article
+          class="assistant-message"
+          [class.assistant-message--welcome]="message.id === 0"
+          [class.assistant-message--user]="message.role === 'user'"
+        >
+          @if (message.id === 0) {
+            <div class="assistant-welcome-copy">
+              <header>
+                <strong>Tourino</strong><time>{{ assistantTime() }}</time>
+              </header>
+              <p>
+                Olá! Sou o <strong>Tourino</strong>, assistente da <strong>AgroAgrega!</strong>
+                <span aria-hidden="true">🌿</span>
+              </p>
+              <p>
+                Posso te ajudar a encontrar produtos, ver ofertas e cupons, além de organizar seu
+                carrinho. Como posso ajudar você hoje?
+              </p>
+            </div>
+            <span class="assistant-welcome-mascot" aria-hidden="true"></span>
+          } @else {
+            <p>{{ message.text }}</p>
+          }
 
           @if (message.products?.length) {
             <div class="assistant-product-list">
               @for (product of message.products; track product.id) {
                 <div class="assistant-product">
-                  <a [routerLink]="['/products', product.id]" (click)="close()" [attr.aria-label]="'Ver ' + product.title">
-                    <img [src]="product.images[0]" [alt]="product.title" loading="lazy" width="48" height="48" />
-                  </a>
+                  <a
+                    [routerLink]="['/products', product.id]"
+                    (click)="close()"
+                    [attr.aria-label]="'Ver ' + product.title"
+                    ><img
+                      [src]="product.images[0]"
+                      [alt]="product.title"
+                      loading="lazy"
+                      width="48"
+                      height="48"
+                  /></a>
                   <div class="assistant-product__text">
-                    <a [routerLink]="['/products', product.id]" (click)="close()">{{ product.title }}</a>
-                    <small>{{ price(product.price) }} @if (product.flashOffer) { · Oferta-relâmpago }</small>
+                    <a [routerLink]="['/products', product.id]" (click)="close()">{{
+                      product.title
+                    }}</a
+                    ><small
+                      >{{ price(product.price) }}
+                      @if (product.flashOffer) {
+                        · Oferta-relâmpago
+                      }
+                    </small>
                   </div>
                   <button
                     type="button"
                     class="assistant-product__add"
-                    [attr.aria-label]="(message.productAction === 'remove' ? 'Remover ' : message.productAction ? 'Selecionar ' : 'Adicionar ') + product.title"
-                    (click)="addFromResult(product, message.productAction ?? 'add', message.quantity ?? 1)"
-                  >{{ message.productAction === 'remove' ? '−' : '+' }}</button>
+                    [attr.aria-label]="
+                      (message.productAction === 'remove'
+                        ? 'Remover '
+                        : message.productAction
+                          ? 'Selecionar '
+                          : 'Adicionar ') + product.title
+                    "
+                    (click)="
+                      addFromResult(product, message.productAction ?? 'add', message.quantity ?? 1)
+                    "
+                  >
+                    {{ message.productAction === 'remove' ? '−' : '+' }}
+                  </button>
                 </div>
               }
             </div>
@@ -60,16 +126,39 @@
                 <div class="assistant-cart__item">
                   <span>{{ item.product.title }}</span>
                   <div class="assistant-cart__controls">
-                    <button type="button" [attr.aria-label]="'Diminuir ' + item.product.title" [disabled]="item.quantity <= 1" (click)="changeCartQuantity(item.product, -1)">−</button>
+                    <button
+                      type="button"
+                      [attr.aria-label]="'Diminuir ' + item.product.title"
+                      (click)="changeCartQuantity(item.product, -1)"
+                    >
+                      −
+                    </button>
                     <strong>{{ item.quantity }}</strong>
-                    <button type="button" [attr.aria-label]="'Aumentar ' + item.product.title" [disabled]="item.quantity >= 99" (click)="changeCartQuantity(item.product, 1)">+</button>
-                    <button type="button" class="assistant-cart__remove" [attr.aria-label]="'Remover ' + item.product.title" (click)="removeFromCart(item.product)">×</button>
+                    <button
+                      type="button"
+                      [attr.aria-label]="'Aumentar ' + item.product.title"
+                      (click)="changeCartQuantity(item.product, 1)"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      class="assistant-cart__remove"
+                      [attr.aria-label]="'Remover ' + item.product.title"
+                      (click)="removeFromCart(item.product)"
+                    >
+                      ×
+                    </button>
                   </div>
                 </div>
               }
               @if (cartItems().length) {
-                <div class="assistant-cart__total"><span>Total</span><strong>{{ price(cartTotal()) }}</strong></div>
-                @if (currentCoupon()) { <small>Cupom {{ currentCoupon()!.code }} aplicado</small> }
+                <div class="assistant-cart__total">
+                  <span>Total</span><strong>{{ price(cartTotal()) }}</strong>
+                </div>
+                @if (currentCoupon()) {
+                  <small>Cupom {{ currentCoupon()!.code }} aplicado</small>
+                }
               }
             </div>
           }
@@ -78,31 +167,105 @@
             <div class="assistant-coupons">
               @for (coupon of coupons; track coupon.code) {
                 <button type="button" (click)="applyCoupon(coupon.code)">
-                  <strong>{{ coupon.code }}</strong><span>{{ coupon.discountPercentage }}% OFF</span>
+                  <strong>{{ coupon.code }}</strong
+                  ><span>{{ coupon.discountPercentage }}% OFF</span>
                 </button>
               }
             </div>
           }
 
           @if (message.link) {
-            <a class="assistant-link" [routerLink]="message.link.path" [queryParams]="message.link.queryParams ?? null" (click)="close()">{{ message.link.label }} <span aria-hidden="true">→</span></a>
+            <a
+              class="assistant-link"
+              [routerLink]="message.link.path"
+              [queryParams]="message.link.queryParams ?? null"
+              (click)="close()"
+              >{{ message.link.label }} <span aria-hidden="true">→</span></a
+            >
           }
         </article>
       }
     </div>
 
+
     @if (messages().length < 3) {
-      <div class="assistant-suggestions" aria-label="Sugestões de perguntas">
-        @for (suggestion of suggestions; track suggestion) {
-          <button type="button" (click)="submitPrompt(suggestion)">{{ suggestion }}</button>
+      <nav class="assistant-suggestions" aria-label="Atalhos do Tourino">
+        @for (suggestion of suggestions; track suggestion.label) {
+          <button
+            type="button"
+            [class.assistant-suggestion--wide]="$index > 2"
+            (click)="submitPrompt(suggestion.prompt)"
+          >
+            <span
+              class="assistant-suggestion__icon"
+              [class.assistant-suggestion__icon--coupon]="suggestion.icon === 'coupon'"
+              aria-hidden="true"
+            >
+              @switch (suggestion.icon) {
+                @case ('search') {
+                  <svg viewBox="0 0 32 32">
+                    <circle cx="14" cy="14" r="8" />
+                    <path d="m20 20 8 8" />
+                  </svg>
+                }
+                @case ('offer') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M3 6h14l12 12-11 11L3 14Z" />
+                    <circle cx="10" cy="12" r="2" />
+                  </svg>
+                }
+                @case ('coupon') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M4 7h24v6a3 3 0 0 0 0 6v6H4v-6a3 3 0 0 0 0-6Z" />
+                    <path d="m11 21 10-10M12 11h.01M20 21h.01" />
+                  </svg>
+                }
+                @case ('cart') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M2 4h4l4 17h15l4-12H8M12 27h.01M24 27h.01" />
+                  </svg>
+                }
+                @default {
+                  <svg viewBox="0 0 32 32">
+                    <path
+                      d="M16 29V13M16 23C4 24 2 12 4 6c8 0 12 7 12 17ZM16 15C16 5 22 3 29 3c0 9-5 14-13 12"
+                    />
+                  </svg>
+                }
+              }
+            </span>
+            <strong>{{ suggestion.label }}</strong
+            ><span class="assistant-suggestion__arrow" aria-hidden="true">›</span>
+          </button>
         }
-      </div>
+      </nav>
     }
 
     <form class="assistant-composer" (ngSubmit)="send()">
-      <input #composer name="message" type="text" [(ngModel)]="draft" maxlength="240" autocomplete="off" placeholder="Peça um produto, oferta ou ajuda..." aria-label="Mensagem para o assistente" />
-      <button type="submit" [disabled]="!draft.trim()" aria-label="Enviar mensagem">➜</button>
+      <label
+        ><svg viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            d="M16 29V13M16 23C4 24 2 12 4 6c8 0 12 7 12 17ZM16 15C16 5 22 3 29 3c0 9-5 14-13 12"
+          /></svg
+        ><input
+          #composer
+          name="message"
+          type="text"
+          [(ngModel)]="draft"
+          maxlength="240"
+          autocomplete="off"
+          placeholder="Digite sua dúvida ou peça um produto..."
+          aria-label="Mensagem para o assistente"
+      /></label>
+      <button type="submit" [disabled]="!draft.trim()" aria-label="Enviar mensagem">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M3 15 29 3l-9 26-5-10ZM15 19 29 3" />
+          </svg>
+        </button>
     </form>
-    <p class="assistant-note">Respostas e ações baseadas nos dados deste catálogo.</p>
+    <p class="assistant-note">
+      <span aria-hidden="true">✦</span> Tourino pode te ajudar a encontrar tudo o que precisa no
+      catálogo da AgroAgrega.
+    </p>
   </section>
 }

@@ -47,7 +47,7 @@ Thumbs.db
 
 # Arquivo de dados local preservado após a reversão
 /.local/
-
+/backend
 
 # =========================
 # Segurança / variáveis de ambiente
