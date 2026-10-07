@@ -71,8 +71,11 @@ export class AvatarService {
   private readonly browser = isPlatformBrowser(this.platformId);
   private readonly defaultAvatar: AvatarId = 'farmer';
   private readonly selectedId = signal<AvatarId>(this.defaultAvatar);
+  private readonly photo = signal<string | null>(null);
+  private selectionVersion = 0;
 
   readonly options = AVATAR_OPTIONS;
+  readonly customPhoto = this.photo.asReadonly();
 
   readonly selectedAvatar = computed(
     () => this.options.find((avatar) => avatar.id === this.selectedId()) ?? this.options[0],
@@ -81,12 +84,14 @@ export class AvatarService {
   constructor() {
     effect(() => {
       const userId = this.auth.currentUserId();
+      this.selectionVersion++;
       this.selectedId.set(this.readAvatar(userId));
+      this.photo.set(this.readPhoto(userId));
     });
   }
 
   isSelected(avatarId: AvatarId): boolean {
-    return this.selectedId() === avatarId;
+    return !this.photo() && this.selectedId() === avatarId;
   }
 
   selectAvatar(avatarId: AvatarId): void {
@@ -95,10 +100,86 @@ export class AvatarService {
     }
 
     const userId = this.auth.currentUserId() || this.auth.getId();
-    this.selectedId.set(avatarId);
-
     if (this.browser && userId) {
       localStorage.setItem(this.storageKey(userId), avatarId);
+      localStorage.removeItem(this.photoStorageKey(userId));
+    }
+    this.selectionVersion++;
+    this.selectedId.set(avatarId);
+    this.photo.set(null);
+  }
+
+  async selectPhoto(file: File): Promise<void> {
+    if (!/^image\/(jpeg|png|webp|gif|avif|bmp)$/i.test(file.type)) {
+      throw new Error('Escolha uma imagem JPG, PNG, WebP, GIF, AVIF ou BMP.');
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error('A imagem deve ter no máximo 10 MB.');
+    }
+    const userId = this.auth.currentUserId() || this.auth.getId();
+    if (!this.browser || !userId) {
+      throw new Error('Entre na sua conta para escolher uma foto.');
+    }
+    const version = ++this.selectionVersion;
+    const photo = await this.preparePhoto(file);
+    if (
+      version !== this.selectionVersion ||
+      userId !== (this.auth.currentUserId() || this.auth.getId())
+    ) {
+      return;
+    }
+    try {
+      localStorage.setItem(this.photoStorageKey(userId), photo);
+    } catch {
+      throw new Error(
+        'Não foi possível salvar a foto neste dispositivo. Libere espaço e tente novamente.',
+      );
+    }
+    this.photo.set(photo);
+  }
+
+  private async preparePhoto(file: File): Promise<string> {
+    const url = URL.createObjectURL(file);
+    try {
+      const image = new Image();
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () =>
+          reject(new Error('Não foi possível abrir esta imagem. Escolha outra foto.'));
+        image.src = url;
+      });
+      const side = Math.min(image.naturalWidth, image.naturalHeight);
+      if (!side) throw new Error('A imagem selecionada é inválida.');
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = Math.min(side, 384);
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Não foi possível preparar a foto. Tente novamente.');
+      context.fillStyle = '#f0f7ee';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(
+        image,
+        (image.naturalWidth - side) / 2,
+        (image.naturalHeight - side) / 2,
+        side,
+        side,
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+      );
+      return canvas.toDataURL('image/jpeg', 0.85);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  private readPhoto(userId: string | null): string | null {
+    if (!this.browser || !userId) return null;
+    try {
+      const photo = localStorage.getItem(this.photoStorageKey(userId));
+      return photo?.startsWith('data:image/jpeg;base64,') ? photo : null;
+    } catch {
+      return null;
     }
   }
 
@@ -107,13 +188,21 @@ export class AvatarService {
       return this.defaultAvatar;
     }
 
-    const storedAvatar = localStorage.getItem(this.storageKey(userId)) as AvatarId | null;
-    return storedAvatar && this.options.some((avatar) => avatar.id === storedAvatar)
-      ? storedAvatar
-      : this.defaultAvatar;
+    try {
+      const storedAvatar = localStorage.getItem(this.storageKey(userId)) as AvatarId | null;
+      return storedAvatar && this.options.some((avatar) => avatar.id === storedAvatar)
+        ? storedAvatar
+        : this.defaultAvatar;
+    } catch {
+      return this.defaultAvatar;
+    }
   }
 
   private storageKey(userId: string): string {
     return `agroagrega-avatar-${userId}`;
+  }
+
+  private photoStorageKey(userId: string): string {
+    return `agroagrega-avatar-photo-${userId}`;
   }
 }

@@ -40,7 +40,13 @@
               [attr.data-avatar]="avatar.selectedAvatar().id"
               aria-hidden="true"
             >
-              {{ avatar.selectedAvatar().glyph }}
+              @if (avatar.customPhoto(); as photo) {
+                <img [src]="photo" alt="" />
+              } @else if (avatar.selectedAvatar().id === 'farmer') {
+                <span class="mascot-avatar"></span>
+              } @else {
+                {{ avatar.selectedAvatar().glyph }}
+              }
             </span>
             <span class="conta-texto">
               <small class="nome-usuario">{{ name() }}</small>
@@ -61,7 +67,13 @@
                   [attr.data-avatar]="avatar.selectedAvatar().id"
                   aria-hidden="true"
                 >
-                  {{ avatar.selectedAvatar().glyph }}
+                  @if (avatar.customPhoto(); as photo) {
+                    <img [src]="photo" alt="" />
+                  } @else if (avatar.selectedAvatar().id === 'farmer') {
+                    <span class="mascot-avatar"></span>
+                  } @else {
+                    {{ avatar.selectedAvatar().glyph }}
+                  }
                 </span>
                 <span>
                   <strong>{{ accountName() }}</strong>

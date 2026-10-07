@@ -1,4 +1,5 @@
 import { signal } from '@angular/core';
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
@@ -15,6 +16,7 @@ describe('MinhaConta', () => {
   let fixture: ComponentFixture<MinhaConta>;
 
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [MinhaConta],
       providers: [
@@ -62,13 +64,7 @@ describe('MinhaConta', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the available avatars when the picker opens', async () => {
-    const openButton = fixture.nativeElement.querySelector(
-      '[aria-controls="avatar-picker"]',
-    ) as HTMLButtonElement;
-    openButton.click();
-    await fixture.whenStable();
-
+  it('should show all 50 avatars immediately', () => {
     const host = fixture.nativeElement as HTMLElement;
     expect(host.querySelectorAll('.avatar-options button')).toHaveLength(50);
     expect(host.textContent).toContain('Cavalo');
@@ -77,5 +73,37 @@ describe('MinhaConta', () => {
     expect(host.textContent).toContain('Porquinho');
     expect(host.textContent).toContain('Cão do campo');
     expect(host.textContent).toContain('Abelha');
+  });
+
+  it('should open the gallery from the camera without forcing capture', () => {
+    const input = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
+    const click = vi.spyOn(input, 'click');
+    fixture.nativeElement.querySelector('.camera-button').click();
+    expect(click).toHaveBeenCalledOnce();
+    expect(input.hasAttribute('capture')).toBe(false);
+    expect(input.accept).toContain('image/jpeg');
+  });
+
+  it('should keep the current avatar and show feedback for an invalid photo', async () => {
+    component.selectAvatar('tractor');
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', {
+      value: [new File(['text'], 'file.txt', { type: 'text/plain' })],
+    });
+    await component.onPhotoSelected({ target: input } as unknown as Event);
+    await fixture.whenStable();
+    expect(component.avatar.isSelected('tractor')).toBe(true);
+    expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain(
+      'Escolha uma imagem',
+    );
+    expect(component.photoLoading()).toBe(false);
+  });
+
+  it('should leave the selection unchanged when the gallery is cancelled', async () => {
+    component.selectAvatar('horse');
+    const input = document.createElement('input');
+    await component.onPhotoSelected({ target: input } as unknown as Event);
+    expect(component.avatar.isSelected('horse')).toBe(true);
+    expect(component.photoError()).toBe('');
   });
 });

@@ -1,86 +1,368 @@
 <div class="minha-conta">
-  <nav class="breadcrumb" aria-label="Navegação estrutural">
-    <a routerLink="/">Home</a>
-    <span aria-hidden="true">›</span>
-    <strong>Minha Conta</strong>
-  </nav>
-  <div class="minha-conta__header">
-    <div>
-      <p class="eyebrow">Perfil</p>
+  <section class="account-hero" aria-label="Seu perfil Agro+">
+    <div class="hero-art" aria-hidden="true"></div>
+    <div class="hero-heading">
+      <nav class="breadcrumb" aria-label="Navegação estrutural">
+        <a routerLink="/">Home</a><span aria-hidden="true">›</span><strong>Minha Conta</strong>
+      </nav>
       <h1>Minha Conta</h1>
+      <p>Gerencie seus dados, personalize seu perfil e acompanhe seus benefícios.</p>
     </div>
-  </div>
-
-  <section class="profile-overview" aria-labelledby="profile-overview-title">
-    <div
-      class="profile-avatar profile-avatar--current"
-      [attr.data-avatar]="avatar.selectedAvatar().id"
-      aria-hidden="true"
-    >
-      {{ avatar.selectedAvatar().glyph }}
-    </div>
-    <div class="profile-overview__identity">
-      <p class="profile-overview__label">Conta conectada</p>
-      <h2 id="profile-overview-title">{{ userName }}</h2>
-      <span>{{ userEmail }}</span>
-    </div>
-    <div class="profile-overview__actions">
-      <a class="membership-pill" routerLink="/agro-plus">Agro+ <span>Ver benefícios</span></a>
-      <button
-        type="button"
-        class="btn btn--secondary"
-        [attr.aria-expanded]="avatarPickerOpen"
-        aria-controls="avatar-picker"
-        (click)="toggleAvatarPicker()"
-      >
-        Escolher avatar
-      </button>
-    </div>
-
-    @if (avatarPickerOpen) {
-      <div class="avatar-picker" id="avatar-picker">
-        <div>
-          <strong>Escolha como você quer aparecer</strong>
-          <small
-            >{{ avatar.options.length }} opções disponíveis. A seleção fica salva neste
-            dispositivo.</small
-          >
-        </div>
-        <div class="avatar-options" role="list" aria-label="Avatares disponíveis">
-          @for (option of avatar.options; track option.id) {
-            <button
-              type="button"
-              role="listitem"
-              [class.avatar-option--selected]="avatar.isSelected(option.id)"
-              [attr.aria-pressed]="avatar.isSelected(option.id)"
-              (click)="selectAvatar(option.id)"
-            >
-              <span class="profile-avatar" [attr.data-avatar]="option.id" aria-hidden="true">
-                {{ option.glyph }}
-              </span>
-              <span>{{ option.label }}</span>
-            </button>
+    <p class="mascot-greeting">
+      <strong>Olá, {{ firstName }}!</strong
+      ><span>Configure seu perfil, escolha seu avatar e personalize sua experiência no Agro+!</span>
+    </p>
+    <div class="profile-overview">
+      <div class="profile-photo">
+        <div
+          class="profile-avatar profile-avatar--current"
+          [attr.data-avatar]="avatar.selectedAvatar().id"
+        >
+          @if (avatar.customPhoto(); as photo) {
+            <img [src]="photo" alt="Sua foto de perfil" />
+          } @else if (avatar.selectedAvatar().id === 'farmer') {
+            <span class="mascot-avatar" role="img" aria-label="Avatar Produtor"></span>
+          } @else {
+            <span role="img" [attr.aria-label]="'Avatar ' + avatar.selectedAvatar().label">{{
+              avatar.selectedAvatar().glyph
+            }}</span>
           }
         </div>
-      </div>
-    }
-  </section>
-
-  <section class="card card--dados" id="account-profile">
-    <div class="card__title-row">
-      <h2 class="titulo-com-icone">
-        <img
-          src="/assets/images/icon-my-account.webp"
-          loading="lazy"
-          decoding="async"
-          alt=""
-          class="icone-titulo"
+        <button
+          type="button"
+          class="camera-button"
+          aria-label="Escolher foto da galeria"
+          title="Escolher foto da galeria"
+          [disabled]="photoLoading()"
+          (click)="photoInput.click()"
+        >
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 6h4l2-3h4l2 3h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"
+            />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+        </button>
+        <input
+          #photoInput
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp"
+          hidden
+          (change)="onPhotoSelected($event)"
         />
-        Meus dados
+      </div>
+      <div class="profile-overview__identity">
+        <p class="connection-badge">
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m5 12 4 4L19 6" />
+          </svg>
+          Conta conectada
+        </p>
+        <div class="profile-name">
+          <h2>{{ userName }}</h2>
+          <button
+            class="edit-profile-button"
+            type="button"
+            aria-label="Editar meus dados"
+            (click)="editProfile(); profileSection.scrollIntoView({ block: 'center' })"
+          >
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m15 4 5 5M3 21l5-1L21 7a2 2 0 0 0-5-5L3 15Z" />
+            </svg>
+          </button>
+        </div>
+        <p class="profile-email">
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m3 5 9 7 9-7" /></svg
+          ><span>{{ userEmail }}</span>
+        </p>
+      </div>
+    </div>
+    <nav class="account-nav" aria-label="Seções da minha conta">
+      <button
+        type="button"
+        class="account-nav__item account-nav__item--active"
+        (click)="avatarSection.scrollIntoView({ block: 'start' })"
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="7" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2Z" /></svg
+        ><span><strong>Perfil</strong><small>Seus dados e avatar</small></span>
+      </button>
+      <button
+        type="button"
+        class="account-nav__item"
+        (click)="addressSection.scrollIntoView({ block: 'start' })"
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+          <circle cx="12" cy="10" r="2.5" /></svg
+        ><span><strong>Endereços</strong><small>Seus endereços</small></span>
+      </button>
+      <a class="account-nav__item" routerLink="/agro-plus"
+        ><svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 8h18v4H3zM5 12v9h14v-9M12 8v13" />
+          <path d="M12 8H8a3 3 0 1 1 3-3l1 3Zm0 0h4a3 3 0 1 0-3-3l-1 3Z" /></svg
+        ><span><strong>Benefícios</strong><small>Vantagens Agro+</small></span></a
+      >
+      <button
+        type="button"
+        class="account-nav__item"
+        (click)="securitySection.scrollIntoView({ block: 'start' })"
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="m9 3 1-1h4l1 3 3 1 3-1 2 4-2 2v3l2 2-2 4-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-4 2-2v-3L1 9l2-4 3 1 3-1Z"
+            transform="translate(1 0) scale(.92)"
+          />
+          <circle cx="12" cy="12" r="3" /></svg
+        ><span><strong>Segurança</strong><small>Gerencie sua conta</small></span>
+      </button>
+      <button
+        type="button"
+        class="account-nav__item"
+        [attr.aria-expanded]="notificationsOpen"
+        aria-controls="account-notifications"
+        (click)="notificationsOpen = !notificationsOpen"
+      >
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM9 21h6" /></svg
+        ><span><strong>Notificações</strong><small>Suas atualizações</small></span>
+      </button>
+    </nav>
+  </section>
+  @if (notificationsOpen) {
+    <section
+      class="card notifications-card"
+      id="account-notifications"
+      aria-labelledby="notifications-title"
+    >
+      <h2 id="notifications-title">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM9 21h6" />
+        </svg>
+        Notificações
       </h2>
+      <p>Acompanhe as atualizações de suas compras na área de pedidos.</p>
+      <a class="btn btn--secondary" routerLink="/orders">Ver meus pedidos</a>
+    </section>
+  }
+  <section
+    #avatarSection
+    class="card avatar-picker"
+    id="avatar-picker"
+    aria-labelledby="avatar-picker-title"
+    [attr.aria-busy]="photoLoading()"
+  >
+    <div class="card__title-row">
+      <div class="section-heading">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 3C9 2 2 7 5 16c8 5 16-2 15-13ZM4 21 16 8M3 6c-2 6-1 10 4 12" />
+        </svg>
+        <div>
+          <h2 id="avatar-picker-title">Escolha como você quer aparecer</h2>
+          <p>
+            {{ avatar.options.length }} opções disponíveis. A seleção fica salva neste dispositivo.
+          </p>
+        </div>
+      </div>
+      <div class="profile-tip">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM21 2v4M19 4h4" />
+        </svg>
+        <div>
+          <strong>Seu perfil, do seu jeito!</strong
+          ><small>Escolha um avatar que represente você no Agro+.</small>
+        </div>
+      </div>
+    </div>
+    <p class="photo-feedback" role="status" aria-live="polite">
+      {{ photoLoading() ? 'Preparando sua foto…' : photoMessage() }}
+    </p>
+    @if (photoError()) {
+      <p class="photo-error" role="alert">{{ photoError() }}</p>
+    }
+    <div class="avatar-options" role="group" aria-label="Avatares disponíveis">
+      @for (option of avatar.options; track option.id) {
+        <button
+          type="button"
+          [class.avatar-option--selected]="avatar.isSelected(option.id)"
+          [attr.aria-pressed]="avatar.isSelected(option.id)"
+          [disabled]="photoLoading()"
+          (click)="selectAvatar(option.id)"
+        >
+          <span class="profile-avatar" [attr.data-avatar]="option.id" aria-hidden="true">
+            @if (option.id === 'farmer') {
+              <span class="mascot-avatar"></span>
+            } @else {
+              {{ option.glyph }}
+            }
+          </span>
+          <span>{{ option.label }}</span>
+          @if (avatar.isSelected(option.id)) {
+            <span class="avatar-check"
+              ><svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m5 12 4 4L19 6" /></svg
+            ></span>
+          }
+        </button>
+      }
+    </div>
+  </section>
+  <section class="card card--dados" id="account-profile" #profileSection>
+    <div class="card__title-row">
+      <div class="section-heading">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="7" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2Z" />
+        </svg>
+        <div>
+          <h2>Meus dados</h2>
+          <p>Seus dados pessoais utilizados na plataforma Agro+.</p>
+        </div>
+      </div>
 
       @if (!editingProfile) {
         <button type="button" class="btn btn--secondary" (click)="editProfile()">
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m15 4 5 5M3 21l5-1L21 7a2 2 0 0 0-5-5L3 15Z" />
+          </svg>
           Editar dados
         </button>
       }
@@ -89,12 +371,42 @@
     @if (!editingProfile) {
       <div class="info-list">
         <div class="info-item">
-          <span>Nome</span>
+          <span
+            ><svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="7" r="4" />
+              <path d="M4 21v-2a8 8 0 0 1 16 0v2Z" />
+            </svg>
+            Nome completo</span
+          >
           <strong>{{ userName }}</strong>
         </div>
 
         <div class="info-item">
-          <span>E-mail</span>
+          <span
+            ><svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m3 5 9 7 9-7" />
+            </svg>
+            E-mail</span
+          >
           <strong>{{ userEmail }}</strong>
         </div>
       </div>
@@ -131,18 +443,27 @@
     }
   </section>
 
-  <section class="card" id="account-addresses">
+  <section class="card" id="account-addresses" #addressSection>
     <div class="card__title-row">
-      <h2 class="titulo-com-icone">
-        <img
-          src="/assets/images/icon-my-loc.webp"
-          loading="lazy"
-          decoding="async"
-          alt=""
-          class="icone-titulo"
-        />
-        Meus endereços
-      </h2>
+      <div class="section-heading">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+          <circle cx="12" cy="10" r="2.5" />
+        </svg>
+        <div>
+          <h2>Meus endereços</h2>
+          <p>Gerencie seus endereços de entrega e cadastro.</p>
+        </div>
+      </div>
       @if (!isAddressFormOpen) {
         <button type="button" class="btn btn--secondary" (click)="startAddAddress()">
           + Adicionar endereço
@@ -270,6 +591,19 @@
       <div class="info-list">
         @for (address of userAddresses; track $index) {
           <div class="info-item info-item--stacked">
+            <span class="address-home"
+              ><svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m2 11 10-9 10 9M5 9v12h14V9M9 21v-8h6v8" /></svg
+            ></span>
             <div class="address-summary">
               <span>{{ address.fullName }}</span>
               <strong
@@ -284,6 +618,18 @@
                 class="btn btn--secondary"
                 (click)="editAddress(address, $index)"
               >
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m15 4 5 5M3 21l5-1L21 7a2 2 0 0 0-5-5L3 15Z" />
+                </svg>
                 Editar
               </button>
             </div>
@@ -293,21 +639,61 @@
     }
   </section>
 
-  <section class="card card--account" id="account-security">
-    <h2 class="titulo-com-icone">
-      <img
-        src="/assets/images/icon-my-config.webp"
-        loading="lazy"
-        decoding="async"
-        alt=""
-        class="icone-titulo"
-      />
-      Conta
-    </h2>
+  <section class="card card--account" id="account-security" #securitySection>
+    <div class="section-heading">
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          d="m9 3 1-1h4l1 3 3 1 3-1 2 4-2 2v3l2 2-2 4-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-4 2-2v-3L1 9l2-4 3 1 3-1Z"
+          transform="translate(1 0) scale(.92)"
+        />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+      <div>
+        <h2>Conta</h2>
+        <p>Gerencie sua conta na plataforma Agro+.</p>
+      </div>
+    </div>
 
     <div class="account-actions">
-      <button type="button" class="btn btn--secondary" (click)="logout()">Logout</button>
-      <button type="button" class="btn btn--danger" (click)="removeAccount()">Remover conta</button>
+      <button type="button" class="btn btn--secondary" (click)="logout()">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M10 3H3v18h7M8 12h13m-5-5 5 5-5 5" />
+        </svg>
+        Logout
+      </button>
+      <button type="button" class="btn btn--danger" (click)="removeAccount()">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7" />
+        </svg>
+        Remover conta
+      </button>
     </div>
   </section>
 </div>

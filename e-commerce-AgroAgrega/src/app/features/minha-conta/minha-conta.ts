@@ -1,11 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AddressService } from '@core/services/address/address.service';
 import { Auth } from '@core/services/auth/auth.service';
 import { AvatarId, AvatarService } from '@core/services/avatar/avatar.service';
 import { CepService } from '@core/services/cep/cep';
-import { OrderService } from '@core/services/order/order.service';
 import { AddressModel } from '@models/address.model';
 import { errorMessages } from '@shared/constants/form-error-messages';
 
@@ -13,11 +12,10 @@ import { errorMessages } from '@shared/constants/form-error-messages';
   selector: 'app-minha-conta',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './minha-conta.html',
-  styleUrl: './minha-conta.css',
+  styleUrls: ['./minha-conta.css', './account-header.css'],
 })
 export class MinhaConta {
   private readonly auth = inject(Auth);
-  private readonly orderService = inject(OrderService);
   private readonly cepService = inject(CepService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
@@ -28,18 +26,16 @@ export class MinhaConta {
   userEmail = this.auth.getEmail();
   userAddresses: AddressModel[] = [];
   editingProfile = false;
-  avatarPickerOpen = false;
+  readonly photoLoading = signal(false);
+  readonly photoMessage = signal('');
+  readonly photoError = signal('');
+  notificationsOpen = false;
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;
 
-  protected readonly recentOrders = computed(() => {
-    const userId = this.auth.currentUserId();
-
-    if (!userId) {
-      return [];
-    }
-    return this.orderService.getOrdersByUserId(userId);
-  });
+  get firstName(): string {
+    return this.userName.trim().split(/\s+/)[0] || 'produtor';
+  }
 
   readonly profileForm = this.formBuilder.nonNullable.group({
     name: [this.userName, [Validators.required, Validators.minLength(3)]],
@@ -86,13 +82,36 @@ export class MinhaConta {
     this.editingProfile = true;
   }
 
-  toggleAvatarPicker(): void {
-    this.avatarPickerOpen = !this.avatarPickerOpen;
+  selectAvatar(avatarId: AvatarId): void {
+    this.photoError.set('');
+    try {
+      this.avatar.selectAvatar(avatarId);
+      this.photoMessage.set('Avatar atualizado!');
+    } catch {
+      this.photoError.set('Não foi possível salvar o avatar neste dispositivo. Tente novamente.');
+    }
   }
 
-  selectAvatar(avatarId: AvatarId): void {
-    this.avatar.selectAvatar(avatarId);
-    this.avatarPickerOpen = false;
+  async onPhotoSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || this.photoLoading()) return;
+    this.photoError.set('');
+    this.photoMessage.set('');
+    this.photoLoading.set(true);
+    try {
+      await this.avatar.selectPhoto(file);
+      this.photoMessage.set('Foto de perfil atualizada! Ela fica salva neste dispositivo.');
+    } catch (error) {
+      this.photoError.set(
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível carregar a foto. Tente novamente.',
+      );
+    } finally {
+      this.photoLoading.set(false);
+    }
   }
 
   saveProfile(): void {

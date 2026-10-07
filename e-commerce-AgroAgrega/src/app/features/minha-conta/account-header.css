@@ -1,0 +1,429 @@
+/* Match the original 2048 × 768 artwork without stretching or masking it. */
+.account-hero {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  aspect-ratio: 8 / 3;
+  min-width: 0;
+  margin: 0 -22px -6px;
+}
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url('/assets/images/account/profile-background.png') center / 100% 100% no-repeat;
+}
+.hero-heading {
+  position: absolute;
+  top: 3.8%;
+  left: 3.5%;
+  width: 35.5%;
+  min-width: 0;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.85cqw;
+  color: #647580;
+  font-size: clamp(10px, 1.05cqw, 12px);
+  line-height: 1.4;
+}
+.breadcrumb strong {
+  color: #183430;
+}
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+.minha-conta h1 {
+  margin: 0 0 0.65cqw;
+  color: #07392a;
+  font-size: 3.5cqw;
+  font-weight: 800;
+  letter-spacing: -0.1cqw;
+  line-height: 1.1;
+}
+.hero-heading > p {
+  color: #65736e;
+  font-size: 1.2cqw;
+  line-height: 1.45;
+}
+.mascot-greeting {
+  position: absolute;
+  left: 45.5%;
+  top: 22%;
+  width: 15%;
+  color: #163b28;
+  font-size: 1.25cqw;
+  line-height: 1.35;
+  transform: rotate(-4deg);
+}
+.mascot-greeting strong,
+.mascot-greeting span {
+  display: block;
+}
+.mascot-greeting strong {
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile-overview {
+  display: contents;
+}
+.profile-photo {
+  position: absolute;
+  left: 4.95%;
+  top: 35.4%;
+  width: 14.9%;
+  aspect-ratio: 1;
+}
+.profile-avatar--current {
+  width: 100%;
+  height: 100%;
+  border: 0.6cqw solid #fff;
+  outline: 0.25cqw solid #237446;
+  outline-offset: -0.95cqw;
+  font-size: 6.5cqw;
+}
+.camera-button {
+  position: absolute;
+  right: -1%;
+  bottom: 7%;
+  display: grid;
+  place-items: center;
+  width: 27%;
+  aspect-ratio: 1;
+  border: 0.3cqw solid #fff;
+  border-radius: 50%;
+  color: white;
+  background: #146442;
+  box-shadow: 0 3px 8px #235e3d20;
+  cursor: pointer;
+}
+.camera-button:hover {
+  background: #0b4c30;
+}
+.camera-button .icon {
+  width: 52%;
+  height: 52%;
+}
+.profile-overview__identity {
+  position: absolute;
+  left: 21.8%;
+  top: 38.9%;
+  width: 30.4%;
+  min-width: 0;
+}
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65cqw;
+  padding: 0.55cqw 1.2cqw;
+  border: 1px solid #cce6bb;
+  border-radius: 30px;
+  color: #16783b;
+  background: #f1fbee;
+  font-size: 1.35cqw;
+  font-weight: 750;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.connection-badge .icon {
+  width: 1.7cqw;
+  height: 1.7cqw;
+  padding: 0.25cqw;
+  border-radius: 50%;
+  background: #238847;
+  color: #fff;
+  stroke-width: 3px;
+}
+.profile-name {
+  margin: 1.65cqw 0 0.55cqw;
+}
+.minha-conta .profile-name h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-width: calc(100% - 4.5cqw);
+  color: #073426;
+  font-size: 2.1cqw;
+  letter-spacing: -0.05cqw;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.edit-profile-button {
+  position: absolute;
+  right: 0;
+  top: 5.1cqw;
+  display: grid;
+  place-items: center;
+  width: 3cqw;
+  aspect-ratio: 1;
+  border: 1px solid #c5deb2;
+  border-radius: 50%;
+  background: #f5faef;
+  color: #22543d;
+}
+.edit-profile-button .icon {
+  width: 52%;
+  height: 52%;
+}
+.profile-email {
+  display: flex;
+  align-items: center;
+  gap: 0.65cqw;
+  color: #173b32;
+  font-size: 1.3cqw;
+  line-height: 1.5;
+}
+.profile-email span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile-email .icon {
+  width: 1.7cqw;
+  height: 1.7cqw;
+}
+.account-nav {
+  position: absolute;
+  left: 4.1%;
+  right: 4.9%;
+  top: 75.5%;
+  height: 18.3%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-width: 0;
+  padding: 0.65cqw;
+  border-radius: 1.8cqw;
+  background: #fcfefd;
+}
+.account-nav__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2cqw;
+  min-width: 0;
+  padding: 0.65cqw;
+  border: 0;
+  border-radius: 1.4cqw;
+  background: transparent;
+  color: #23404c;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.account-nav__item + .account-nav__item::before {
+  content: '';
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  left: 0;
+  border-left: 1px solid #dce7e4;
+}
+.account-nav__item:nth-child(2)::before {
+  display: none;
+}
+.account-nav__item > .icon {
+  width: 2.7cqw;
+  height: 2.7cqw;
+}
+.account-nav__item span {
+  min-width: 0;
+}
+.account-nav__item strong,
+.account-nav__item small {
+  display: block;
+}
+.account-nav__item strong {
+  font-size: 1.3cqw;
+  font-weight: 750;
+}
+.account-nav__item small {
+  margin-top: 0.3cqw;
+  font-size: 1cqw;
+  color: #748c92;
+  white-space: nowrap;
+}
+.account-nav__item--active {
+  color: #fff;
+  background: #176446;
+}
+.account-nav__item--active small {
+  color: #e6f0e8;
+}
+.account-nav__item:not(.account-nav__item--active):hover {
+  background: #edf6f0;
+}
+@media (max-width: 1000px) {
+  .account-hero {
+    margin: 0 -14px -6px;
+  }
+}
+@media (max-width: 760px) {
+  .account-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    aspect-ratio: auto;
+    padding: 22px 14px 14px;
+    background: #edf7e9;
+  }
+  .hero-art {
+    inset: 0 0 auto auto;
+    width: 230px;
+    height: 200px;
+    background-size: auto 135%;
+    background-position: 85% top;
+  }
+  .hero-art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #edf7e9, transparent 45%);
+  }
+  .hero-heading {
+    position: static;
+    width: calc(100% - 250px);
+    min-height: 155px;
+  }
+  .breadcrumb {
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  .minha-conta h1 {
+    margin-bottom: 10px;
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+  .hero-heading > p {
+    font-size: 13px;
+  }
+  .mascot-greeting {
+    display: none;
+  }
+  .profile-overview {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+    gap: 16px;
+    padding: 12px 4px;
+  }
+  .profile-photo {
+    position: relative;
+    inset: auto;
+    width: 100%;
+  }
+  .profile-avatar--current {
+    border-width: 5px;
+    outline-width: 2px;
+    outline-offset: -8px;
+    font-size: 46px;
+  }
+  .camera-button {
+    width: 38px;
+    border-width: 3px;
+  }
+  .profile-overview__identity {
+    position: static;
+    width: auto;
+  }
+  .connection-badge {
+    font-size: 11px;
+    gap: 5px;
+    padding: 5px 8px;
+  }
+  .connection-badge .icon {
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+  }
+  .profile-name {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin: 10px 0 7px;
+  }
+  .minha-conta .profile-name h2 {
+    display: block;
+    max-width: none;
+    font-size: 19px;
+    letter-spacing: -0.5px;
+    overflow: visible;
+  }
+  .edit-profile-button {
+    position: static;
+    flex: 0 0 28px;
+    width: 28px;
+  }
+  .profile-email {
+    font-size: 12px;
+    gap: 6px;
+  }
+  .profile-email span {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .profile-email .icon {
+    width: 16px;
+    height: 16px;
+  }
+  .account-nav {
+    position: static;
+    grid-template-columns: repeat(5, minmax(145px, 1fr));
+    overflow-x: auto;
+    height: auto;
+    padding: 7px;
+    border-radius: 18px;
+    scrollbar-width: thin;
+  }
+  .account-nav__item {
+    justify-content: flex-start;
+    min-height: 64px;
+    padding: 10px 12px;
+    gap: 9px;
+    border-radius: 12px;
+  }
+  .account-nav__item > .icon {
+    width: 24px;
+    height: 24px;
+  }
+  .account-nav__item strong {
+    font-size: 13px;
+  }
+  .account-nav__item small {
+    margin-top: 3px;
+    font-size: 11px;
+    white-space: normal;
+  }
+  .account-nav__item + .account-nav__item::before {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .hero-art {
+    width: 100%;
+    height: 165px;
+    background-size: auto 220px;
+    background-position: right top;
+  }
+  .hero-heading {
+    width: 100%;
+    margin-top: 160px;
+    min-height: 0;
+  }
+}
+@media (max-width: 380px) {
+  .profile-overview {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .minha-conta .profile-name h2 {
+    font-size: 18px;
+  }
+}
