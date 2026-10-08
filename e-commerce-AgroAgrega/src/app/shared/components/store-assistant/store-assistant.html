@@ -41,18 +41,22 @@
       </button>
     </header>
 
+    <p class="assistant-status" role="status">{{ isTyping() ? 'Tourino está digitando…' : '' }}</p>
     <div
       #messageList
       class="assistant-messages"
       role="log"
       aria-label="Conversa com o assistente"
       aria-live="polite"
+      [attr.aria-busy]="isTyping()"
     >
       @for (message of messages(); track message.id) {
         <article
           class="assistant-message"
           [class.assistant-message--welcome]="message.id === 0"
           [class.assistant-message--user]="message.role === 'user'"
+          [class.assistant-message--typing]="message.typing"
+          [attr.aria-atomic]="message.role === 'assistant' ? 'true' : null"
         >
           @if (message.id === 0) {
             <div class="assistant-welcome-copy">
@@ -69,8 +73,18 @@
               </p>
             </div>
             <span class="assistant-welcome-mascot" aria-hidden="true"></span>
+          } @else if (message.typing && !message.text) {
+            <div class="assistant-typing" aria-hidden="true">
+              <span>Tourino está digitando</span>
+              <span class="assistant-typing__dots"><i></i><i></i><i></i></span>
+            </div>
           } @else {
-            <p>{{ message.text }}</p>
+            <p>
+              {{ message.text }}
+              @if (message.typing) {
+                <span class="assistant-cursor" aria-hidden="true"></span>
+              }
+            </p>
           }
 
           @if (message.products?.length) {
@@ -102,6 +116,7 @@
                   <button
                     type="button"
                     class="assistant-product__add"
+                    [disabled]="isTyping()"
                     [attr.aria-label]="
                       (message.productAction === 'remove'
                         ? 'Remover '
@@ -166,7 +181,7 @@
           @if (message.showCoupons) {
             <div class="assistant-coupons">
               @for (coupon of coupons; track coupon.code) {
-                <button type="button" (click)="applyCoupon(coupon.code)">
+                <button type="button" [disabled]="isTyping()" (click)="applyCoupon(coupon.code)">
                   <strong>{{ coupon.code }}</strong
                   ><span>{{ coupon.discountPercentage }}% OFF</span>
                 </button>
@@ -187,13 +202,13 @@
       }
     </div>
 
-
     @if (messages().length < 3) {
       <nav class="assistant-suggestions" aria-label="Atalhos do Tourino">
         @for (suggestion of suggestions; track suggestion.label) {
           <button
             type="button"
             [class.assistant-suggestion--wide]="$index > 2"
+            [disabled]="isTyping()"
             (click)="submitPrompt(suggestion.prompt)"
           >
             <span
@@ -257,11 +272,11 @@
           placeholder="Digite sua dúvida ou peça um produto..."
           aria-label="Mensagem para o assistente"
       /></label>
-      <button type="submit" [disabled]="!draft.trim()" aria-label="Enviar mensagem">
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M3 15 29 3l-9 26-5-10ZM15 19 29 3" />
-          </svg>
-        </button>
+      <button type="submit" [disabled]="!draft.trim() || isTyping()" aria-label="Enviar mensagem">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M3 15 29 3l-9 26-5-10ZM15 19 29 3" />
+        </svg>
+      </button>
     </form>
     <p class="assistant-note">
       <span aria-hidden="true">✦</span> Tourino pode te ajudar a encontrar tudo o que precisa no

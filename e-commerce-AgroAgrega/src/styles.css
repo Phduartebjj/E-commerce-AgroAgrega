@@ -82,13 +82,3 @@ html {
     max-height: calc(100dvh - 245px);
   }
 }
-
-/* Portrait framed from the clean scene, which contains no embedded profile photo. */
-.mascot-avatar {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background: #deedc9 url('/assets/images/account/profile-background.png') 82.3% 6.9% / 426.7% auto
-    no-repeat;
-}

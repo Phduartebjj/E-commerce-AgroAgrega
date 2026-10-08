@@ -20,12 +20,12 @@
         >
           @if (avatar.customPhoto(); as photo) {
             <img [src]="photo" alt="Sua foto de perfil" />
-          } @else if (avatar.selectedAvatar().id === 'farmer') {
-            <span class="mascot-avatar" role="img" aria-label="Avatar Produtor"></span>
           } @else {
-            <span role="img" [attr.aria-label]="'Avatar ' + avatar.selectedAvatar().label">{{
-              avatar.selectedAvatar().glyph
-            }}</span>
+            <img
+              class="avatar-art"
+              [src]="avatar.selectedAvatar().image"
+              [alt]="'Avatar ' + avatar.selectedAvatar().label"
+            />
           }
         </div>
         <button
@@ -301,11 +301,7 @@
           (click)="selectAvatar(option.id)"
         >
           <span class="profile-avatar" [attr.data-avatar]="option.id" aria-hidden="true">
-            @if (option.id === 'farmer') {
-              <span class="mascot-avatar"></span>
-            } @else {
-              {{ option.glyph }}
-            }
+            <img class="avatar-art" [src]="option.image" alt="" loading="lazy" decoding="async" />
           </span>
           <span>{{ option.label }}</span>
           @if (avatar.isSelected(option.id)) {

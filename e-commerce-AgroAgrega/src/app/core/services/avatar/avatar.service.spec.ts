@@ -31,25 +31,28 @@ describe('AvatarService', () => {
   it('should save and expose the selected avatar', () => {
     const service = TestBed.inject(AvatarService);
 
-    service.selectAvatar('tractor');
+    service.selectAvatar('sunglasses');
 
-    expect(service.selectedAvatar().id).toBe('tractor');
-    expect(localStorage.getItem('agroagrega-avatar-user-1')).toBe('tractor');
+    expect(service.selectedAvatar().id).toBe('sunglasses');
+    expect(localStorage.getItem('agroagrega-avatar-user-1')).toBe('sunglasses');
   });
 
-  it('should include animal avatars and persist an animal selection', () => {
+  it('should restore a saved mascot selection', () => {
+    localStorage.setItem('agroagrega-avatar-user-1', 'waving');
     const service = TestBed.inject(AvatarService);
+    TestBed.tick();
 
-    expect(service.options).toHaveLength(50);
-    expect(new Set(service.options.map((option) => option.id)).size).toBe(50);
-    expect(
-      service.options.filter((option) => ['horse', 'sheep', 'chicken', 'pig'].includes(option.id)),
-    ).toHaveLength(4);
+    expect(service.selectedAvatar().image).toBe('/assets/images/avatars/waving.png');
+    expect(service.isSelected('waving')).toBe(true);
+  });
 
-    service.selectAvatar('horse');
+  it('should fall back to the producer when a saved avatar is no longer available', () => {
+    localStorage.setItem('agroagrega-avatar-user-1', 'tractor');
+    const service = TestBed.inject(AvatarService);
+    TestBed.tick();
 
-    expect(service.selectedAvatar().label).toBe('Cavalo');
-    expect(localStorage.getItem('agroagrega-avatar-user-1')).toBe('horse');
+    expect(service.selectedAvatar().id).toBe('farmer');
+    expect(service.selectedAvatar().image).toBe('/assets/images/avatars/farmer.png');
   });
 
   it('should restore a saved photo and clear it when choosing an avatar', () => {
@@ -58,10 +61,10 @@ describe('AvatarService', () => {
     TestBed.tick();
     expect(service.customPhoto()).toBe('data:image/jpeg;base64,photo');
     expect(service.isSelected('farmer')).toBe(false);
-    service.selectAvatar('tractor');
+    service.selectAvatar('sunglasses');
     expect(service.customPhoto()).toBeNull();
     expect(localStorage.getItem('agroagrega-avatar-photo-user-1')).toBeNull();
-    expect(service.isSelected('tractor')).toBe(true);
+    expect(service.isSelected('sunglasses')).toBe(true);
   });
 
   it('should isolate photos by account and clear them from view on logout', () => {
@@ -92,7 +95,7 @@ describe('AvatarService', () => {
   it('should keep the previous selection when photo storage fails', async () => {
     const service = TestBed.inject(AvatarService);
     TestBed.tick();
-    service.selectAvatar('horse');
+    service.selectAvatar('waving');
     vi.spyOn(
       service as unknown as { preparePhoto: (file: File) => Promise<string> },
       'preparePhoto',
@@ -104,7 +107,7 @@ describe('AvatarService', () => {
       await expect(
         service.selectPhoto(new File(['x'], 'photo.png', { type: 'image/png' })),
       ).rejects.toThrow('Não foi possível salvar');
-      expect(service.isSelected('horse')).toBe(true);
+      expect(service.isSelected('waving')).toBe(true);
       expect(service.customPhoto()).toBeNull();
     } finally {
       storage.mockRestore();

@@ -156,8 +156,7 @@
   border-radius: 999px;
   background:
     linear-gradient(#f8fbf9, #f8fbf9) padding-box,
-    linear-gradient(110deg, #087f47, #36c873, #c6f5a8, #14a75e, #74df8b, #087f47)
-      border-box;
+    linear-gradient(110deg, #087f47, #36c873, #c6f5a8, #14a75e, #74df8b, #087f47) border-box;
   background-size:
     100% 100%,
     250% 100%;
@@ -272,6 +271,7 @@
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.92);
   border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #f8fbe9, #dceccc);
   box-shadow: 0 0 0 1px rgba(19, 82, 56, 0.18);
   line-height: 1;
 }
@@ -286,119 +286,6 @@
   width: 54px;
   height: 54px;
   font-size: 1.8rem;
-}
-
-.account-avatar[data-avatar='farmer'] {
-  background: #dff0cc;
-}
-
-.account-avatar[data-avatar='sprout'] {
-  background: #d9f4e0;
-}
-
-.account-avatar[data-avatar='tractor'] {
-  background: #fff0c8;
-}
-
-.account-avatar[data-avatar='cattle'] {
-  background: #f3e5d5;
-}
-
-.account-avatar[data-avatar='sunflower'] {
-  background: #fff3a9;
-}
-
-.account-avatar[data-avatar='harvest'] {
-  background: #eee0b4;
-}
-
-.account-avatar[data-avatar='horse'] {
-  background: #f3dfcf;
-}
-
-.account-avatar[data-avatar='sheep'] {
-  background: #edf1ed;
-}
-
-.account-avatar[data-avatar='chicken'] {
-  background: #fff0d8;
-}
-
-.account-avatar[data-avatar='pig'] {
-  background: #fbe0e5;
-}
-
-.account-avatar[data-avatar='farm-dog'] {
-  background: #eadacb;
-}
-
-.account-avatar[data-avatar='bee'] {
-  background: #fff1a9;
-}
-
-.account-avatar[data-avatar='goat'],
-.account-avatar[data-avatar='ox'],
-.account-avatar[data-avatar='buffalo'],
-.account-avatar[data-avatar='donkey'],
-.account-avatar[data-avatar='camel'],
-.account-avatar[data-avatar='deer'] {
-  background: #efe0d1;
-}
-
-.account-avatar[data-avatar='dairy-cow'],
-.account-avatar[data-avatar='boar'],
-.account-avatar[data-avatar='cat'],
-.account-avatar[data-avatar='mouse'],
-.account-avatar[data-avatar='rabbit'],
-.account-avatar[data-avatar='llama'] {
-  background: #f4e5df;
-}
-
-.account-avatar[data-avatar='rooster'],
-.account-avatar[data-avatar='chick'],
-.account-avatar[data-avatar='duck'],
-.account-avatar[data-avatar='turkey'],
-.account-avatar[data-avatar='owl'],
-.account-avatar[data-avatar='eagle'],
-.account-avatar[data-avatar='parrot'] {
-  background: #fff1c9;
-}
-
-.account-avatar[data-avatar='butterfly'],
-.account-avatar[data-avatar='ladybug'],
-.account-avatar[data-avatar='ant'],
-.account-avatar[data-avatar='snail'],
-.account-avatar[data-avatar='frog'],
-.account-avatar[data-avatar='fish'] {
-  background: #e1f1e5;
-}
-
-.account-avatar[data-avatar='pine-tree'],
-.account-avatar[data-avatar='tree'],
-.account-avatar[data-avatar='palm'],
-.account-avatar[data-avatar='cactus'],
-.account-avatar[data-avatar='clover'] {
-  background: #d9eee0;
-}
-
-.account-avatar[data-avatar='corn'],
-.account-avatar[data-avatar='carrot'],
-.account-avatar[data-avatar='apple'],
-.account-avatar[data-avatar='grape'] {
-  background: #fff0d0;
-}
-
-.account-avatar[data-avatar='water'],
-.account-avatar[data-avatar='rain'] {
-  background: #dceefa;
-}
-
-.account-avatar[data-avatar='sun'] {
-  background: #ffefb8;
-}
-
-.account-avatar[data-avatar='farm'] {
-  background: #e6efcf;
 }
 
 .account-chevron {
@@ -1195,4 +1082,11 @@
   }
 }
 
-.account-avatar > img { width: 100%; height: 100%; object-fit: cover; }
+.account-avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.account-avatar > img.avatar-art {
+  object-fit: contain;
+}

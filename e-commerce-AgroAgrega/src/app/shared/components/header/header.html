@@ -42,10 +42,8 @@
             >
               @if (avatar.customPhoto(); as photo) {
                 <img [src]="photo" alt="" />
-              } @else if (avatar.selectedAvatar().id === 'farmer') {
-                <span class="mascot-avatar"></span>
               } @else {
-                {{ avatar.selectedAvatar().glyph }}
+                <img class="avatar-art" [src]="avatar.selectedAvatar().image" alt="" />
               }
             </span>
             <span class="conta-texto">
@@ -69,10 +67,8 @@
                 >
                   @if (avatar.customPhoto(); as photo) {
                     <img [src]="photo" alt="" />
-                  } @else if (avatar.selectedAvatar().id === 'farmer') {
-                    <span class="mascot-avatar"></span>
                   } @else {
-                    {{ avatar.selectedAvatar().glyph }}
+                    <img class="avatar-art" [src]="avatar.selectedAvatar().image" alt="" />
                   }
                 </span>
                 <span>

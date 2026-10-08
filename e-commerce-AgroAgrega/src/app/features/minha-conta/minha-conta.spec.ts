@@ -64,15 +64,17 @@ describe('MinhaConta', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show all 50 avatars immediately', () => {
+  it('should render the 22 mascot images and update the profile when a new one is chosen', async () => {
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.querySelectorAll('.avatar-options button')).toHaveLength(50);
-    expect(host.textContent).toContain('Cavalo');
-    expect(host.textContent).toContain('Ovelha');
-    expect(host.textContent).toContain('Galinha');
-    expect(host.textContent).toContain('Porquinho');
-    expect(host.textContent).toContain('Cão do campo');
-    expect(host.textContent).toContain('Abelha');
+    expect(host.querySelectorAll('.avatar-options button')).toHaveLength(22);
+    expect(host.querySelectorAll('.avatar-options img.avatar-art')).toHaveLength(22);
+    const option = host.querySelector('[data-avatar="hat-tip"]')!.closest('button')!;
+    option.click();
+    await fixture.whenStable();
+    expect(option.getAttribute('aria-pressed')).toBe('true');
+    expect(host.querySelector('.profile-avatar--current img')?.getAttribute('src')).toBe(
+      '/assets/images/avatars/hat-tip.png',
+    );
   });
 
   it('should open the gallery from the camera without forcing capture', () => {
@@ -85,14 +87,14 @@ describe('MinhaConta', () => {
   });
 
   it('should keep the current avatar and show feedback for an invalid photo', async () => {
-    component.selectAvatar('tractor');
+    component.selectAvatar('sunglasses');
     const input = document.createElement('input');
     Object.defineProperty(input, 'files', {
       value: [new File(['text'], 'file.txt', { type: 'text/plain' })],
     });
     await component.onPhotoSelected({ target: input } as unknown as Event);
     await fixture.whenStable();
-    expect(component.avatar.isSelected('tractor')).toBe(true);
+    expect(component.avatar.isSelected('sunglasses')).toBe(true);
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain(
       'Escolha uma imagem',
     );
@@ -100,10 +102,10 @@ describe('MinhaConta', () => {
   });
 
   it('should leave the selection unchanged when the gallery is cancelled', async () => {
-    component.selectAvatar('horse');
+    component.selectAvatar('waving');
     const input = document.createElement('input');
     await component.onPhotoSelected({ target: input } as unknown as Event);
-    expect(component.avatar.isSelected('horse')).toBe(true);
+    expect(component.avatar.isSelected('waving')).toBe(true);
     expect(component.photoError()).toBe('');
   });
 });

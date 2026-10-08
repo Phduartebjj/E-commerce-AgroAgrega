@@ -1,7 +1,10 @@
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
+  PLATFORM_ID,
   ViewChild,
   effect,
   inject,
@@ -27,6 +30,7 @@ interface ChatMessage {
   id: number;
   role: 'assistant' | 'user';
   text: string;
+  typing?: boolean;
   products?: ProductModel[];
   productAction?: ProductAction;
   quantity?: number;
@@ -45,13 +49,19 @@ export class StoreAssistant {
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly destroyRef = inject(DestroyRef);
   private readonly products = this.productService.getProducts();
   private nextMessageId = 1;
+  private typingTimer?: ReturnType<typeof setTimeout>;
+  private scrollTimer?: ReturnType<typeof setTimeout>;
 
   @ViewChild('composer') private composer?: ElementRef<HTMLInputElement>;
   @ViewChild('messageList') private messageList?: ElementRef<HTMLElement>;
 
   readonly open = inject(StoreAssistantState).open;
+  readonly isTyping = signal(false);
   readonly messages = signal<ChatMessage[]>([
     {
       id: 0,
@@ -96,7 +106,7 @@ export class StoreAssistant {
   draft = '';
 
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       if (this.open()) {
         this.assistantTime.set(
           new Intl.DateTimeFormat('pt-BR', {
@@ -104,8 +114,16 @@ export class StoreAssistant {
             minute: '2-digit',
           }).format(new Date()),
         );
-        setTimeout(() => this.composer?.nativeElement.focus());
+        const focusTimer = setTimeout(() => {
+          this.composer?.nativeElement.focus();
+          this.scrollToLatest();
+        });
+        onCleanup(() => clearTimeout(focusTimer));
       }
+    });
+    this.destroyRef.onDestroy(() => {
+      clearTimeout(this.typingTimer);
+      clearTimeout(this.scrollTimer);
     });
   }
 
@@ -124,18 +142,19 @@ export class StoreAssistant {
 
   send(): void {
     const message = this.draft.trim().slice(0, 240);
-    if (!message) return;
+    if (!message || this.isTyping()) return;
     this.draft = '';
     this.submitPrompt(message);
   }
 
   submitPrompt(message: string): void {
     message = message.trim().slice(0, 240);
-    if (!message) return;
+    if (!message || this.isTyping()) return;
     this.append({ role: 'user', text: message });
     this.respond(message);
   }
   addFromResult(product: ProductModel, action: ProductAction = 'add', quantity = 1): void {
+    if (this.isTyping()) return;
     this.actOnProduct(product, action, quantity);
   }
 
@@ -150,6 +169,7 @@ export class StoreAssistant {
   }
 
   applyCoupon(code: string): void {
+    if (this.isTyping()) return;
     this.cart.applyCoupon(code);
     this.append({
       role: 'assistant',
@@ -397,12 +417,51 @@ export class StoreAssistant {
 
   private append(message: Omit<ChatMessage, 'id'>): void {
     const id = this.nextMessageId++;
+    const reducedMotion = this.document.defaultView?.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    if (message.role === 'assistant' && this.browser && !reducedMotion) {
+      this.isTyping.set(true);
+      this.messages.update((current) => [
+        ...current.slice(-39),
+        { id, role: 'assistant', text: '', typing: true },
+      ]);
+      this.scrollToLatest();
+
+      const characters = Array.from(message.text);
+      // Keep longer replies readable without making the animation take too long.
+      const charactersPerTick = Math.max(1, Math.ceil(characters.length / 120));
+      let visibleCharacters = 0;
+      const typeNext = () => {
+        visibleCharacters = Math.min(visibleCharacters + charactersPerTick, characters.length);
+        const complete = visibleCharacters === characters.length;
+        this.messages.update((current) =>
+          current.map((entry) =>
+            entry.id !== id
+              ? entry
+              : complete
+                ? { ...message, id }
+                : { ...entry, text: characters.slice(0, visibleCharacters).join('') },
+          ),
+        );
+        this.scrollToLatest();
+        if (complete) {
+          this.isTyping.set(false);
+          this.typingTimer = undefined;
+        } else {
+          this.typingTimer = setTimeout(typeNext, 24);
+        }
+      };
+      this.typingTimer = setTimeout(typeNext, 500);
+      return;
+    }
     this.messages.update((current) => [...current.slice(-39), { ...message, id }]);
     this.scrollToLatest();
   }
 
   private scrollToLatest(): void {
-    setTimeout(() => {
+    clearTimeout(this.scrollTimer);
+    this.scrollTimer = setTimeout(() => {
       const list = this.messageList?.nativeElement;
       if (list) list.scrollTop = list.scrollHeight;
     });

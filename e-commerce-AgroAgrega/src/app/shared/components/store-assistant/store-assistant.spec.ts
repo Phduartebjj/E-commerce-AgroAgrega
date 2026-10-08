@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 
 import { Cart } from '../../../core/services/cart/cart.service';
 import { StoreAssistant } from './store-assistant';
@@ -20,6 +21,13 @@ describe('StoreAssistant', () => {
     component = fixture.componentInstance;
     cart = TestBed.inject(Cart);
     fixture.detectChanges();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
   });
 
   it('opens a floating chat with the provided mascot', () => {
@@ -58,26 +66,98 @@ describe('StoreAssistant', () => {
     );
 
     await component.submitPrompt('Ver ofertas de hoje');
+    vi.runAllTimers();
     expect(component.messages().at(-1)?.products?.length).toBeGreaterThan(0);
   });
 
   it('adds, updates and removes the actual cart item', async () => {
     await component.submitPrompt('Adicionar 2 roçadeiras ao carrinho');
+    vi.runAllTimers();
     expect(cart.totalCartItens()).toBe(2);
     expect(cart.getCartItems()()[0].product.title).toContain('Roçadeira');
 
     await component.submitPrompt('Ajustar quantidade de roçadeira para 3');
+    vi.runAllTimers();
     expect(cart.totalCartItens()).toBe(3);
 
     await component.submitPrompt('Remover roçadeira do carrinho');
+    vi.runAllTimers();
     expect(cart.isEmpty()).toBe(true);
   });
 
   it('applies a valid coupon without inventing an invalid one', async () => {
     await component.submitPrompt('Aplicar cupom CAMPO15');
+    vi.runAllTimers();
     expect(cart.coupon()?.code).toBe('CAMPO15');
     await component.submitPrompt('Aplicar cupom INEXISTENTE');
+    vi.runAllTimers();
     expect(cart.coupon()?.code).toBe('CAMPO15');
   });
 
+  it('shows typing dots, reveals the reply gradually and then displays its actions', () => {
+    component.open.set(true);
+    component.submitPrompt('Ver cupons');
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    const reply = 'Confira os cupons disponíveis. Escolha um para aplicar ao carrinho:';
+
+    expect(component.isTyping()).toBe(true);
+    expect(component.messages().at(-1)?.text).toBe('');
+    expect(host.querySelector('.assistant-typing')).not.toBeNull();
+    expect(host.querySelector('.assistant-messages')?.getAttribute('aria-busy')).toBe('true');
+    expect(host.querySelector('.assistant-coupons')).toBeNull();
+
+    vi.advanceTimersByTime(620);
+    fixture.detectChanges();
+    const partialReply = component.messages().at(-1)?.text ?? '';
+    expect(partialReply.length).toBeGreaterThan(0);
+    expect(partialReply.length).toBeLessThan(reply.length);
+    expect(reply.startsWith(partialReply)).toBe(true);
+    expect(host.querySelector('.assistant-cursor')).not.toBeNull();
+    expect(host.querySelector('.assistant-coupons')).toBeNull();
+
+    vi.runAllTimers();
+    fixture.detectChanges();
+    expect(component.messages().at(-1)?.text).toBe(reply);
+    expect(component.isTyping()).toBe(false);
+    expect(host.querySelector('.assistant-messages')?.getAttribute('aria-busy')).toBe('false');
+    expect(host.querySelector('.assistant-cursor')).toBeNull();
+    expect(host.querySelector('.assistant-coupons')).not.toBeNull();
+  });
+
+  it('preserves the next draft and prevents overlapping replies while typing', () => {
+    component.draft = 'Ver cupons';
+    component.send();
+    component.draft = 'Ver ofertas de hoje';
+    component.send();
+    component.submitPrompt('Meu carrinho');
+    component.applyCoupon('CAMPO15');
+    expect(component.messages()).toHaveLength(3);
+    expect(component.draft).toBe('Ver ofertas de hoje');
+    expect(cart.coupon()).toBeNull();
+
+    vi.runAllTimers();
+    component.send();
+    expect(component.draft).toBe('');
+    expect(component.messages()).toHaveLength(5);
+    vi.runAllTimers();
+    expect(component.messages().at(-1)?.products?.length).toBeGreaterThan(0);
+  });
+
+  it('cancels the typing timer when the component is destroyed', () => {
+    component.submitPrompt('Ver cupons');
+    vi.advanceTimersByTime(620);
+    const messages = component.messages();
+    fixture.destroy();
+    vi.runAllTimers();
+    expect(component.messages()).toBe(messages);
+  });
+
+  it('displays the full reply immediately when reduced motion is preferred', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }));
+    component.submitPrompt('Ver cupons');
+    expect(component.isTyping()).toBe(false);
+    expect(component.messages().at(-1)?.showCoupons).toBe(true);
+    expect(component.messages().at(-1)?.text).toContain('Confira os cupons');
+  });
 });
