@@ -4,12 +4,11 @@
       <span class="comparison-icon" aria-hidden="true">⇄</span>
       <div>
         <strong>{{ products().length }} de 3 selecionados</strong>
-        <small>
-          {{ products().length < 2 ? 'Escolha mais um produto' : 'Pronto para comparar' }}
-        </small>
+        <small>{{
+          products().length < 2 ? 'Escolha mais um produto' : 'Pronto para comparar'
+        }}</small>
       </div>
     </div>
-
     <div class="selected-products">
       @for (product of products(); track product.id) {
         <div class="selected-product">
@@ -25,11 +24,8 @@
         </div>
       }
     </div>
-
     <div class="comparison-actions">
-      <button class="clear-comparison" type="button" (click)="clearProducts.emit()">
-        Limpar
-      </button>
+      <button class="clear-comparison" type="button" (click)="clearProducts.emit()">Limpar</button>
       <button
         class="open-comparison"
         type="button"
@@ -41,88 +37,386 @@
     </div>
   </aside>
 }
-
-<p class="comparison-live-region" aria-live="polite" aria-atomic="true">
-  {{ announcement() }}
-</p>
-
+<p class="comparison-live-region" aria-live="polite" aria-atomic="true">{{ announcement() }}</p>
 @if (open() && products().length >= 2) {
-  <div class="comparison-backdrop" (click)="closeOnBackdrop($event)">
-    <section
-      class="comparison-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="comparison-title"
-    >
-      <header>
-        <div>
-          <span>Decida com mais segurança</span>
-          <h2 id="comparison-title">Compare os produtos</h2>
-        </div>
-        <button
-          class="close-dialog"
-          type="button"
-          aria-label="Fechar comparação"
-          (click)="closeComparison.emit()"
-          autofocus
+  <dialog
+    #comparisonDialog
+    class="comparison-dialog"
+    aria-labelledby="comparison-title"
+    (cancel)="closeOnCancel($event)"
+    (click)="closeOnBackdrop($event)"
+  >
+    <div class="comparison-panel">
+      <button
+        class="close-dialog"
+        type="button"
+        aria-label="Fechar comparação"
+        (click)="closeComparison.emit()"
+        autofocus
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          ×
-        </button>
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <header class="comparison-header">
+        <div class="comparison-guide">
+          <img
+            class="comparison-mascot"
+            src="assets/images/comparison/tourino-comparison.png"
+            alt=""
+            width="300"
+            height="300"
+          />
+          <p class="mascot-message">Compare os produtos e escolha o ideal para a sua lavoura!</p>
+        </div>
+        <div class="comparison-intro">
+          <p class="comparison-eyebrow">Decida com mais segurança</p>
+          <h2 id="comparison-title">Compare os produtos</h2>
+          <ul class="comparison-benefits" aria-label="Vantagens da comparação">
+            <li>
+              <span class="benefit-icon"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4Z" /></svg></span
+              ><span>Compare características<br />lado a lado</span>
+            </li>
+            <li>
+              <span class="benefit-icon"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 11v1a8 8 0 1 1-5-7.4M8 11l4 4 9-10" /></svg></span
+              ><span>Escolha com<br />mais confiança</span>
+            </li>
+            <li>
+              <span class="benefit-icon"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 15v6M12 9v12M19 3v18" /></svg></span
+              ><span>Encontre o melhor<br />custo-benefício</span>
+            </li>
+          </ul>
+        </div>
       </header>
-
-      <div class="comparison-table-scroll">
-        <table>
+      <div
+        class="comparison-table-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Tabela de comparação de produtos"
+      >
+        <table [class.two-products]="products().length === 2">
           <caption class="visually-hidden">
-            Comparação de preço, marca, categoria, avaliação e procura semanal
+            Comparação de preço, marca, categoria, avaliação e procura semanal. O destaque indica o
+            menor preço entre os produtos selecionados.
           </caption>
+          <colgroup>
+            <col class="labels-column" />
+            @for (product of products(); track product.id) {
+              <col />
+            }
+          </colgroup>
           <thead>
             <tr>
-              <th scope="col">Característica</th>
+              <th scope="col" class="product-label">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10 9-5M3 8l9 5v9" /></svg
+                  ><span>Produto<small>Imagem e nome</small></span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <th scope="col">
-                  <img [src]="product.images[0]" alt="" width="110" height="90" />
-                  <strong>{{ product.title }}</strong>
-                  <button type="button" (click)="removeProduct.emit(product.id)">
-                    Remover
-                  </button>
+                <th
+                  scope="col"
+                  class="product-heading"
+                  [class.is-lowest]="product.id === lowestPriceId()"
+                >
+                  @if (product.id === lowestPriceId()) {
+                    <span class="price-ribbon" title="Menor preço entre os produtos selecionados"
+                      ><svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8 3h8v7a4 4 0 0 1-8 0V3ZM8 5H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4m-4 2v6m-4 1h8"
+                        />
+                      </svg>
+                      Menor preço</span
+                    >
+                  }
+                  <div class="product-visual">
+                    <img [src]="product.images[0]" alt="" width="300" height="180" />
+                    <button
+                      class="remove-product"
+                      type="button"
+                      (click)="removeProduct.emit(product.id)"
+                      [attr.aria-label]="'Remover ' + product.title + ' da comparação'"
+                      title="Remover da comparação"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7" />
+                      </svg>
+                    </button>
+                  </div>
+                  <strong class="comparison-product-name">{{ product.title }}</strong>
                 </th>
               }
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Preço</th>
+              <th scope="row">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 3h-7L3 13l8 8L21 11V4a1 1 0 0 0-1-1ZM16 7h.01" /></svg
+                  ><span>Preço</span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <td class="price-cell">{{ product.price | precoFormatado }}</td>
+                <td [class.is-lowest]="product.id === lowestPriceId()">
+                  <div class="cell-content price-cell">{{ formatPrice(product.price) }}</div>
+                </td>
               }
             </tr>
             <tr>
-              <th scope="row">Marca</th>
+              <th scope="row">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m12 2 3 3 4 .5.5 4L22 12l-2.5 2.5-.5 4-4 .5-3 3-3-3-4-.5-.5-4L2 12l2.5-2.5.5-4L9 5l3-3Zm0 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+                    /></svg
+                  ><span>Marca</span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <td>{{ product.brand && product.brand !== 'none' ? product.brand : 'AgroAgrega' }}</td>
+                <td [class.is-lowest]="product.id === lowestPriceId()">
+                  <div class="cell-content">
+                    {{
+                      product.brand && product.brand !== 'none' ? product.brand : 'Não informada'
+                    }}
+                  </div>
+                </td>
               }
             </tr>
             <tr>
-              <th scope="row">Categoria</th>
+              <th scope="row">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 3h-7L3 13l8 8L21 11V4a1 1 0 0 0-1-1ZM16 7h.01" /></svg
+                  ><span>Categoria</span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <td>{{ product.category }}</td>
+                <td [class.is-lowest]="product.id === lowestPriceId()">
+                  <div class="cell-content">
+                    <span
+                      class="category-badge"
+                      [class.category-water]="product.category === 'Irrigação'"
+                      [class.category-inputs]="product.category === 'Insumos'"
+                    >
+                      @if (product.category === 'Irrigação') {
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z" />
+                        </svg>
+                      } @else if (product.category === 'Insumos') {
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 3C8 1 1 9 6 16s16 0 14-13ZM4 21 16 8" />
+                        </svg>
+                      } @else {
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 3h-7L3 13l8 8L21 11V4a1 1 0 0 0-1-1ZM16 7h.01" />
+                        </svg>
+                      }
+                      {{ product.category }}</span
+                    >
+                  </div>
+                </td>
               }
             </tr>
             <tr>
-              <th scope="row">Avaliação</th>
+              <th scope="row">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"
+                    /></svg
+                  ><span>Avaliação</span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <td><span class="rating-star" aria-hidden="true">★</span> {{ product.rating.toFixed(1) }}</td>
+                <td [class.is-lowest]="product.id === lowestPriceId()">
+                  <div class="cell-content rating-cell">
+                    <svg
+                      class="rating-star"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"
+                      /></svg
+                    ><strong [attr.aria-label]="product.rating.toFixed(1) + ' de 5 estrelas'">{{
+                      product.rating.toFixed(1)
+                    }}</strong
+                    ><span class="rating-track" aria-hidden="true"
+                      ><span [style.width.%]="ratingWidth(product.rating)"></span
+                    ></span>
+                  </div>
+                </td>
               }
             </tr>
             <tr>
-              <th scope="row">Procura semanal</th>
+              <th scope="row">
+                <div class="feature-label">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 15v6M12 9v12M19 3v18" /></svg
+                  ><span>Procura semanal</span>
+                </div>
+              </th>
               @for (product of products(); track product.id) {
-                <td>{{ product.weeklySales ?? 0 }} vendas</td>
+                <td [class.is-lowest]="product.id === lowestPriceId()">
+                  <div class="cell-content demand-cell">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 15v6M12 9v12M19 3v18" /></svg
+                    ><span>{{
+                      product.weeklySales == null
+                        ? 'Não informada'
+                        : product.weeklySales + ' vendas'
+                    }}</span>
+                  </div>
+                </td>
               }
             </tr>
           </tbody>
         </table>
       </div>
-    </section>
-  </div>
+      <p class="comparison-scroll-hint">
+        Deslize a tabela para comparar todos os produtos <span aria-hidden="true">↔</span>
+      </p>
+    </div>
+  </dialog>
 }

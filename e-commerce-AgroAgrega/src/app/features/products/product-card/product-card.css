@@ -21,6 +21,71 @@
   border-color: #a8c9af;
   box-shadow: 0 7px 18px #0e2e3210;
 }
+
+:host(.featured-card) .product-card {
+  isolation: isolate;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+:host(.featured-card) .product-card::after {
+  position: absolute;
+  z-index: 2;
+  inset: -2px;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--featured-neon-angle),
+    rgba(124, 255, 24, 0.26) 0deg 244deg,
+    rgba(112, 239, 28, 0.58) 274deg,
+    #034507 305deg,
+    #fff2d8 323deg,
+    #1f6d03 340deg,
+    rgba(28, 195, 17, 0.26) 360deg
+  );
+  content: '';
+  filter: drop-shadow(0 0 4px rgba(21, 101, 3, 0.88)) drop-shadow(0 0 10px rgba(19, 137, 41, 0.62));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+:host(.featured-card) .product-card:is(:hover, :focus-within) {
+  z-index: 1;
+  border-color: rgba(69, 216, 24, 0.56);
+  box-shadow:
+    0 24px 42px -18px rgba(104, 179, 12, 0.525),
+    0 12px 24px rgba(26, 35, 29, 0.16);
+  transform: translateY(-4px);
+}
+
+:host(.featured-card) .product-card:is(:hover, :focus-within)::after {
+  animation: featured-neon-travel 1.7s linear infinite;
+  opacity: 1;
+}
+
+@property --featured-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes featured-neon-travel {
+  to {
+    --featured-neon-angle: 360deg;
+  }
+}
+
 .product-card-visual {
   min-width: 0;
 }
@@ -242,5 +307,18 @@
   .product-card,
   .compare-toggle {
     transition: none;
+  }
+
+  :host(.featured-card) .product-card,
+  :host(.featured-card) .product-card::after {
+    transition: none;
+  }
+
+  :host(.featured-card) .product-card:is(:hover, :focus-within) {
+    transform: none;
+  }
+
+  :host(.featured-card) .product-card:is(:hover, :focus-within)::after {
+    animation: none;
   }
 }

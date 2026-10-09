@@ -106,8 +106,7 @@
 }
 
 .logo:focus-visible,
-.rodape-coluna a:focus-visible,
-.voltar-ao-topo:focus-visible {
+.rodape-coluna a:focus-visible {
   outline: 3px solid #a6d64f;
   outline-offset: 3px;
 }
@@ -174,73 +173,4 @@
   .rodape-inferior p {
     font-size: 12px;
   }
-
-  .voltar-ao-topo {
-    right: 16px;
-    bottom: 16px;
-    width: 44px;
-    height: 44px;
-  }
 }
-
-.voltar-ao-topo {
-  position: fixed;
-
-  right: 24px;
-  bottom: 28px;
-
-  width: 48px;
-  height: 48px;
-  padding: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 1000;
-
-  border: 1px solid #e2e2e2;
-  border-radius: 50%;
-
-  background-color: var(--white);
-  color: var(--green-dark);
-
-  font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1;
-
-  cursor: pointer;
-
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transform: translateY(12px);
-
-  transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease,
-    transform 0.25s ease,
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.voltar-ao-topo.visivel {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-
-  transform: translateY(0);
-}
-
-.voltar-ao-topo:hover {
-  background-color: var(--green-dark);
-  color: var(--white);
-}
-
-.voltar-ao-topo:active {
-  transform: translateY(0) scale(0.92);
-}
-

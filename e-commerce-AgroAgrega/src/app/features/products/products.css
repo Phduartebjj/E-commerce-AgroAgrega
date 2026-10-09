@@ -355,10 +355,12 @@
   grid-auto-columns: calc((100% - 36px) / 4);
   grid-auto-flow: column;
   gap: 12px;
-  padding: 3px 1px 12px;
+  margin-inline: -10px;
+  padding: 10px 10px 28px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: inline mandatory;
+  scroll-padding-inline: 10px;
   scrollbar-color: #b6cfbd transparent;
   scrollbar-width: thin;
 }
