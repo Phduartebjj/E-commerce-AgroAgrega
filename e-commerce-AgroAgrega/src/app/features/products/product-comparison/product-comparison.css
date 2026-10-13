@@ -164,15 +164,16 @@
 .comparison-dialog {
   position: fixed;
   inset: 0;
-  width: min(1540px, calc(100vw - 64px));
+  width: min(1080px, calc(100vw - 48px));
   max-width: none;
-  max-height: calc(100dvh - 64px);
+  max-height: calc(100dvh - 48px);
   margin: auto;
   padding: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
   border: 1px solid #e1ece2;
-  border-radius: 30px;
+  border-radius: 22px;
   background: #f7fbf7;
   color: #0b241a;
   box-shadow: 0 30px 100px #001a1366;
@@ -184,24 +185,25 @@
 .comparison-panel {
   position: relative;
   isolation: isolate;
-  padding: 0 16px 16px;
+  padding: 0 12px 12px;
+  overflow: clip;
   background:
     radial-gradient(ellipse at 4% 20%, #dceecf 0, transparent 34%),
     radial-gradient(ellipse at 98% 6%, #e5f2db 0, transparent 28%), linear-gradient(#fff, #f5faf7);
 }
 .comparison-header {
   display: grid;
-  grid-template-columns: 38% minmax(0, 1fr);
-  min-height: 222px;
+  grid-template-columns: 32% minmax(0, 1fr);
+  min-height: 148px;
 }
 .comparison-panel::before,
 .comparison-panel::after {
   content: '';
   position: absolute;
   z-index: -1;
-  top: 34px;
-  width: 68px;
-  height: 140px;
+  top: 24px;
+  width: 48px;
+  height: 100px;
   border-radius: 100% 0 100% 0;
   background: #afd38b40;
   pointer-events: none;
@@ -221,24 +223,24 @@
 .comparison-mascot {
   position: absolute;
   left: -12px;
-  bottom: -38px;
-  width: 62%;
-  height: 285px;
+  bottom: -20px;
+  width: 65%;
+  height: 185px;
   object-fit: contain;
   object-position: bottom;
 }
 .mascot-message {
   position: absolute;
-  top: 50px;
-  right: 16px;
-  width: 43%;
+  top: 30px;
+  right: 8px;
+  width: 42%;
   margin: 0;
-  padding: 16px 19px;
+  padding: 10px 12px;
   border: 1px solid #d0e6ce;
-  border-radius: 23px;
+  border-radius: 16px;
   background: #ffffffed;
   color: #122b22;
-  font-size: clamp(12px, 1.1vw, 16px);
+  font-size: 11px;
   font-weight: 650;
   line-height: 1.4;
   transform: rotate(-4deg);
@@ -258,12 +260,12 @@
 .comparison-intro {
   align-self: center;
   min-width: 0;
-  padding: 30px 36px 26px 10px;
+  padding: 20px 36px 18px 10px;
 }
 .comparison-eyebrow {
   margin: 0 0 5px;
   color: #08732d;
-  font-size: clamp(11px, 1.15vw, 17px);
+  font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -271,7 +273,7 @@
 .comparison-dialog h2 {
   margin: 0;
   color: #061e14;
-  font-size: clamp(28px, 4.1vw, 66px);
+  font-size: clamp(28px, 3.2vw, 40px);
   font-weight: 850;
   line-height: 1.12;
   letter-spacing: -0.045em;
@@ -279,8 +281,8 @@
 .comparison-benefits {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 22px 0 0;
+  gap: 12px;
+  margin: 14px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -288,40 +290,40 @@
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
   color: #41514b;
-  font-size: clamp(11px, 1.06vw, 16px);
+  font-size: 11px;
   font-weight: 550;
   line-height: 1.4;
 }
 .comparison-benefits li + li {
-  padding-left: 16px;
+  padding-left: 12px;
   border-left: 1px solid #dce7df;
 }
 .benefit-icon {
   display: grid;
-  flex: 0 0 44px;
+  flex: 0 0 30px;
   place-items: center;
-  height: 44px;
-  border-radius: 13px;
+  height: 30px;
+  border-radius: 9px;
   background: #e5f1e7;
   color: #07572a;
 }
 .comparison-dialog svg {
   flex-shrink: 0;
-  width: 25px;
-  height: 25px;
+  width: 19px;
+  height: 19px;
 }
 .close-dialog {
   position: absolute;
   z-index: 3;
-  top: 18px;
-  right: 18px;
+  top: 12px;
+  right: 12px;
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border: 1px solid #dce9e0;
   border-radius: 50%;
   background: #edf5f0;
@@ -333,20 +335,14 @@
 .comparison-table-scroll {
   position: relative;
   z-index: 1;
-  overflow: auto;
-  padding-bottom: 2px;
-  scrollbar-width: thin;
-  scrollbar-color: #87b799 #e9f2eb;
+  min-width: 0;
 }
 table {
   width: 100%;
-  min-width: 880px;
+  min-width: 0;
   table-layout: fixed;
   border-collapse: separate;
-  border-spacing: 10px 0;
-}
-table.two-products {
-  min-width: 660px;
+  border-spacing: 8px 0;
 }
 .labels-column {
   width: 18%;
@@ -354,6 +350,8 @@ table.two-products {
 th,
 td {
   box-sizing: border-box;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .product-heading,
 td {
@@ -365,9 +363,9 @@ td {
 .product-heading {
   position: relative;
   vertical-align: top;
-  padding: 20px 16px 0;
+  padding: 14px 10px 0;
   border-top: 1px solid #eaf0eb;
-  border-radius: 21px 21px 0 0;
+  border-radius: 16px 16px 0 0;
 }
 .product-heading.is-lowest,
 td.is-lowest {
@@ -378,9 +376,9 @@ td.is-lowest {
   position: relative;
   display: grid;
   place-items: center;
-  height: clamp(145px, 12vw, 190px);
+  height: clamp(100px, 10vw, 128px);
   overflow: hidden;
-  border-radius: 17px;
+  border-radius: 12px;
   background: radial-gradient(ellipse at 50% 30%, #fbfff4, #e3f0d1);
 }
 .product-visual::before,
@@ -414,12 +412,12 @@ td.is-lowest {
 .remove-product {
   position: absolute;
   z-index: 2;
-  top: 10px;
-  right: 10px;
+  top: 7px;
+  right: 7px;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   border: 1px solid #e7eee6;
   border-radius: 50%;
@@ -433,14 +431,14 @@ td.is-lowest {
   border-color: #f1c2b9;
 }
 .remove-product svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 .comparison-product-name {
   display: block;
-  margin: 12px 2px 14px;
+  margin: 8px 0 10px;
   color: #10281e;
-  font-size: clamp(15px, 1.4vw, 21px);
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.3;
   text-align: left;
@@ -454,14 +452,14 @@ td.is-lowest {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 5px;
   width: max-content;
-  max-width: calc(100% - 32px);
-  padding: 7px 18px;
-  border-radius: 0 0 11px 11px;
+  max-width: calc(100% - 16px);
+  padding: 5px 10px;
+  border-radius: 0 0 8px 8px;
   background: #087632;
   color: #fff;
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
@@ -469,13 +467,13 @@ td.is-lowest {
   transform: translateX(-50%);
 }
 .price-ribbon svg {
-  width: 19px;
-  height: 19px;
+  width: 14px;
+  height: 14px;
   color: #ffd766;
 }
 .product-label {
-  padding: 48px 0 0;
-  border-radius: 22px 0 0 0;
+  padding: 28px 0 0;
+  border-radius: 16px 0 0 0;
   background: #f5faf7;
   vertical-align: top;
   text-align: left;
@@ -483,14 +481,14 @@ td.is-lowest {
 .feature-label {
   display: flex;
   align-items: center;
-  gap: 14px;
-  min-height: 52px;
-  margin: 3px 0;
-  padding: 10px 16px;
-  border-radius: 12px;
+  gap: 8px;
+  min-height: 36px;
+  margin: 2px 0;
+  padding: 7px 10px;
+  border-radius: 9px;
   background: #e8f2ed;
   color: #102b20;
-  font-size: clamp(13px, 1.24vw, 19px);
+  font-size: 13px;
   font-weight: 650;
   line-height: 1.3;
   text-align: left;
@@ -503,7 +501,7 @@ td.is-lowest {
 }
 .feature-label small {
   display: block;
-  margin-top: 4px;
+  margin-top: 3px;
   color: #5d6c65;
   font-size: 0.85em;
   font-weight: 400;
@@ -512,29 +510,29 @@ tbody th {
   padding: 0;
 }
 td {
-  padding: 0 16px;
+  padding: 0 10px;
   color: #35463e;
-  font-size: clamp(14px, 1.2vw, 19px);
+  font-size: 13px;
 }
 .cell-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 58px;
-  padding: 8px 0;
+  gap: 7px;
+  min-height: 40px;
+  padding: 6px 0;
 }
 tbody tr + tr .cell-content {
   border-top: 1px solid #e7eee9;
 }
 .price-cell {
-  min-height: 54px;
-  margin-bottom: 5px;
+  min-height: 40px;
+  margin-bottom: 3px;
   padding-inline: 6px;
-  border-radius: 13px;
+  border-radius: 9px;
   background: #f0f9f0;
   color: #076e2c;
-  font-size: clamp(23px, 2.1vw, 32px);
+  font-size: clamp(18px, 2vw, 23px);
   font-weight: 800;
   white-space: nowrap;
 }
@@ -544,7 +542,7 @@ tbody tr + tr .cell-content {
 tbody tr:last-child td {
   padding-bottom: 4px;
   border-bottom: 1px solid #eaf0eb;
-  border-radius: 0 0 21px 21px;
+  border-radius: 0 0 16px 16px;
 }
 tbody tr:last-child td.is-lowest {
   border-color: #1ca447;
@@ -553,8 +551,9 @@ tbody tr:last-child td.is-lowest {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 7px 14px;
+  gap: 5px;
+  max-width: 100%;
+  padding: 4px 8px;
   border: 1px solid #deecdf;
   border-radius: 30px;
   background: #f0f7ee;
@@ -564,8 +563,8 @@ tbody tr:last-child td.is-lowest {
   line-height: 1.3;
 }
 .category-badge svg {
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
 }
 .category-water {
   border-color: #dfedff;
@@ -582,7 +581,7 @@ tbody tr:last-child td.is-lowest {
   color: #745322;
 }
 .rating-cell {
-  gap: 12px;
+  gap: 7px;
 }
 .rating-star {
   color: #f3ad06;
@@ -595,7 +594,7 @@ tbody tr:last-child td.is-lowest {
 .rating-track {
   width: 45%;
   max-width: 155px;
-  height: 9px;
+  height: 6px;
   overflow: hidden;
   border-radius: 10px;
   background: #e7eceb;
@@ -610,43 +609,36 @@ tbody tr:last-child td.is-lowest {
   color: #258943;
   stroke-width: 3.5;
 }
-.comparison-scroll-hint {
-  display: none;
-}
 button:focus-visible,
 .comparison-table-scroll:focus-visible {
   outline: 3px solid #6cab7e;
   outline-offset: 3px;
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 1000px) {
   .comparison-dialog {
     width: calc(100vw - 32px);
     max-height: calc(100dvh - 32px);
-    border-radius: 24px;
+    border-radius: 20px;
   }
   .comparison-header {
-    min-height: 195px;
-    grid-template-columns: 34% minmax(0, 1fr);
+    min-height: 138px;
+    grid-template-columns: 28% minmax(0, 1fr);
   }
   .comparison-mascot {
-    width: 75%;
-    height: 225px;
-    bottom: -30px;
+    width: 100%;
+    height: 160px;
+    bottom: -16px;
   }
   .mascot-message {
-    top: 38px;
-    right: 0;
-    width: 46%;
-    padding: 12px;
-    font-size: 11px;
+    display: none;
   }
   .comparison-intro {
     padding-right: 36px;
   }
   .comparison-benefits {
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 12px;
   }
   .comparison-benefits li {
     gap: 8px;
@@ -655,23 +647,22 @@ button:focus-visible,
     padding-left: 10px;
   }
   .benefit-icon {
-    flex-basis: 32px;
-    height: 36px;
-    border-radius: 10px;
+    flex-basis: 28px;
+    height: 28px;
   }
   .benefit-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
   }
   .feature-label {
     gap: 9px;
     padding-inline: 10px;
   }
   .product-heading {
-    padding: 20px 12px 0;
+    padding: 14px 8px 0;
   }
   td {
-    padding-inline: 12px;
+    padding-inline: 8px;
   }
 }
 @media (max-width: 840px) {
@@ -686,12 +677,12 @@ button:focus-visible,
     min-width: 0;
   }
   .comparison-header {
-    min-height: 170px;
-    grid-template-columns: 150px minmax(0, 1fr);
+    min-height: 126px;
+    grid-template-columns: 128px minmax(0, 1fr);
   }
   .comparison-mascot {
-    width: 150px;
-    height: 180px;
+    width: 128px;
+    height: 140px;
     left: -12px;
     bottom: -10px;
   }
@@ -699,7 +690,7 @@ button:focus-visible,
     display: none;
   }
   .comparison-intro {
-    padding: 25px 30px 20px 0;
+    padding: 18px 30px 16px 0;
   }
   .comparison-dialog h2 {
     font-size: clamp(25px, 4vw, 34px);
@@ -710,27 +701,8 @@ button:focus-visible,
   .comparison-benefits li:last-child {
     display: none;
   }
-  .comparison-scroll-hint {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 12px 0 0;
-    color: #526c5b;
-    font-size: 11px;
-  }
-  .comparison-scroll-hint span {
-    font-size: 18px;
-  }
   .labels-column {
-    width: 142px;
-  }
-  .product-label,
-  tbody th {
-    position: sticky;
-    left: 0;
-    z-index: 3;
-    background: #f3f8f4;
+    width: 19%;
   }
   .product-label {
     border-radius: 16px 0 0;
@@ -740,8 +712,73 @@ button:focus-visible,
     gap: 9px;
   }
   .feature-label svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
+  }
+}
+@media (max-width: 680px) {
+  table {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    border-spacing: 0;
+  }
+  colgroup {
+    display: none;
+  }
+  .product-label,
+  tbody th {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  thead,
+  tbody,
+  tr {
+    display: contents;
+  }
+  .product-heading {
+    grid-row: calc(var(--product-index) * 6 + 1);
+    padding: 14px 12px 0;
+    margin-top: 12px;
+  }
+  .product-visual {
+    height: 112px;
+  }
+  .comparison-product-name {
+    margin-bottom: 8px;
+  }
+  td {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding-inline: 12px;
+  }
+  td::before {
+    content: attr(data-label);
+    color: #102b20;
+    font-size: 12px;
+    font-weight: 650;
+    text-align: left;
+  }
+  tbody tr:nth-child(1) td {
+    grid-row: calc(var(--product-index) * 6 + 2);
+  }
+  tbody tr:nth-child(2) td {
+    grid-row: calc(var(--product-index) * 6 + 3);
+  }
+  tbody tr:nth-child(3) td {
+    grid-row: calc(var(--product-index) * 6 + 4);
+  }
+  tbody tr:nth-child(4) td {
+    grid-row: calc(var(--product-index) * 6 + 5);
+  }
+  tbody tr:nth-child(5) td {
+    grid-row: calc(var(--product-index) * 6 + 6);
   }
 }
 @media (max-width: 520px) {
@@ -761,17 +798,17 @@ button:focus-visible,
   .comparison-dialog {
     width: calc(100vw - 16px);
     max-height: calc(100dvh - 24px);
-    border-radius: 22px;
+    border-radius: 18px;
   }
   .comparison-panel {
     padding: 0 8px 10px;
   }
   .comparison-header {
     grid-template-columns: 95px minmax(0, 1fr);
-    min-height: 188px;
+    min-height: 126px;
   }
   .comparison-intro {
-    padding: 28px 22px 16px 0;
+    padding: 20px 24px 14px 0;
   }
   .comparison-eyebrow {
     font-size: 9px;
@@ -779,13 +816,13 @@ button:focus-visible,
     padding-right: 12px;
   }
   .comparison-dialog h2 {
-    font-size: 28px;
+    font-size: 25px;
   }
   .comparison-mascot {
-    width: 116px;
-    height: 152px;
-    left: -20px;
-    bottom: -5px;
+    width: 105px;
+    height: 128px;
+    left: -12px;
+    bottom: -8px;
   }
   .close-dialog {
     top: 10px;
@@ -806,47 +843,8 @@ button:focus-visible,
   .comparison-benefits li + li {
     display: none;
   }
-  table {
-    min-width: 782px;
-    border-spacing: 6px 0;
-  }
-  table.two-products {
-    min-width: 564px;
-  }
-  .labels-column {
-    width: 116px;
-  }
-  .feature-label {
-    gap: 7px;
-    padding: 8px;
-    font-size: 12px;
-  }
-  .feature-label svg {
-    width: 20px;
-    height: 20px;
-  }
-  .product-label {
-    padding-top: 50px;
-  }
-  .product-heading {
-    padding-inline: 10px;
-  }
-  .product-visual {
-    height: 142px;
-  }
-  .comparison-product-name {
-    font-size: 15px;
-  }
-  td {
-    padding-inline: 10px;
-    font-size: 14px;
-  }
   .price-cell {
-    font-size: 25px;
-  }
-  .price-ribbon {
-    padding-inline: 12px;
-    font-size: 10px;
+    font-size: 21px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -44,26 +44,28 @@
 }
 
 .coupon-toolbar {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  align-items: start;
   gap: 16px;
   margin: 18px 2px;
 }
 
 .coupon-filter-list {
   display: flex;
-  flex: 1 1 auto;
+  flex-wrap: wrap;
   gap: 9px;
   min-width: 0;
 }
 
 .coupon-filter {
   display: inline-flex;
+  flex: 0 0 auto;
   min-height: 42px;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0 17px;
+  padding: 0 14px;
   border: 1px solid #e3ebe5;
   border-radius: 999px;
   background: #fff;
@@ -103,8 +105,9 @@
 }
 
 .coupon-search {
-  flex: 0 0 190px;
   display: flex;
+  width: 100%;
+  min-width: 0;
   min-height: 42px;
   align-items: center;
   gap: 8px;
@@ -675,22 +678,6 @@
 }
 
 @media (max-width: 1160px) {
-  .coupon-toolbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .coupon-filter-list {
-    overflow-x: auto;
-    padding-bottom: 5px;
-    scrollbar-width: thin;
-  }
-
-  .coupon-search {
-    flex-basis: auto;
-    width: min(360px, 100%);
-  }
-
   .coupon-showcase-card {
     grid-template-columns: 104px minmax(0, 1fr);
   }
@@ -749,6 +736,10 @@
 
   .coupon-showcase__hero img {
     object-position: 55% center;
+  }
+
+  .coupon-toolbar {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .coupon-filter {

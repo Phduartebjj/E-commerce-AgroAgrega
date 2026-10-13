@@ -51,6 +51,10 @@
 .plus-flow {
   position: relative;
 }
+.plus-hero,
+.plus-join {
+  container-type: inline-size;
+}
 .plus-hero__art {
   position: relative;
   width: 100%;
@@ -69,10 +73,12 @@
 .plus-hero__actions {
   position: absolute;
   left: 6.8%;
-  top: 69%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  top: 67%;
+  width: 44%;
+  height: 9%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: clamp(4px, 0.8cqw, 12px);
 }
 .plus-button {
   display: inline-flex;
@@ -119,6 +125,33 @@
   color: #c8ff59;
   background: #063f2c;
   font-weight: 800;
+}
+.plus-hero__actions .plus-button,
+.plus-hero__actions .plus-member-status,
+.plus-join__action .plus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 clamp(3px, 0.8cqw, 12px);
+  gap: clamp(3px, 0.7cqw, 10px);
+  font-size: clamp(9px, 1.15cqw, 16px);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.plus-hero__actions .plus-button span,
+.plus-join__action .plus-button span {
+  flex: 0 0 auto;
+  font-size: 1.1em;
+  line-height: 1;
+}
+.plus-hero__actions .plus-button--lime,
+.plus-join__action .plus-button--lime {
+  box-shadow: 0 0.25cqw 0.8cqw #13332018;
 }
 .plus-benefits {
   margin-block: 30px 28px;
@@ -581,11 +614,7 @@
   left: 60%;
   bottom: 14%;
   width: 18.5%;
-}
-.plus-join__action .plus-button {
-  width: 100%;
-  min-height: 40px;
-  padding-inline: 10px;
+  height: 13%;
 }
 .plus-member-coupon {
   display: flex;
@@ -624,6 +653,11 @@
 .plus-showcase summary:focus-visible {
   outline: 3px solid #83b954;
   outline-offset: 4px;
+}
+.plus-hero__actions .plus-button:focus-visible,
+.plus-join__action .plus-button:focus-visible {
+  outline-width: clamp(1px, 0.2cqw, 3px);
+  outline-offset: clamp(1px, 0.2cqw, 3px);
 }
 @media (max-width: 1200px) {
   .plus-inset {
@@ -671,20 +705,12 @@
   .plus-proof strong {
     font-size: 0.8rem;
   }
-  .plus-hero__actions {
-    gap: 8px;
-  }
   .plus-button {
     min-height: 36px;
     padding: 8px 17px;
   }
 }
 @media (max-width: 900px) {
-  .plus-hero__actions .plus-button {
-    min-height: 28px;
-    padding: 5px 13px;
-    font-size: 0.7rem;
-  }
   .plus-benefit-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -713,11 +739,6 @@
   }
   .plus-proof strong {
     font-size: 1rem;
-  }
-  .plus-join__action .plus-button {
-    min-height: 30px;
-    padding: 6px;
-    font-size: 0.7rem;
   }
 }
 @media (max-width: 640px) {
@@ -789,14 +810,20 @@
   }
   .plus-hero__actions {
     position: static;
-    display: grid;
+    width: auto;
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
     padding: 20px 22px;
     gap: 10px;
   }
-  .plus-hero__actions .plus-button {
+  .plus-hero__actions .plus-button,
+  .plus-hero__actions .plus-member-status {
+    height: auto;
     min-height: 44px;
-    padding: 10px 25px;
-    font-size: 1rem;
+    padding: 10px 16px;
+    gap: 10px;
+    font-size: max(14px, 1rem);
+    white-space: normal;
   }
   .plus-button {
     min-height: 44px;
@@ -1097,11 +1124,16 @@
   .plus-join__action {
     position: static;
     width: auto;
+    height: auto;
     margin: 20px 24px 24px;
   }
   .plus-join__action .plus-button {
+    height: auto;
     min-height: 44px;
-    font-size: 1rem;
+    padding: 10px 16px;
+    gap: 10px;
+    font-size: max(14px, 1rem);
+    white-space: normal;
   }
   .plus-member-coupon {
     align-items: stretch;
