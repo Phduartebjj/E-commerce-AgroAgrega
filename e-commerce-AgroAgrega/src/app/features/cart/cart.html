@@ -206,6 +206,12 @@
           </div>
 
           <div class="coupon-box">
+            @if (couponExpired()) {
+              <small role="status"
+                >Seu cupom diário venceu.
+                <a routerLink="/coupons">Escolha um cupom de hoje.</a></small
+              >
+            }
             <label for="cart-coupon">Inserir código do cupom</label>
             <div>
               <input id="cart-coupon" #couponInput type="text" placeholder="Ex.: AGRO20" />

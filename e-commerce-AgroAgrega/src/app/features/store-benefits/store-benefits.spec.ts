@@ -50,32 +50,41 @@ describe('StoreBenefitsComponent', () => {
   it('should render all coupons from the cart service catalog', () => {
     const host = fixture.nativeElement as HTMLElement;
 
-    expect(host.querySelectorAll('.coupon-showcase-card')).toHaveLength(6);
+    expect(host.querySelectorAll('.coupon-showcase-card')).toHaveLength(12);
     expect(host.textContent).toContain('AGRO20');
     expect(host.textContent).toContain('BEMVINDO10');
     expect(host.textContent).toContain('CAMPO15');
     expect(host.textContent).toContain('SAFRA12');
     expect(host.textContent).toContain('EQUIPA10');
     expect(host.textContent).toContain('AGUA8');
+    for (const coupon of component.coupons) {
+      expect(host.textContent).toContain(coupon.code);
+      expect(coupon.validOn).toBe(component.couponCatalog.day());
+    }
+    expect(host.textContent).toContain('Válido hoje até 23h59 (Brasília)');
   });
 
   it('should apply an available coupon directly to the cart', () => {
-    const welcomeCoupon = component.coupons.find((coupon) => coupon.code === 'BEMVINDO10')!;
+    const welcomeCoupon = component.coupons.find((coupon) => coupon.campaignCode === 'BEMVINDO10')!;
 
     component.applyCoupon(welcomeCoupon);
 
-    expect(applyCoupon).toHaveBeenCalledWith('BEMVINDO10');
+    expect(applyCoupon).toHaveBeenCalledWith(welcomeCoupon.code);
     expect(component.isCouponApplied(welcomeCoupon)).toBe(true);
     expect(component.feedbackMessage()).toContain('aplicado');
   });
 
   it('should filter and search the coupon catalog', () => {
     component.selectCouponFilter('tools');
-    expect(component.visibleCoupons.map((coupon) => coupon.code)).toEqual(['EQUIPA10']);
+    expect(component.visibleCoupons.map((coupon) => coupon.campaignCode)).toEqual([
+      'EQUIPA10',
+      'TRATOR10',
+      'PRECISAO12',
+    ]);
 
     component.selectCouponFilter('all');
     component.couponSearch.set('irrigação');
-    expect(component.visibleCoupons.map((coupon) => coupon.code)).toEqual(['AGUA8']);
+    expect(component.visibleCoupons.map((coupon) => coupon.campaignCode)).toEqual(['AGUA8']);
   });
 
   it('should render the supplied artwork and open the store assistant from the help button', () => {

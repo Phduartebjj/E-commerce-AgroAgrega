@@ -13,7 +13,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { COUPONS } from '../../../core/data/coupons';
+import { CouponService } from '../../../core/services/coupon/coupon.service';
 import { Cart } from '../../../core/services/cart/cart.service';
 import { ProductService } from '../../../core/services/product/product.service';
 import { ProductModel } from '../../../models/product';
@@ -73,7 +73,10 @@ export class StoreAssistant {
   readonly cartCount = this.cart.totalCartItens;
   readonly cartTotal = this.cart.total;
   readonly currentCoupon = this.cart.coupon;
-  readonly coupons = COUPONS;
+  private readonly couponCatalog = inject(CouponService);
+  get coupons() {
+    return this.couponCatalog.coupons();
+  }
   readonly assistantTime = signal('');
   readonly suggestions = [
     {
@@ -171,6 +174,14 @@ export class StoreAssistant {
   applyCoupon(code: string): void {
     if (this.isTyping()) return;
     this.cart.applyCoupon(code);
+    if (!this.cart.coupon()) {
+      this.append({
+        role: 'assistant',
+        text: 'Este cupom venceu ou não está disponível. Confira os cupons de hoje:',
+        showCoupons: true,
+      });
+      return;
+    }
     this.append({
       role: 'assistant',
       text: `Cupom ${code} aplicado ao carrinho. O desconto aparece no resumo da compra.`,
@@ -257,7 +268,7 @@ export class StoreAssistant {
         });
         return;
       case 'applyCoupon': {
-        const coupon = COUPONS.find((item) => item.code === intent.code);
+        const coupon = this.couponCatalog.find(intent.code);
         if (coupon) this.applyCoupon(coupon.code);
         else
           this.append({

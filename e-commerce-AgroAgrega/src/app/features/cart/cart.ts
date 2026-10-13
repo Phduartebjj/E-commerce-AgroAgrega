@@ -28,6 +28,7 @@ export class CartComponent {
   readonly totalItens = this.cart.totalCartItens;
   readonly isEmpty = this.cart.isEmpty;
   readonly coupon = this.cart.coupon;
+  readonly couponExpired = this.cart.couponExpired;
   readonly selectedItemsCount = this.cart.selectedItemsCount;
   readonly selectedSubtotal = this.cart.selectedSubtotal;
   readonly selectedOriginalSubtotal = this.cart.selectedOriginalSubtotal;

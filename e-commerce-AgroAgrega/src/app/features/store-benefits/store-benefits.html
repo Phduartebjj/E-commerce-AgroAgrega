@@ -49,8 +49,11 @@
         <section class="coupon-results" aria-labelledby="available-coupons-title">
           <header class="coupon-results__heading">
             <div>
-              <h2 id="available-coupons-title">Cupons disponíveis para você</h2>
-              <p>Aproveite os melhores descontos em produtos AgroAgrega.</p>
+              <h2 id="available-coupons-title">Cupons de hoje para você</h2>
+              <p>Novos códigos todos os dias, à meia-noite, no horário de Brasília.</p>
+              <p class="coupon-daily-date" aria-live="polite">
+                Seleção de {{ couponCatalog.dateLabel() }}
+              </p>
             </div>
             <div class="coupon-results__tools">
               <span>{{ visibleCoupons.length }} cupons disponíveis</span>
@@ -74,7 +77,7 @@
                 <div class="coupon-showcase-card__discount">
                   <strong>{{ coupon.discountPercentage }}%</strong>
                   <span>de desconto</span>
-                  <i aria-hidden="true">{{ coupon.code === 'AGUA8' ? '●' : '❧' }}</i>
+                  <i aria-hidden="true">{{ couponCampaign(coupon) === 'AGUA8' ? '●' : '❧' }}</i>
                 </div>
 
                 <div class="coupon-showcase-card__body">
@@ -85,6 +88,7 @@
                     <small
                       ><span aria-hidden="true">🛒</span> {{ couponApplicability(coupon) }}</small
                     >
+                    <small class="coupon-validity">Válido hoje até 23h59 (Brasília)</small>
                     @if (expandedCouponCode() === coupon.code) {
                       <p class="coupon-showcase-card__details">
                         Use um cupom por pedido. O desconto válido será calculado automaticamente no

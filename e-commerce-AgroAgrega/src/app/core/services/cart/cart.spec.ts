@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Cart } from './cart.service';
 import { ProductModel } from '../../../models/product';
+import { vi } from 'vitest';
 
 // Verifica as operações do carrinho, seus totais, cupons e itens selecionados.
 describe('Cart', () => {
@@ -149,6 +150,31 @@ describe('Cart', () => {
     service.removeCoupon();
     expect(service.coupon()).toBeNull();
     expect(service.total()).toBe(10);
+  });
+
+  it('expires the daily discount and updates all cart totals at midnight', () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date('2026-10-14T02:59:58Z'));
+      service.addCartItem(product1);
+      service.applyCoupon('COLHEITA15-20261013');
+      expect(service.total()).toBe(8.5);
+      expect(service.selectedTotal()).toBe(8.5);
+      vi.advanceTimersByTime(2100);
+      expect(service.coupon()).toBeNull();
+      expect(service.couponExpired()).toBe(true);
+      expect(service.discountValue()).toBe(0);
+      expect(service.total()).toBe(10);
+      expect(service.selectedTotal()).toBe(10);
+      service.applyCoupon('COLHEITA15-20261013');
+      expect(service.coupon()).toBeNull();
+      service.applyCoupon('COLHEITA15-20261014');
+      expect(service.total()).toBe(8.5);
+      expect(service.couponExpired()).toBe(false);
+    } finally {
+      TestBed.resetTestingModule();
+      vi.useRealTimers();
+    }
   });
   it('deve calcular o resumo somente com os produtos selecionados', () => {
     service.addCartItem(product1);

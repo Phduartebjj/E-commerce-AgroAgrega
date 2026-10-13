@@ -216,6 +216,8 @@
 }
 
 .coupon-showcase-card {
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
   display: grid;
   grid-template-columns: 120px minmax(0, 1fr);
@@ -224,15 +226,65 @@
   border-radius: 15px;
   background: #fff;
   transition:
-    transform 170ms ease,
-    border-color 170ms ease,
-    box-shadow 170ms ease;
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
-.coupon-showcase-card:hover {
-  border-color: #b9d7c4;
-  box-shadow: 0 11px 26px rgba(16, 77, 48, 0.1);
-  transform: translateY(-2px);
+.coupon-showcase-card::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--coupon-neon-angle),
+    rgba(124, 255, 24, 0.26) 0deg 244deg,
+    rgba(112, 239, 28, 0.58) 274deg,
+    #034507 305deg,
+    #fff2d8 323deg,
+    #1f6d03 340deg,
+    rgba(28, 195, 17, 0.26) 360deg
+  );
+  content: '';
+  filter: drop-shadow(0 0 4px rgba(21, 101, 3, 0.88)) drop-shadow(0 0 10px rgba(19, 137, 41, 0.62));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.coupon-showcase-card:is(:hover, :focus-within) {
+  z-index: 1;
+  border-color: rgba(69, 216, 24, 0.56);
+  box-shadow:
+    0 24px 42px -18px rgba(104, 179, 12, 0.525),
+    0 12px 24px rgba(26, 35, 29, 0.16);
+  transform: translateY(-4px);
+}
+
+.coupon-showcase-card:is(:hover, :focus-within)::after {
+  animation: coupon-neon-travel 1.7s linear infinite;
+  opacity: 1;
+}
+
+@property --coupon-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes coupon-neon-travel {
+  to {
+    --coupon-neon-angle: 360deg;
+  }
 }
 
 .coupon-showcase-card__discount {
@@ -311,6 +363,7 @@
 }
 
 .coupon-showcase-card h3 {
+  overflow-wrap: anywhere;
   margin: 4px 0 7px;
   font-size: 1.08rem;
   letter-spacing: -0.015em;
@@ -337,6 +390,18 @@
   border-radius: 8px;
   background: #f2f8f3;
   color: #466556 !important;
+}
+
+.coupon-showcase-card .coupon-validity {
+  margin-top: 8px;
+  color: #087044;
+  font-weight: 700;
+}
+
+.coupon-results__heading .coupon-daily-date {
+  margin-top: 6px;
+  color: #087044;
+  font-weight: 700;
 }
 
 .coupon-showcase-card__actions {
@@ -820,8 +885,17 @@
 @media (prefers-reduced-motion: reduce) {
   .coupon-filter,
   .coupon-showcase-card,
+  .coupon-showcase-card::after,
   .coupon-apply,
   .coupon-help-button {
     transition: none;
+  }
+
+  .coupon-showcase-card:is(:hover, :focus-within) {
+    transform: none;
+  }
+
+  .coupon-showcase-card:is(:hover, :focus-within)::after {
+    animation: none;
   }
 }

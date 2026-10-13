@@ -66,31 +66,31 @@ describe('StoreAssistant', () => {
     );
 
     await component.submitPrompt('Ver ofertas de hoje');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(component.messages().at(-1)?.products?.length).toBeGreaterThan(0);
   });
 
   it('adds, updates and removes the actual cart item', async () => {
     await component.submitPrompt('Adicionar 2 roçadeiras ao carrinho');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(cart.totalCartItens()).toBe(2);
     expect(cart.getCartItems()()[0].product.title).toContain('Roçadeira');
 
     await component.submitPrompt('Ajustar quantidade de roçadeira para 3');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(cart.totalCartItens()).toBe(3);
 
     await component.submitPrompt('Remover roçadeira do carrinho');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(cart.isEmpty()).toBe(true);
   });
 
   it('applies a valid coupon without inventing an invalid one', async () => {
     await component.submitPrompt('Aplicar cupom CAMPO15');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(cart.coupon()?.code).toBe('CAMPO15');
     await component.submitPrompt('Aplicar cupom INEXISTENTE');
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(cart.coupon()?.code).toBe('CAMPO15');
   });
 
@@ -116,7 +116,7 @@ describe('StoreAssistant', () => {
     expect(host.querySelector('.assistant-cursor')).not.toBeNull();
     expect(host.querySelector('.assistant-coupons')).toBeNull();
 
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     fixture.detectChanges();
     expect(component.messages().at(-1)?.text).toBe(reply);
     expect(component.isTyping()).toBe(false);
@@ -136,11 +136,11 @@ describe('StoreAssistant', () => {
     expect(component.draft).toBe('Ver ofertas de hoje');
     expect(cart.coupon()).toBeNull();
 
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     component.send();
     expect(component.draft).toBe('');
     expect(component.messages()).toHaveLength(5);
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(component.messages().at(-1)?.products?.length).toBeGreaterThan(0);
   });
 
@@ -149,7 +149,7 @@ describe('StoreAssistant', () => {
     vi.advanceTimersByTime(620);
     const messages = component.messages();
     fixture.destroy();
-    vi.runAllTimers();
+    vi.advanceTimersByTime(4000);
     expect(component.messages()).toBe(messages);
   });
 

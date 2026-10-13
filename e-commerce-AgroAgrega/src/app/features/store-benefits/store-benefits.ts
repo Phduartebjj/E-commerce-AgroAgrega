@@ -1,10 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { COUPONS } from '@core/data/coupons';
 import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
+import { CouponService } from '@core/services/coupon/coupon.service';
 import { CouponModel } from '@models/coupon';
 import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { CouponShowcaseStylesComponent } from './coupon-showcase-styles';
@@ -41,7 +42,10 @@ export class StoreBenefitsComponent {
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly mode = (this.route.snapshot.data['storeBenefitMode'] ?? 'coupons') as StoreBenefitMode;
-  readonly coupons = COUPONS;
+  readonly couponCatalog = inject(CouponService);
+  get coupons(): CouponModel[] {
+    return this.couponCatalog.coupons();
+  }
   readonly agroPlusCoupon = COUPONS.find((coupon) => coupon.code === 'AGRO20')!;
   readonly agroPlusActive = signal(false);
   readonly feedbackMessage = signal('');
@@ -247,6 +251,11 @@ export class StoreBenefitsComponent {
 
   constructor() {
     this.agroPlusActive.set(this.readAgroPlusMembership());
+    effect(() => {
+      this.couponCatalog.day();
+      this.expandedCouponCode.set(null);
+      this.feedbackMessage.set('');
+    });
   }
 
   isCouponApplied(coupon: CouponModel): boolean {
@@ -254,7 +263,11 @@ export class StoreBenefitsComponent {
   }
 
   isAgroPlusCoupon(coupon: CouponModel): boolean {
-    return coupon.code === 'AGRO20';
+    return this.couponCampaign(coupon) === 'AGRO20';
+  }
+
+  couponCampaign(coupon: CouponModel): string {
+    return coupon.campaignCode ?? coupon.code;
   }
 
   couponTitle(coupon: CouponModel): string {
@@ -265,9 +278,15 @@ export class StoreBenefitsComponent {
       SAFRA12: 'Temporada da safra',
       EQUIPA10: 'Renove seus equipamentos',
       AGUA8: 'Economia na irrigação',
+      RAIZ10: 'Cuidados com a lavoura',
+      CULTIVO12: 'Cultive novas oportunidades',
+      PASTO8: 'Vantagens para o rebanho',
+      COLHEITA15: 'Dia de colher economia',
+      TRATOR10: 'Força para o trabalho',
+      PRECISAO12: 'Tecnologia no campo',
     };
 
-    return titles[coupon.code] ?? 'Oferta AgroAgrega';
+    return titles[this.couponCampaign(coupon)] ?? 'Oferta AgroAgrega';
   }
 
   couponDescription(coupon: CouponModel): string {
@@ -278,9 +297,15 @@ export class StoreBenefitsComponent {
       SAFRA12: 'Aproveite a temporada para preparar sua próxima compra.',
       EQUIPA10: 'Um incentivo para renovar ferramentas, máquinas e acessórios.',
       AGUA8: 'Economize em soluções que ajudam a cuidar de cada gota no campo.',
+      RAIZ10: 'Prepare sua lavoura e aproveite o desconto especial de hoje.',
+      CULTIVO12: 'Mais economia para acompanhar cada etapa do seu cultivo.',
+      PASTO8: 'Uma oportunidade para cuidar da rotina da sua propriedade.',
+      COLHEITA15: 'Aproveite o dia para renovar seus produtos e economizar.',
+      TRATOR10: 'Dê mais força ao trabalho com um desconto na sua próxima compra.',
+      PRECISAO12: 'Invista na evolução do campo com a oferta de hoje.',
     };
 
-    return descriptions[coupon.code] ?? 'Desconto disponível por tempo limitado.';
+    return descriptions[this.couponCampaign(coupon)] ?? 'Desconto disponível por tempo limitado.';
   }
 
   couponApplicability(coupon: CouponModel): string {
@@ -291,15 +316,26 @@ export class StoreBenefitsComponent {
       SAFRA12: 'Válido para produtos selecionados',
       EQUIPA10: 'Válido para ferramentas e acessórios',
       AGUA8: 'Válido para produtos de irrigação',
+      RAIZ10: 'Válido para toda a loja',
+      CULTIVO12: 'Válido para toda a loja',
+      PASTO8: 'Válido para toda a loja',
+      COLHEITA15: 'Válido para toda a loja',
+      TRATOR10: 'Válido para toda a loja',
+      PRECISAO12: 'Válido para toda a loja',
     };
 
-    return applicability[coupon.code] ?? 'Consulte os produtos participantes';
+    return applicability[this.couponCampaign(coupon)] ?? 'Consulte os produtos participantes';
   }
 
   couponBadge(coupon: CouponModel): string | null {
-    if (coupon.code === 'AGRO20') return 'Mais popular';
-    if (coupon.code === 'BEMVINDO10') return 'Primeira compra';
-    if (coupon.code === 'EQUIPA10') return 'Termina em breve';
+    const campaign = this.couponCampaign(coupon);
+    if (campaign === 'AGRO20') return 'Mais popular';
+    if (campaign === 'BEMVINDO10') return 'Primeira compra';
+    if (campaign === 'EQUIPA10') return 'Termina hoje';
+    if (
+      ['RAIZ10', 'CULTIVO12', 'PASTO8', 'COLHEITA15', 'TRATOR10', 'PRECISAO12'].includes(campaign)
+    )
+      return 'Oferta do dia';
     return null;
   }
 
@@ -324,6 +360,10 @@ export class StoreBenefitsComponent {
   }
 
   applyCoupon(coupon: CouponModel): void {
+    if (!this.couponCatalog.find(coupon.code)) {
+      this.feedbackMessage.set('Este cupom venceu. Escolha um dos cupons de hoje.');
+      return;
+    }
     if (this.isAgroPlusCoupon(coupon) && !this.agroPlusActive()) {
       this.router.navigate(['/agro-plus']);
       return;
@@ -437,9 +477,16 @@ export class StoreBenefitsComponent {
       SAFRA12: ['inputs'],
       EQUIPA10: ['tools', 'expiring'],
       AGUA8: ['irrigation'],
+      RAIZ10: ['inputs'],
+      CULTIVO12: ['inputs'],
+      PASTO8: ['livestock'],
+      COLHEITA15: ['inputs'],
+      TRATOR10: ['tools'],
+      PRECISAO12: ['tools'],
     };
 
-    return categories[coupon.code] ?? [];
+    const result = categories[this.couponCampaign(coupon)] ?? [];
+    return coupon.validOn && !result.includes('expiring') ? [...result, 'expiring'] : result;
   }
 
   private normalizeText(value: string): string {

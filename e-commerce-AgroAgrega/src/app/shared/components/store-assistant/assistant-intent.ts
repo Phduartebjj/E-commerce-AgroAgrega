@@ -46,7 +46,9 @@ export function interpretAssistantMessage(message: string): AssistantIntent {
     return { type: 'help' };
   }
 
-  const coupon = text.match(/^(?:aplicar|ative|ativar|usar|use)\s+(?:o\s+)?cupom\s+([a-z0-9]+)/);
+  const coupon = message
+    .trim()
+    .match(/^(?:aplicar|ative|ativar|usar|use)\s+(?:o\s+)?cupom\s+([a-z0-9]+(?:-[a-z0-9]+)*)/i);
   if (coupon) return { type: 'applyCoupon', code: coupon[1].toUpperCase() };
   if (/\bcupons?\b/.test(text)) return { type: 'coupons' };
 

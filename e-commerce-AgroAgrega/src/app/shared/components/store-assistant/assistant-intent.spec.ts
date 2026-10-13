@@ -15,6 +15,17 @@ describe('assistant commands', () => {
     });
   });
 
+  it('preserves the date suffix when applying a daily coupon', () => {
+    expect(interpretAssistantMessage('Aplicar cupom COLHEITA15-20261013')).toEqual({
+      type: 'applyCoupon',
+      code: 'COLHEITA15-20261013',
+    });
+    expect(interpretAssistantMessage('use o cupom raiz10-20261014')).toEqual({
+      type: 'applyCoupon',
+      code: 'RAIZ10-20261014',
+    });
+  });
+
   it('understands additions and safe quantity changes', () => {
     expect(interpretAssistantMessage('Adicione 2 sementes de milho ao carrinho')).toEqual({
       type: 'add', query: 'sementes de milho', quantity: 2,

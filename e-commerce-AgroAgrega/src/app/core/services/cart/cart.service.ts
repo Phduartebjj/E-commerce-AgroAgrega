@@ -2,7 +2,7 @@ import { computed, effect, Injectable, signal, PLATFORM_ID, inject } from '@angu
 import { CartItemModel } from '../../../models/cartItem';
 import { isPlatformBrowser } from '@angular/common';
 import { ProductModel } from '../../../models/product';
-import { COUPONS } from '@core/data/coupons';
+import { CouponService } from '../coupon/coupon.service';
 import { CouponModel } from '@models/coupon';
 import { Auth } from '../auth/auth.service';
 @Injectable({
@@ -14,7 +14,13 @@ export class Cart {
   private readonly keyStorage = 'my-storage-cart';
   private cartItems = signal<CartItemModel[]>([]);
   private selectedProductIds = signal<string[] | null>(null);
-  readonly coupon = signal<CouponModel | null>(null);
+  private readonly couponCatalog = inject(CouponService);
+  private readonly appliedCoupon = signal<CouponModel | null>(null);
+  readonly coupon = computed(() => {
+    const coupon = this.appliedCoupon();
+    return coupon?.validOn && coupon.validOn !== this.couponCatalog.day() ? null : coupon;
+  });
+  readonly couponExpired = computed(() => Boolean(this.appliedCoupon() && !this.coupon()));
   private readonly auth = inject(Auth);
   private initializedUserId: string | null | undefined = undefined;
 
@@ -202,16 +208,11 @@ export class Cart {
   }
 
   applyCoupon(couponCode: string): void {
-    const coupon = couponCode.toUpperCase();
-    const couponFind = COUPONS.find((c) => c.code === coupon);
+    this.appliedCoupon.set(this.couponCatalog.find(couponCode));
+  }
 
-    if (!couponFind) {
-      this.coupon.set(null);
-      this.removeCoupon();
-      return;
-    }
-
-    this.coupon.set(couponFind);
+  refreshCouponValidity(): void {
+    this.couponCatalog.refresh();
   }
 
   subtotal = computed(() => {
@@ -221,7 +222,7 @@ export class Cart {
   });
 
   removeCoupon(): void {
-    this.coupon.set(null);
+    this.appliedCoupon.set(null);
   }
   addCartItem(product: ProductModel, quantity: number = 1): void {
     this.cartItems.update((items) => {
@@ -250,9 +251,7 @@ export class Cart {
     if (!this.cartItems().some((item) => item.product.id === productId)) return false;
 
     this.cartItems.update((items) =>
-      items.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item,
-      ),
+      items.map((item) => (item.product.id === productId ? { ...item, quantity } : item)),
     );
     return true;
   }

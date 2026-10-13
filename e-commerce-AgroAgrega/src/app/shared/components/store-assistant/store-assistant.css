@@ -408,6 +408,8 @@
 }
 
 .assistant-coupons button {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: grid;
   gap: 2px;
   padding: 9px;

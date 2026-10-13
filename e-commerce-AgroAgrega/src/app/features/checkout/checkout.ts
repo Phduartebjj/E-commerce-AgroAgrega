@@ -518,6 +518,7 @@ export class CheckoutComponent {
   }
 
   finishOrder(): void {
+    this.cart.refreshCouponValidity();
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       return;
