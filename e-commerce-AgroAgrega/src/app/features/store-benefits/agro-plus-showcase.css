@@ -73,9 +73,9 @@
 .plus-hero__actions {
   position: absolute;
   left: 6.8%;
-  top: 67%;
+  top: 69.5%;
   width: 44%;
-  height: 9%;
+  height: 7%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
   gap: clamp(4px, 0.8cqw, 12px);

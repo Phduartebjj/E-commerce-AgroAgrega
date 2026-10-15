@@ -54,14 +54,14 @@ describe('ProductService', () => {
     }
   });
 
-  it('deve criar seis ofertas relâmpago determinísticas para cada dia', () => {
+  it('deve criar doze ofertas relâmpago determinísticas para cada dia', () => {
     const date = new Date(2026, 8, 15, 10);
     const firstResult = applyDailyFlashOffers(productsItems, date);
     const secondResult = applyDailyFlashOffers(productsItems, date);
     const firstOffers = firstResult.filter((product) => product.flashOffer);
     const secondOffers = secondResult.filter((product) => product.flashOffer);
 
-    expect(firstOffers).toHaveLength(6);
+    expect(firstOffers).toHaveLength(12);
     expect(firstOffers.map((product) => product.id)).toEqual(
       secondOffers.map((product) => product.id),
     );
@@ -77,7 +77,7 @@ describe('ProductService', () => {
       .filter((product) => product.flashOffer)
       .map((product) => product.id);
 
-    expect(tomorrowOffers).toHaveLength(6);
+    expect(tomorrowOffers).toHaveLength(12);
     expect(tomorrowOffers.some((productId) => todayOffers.includes(productId))).toBe(false);
   });
 

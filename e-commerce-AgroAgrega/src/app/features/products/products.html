@@ -115,34 +115,97 @@
       </button>
     </nav>
   } @else {
-    <header class="catalog-hero">
+    <header
+      class="catalog-hero"
+      aria-label="Destaques do catálogo"
+      aria-roledescription="carrossel"
+      (mouseenter)="setHeroPointerInside(true)"
+      (mouseleave)="setHeroPointerInside(false)"
+      (focusin)="setHeroFocusInside(true)"
+      (focusout)="onHeroFocusOut($event)"
+    >
       <h1 class="visually-hidden">Tudo para o seu campo em um só lugar!</h1>
       <div class="catalog-hero-art">
         <div class="catalog-hero-visual">
-          <img
-            src="assets/images/catalog/hero.png"
-            alt="Tudo para o seu campo em um só lugar! Insumos, ferramentas e soluções para você produzir mais e melhor. Qualidade comprovada, entrega em todo Brasil e suporte especializado."
-            width="1672"
-            height="941"
-            fetchpriority="high"
-            decoding="async"
-          />
+          @for (slide of heroSlides; track slide.image; let index = $index) {
+            <div
+              class="catalog-hero-slide"
+              [class.catalog-hero-slide--original]="slide.original"
+              [class.catalog-hero-slide--wide-panel]="index === 2 || index === 4"
+              [class.catalog-hero-slide--active]="activeHeroSlide() === index"
+              [attr.aria-hidden]="activeHeroSlide() !== index"
+              [attr.aria-label]="index + 1 + ' de ' + heroSlides.length + ': ' + slide.label"
+              aria-roledescription="slide"
+              role="group"
+            >
+              <img
+                [src]="slide.image"
+                alt=""
+                [attr.width]="slide.original ? 1672 : 2115"
+                [attr.height]="slide.original ? 941 : 744"
+                [attr.fetchpriority]="index === 0 ? 'high' : null"
+                [attr.loading]="index === 0 ? 'eager' : 'lazy'"
+                decoding="async"
+              />
+            </div>
+          }
+        </div>
+        @if (activeHeroSlide() === 0) {
+          <button
+            class="png-action png-action--hero"
+            type="button"
+            (click)="scrollToProducts()"
+            aria-label="Ver todos os produtos do catálogo"
+          >
+            <svg class="png-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 7h12l2 14H4L6 7ZM9 7V6a3 3 0 0 1 6 0v1" />
+            </svg>
+            <span class="png-action__label">Ver produtos</span>
+            <svg class="png-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg>
+          </button>
+        } @else {
+          <a
+            class="png-action png-action--hero png-action--hero-secondary"
+            routerLink="/products"
+            [queryParams]="heroSlides[activeHeroSlide()].queryParams"
+          >
+            <span class="png-action__label">{{ heroSlides[activeHeroSlide()].action }}</span>
+            <svg class="png-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg>
+          </a>
+        }
+      </div>
+      <nav class="catalog-hero-nav" aria-label="Navegação dos banners">
+        <button
+          class="catalog-hero-nav__arrow"
+          type="button"
+          aria-label="Banner anterior"
+          (click)="showHeroSlide(activeHeroSlide() - 1)"
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+        <div class="catalog-hero-nav__dots" role="group" aria-label="Escolher banner">
+          @for (slide of heroSlides; track slide.image; let index = $index) {
+            <button
+              type="button"
+              [attr.aria-label]="'Mostrar banner ' + (index + 1) + ': ' + slide.label"
+              [attr.aria-current]="activeHeroSlide() === index ? 'true' : null"
+              (click)="showHeroSlide(index)"
+            ></button>
+          }
         </div>
         <button
-          class="png-action png-action--hero"
+          class="catalog-hero-nav__arrow"
           type="button"
-          (click)="scrollToProducts()"
-          aria-label="Ver todos os produtos do catálogo"
+          aria-label="Próximo banner"
+          (click)="showHeroSlide(activeHeroSlide() + 1)"
         >
-          <svg class="png-action__icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 7h12l2 14H4L6 7ZM9 7V6a3 3 0 0 1 6 0v1" />
-          </svg>
-          <span class="png-action__label">Ver produtos</span>
-          <svg class="png-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14m-6-6 6 6-6 6" />
-          </svg>
+          <span aria-hidden="true">→</span>
         </button>
-      </div>
+      </nav>
     </header>
   }
 
@@ -362,23 +425,6 @@
         tabindex="-1"
         aria-label="Resultados do catálogo"
       >
-        @if (offersOnly() && offerNoticeVisible()) {
-          <div class="daily-offer-notice">
-            <span aria-hidden="true">↻</span>
-            <div>
-              <strong>Ofertas renovadas automaticamente!</strong>
-              <p>Novas ofertas todos os dias. Aproveite os preços de hoje até a meia-noite.</p>
-            </div>
-            <button
-              type="button"
-              aria-label="Fechar aviso de ofertas"
-              (click)="offerNoticeVisible.set(false)"
-            >
-              ×
-            </button>
-          </div>
-        }
-
         @if (showFeaturedProducts()) {
           <div class="catalog-showcase">
             <section class="featured-products" aria-labelledby="featured-products-title">
@@ -480,7 +526,14 @@
           </div>
           <section class="category-highlights" aria-labelledby="category-highlights-title">
             <div class="section-heading">
-              <h2 id="category-highlights-title">Categorias em destaque</h2>
+              <h2 id="category-highlights-title">
+                <span class="category-highlights__heading-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M20.5 3.5C10 3.5 4 8.5 4 15a5 5 0 0 0 5 5c6.5 0 11.5-6 11.5-16.5ZM4 20c4-6 7.5-8.5 12-11" />
+                  </svg>
+                </span>
+                <span>Categorias em <em>destaque</em></span>
+              </h2>
               <button
                 class="section-link"
                 type="button"
@@ -490,33 +543,37 @@
               </button>
             </div>
             <div class="category-tiles">
-              @for (category of productCategories; track category) {
+              @for (category of featuredCategories; track category) {
                 <a
                   class="category-tile"
                   routerLink="/products"
                   [queryParams]="{ category: category }"
                 >
-                  <img
-                    [src]="categoryArtwork[category].image"
-                    alt=""
-                    width="200"
-                    height="120"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <span>{{ category }}</span>
+                  <span
+                    class="category-tile__visual"
+                    [style.background-position-x.%]="categoryArtwork[category].imagePosition"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="category-tile__label">
+                    <span class="category-tile__icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path [attr.d]="categoryArtwork[category].icon" />
+                      </svg>
+                    </span>
+                    <strong>{{ category }}</strong>
+                  </span>
                 </a>
               }
               <a class="category-tile" routerLink="/products" [queryParams]="{ offers: 'true' }">
-                <span class="offers-tile-art" aria-hidden="true"
-                  ><svg viewBox="0 0 72 72">
-                    <path fill="#ef443e" d="M21 3h30l16 23-14 41H13L5 26Z" />
-                    <circle cx="36" cy="13" r="4" fill="#e5efcf" />
-                    <path d="m24 48 24-21" stroke="#fff" stroke-width="5" stroke-linecap="round" />
-                    <circle cx="26" cy="29" r="6" fill="none" stroke="#fff" stroke-width="4" />
-                    <circle cx="46" cy="48" r="6" fill="none" stroke="#fff" stroke-width="4" /></svg
-                ></span>
-                <span>Ofertas</span>
+                <span class="category-tile__visual category-tile__visual--offers" aria-hidden="true"></span>
+                <span class="category-tile__label">
+                  <span class="category-tile__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M3 4h8l10 10-7 7L3 10V4Zm4 4h.01" />
+                    </svg>
+                  </span>
+                  <strong>Ofertas</strong>
+                </span>
               </a>
             </div>
           </section>
@@ -692,8 +749,8 @@
                 <img
                   src="assets/images/offers/specials.png"
                   alt=""
-                  width="1672"
-                  height="941"
+                  width="1448"
+                  height="1086"
                   loading="lazy"
                   decoding="async"
                 />

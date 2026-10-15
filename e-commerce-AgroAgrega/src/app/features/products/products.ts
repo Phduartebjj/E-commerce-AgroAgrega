@@ -31,7 +31,16 @@ interface CatalogFilterChip {
   value?: string;
 }
 
+interface CatalogHeroSlide {
+  image: string;
+  label: string;
+  action: string;
+  queryParams: Record<string, string>;
+  original?: boolean;
+}
+
 const PRODUCTS_PER_PAGE = 12;
+const HERO_SLIDE_DURATION_MS = 6000;
 
 function normalizeCatalogText(value: string): string {
   return value
@@ -59,31 +68,75 @@ export class ProductsComponent {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
   private countdownTimer?: ReturnType<typeof setInterval>;
+  private heroTimer?: ReturnType<typeof setTimeout>;
+  private heroPointerInside = false;
+  private heroFocusInside = false;
 
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
   readonly assistant = inject(StoreAssistantState);
-  readonly categoryArtwork: Record<ProductCategory, { image: string; icon: string }> = {
+  readonly heroSlides: readonly CatalogHeroSlide[] = [
+    {
+      image: 'assets/images/catalog/hero.png',
+      label: 'Tudo para o seu campo em um só lugar',
+      action: 'Ver produtos',
+      queryParams: {},
+      original: true,
+    },
+    {
+      image: 'assets/images/catalog/hero-irrigation.png',
+      label: 'Irrigação inteligente para crescer mais',
+      action: 'Ver soluções de irrigação',
+      queryParams: { category: 'Irrigação' },
+    },
+    {
+      image: 'assets/images/catalog/hero-tools.png',
+      label: 'Ferramentas certas para o trabalho render mais',
+      action: 'Explorar ferramentas',
+      queryParams: { category: 'Ferramentas' },
+    },
+    {
+      image: 'assets/images/catalog/hero-livestock.png',
+      label: 'Pecuária com mais cuidado e desempenho',
+      action: 'Ver linha pecuária',
+      queryParams: { category: 'Pecuária' },
+    },
+    {
+      image: 'assets/images/catalog/hero-offers.png',
+      label: 'Ofertas especiais para o seu campo',
+      action: 'Aproveitar ofertas',
+      queryParams: { offers: 'true' },
+    },
+  ];
+  readonly activeHeroSlide = signal(0);
+  readonly featuredCategories: ProductCategory[] = [
+    'Agricultura de Precisão',
+    'Irrigação',
+    'Pecuária',
+    'Insumos',
+    'Ferramentas',
+  ];
+  readonly categoryArtwork: Record<ProductCategory, { imagePosition: number; icon: string }> = {
     'Agricultura de Precisão': {
-      image: 'assets/images/generated-products/product-001.webp',
-      icon: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2',
+      imagePosition: 3,
+      icon: 'M12 3v3m0 12v3M3 12h3m12 0h3M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
     },
     Irrigação: {
-      image: 'assets/images/generated-products/product-004.webp',
+      imagePosition: 21.8,
       icon: 'M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13ZM9 15a3 3 0 0 0 3 3',
     },
     Pecuária: {
-      image: 'assets/images/generated-products/product-009.webp',
+      imagePosition: 40.6,
       icon: 'M6 8 3 4 2 10l4 2v6l3 3h6l3-3v-6l4-2-1-6-3 4ZM9 13h.01M15 13h.01M9 18h6',
     },
     Ferramentas: {
-      image: 'assets/images/generated-products/product-010.webp',
+      imagePosition: 78.3,
       icon: 'm14 6 4-4a6 6 0 0 1-7 8L4 21l-3-3 10-8a6 6 0 0 1 7-8l-4 4Z',
     },
     Insumos: {
-      image: 'assets/images/generated-products/product-002.webp',
+      imagePosition: 59.5,
       icon: 'M12 22V10M12 16C4 16 2 11 3 5c6 0 9 4 9 11ZM12 11c0-6 4-9 10-9 0 6-4 10-10 9',
     },
   };
@@ -109,7 +162,6 @@ export class ProductsComponent {
   readonly offersOnly = computed(() => this.queryParams().get('offers') === 'true');
   readonly offerCategories: ProductCategory[] = ['Insumos', 'Ferramentas', 'Irrigação', 'Pecuária'];
   readonly selectedOfferTab = signal<'all' | 'popular' | 'ending'>('all');
-  readonly offerNoticeVisible = signal(true);
   readonly discountOnly = signal(false);
   readonly cartFeedback = signal('');
   readonly currentTime = signal(new Date());
@@ -346,8 +398,58 @@ export class ProductsComponent {
 
     if (isPlatformBrowser(this.platformId)) {
       this.countdownTimer = setInterval(() => this.currentTime.set(new Date()), 1000);
-      this.destroyRef.onDestroy(() => clearInterval(this.countdownTimer));
+      const refreshHeroTimer = () => this.scheduleHeroAdvance();
+      const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+      document.addEventListener('visibilitychange', refreshHeroTimer);
+      motionPreference?.addEventListener?.('change', refreshHeroTimer);
+      this.scheduleHeroAdvance();
+      this.destroyRef.onDestroy(() => {
+        clearInterval(this.countdownTimer);
+        clearTimeout(this.heroTimer);
+        document.removeEventListener('visibilitychange', refreshHeroTimer);
+        motionPreference?.removeEventListener?.('change', refreshHeroTimer);
+      });
     }
+  }
+
+  showHeroSlide(index: number): void {
+    if (!Number.isInteger(index)) return;
+    this.activeHeroSlide.set((index + this.heroSlides.length) % this.heroSlides.length);
+    this.scheduleHeroAdvance();
+  }
+
+  setHeroPointerInside(inside: boolean): void {
+    this.heroPointerInside = inside;
+    this.scheduleHeroAdvance();
+  }
+
+  setHeroFocusInside(inside: boolean): void {
+    this.heroFocusInside = inside;
+    this.scheduleHeroAdvance();
+  }
+
+  onHeroFocusOut(event: FocusEvent): void {
+    const hero = event.currentTarget as HTMLElement;
+    if (!hero.contains(event.relatedTarget as Node | null)) {
+      this.setHeroFocusInside(false);
+    }
+  }
+
+  private scheduleHeroAdvance(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    clearTimeout(this.heroTimer);
+    if (
+      this.heroPointerInside ||
+      this.heroFocusInside ||
+      document.hidden ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+    this.heroTimer = setTimeout(() => {
+      this.activeHeroSlide.update((index) => (index + 1) % this.heroSlides.length);
+      this.scheduleHeroAdvance();
+    }, HERO_SLIDE_DURATION_MS);
   }
 
   selectCategory(category: CategoryFilter): void {

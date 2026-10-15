@@ -4,6 +4,8 @@
   height: 100%;
 }
 .offer-card {
+  position: relative;
+  isolation: isolate;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -13,6 +15,61 @@
   background: #fff;
   box-shadow: 0 3px 12px #173f2705;
   color: #243243;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+.offer-card::after {
+  position: absolute;
+  z-index: 2;
+  inset: -2px;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--offer-neon-angle),
+    rgba(124, 255, 24, 0.26) 0deg 244deg,
+    rgba(112, 239, 28, 0.58) 274deg,
+    #034507 305deg,
+    #fff2d8 323deg,
+    #1f6d03 340deg,
+    rgba(28, 195, 17, 0.26) 360deg
+  );
+  content: '';
+  filter: drop-shadow(0 0 4px rgba(21, 101, 3, 0.88)) drop-shadow(0 0 10px rgba(19, 137, 41, 0.62));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+.offer-card:is(:hover, :focus-within) {
+  z-index: 1;
+  border-color: rgba(69, 216, 24, 0.56);
+  box-shadow:
+    0 24px 42px -18px rgba(104, 179, 12, 0.525),
+    0 12px 24px rgba(26, 35, 29, 0.16);
+  transform: translateY(-4px);
+}
+.offer-card:is(:hover, :focus-within)::after {
+  animation: offer-neon-travel 1.7s linear infinite;
+  opacity: 1;
+}
+@property --offer-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes offer-neon-travel {
+  to {
+    --offer-neon-angle: 360deg;
+  }
 }
 .offer-card a {
   color: inherit;
@@ -293,5 +350,17 @@
   }
   :host(.offer-list-item) .offer-card h3 {
     min-height: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .offer-card,
+  .offer-card::after {
+    transition: none;
+  }
+  .offer-card:is(:hover, :focus-within) {
+    transform: none;
+  }
+  .offer-card:is(:hover, :focus-within)::after {
+    animation: none;
   }
 }

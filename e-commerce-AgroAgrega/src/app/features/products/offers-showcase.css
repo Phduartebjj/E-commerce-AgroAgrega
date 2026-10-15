@@ -298,35 +298,6 @@
 .product-page--offers .offer-type-filter {
   margin: 20px 0 0;
 }
-.product-page--offers .daily-offer-notice {
-  margin-bottom: 14px;
-  padding: 12px 14px;
-  border: 1px solid #ffdbab;
-  border-radius: 11px;
-  background: #fff7eb;
-}
-.product-page--offers .daily-offer-notice > span {
-  width: 37px;
-  height: 37px;
-  background: #ff8d00;
-  color: #fff;
-  animation: none;
-}
-.product-page--offers .daily-offer-notice strong {
-  color: #d66409;
-}
-.product-page--offers .daily-offer-notice p {
-  color: #6e7f86;
-}
-.product-page--offers .daily-offer-notice > button {
-  margin-left: auto;
-  align-self: flex-start;
-  padding: 2px 4px;
-  border: 0;
-  background: transparent;
-  color: #7c9091;
-  font-size: 1.2rem;
-}
 .product-page--offers .products-toolbar {
   margin-bottom: 8px;
 }
@@ -404,9 +375,9 @@
 }
 .offer-specials__art img {
   position: absolute;
-  top: -2%;
-  left: -7%;
-  width: 114%;
+  top: 0;
+  left: 0;
+  width: 100%;
   max-width: none;
   height: auto;
 }
@@ -597,7 +568,7 @@
   .offer-specials__art img {
     width: 100%;
     left: 0;
-    top: -12%;
+    top: 0;
   }
 }
 @media (max-width: 760px) {
@@ -717,13 +688,6 @@
     flex-wrap: wrap;
     font-size: 0.74rem;
   }
-  .product-page--offers .daily-offer-notice {
-    padding: 13px;
-    gap: 10px;
-  }
-  .product-page--offers .daily-offer-notice p {
-    font-size: 0.77rem;
-  }
   .product-page--offers .filter-group label {
     font-size: 0.85rem;
     min-height: 33px;
@@ -789,7 +753,7 @@
     aspect-ratio: 1672 / 810;
   }
   .offer-specials__art img {
-    top: -3%;
+    top: 0;
   }
   .offer-specials .offer-banner-copy h2 {
     color: #b3f794;

@@ -83,7 +83,7 @@ export class ProductService {
 export function applyDailyFlashOffers(
   products: ProductModel[],
   date: Date,
-  offerCount = 6,
+  offerCount = 12,
 ): ProductModel[] {
   const normalizedProducts = products.map((product) => ({
     ...product,
