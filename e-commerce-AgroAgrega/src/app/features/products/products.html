@@ -131,7 +131,6 @@
             <div
               class="catalog-hero-slide"
               [class.catalog-hero-slide--original]="slide.original"
-              [class.catalog-hero-slide--wide-panel]="index === 2 || index === 4"
               [class.catalog-hero-slide--active]="activeHeroSlide() === index"
               [attr.aria-hidden]="activeHeroSlide() !== index"
               [attr.aria-label]="index + 1 + ' de ' + heroSlides.length + ': ' + slide.label"
@@ -141,8 +140,8 @@
               <img
                 [src]="slide.image"
                 alt=""
-                [attr.width]="slide.original ? 1672 : 2115"
-                [attr.height]="slide.original ? 941 : 744"
+                [attr.width]="slide.original ? 1672 : 2092"
+                [attr.height]="slide.original ? 941 : 752"
                 [attr.fetchpriority]="index === 0 ? 'high' : null"
                 [attr.loading]="index === 0 ? 'eager' : 'lazy'"
                 decoding="async"
@@ -168,9 +167,14 @@
         } @else {
           <a
             class="png-action png-action--hero png-action--hero-secondary"
+            [class.png-action--hero-irrigation]="activeHeroSlide() === 1"
+            [class.png-action--hero-livestock]="activeHeroSlide() === 3"
             routerLink="/products"
             [queryParams]="heroSlides[activeHeroSlide()].queryParams"
           >
+            <svg class="png-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 7h12l2 14H4L6 7ZM9 7V6a3 3 0 0 1 6 0v1" />
+            </svg>
             <span class="png-action__label">{{ heroSlides[activeHeroSlide()].action }}</span>
             <svg class="png-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14m-6-6 6 6-6 6" />
@@ -507,21 +511,34 @@
                   <span class="png-action__label">Fale conosco</span>
                 </button>
               </div>
-              <a
-                class="equipment-banner"
-                routerLink="/products"
-                [queryParams]="{ category: 'Ferramentas' }"
-              >
-                <img
-                  src="assets/images/trator.webp"
-                  alt=""
-                  width="420"
-                  height="280"
-                  loading="lazy"
-                />
-                <strong>Equipamentos<br />para grandes<br />resultados.</strong>
-                <span>Ver linha completa <b aria-hidden="true">→</b></span>
-              </a>
+              <div class="equipment-pair">
+                <a
+                  class="equipment-banner"
+                  routerLink="/products"
+                  [queryParams]="{ category: 'Ferramentas' }"
+                  aria-label="Ver linha completa de equipamentos"
+                >
+                  <img
+                    src="assets/images/catalog/equipment-results.png"
+                    alt="Equipamentos para grandes resultados."
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span>Ver linha completa <b aria-hidden="true">→</b></span>
+                </a>
+                <div class="planet-banner">
+                  <img
+                    src="assets/images/catalog/planet-care.png"
+                    alt="Cuidar do planeta é cuidar do futuro. Boas práticas no campo geram mais vida, equilíbrio e produtividade."
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </div>
             </aside>
           </div>
           <section class="category-highlights" aria-labelledby="category-highlights-title">

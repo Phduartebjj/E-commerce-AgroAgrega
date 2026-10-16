@@ -27,7 +27,7 @@ describe('ProductsComponent', () => {
     expect(component.selectedCategory()).toBe('Todos');
     expect(component.filteredProducts()).toHaveLength(52);
     expect(component.featuredProducts()).toHaveLength(8);
-    expect(component.visibleProducts()).toHaveLength(4);
+    expect(component.visibleProducts()).toHaveLength(5);
     expect(component.currentPage()).toBe(1);
     expect(component.totalPages()).toBe(5);
     expect(component.pageNumbers()).toEqual([1, 2, 3, 4, 5]);
@@ -36,7 +36,7 @@ describe('ProductsComponent', () => {
       ...component.featuredProducts().map((product) => product.id),
       ...component.visibleProducts().map((product) => product.id),
     ]);
-    expect(firstPageIds.size).toBe(12);
+    expect(firstPageIds.size).toBe(13);
 
     component.goToPage(2);
 
@@ -49,7 +49,7 @@ describe('ProductsComponent', () => {
     component.goToPage(5);
 
     expect(component.currentPage()).toBe(5);
-    expect(component.visibleProducts()).toHaveLength(4);
+    expect(component.visibleProducts()).toHaveLength(3);
 
     for (const invalidPage of [0, 6, 1.5, Number.NaN]) {
       component.goToPage(invalidPage);
@@ -81,6 +81,7 @@ describe('ProductsComponent', () => {
     expect(host.textContent).not.toContain('Carregar mais');
     expect(host.textContent).toContain('52 produtos encontrados');
     expect(featuredCards).toHaveLength(8);
+    expect(host.querySelectorAll('#catalog-product-grid app-product-card')).toHaveLength(5);
     expect(host.querySelectorAll('.carousel-controls button')).toHaveLength(2);
     expect(host.querySelector('#catalog-search-input')).toBeNull();
   });

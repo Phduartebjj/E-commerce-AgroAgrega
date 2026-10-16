@@ -33,7 +33,7 @@
 .catalog-hero-visual {
   position: relative;
   width: 100%;
-  aspect-ratio: 1672 / 430;
+  aspect-ratio: 2092 / 610;
   overflow: hidden;
 }
 .catalog-hero-slide {
@@ -48,13 +48,13 @@
 }
 .catalog-hero-slide img {
   position: absolute;
-  top: -18%;
+  top: -11.5%;
   left: 0;
   width: 100%;
   height: auto;
 }
 .catalog-hero-slide--original img {
-  top: -60.93%;
+  top: -48%;
 }
 .catalog-hero-nav {
   display: flex;
@@ -148,8 +148,14 @@
   left: 55%;
 }
 .png-action--hero-secondary {
-  bottom: 16%;
+  bottom: 18%;
   left: 62%;
+}
+.png-action--hero-irrigation {
+  left: 56.7%;
+}
+.png-action--hero-livestock {
+  left: 57.8%;
 }
 .png-action__label {
   min-width: 0;
@@ -456,55 +462,45 @@
   padding-inline: 12px;
   border-radius: 10px;
 }
-.equipment-banner {
+.equipment-pair {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.equipment-banner,
+.planet-banner {
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 170px;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
-  padding: 17px;
-  border: 1px solid #dce5d7;
   border-radius: 12px;
   background: #e6eed6;
-  isolation: isolate;
 }
-.equipment-banner > img {
-  position: absolute;
-  z-index: -2;
-  inset: 0;
+.equipment-banner img,
+.planet-banner img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 60% center;
-}
-.equipment-banner::after {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  content: '';
-  background: linear-gradient(90deg, #f5f6eae8, #f5f6ea4d 64%, transparent);
-}
-.equipment-banner strong {
-  max-width: 155px;
-  color: #143b27;
-  font-size: 1.08rem;
-  font-weight: 850;
-  letter-spacing: -0.04em;
-  line-height: 1.17;
+  object-fit: contain;
 }
 .equipment-banner > span {
+  position: absolute;
+  bottom: 7%;
+  left: 7%;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 28px;
   padding: 9px 12px;
   border-radius: 8px;
   background: #12562f;
   color: #fff;
   font-size: 0.67rem;
   font-weight: 750;
+}
+.equipment-banner:focus-visible {
+  outline: 3px solid #83c447;
+  outline-offset: 3px;
 }
 .category-highlights {
   margin-bottom: 26px;
@@ -1068,9 +1064,6 @@ input:focus-visible {
     max-width: 290px;
     justify-self: center;
   }
-  .equipment-banner {
-    min-height: 185px;
-  }
   .featured-carousel {
     grid-auto-columns: calc((100% - 24px) / 3);
   }
@@ -1081,7 +1074,21 @@ input:focus-visible {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-@media (max-width: 1000px) {
+@media (min-width: 601px) and (max-width: 1000px) {
+  .png-action--hero {
+    min-height: 44px;
+    padding: 8px 12px;
+    gap: 8px;
+    font-size: clamp(12px, 1.3vw, 14px);
+  }
+}
+@media (max-width: 600px) {
+  .catalog-promotions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .equipment-pair {
+    gap: 10px;
+  }
   .catalog-hero-art {
     border: 1px solid var(--catalog-border);
     background: #fff;
@@ -1093,9 +1100,6 @@ input:focus-visible {
     justify-self: center;
     width: calc(100% - 24px);
     margin: 12px;
-  }
-  .png-action--hero-secondary {
-    display: flex;
   }
 }
 @media (max-width: 760px) {
@@ -1167,23 +1171,6 @@ input:focus-visible {
   .product-page {
     padding-inline: 12px;
   }
-  .catalog-hero-visual {
-    aspect-ratio: 760 / 360;
-  }
-  .catalog-hero-slide img {
-    width: 220%;
-    max-width: none;
-    top: -26%;
-    left: auto;
-    right: -3.7%;
-  }
-  .catalog-hero-slide--wide-panel img {
-    width: 240%;
-    right: -1%;
-  }
-  .catalog-hero-slide--original img {
-    top: -83.6%;
-  }
   .sidebar-content.open {
     grid-template-columns: 1fr;
   }
@@ -1214,18 +1201,6 @@ input:focus-visible {
   }
   .catalog-promotions {
     gap: 10px;
-  }
-  .equipment-banner {
-    min-height: 132px;
-    padding: 12px;
-  }
-  .equipment-banner strong {
-    font-size: 0.98rem;
-  }
-  .equipment-banner > span {
-    padding: 7px 8px;
-    margin-top: 15px;
-    font-size: 0.67rem;
   }
   .category-tiles {
     gap: 8px;

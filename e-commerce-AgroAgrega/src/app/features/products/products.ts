@@ -40,6 +40,7 @@ interface CatalogHeroSlide {
 }
 
 const PRODUCTS_PER_PAGE = 12;
+const FIRST_PAGE_GRID_PRODUCTS = 5;
 const HERO_SLIDE_DURATION_MS = 6000;
 
 function normalizeCatalogText(value: string): string {
@@ -88,7 +89,7 @@ export class ProductsComponent {
     {
       image: 'assets/images/catalog/hero-irrigation.png',
       label: 'Irrigação inteligente para crescer mais',
-      action: 'Ver soluções de irrigação',
+      action: 'Ver soluções',
       queryParams: { category: 'Irrigação' },
     },
     {
@@ -370,13 +371,11 @@ export class ProductsComponent {
 
   readonly visibleProducts = computed(() => {
     if (this.featureProductsOnFirstPage()) {
-      const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
-
       if (this.currentPage() === 1) {
-        return this.catalogGridProducts().slice(0, firstPageCapacity);
+        return this.catalogGridProducts().slice(0, FIRST_PAGE_GRID_PRODUCTS);
       }
 
-      const startIndex = firstPageCapacity + (this.currentPage() - 2) * PRODUCTS_PER_PAGE;
+      const startIndex = FIRST_PAGE_GRID_PRODUCTS + (this.currentPage() - 2) * PRODUCTS_PER_PAGE;
 
       return this.catalogGridProducts().slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
     }
@@ -686,8 +685,7 @@ export class ProductsComponent {
       return Math.max(1, Math.ceil(gridProductCount / PRODUCTS_PER_PAGE));
     }
 
-    const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
-    const remainingProducts = Math.max(0, gridProductCount - firstPageCapacity);
+    const remainingProducts = Math.max(0, gridProductCount - FIRST_PAGE_GRID_PRODUCTS);
 
     return 1 + Math.ceil(remainingProducts / PRODUCTS_PER_PAGE);
   }
