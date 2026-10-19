@@ -53,14 +53,14 @@ export class StoreBenefitsComponent {
   readonly couponSearch = signal('');
   readonly couponSort = signal<CouponSort>('relevance');
   readonly expandedCouponCode = signal<string | null>(null);
-  readonly couponFilters: Array<{ id: CouponFilter; label: string; icon: string }> = [
-    { id: 'all', label: 'Todos os cupons', icon: '▦' },
-    { id: 'first-order', label: 'Primeira compra', icon: '♙' },
-    { id: 'inputs', label: 'Insumos', icon: '⌁' },
-    { id: 'tools', label: 'Ferramentas', icon: '⌕' },
-    { id: 'irrigation', label: 'Irrigação', icon: '◉' },
-    { id: 'livestock', label: 'Pecuária', icon: '♧' },
-    { id: 'expiring', label: 'Expirando em breve', icon: '◷' },
+  readonly couponFilters: Array<{ id: CouponFilter; label: string }> = [
+    { id: 'all', label: 'Todos os cupons' },
+    { id: 'first-order', label: 'Primeira compra' },
+    { id: 'inputs', label: 'Insumos' },
+    { id: 'tools', label: 'Ferramentas' },
+    { id: 'irrigation', label: 'Irrigação' },
+    { id: 'livestock', label: 'Pecuária' },
+    { id: 'expiring', label: 'Expirando em breve' },
   ];
   readonly selectedBenefitId = signal('cashback');
   readonly benefitDetailsOpen = signal(false);

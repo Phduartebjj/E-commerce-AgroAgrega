@@ -27,7 +27,43 @@
               [attr.aria-pressed]="selectedCouponFilter() === filter.id"
               (click)="selectCouponFilter(filter.id)"
             >
-              <span aria-hidden="true">{{ filter.icon }}</span>
+              <span class="coupon-filter__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  @switch (filter.id) {
+                    @case ('all') {
+                      <rect x="4" y="4" width="10" height="10" rx="2" fill="currentColor" stroke="none" />
+                      <rect x="18" y="4" width="10" height="10" rx="2" fill="currentColor" stroke="none" />
+                      <rect x="4" y="18" width="10" height="10" rx="2" fill="currentColor" stroke="none" />
+                      <rect x="18" y="18" width="10" height="10" rx="2" fill="currentColor" stroke="none" />
+                    }
+                    @case ('first-order') {
+                      <circle cx="16" cy="10" r="4.5" />
+                      <path d="M7 26v-2.5a9 9 0 0 1 18 0V26H7Z" />
+                    }
+                    @case ('inputs') {
+                      <path d="M16 28V15" />
+                      <path d="M16 20c-7 0-11-4-11-11 7 0 11 4 11 11ZM16 17c0-7 4-11 11-11 0 7-4 11-11 11Z" />
+                    }
+                    @case ('tools') {
+                      <path d="m7 6 7 7M5 8l3-3M12 14 6 20a3 3 0 0 0 4 4l6-6" />
+                      <path d="M27 7a7 7 0 0 1-8 8L9 25a3 3 0 0 1-4-4l10-10a7 7 0 0 1 8-8l-4 4 5 4 3-4Z" />
+                    }
+                    @case ('irrigation') {
+                      <path d="M16 3C12 9 7 15 7 20a9 9 0 0 0 18 0c0-5-5-11-9-17Z" />
+                      <path d="M11 21a5 5 0 0 0 5 5" />
+                    }
+                    @case ('livestock') {
+                      <path d="M9 10 5 7 3 9l2 5 4 1M23 10l4-3 2 2-2 5-4 1" />
+                      <path d="M9 9c1-3 4-4 7-4s6 1 7 4v11c0 5-3 8-7 8s-7-3-7-8V9Z" />
+                      <path d="M12 15h.01M20 15h.01M12 22c2-2 6-2 8 0M14 22v2M18 22v2" />
+                    }
+                    @case ('expiring') {
+                      <circle cx="16" cy="16" r="12" />
+                      <path d="M16 9v8l5 3" />
+                    }
+                  }
+                </svg>
+              </span>
               {{ filter.label }}
             </button>
           }

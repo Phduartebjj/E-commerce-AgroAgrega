@@ -1,6 +1,6 @@
 /* Página de cupons */
 main.benefits-page.benefits-page--coupons {
-  width: min(calc(100% - 32px), 1680px);
+  width: min(calc(100% - 32px), 1240px);
   padding: 24px 0 64px;
 }
 
@@ -49,37 +49,38 @@ main.benefits-page.benefits-page--coupons {
 
 .coupon-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 190px;
+  grid-template-columns: minmax(0, 1fr) 160px;
   align-items: start;
-  gap: 16px;
+  gap: 12px;
   margin: 18px 2px;
 }
 
 .coupon-filter-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
+  justify-content: flex-start;
+  gap: 8px;
   min-width: 0;
 }
 
 .coupon-filter {
   display: inline-flex;
   flex: 0 0 auto;
-  min-height: 42px;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0 14px;
-  border: 1px solid #e3ebe5;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid #dbe9d9;
   border-radius: 999px;
-  background: #fff;
-  color: #244b3a;
+  background: linear-gradient(180deg, #fff 0%, #f4faef 100%);
+  color: #164b36;
   font: inherit;
-  font-size: 0.78rem;
-  font-weight: 750;
+  font-size: 0.8rem;
+  font-weight: 760;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(28, 77, 55, 0.04);
+  box-shadow: 0 5px 12px rgba(24, 71, 42, 0.08);
   transition:
     transform 160ms ease,
     color 160ms ease,
@@ -92,20 +93,33 @@ main.benefits-page.benefits-page--coupons {
   transform: translateY(-1px);
 }
 
-.coupon-filter span {
-  color: #148250;
-  font-size: 1rem;
+.coupon-filter__icon {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e9f6e7;
+  color: #146d3c;
+}
+
+.coupon-filter__icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .coupon-filter--active {
-  border-color: var(--coupon-green-dark);
-  background: linear-gradient(135deg, #08774a, #075739);
+  border-color: #09653d;
+  background: linear-gradient(135deg, #0b7445, #064c37);
   color: #fff;
-  box-shadow: 0 9px 22px rgba(7, 93, 57, 0.19);
+  box-shadow: 0 9px 18px rgba(7, 93, 57, 0.2);
 }
 
-.coupon-filter--active span {
-  color: #fff;
+.coupon-filter--active .coupon-filter__icon {
+  background: transparent;
+  color: #b9ee4e;
 }
 
 .coupon-search {
@@ -114,6 +128,7 @@ main.benefits-page.benefits-page--coupons {
   min-width: 0;
   min-height: 42px;
   align-items: center;
+  justify-self: end;
   gap: 8px;
   padding: 0 15px;
   border: 1px solid #d7e3db;
@@ -139,6 +154,10 @@ main.benefits-page.benefits-page--coupons {
 }
 
 .coupon-content {
+  position: relative;
+  left: 50%;
+  width: min(calc(100vw - 96px), 1616px);
+  transform: translateX(-50%);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
   align-items: start;
@@ -669,8 +688,13 @@ main.benefits-page.benefits-page--coupons {
 }
 
 .coupon-how {
+  --coupon-how-icon-size: clamp(34px, 2.6vw, 42px);
+  position: relative;
+  left: 50%;
+  width: min(calc(100vw - 96px), 1616px);
   margin-top: 16px;
-  padding: 16px 18px 18px;
+  padding: clamp(16px, 1.4vw, 22px) clamp(18px, 1.6vw, 26px) clamp(18px, 1.5vw, 24px);
+  transform: translateX(-50%);
 }
 
 .coupon-how header {
@@ -682,7 +706,11 @@ main.benefits-page.benefits-page--coupons {
 }
 
 .coupon-how h2 {
-  font-size: 1.4rem;
+  font-size: clamp(1.4rem, 1.55vw, 1.65rem);
+}
+
+.coupon-how header p {
+  font-size: clamp(0.8rem, 0.9vw, 0.95rem);
 }
 
 .coupon-how header img {
@@ -712,9 +740,9 @@ main.benefits-page.benefits-page--coupons {
 .coupon-how li {
   position: relative;
   display: grid;
-  grid-template-columns: 34px 34px minmax(0, 1fr);
+  grid-template-columns: repeat(2, var(--coupon-how-icon-size)) minmax(0, 1fr);
   align-items: start;
-  gap: 11px;
+  gap: clamp(11px, 0.9vw, 14px);
   padding: 8px 28px 8px 0;
 }
 
@@ -730,8 +758,8 @@ main.benefits-page.benefits-page--coupons {
 .coupon-how li > span,
 .coupon-how li > b {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: var(--coupon-how-icon-size);
+  height: var(--coupon-how-icon-size);
   place-items: center;
   border-radius: 50%;
   background: #087349;
@@ -749,13 +777,13 @@ main.benefits-page.benefits-page--coupons {
 .coupon-how li strong {
   display: block;
   margin: 1px 0 3px;
-  font-size: 0.78rem;
+  font-size: clamp(0.78rem, 0.9vw, 0.98rem);
 }
 
 .coupon-how li p {
   margin: 0;
   color: #7a8981;
-  font-size: 0.65rem;
+  font-size: clamp(0.65rem, 0.75vw, 0.8rem);
   line-height: 1.45;
 }
 
@@ -772,7 +800,11 @@ main.benefits-page.benefits-page--coupons {
 
 @media (max-width: 920px) {
   main.benefits-page.benefits-page--coupons {
-    width: min(calc(100% - 22px), 1680px);
+    width: min(calc(100% - 22px), 1240px);
+  }
+
+  .coupon-filter-list {
+    justify-content: flex-start;
   }
 
   .coupon-showcase__hero {
@@ -780,7 +812,18 @@ main.benefits-page.benefits-page--coupons {
   }
 
   .coupon-content {
+    left: auto;
+    width: calc(100% - 32px);
+    margin-inline: auto;
+    transform: none;
     grid-template-columns: 1fr;
+  }
+
+  .coupon-how {
+    left: auto;
+    width: calc(100% - 32px);
+    margin-inline: auto;
+    transform: none;
   }
 
   .coupon-aside {
@@ -848,8 +891,35 @@ main.benefits-page.benefits-page--coupons {
   }
 
   .coupon-filter {
-    min-height: 40px;
-    padding: 0 14px;
+    min-height: 46px;
+    padding: 0 9px;
+    justify-content: flex-start;
+    white-space: normal;
+  }
+
+  .coupon-filter-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .coupon-filter:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .coupon-filter__icon {
+    flex-basis: 26px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .coupon-filter__icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .coupon-search {
+    width: 100%;
+    justify-self: stretch;
   }
 
   .coupon-results__heading {
