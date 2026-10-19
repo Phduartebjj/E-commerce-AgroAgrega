@@ -56,11 +56,20 @@ export class StoreAssistant {
   private nextMessageId = 1;
   private typingTimer?: ReturnType<typeof setTimeout>;
   private scrollTimer?: ReturnType<typeof setTimeout>;
+  private introTimer?: ReturnType<typeof setTimeout>;
+  private focusTimer?: ReturnType<typeof setTimeout>;
 
   @ViewChild('composer') private composer?: ElementRef<HTMLInputElement>;
   @ViewChild('messageList') private messageList?: ElementRef<HTMLElement>;
 
   readonly open = inject(StoreAssistantState).open;
+  readonly isStarting = signal(false);
+  readonly isIntroducing = signal(false);
+  readonly introPart = signal(0);
+  readonly introGreeting = signal('');
+  readonly introDescription = signal('');
+  readonly introShortcutIndex = signal(-1);
+  readonly introShortcutText = signal('');
   readonly isTyping = signal(false);
   readonly messages = signal<ChatMessage[]>([
     {
@@ -111,31 +120,106 @@ export class StoreAssistant {
   constructor() {
     effect((onCleanup) => {
       if (this.open()) {
+        this.isStarting.set(true);
         this.assistantTime.set(
           new Intl.DateTimeFormat('pt-BR', {
             hour: '2-digit',
             minute: '2-digit',
           }).format(new Date()),
         );
-        const focusTimer = setTimeout(() => {
-          this.composer?.nativeElement.focus();
+        const reducedMotion = this.document.defaultView?.matchMedia?.(
+          '(prefers-reduced-motion: reduce)',
+        ).matches;
+        const startupTimer = setTimeout(() => {
+          this.isStarting.set(false);
+          this.focusTimer = setTimeout(() => {
+            if (this.open()) this.composer?.nativeElement.focus();
+          }, 50);
           this.scrollToLatest();
+          if (!reducedMotion && this.messages().length === 1) {
+            this.startIntroduction();
+          }
+        }, 5000);
+        onCleanup(() => {
+          clearTimeout(startupTimer);
+          clearTimeout(this.introTimer);
+          clearTimeout(this.focusTimer);
         });
-        onCleanup(() => clearTimeout(focusTimer));
+      } else {
+        this.isStarting.set(false);
+        this.isIntroducing.set(false);
       }
     });
     this.destroyRef.onDestroy(() => {
       clearTimeout(this.typingTimer);
       clearTimeout(this.scrollTimer);
+      clearTimeout(this.introTimer);
+      clearTimeout(this.focusTimer);
     });
   }
 
   toggle(): void {
+    if (!this.open()) this.isStarting.set(true);
     this.open.update((value) => !value);
   }
 
   close(): void {
     this.open.set(false);
+  }
+
+  shortcutLabel(index: number, label: string): string {
+    if (!this.isIntroducing() || index < this.introShortcutIndex()) return label;
+    return index === this.introShortcutIndex() ? this.introShortcutText() : '';
+  }
+
+  private startIntroduction(): void {
+    const greeting = 'Olá! Sou o Tourino, assistente da AgroAgrega! 🌿';
+    const description =
+      'Posso te ajudar a encontrar produtos, ver ofertas e cupons, além de organizar seu carrinho. Como posso ajudar você hoje?';
+    const parts = [
+      { text: greeting, update: (value: string) => this.introGreeting.set(value) },
+      { text: description, update: (value: string) => this.introDescription.set(value) },
+      ...this.suggestions.map((suggestion, index) => ({
+        text: suggestion.label,
+        update: (value: string) => {
+          this.introShortcutIndex.set(index);
+          this.introShortcutText.set(value);
+        },
+      })),
+    ];
+
+    this.introGreeting.set('');
+    this.introDescription.set('');
+    this.introShortcutIndex.set(-1);
+    this.introShortcutText.set('');
+    this.introPart.set(0);
+    this.isIntroducing.set(true);
+
+    let partIndex = 0;
+    let characterIndex = 0;
+    const typeNext = () => {
+      if (!this.open()) return;
+      const part = parts[partIndex];
+      this.introPart.set(partIndex);
+      characterIndex = Math.min(characterIndex + 2, part.text.length);
+      part.update(part.text.slice(0, characterIndex));
+      if (characterIndex < part.text.length) {
+        this.introTimer = setTimeout(typeNext, 18);
+      } else if (++partIndex < parts.length) {
+        characterIndex = 0;
+        this.introTimer = setTimeout(typeNext, 180);
+      } else {
+        this.introTimer = setTimeout(() => this.finishIntroduction(), 180);
+      }
+    };
+    this.introTimer = setTimeout(typeNext, 180);
+  }
+
+  private finishIntroduction(): void {
+    clearTimeout(this.introTimer);
+    this.introTimer = undefined;
+    this.isIntroducing.set(false);
+    this.scrollToLatest();
   }
 
   @HostListener('document:keydown.escape')
@@ -153,6 +237,7 @@ export class StoreAssistant {
   submitPrompt(message: string): void {
     message = message.trim().slice(0, 240);
     if (!message || this.isTyping()) return;
+    if (this.isIntroducing()) this.finishIntroduction();
     this.append({ role: 'user', text: message });
     this.respond(message);
   }

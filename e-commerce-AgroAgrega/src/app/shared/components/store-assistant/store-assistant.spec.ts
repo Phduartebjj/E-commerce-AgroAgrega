@@ -45,6 +45,38 @@ describe('StoreAssistant', () => {
     expect(fixture.nativeElement.textContent).toContain('Tourino');
   });
 
+  it('loads the assistant before typing the welcome and each shortcut in order', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    host.querySelector<HTMLButtonElement>('.assistant-launcher')?.click();
+    fixture.detectChanges();
+
+    expect(component.isStarting()).toBe(true);
+    expect(host.querySelector('.assistant-startup')?.textContent).toContain('Iniciando o Tourino');
+    expect(host.querySelector('.assistant-composer')?.hasAttribute('inert')).toBe(true);
+
+    vi.advanceTimersByTime(4999);
+    fixture.detectChanges();
+    expect(component.isStarting()).toBe(true);
+
+    vi.advanceTimersByTime(1);
+    fixture.detectChanges();
+    expect(component.isStarting()).toBe(false);
+    expect(component.isIntroducing()).toBe(true);
+    expect(host.querySelector('.assistant-startup')).toBeNull();
+
+    vi.advanceTimersByTime(350);
+    fixture.detectChanges();
+    expect(component.introGreeting().length).toBeGreaterThan(0);
+    expect(component.introDescription()).toBe('');
+    expect(host.querySelectorAll('.assistant-suggestion--pending')).toHaveLength(5);
+
+    vi.advanceTimersByTime(5000);
+    fixture.detectChanges();
+    expect(component.isIntroducing()).toBe(false);
+    expect(host.querySelectorAll('.assistant-suggestion--pending')).toHaveLength(0);
+    expect(host.querySelector('.assistant-composer')?.hasAttribute('inert')).toBe(false);
+  });
+
   it('offers the five visual shortcuts from the Tourino welcome screen', async () => {
     component.open.set(true);
     fixture.detectChanges();

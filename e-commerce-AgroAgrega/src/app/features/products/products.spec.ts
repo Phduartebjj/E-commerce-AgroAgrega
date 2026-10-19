@@ -143,6 +143,8 @@ describe('ProductsComponent', () => {
 
   it('deve exibir a contagem regressiva até a troca diária', () => {
     expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 21, 30, 15))).toBe('02:29:45');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 23, 59, 59))).toBe('00:00:01');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 16, 0, 0, 0))).toBe('24:00:00');
   });
 
   it('should render the floating comparison tray while products are selected', () => {

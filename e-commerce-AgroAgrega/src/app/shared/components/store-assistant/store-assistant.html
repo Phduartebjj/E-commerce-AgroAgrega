@@ -17,6 +17,10 @@
 </button>
 
 @if (open()) {
+  <div class="assistant-entry" aria-hidden="true">
+    <img src="/assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />
+    <strong>Agro<span>Agrega</span></strong>
+  </div>
   <section
     id="agro-assistant-panel"
     class="assistant-panel"
@@ -41,14 +45,26 @@
       </button>
     </header>
 
+    @if (isStarting()) {
+      <div class="assistant-startup" role="status" aria-live="polite">
+        <div class="assistant-startup__mark" aria-hidden="true">
+          <img src="/assets/images/agroagrega-icon.webp" alt="" width="56" height="56" />
+        </div>
+        <strong>Iniciando o Tourino...</strong>
+        <span>Preparando sua conversa</span>
+        <div class="assistant-startup__progress" aria-hidden="true"><span></span></div>
+      </div>
+    }
+
     <p class="assistant-status" role="status">{{ isTyping() ? 'Tourino está digitando…' : '' }}</p>
     <div
       #messageList
       class="assistant-messages"
       role="log"
       aria-label="Conversa com o assistente"
-      aria-live="polite"
+      [attr.aria-live]="isIntroducing() ? 'off' : 'polite'"
       [attr.aria-busy]="isTyping()"
+      [attr.inert]="isStarting() ? '' : null"
     >
       @for (message of messages(); track message.id) {
         <article
@@ -63,14 +79,31 @@
               <header>
                 <strong>Tourino</strong><time>{{ assistantTime() }}</time>
               </header>
-              <p>
-                Olá! Sou o <strong>Tourino</strong>, assistente da <strong>AgroAgrega!</strong>
-                <span aria-hidden="true">🌿</span>
-              </p>
-              <p>
-                Posso te ajudar a encontrar produtos, ver ofertas e cupons, além de organizar seu
-                carrinho. Como posso ajudar você hoje?
-              </p>
+              @if (isIntroducing()) {
+                <p>
+                  {{ introGreeting() }}
+                  @if (introPart() === 0) {
+                    <span class="assistant-intro-cursor" aria-hidden="true"></span>
+                  }
+                </p>
+                @if (introPart() >= 1) {
+                  <p>
+                    {{ introDescription() }}
+                    @if (introPart() === 1) {
+                      <span class="assistant-intro-cursor" aria-hidden="true"></span>
+                    }
+                  </p>
+                }
+              } @else {
+                <p>
+                  Olá! Sou o <strong>Tourino</strong>, assistente da <strong>AgroAgrega!</strong>
+                  <span aria-hidden="true">🌿</span>
+                </p>
+                <p>
+                  Posso te ajudar a encontrar produtos, ver ofertas e cupons, além de organizar seu
+                  carrinho. Como posso ajudar você hoje?
+                </p>
+              }
             </div>
             <span class="assistant-welcome-mascot" aria-hidden="true"></span>
           } @else if (message.typing && !message.text) {
@@ -203,12 +236,18 @@
     </div>
 
     @if (messages().length < 3) {
-      <nav class="assistant-suggestions" aria-label="Atalhos do Tourino">
+      <nav
+        class="assistant-suggestions"
+        aria-label="Atalhos do Tourino"
+        [attr.inert]="isStarting() ? '' : null"
+      >
         @for (suggestion of suggestions; track suggestion.label) {
           <button
             type="button"
             [class.assistant-suggestion--wide]="$index > 2"
-            [disabled]="isTyping()"
+            [class.assistant-suggestion--pending]="isIntroducing() && $index > introShortcutIndex()"
+            [disabled]="isTyping() || (isIntroducing() && $index > introShortcutIndex())"
+            [attr.aria-label]="suggestion.label"
             (click)="submitPrompt(suggestion.prompt)"
           >
             <span
@@ -249,14 +288,18 @@
                 }
               }
             </span>
-            <strong>{{ suggestion.label }}</strong
+            <strong
+              >{{ shortcutLabel($index, suggestion.label) }}
+              @if (isIntroducing() && $index === introShortcutIndex()) {
+                <span class="assistant-intro-cursor" aria-hidden="true"></span>
+              }</strong
             ><span class="assistant-suggestion__arrow" aria-hidden="true">›</span>
           </button>
         }
       </nav>
     }
 
-    <form class="assistant-composer" (ngSubmit)="send()">
+    <form class="assistant-composer" [attr.inert]="isStarting() ? '' : null" (ngSubmit)="send()">
       <label
         ><svg viewBox="0 0 32 32" aria-hidden="true">
           <path

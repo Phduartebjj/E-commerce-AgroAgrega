@@ -611,11 +611,6 @@ export class ProductsComponent {
     this.resetPagination();
   }
 
-  showAllOffers(): void {
-    this.clearFilters();
-    this.scrollToProducts();
-  }
-
   onOfferAdded(product: ProductModel): void {
     this.cartFeedback.set(`${product.title} adicionado ao carrinho.`);
   }

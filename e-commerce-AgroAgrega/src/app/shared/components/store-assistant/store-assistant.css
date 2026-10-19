@@ -43,6 +43,42 @@
   opacity: 0;
 }
 
+.assistant-entry {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  width: 154px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #69af64;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #075038, #0b7844);
+  color: #fff;
+  box-shadow: 0 18px 36px #052e1e40;
+  pointer-events: none;
+  transform-origin: right bottom;
+  animation: assistant-entry-brand 600ms ease-in-out both;
+}
+
+.assistant-entry img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.assistant-entry strong {
+  font-size: 0.92rem;
+  letter-spacing: -0.04em;
+}
+
+.assistant-entry strong span {
+  color: #c2f36a;
+}
+
 .assistant-panel {
   position: absolute;
   right: 0;
@@ -56,6 +92,41 @@
   border-radius: 18px;
   background: #fff;
   box-shadow: 0 24px 70px #052e1e42;
+  transform-origin: right bottom;
+  animation: assistant-panel-enter 520ms cubic-bezier(0.2, 0.88, 0.2, 1) 260ms both;
+}
+
+@keyframes assistant-entry-brand {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.72);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1.04);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
+  }
+}
+
+@keyframes assistant-panel-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.4, 0.12);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .assistant-panel svg {
@@ -68,6 +139,7 @@
 
 .assistant-header {
   position: relative;
+  z-index: 4;
   flex: 0 0 auto;
   aspect-ratio: 3.78;
   overflow: hidden;
@@ -104,6 +176,81 @@
   width: 18px;
   height: 18px;
   stroke-width: 2.8;
+}
+
+.assistant-startup {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 105px 24px 24px;
+  background: linear-gradient(160deg, #f8fcf7, #eaf7e9);
+  color: #145236;
+  text-align: center;
+}
+
+.assistant-startup__mark {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  margin-bottom: 6px;
+  border: 3px solid #cbeac8;
+  border-top-color: #188b4b;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 12px 28px #12683a1c;
+  animation: assistant-startup-pulse 850ms ease-in-out infinite alternate;
+}
+
+.assistant-startup__mark img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.assistant-startup strong {
+  font-size: 1rem;
+}
+
+.assistant-startup > span {
+  color: #567362;
+  font-size: 0.78rem;
+}
+
+.assistant-startup__progress {
+  width: min(210px, 100%);
+  height: 5px;
+  overflow: hidden;
+  margin-top: 12px;
+  border-radius: 99px;
+  background: #d9ead9;
+}
+
+.assistant-startup__progress span {
+  display: block;
+  width: 35%;
+  height: 100%;
+  border-radius: inherit;
+  background: #168846;
+  animation: assistant-startup-progress 1s ease-in-out infinite alternate;
+}
+
+@keyframes assistant-startup-pulse {
+  to {
+    transform: scale(1.06);
+    border-top-color: #80cf4f;
+  }
+}
+
+@keyframes assistant-startup-progress {
+  to {
+    transform: translateX(185%);
+  }
 }
 
 .assistant-messages {
@@ -187,6 +334,16 @@
   margin-left: 3px;
   background: #348453;
   vertical-align: -0.12em;
+  animation: assistant-cursor-blink 750ms step-end infinite;
+}
+
+.assistant-intro-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 2px;
+  background: #168846;
+  vertical-align: -0.1em;
   animation: assistant-cursor-blink 750ms step-end infinite;
 }
 
@@ -465,6 +622,10 @@
   grid-column: span 3;
 }
 
+.assistant-suggestions > .assistant-suggestion--pending {
+  visibility: hidden;
+}
+
 .assistant-suggestion__icon {
   display: grid;
   place-items: center;
@@ -633,11 +794,20 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .assistant-entry {
+    display: none;
+  }
+  .assistant-panel {
+    animation: none;
+  }
   .assistant-launcher {
     transition: none;
   }
   .assistant-typing__dots i,
-  .assistant-cursor {
+  .assistant-cursor,
+  .assistant-intro-cursor,
+  .assistant-startup__mark,
+  .assistant-startup__progress span {
     animation: none;
   }
 }

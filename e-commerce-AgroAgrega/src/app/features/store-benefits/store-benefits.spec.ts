@@ -143,22 +143,4 @@ describe('StoreBenefitsComponent', () => {
     component.showAdjacentBenefit(1);
     expect(component.selectedBenefit.category).toBe('exclusive');
   });
-
-  it('should calculate the estimated advantage after the monthly subscription price', () => {
-    component.monthlyPurchaseValue.set(500);
-
-    expect(component.subscriptionPrice).toBe(20.9);
-    expect(component.estimatedMonthlyAdvantage).toBeCloseTo(119);
-    expect(component.estimatedYearlyAdvantage).toBeCloseTo(1428);
-  });
-  it('should keep simulated purchases within the slider limits and ignore invalid values', () => {
-    component.updateMonthlyPurchaseValue({ target: { value: '-500' } } as unknown as Event);
-    expect(component.monthlyPurchaseValue()).toBe(100);
-    component.updateMonthlyPurchaseValue({ target: { value: '9000' } } as unknown as Event);
-    expect(component.monthlyPurchaseValue()).toBe(2000);
-    component.updateMonthlyPurchaseValue({ target: { value: 'invalid' } } as unknown as Event);
-    expect(component.monthlyPurchaseValue()).toBe(2000);
-    component.updateMonthlyPurchaseValue({ target: { value: '750' } } as unknown as Event);
-    expect(component.estimatedMonthlyAdvantage).toBeCloseTo(169);
-  });
 });

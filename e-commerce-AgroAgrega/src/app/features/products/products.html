@@ -1,33 +1,24 @@
 <main class="product-page" [class.product-page--offers]="offersOnly()" id="catalog-content">
   @if (offersOnly()) {
     <header class="offer-hero" aria-labelledby="offers-title">
-      <div class="offer-hero__art">
+      <div class="offer-hero__canvas" aria-hidden="true">
         <img
           src="assets/images/offers/hero.png"
           alt=""
-          width="1672"
-          height="941"
+          width="2172"
+          height="724"
           fetchpriority="high"
           decoding="async"
         />
       </div>
-      <div class="offer-hero__copy">
-        <div class="offer-hero__kicker">
-          <span aria-hidden="true">ϟ</span><strong>Seleção diária</strong>
-        </div>
-        <h1 id="offers-title">Ofertas <span>relâmpago</span></h1>
-        <p>
-          Produtos de qualidade, com descontos por tempo limitado<br class="offers-desktop-break" />
-          para impulsionar o seu negócio no campo.
-        </p>
-      </div>
+      <h1 id="offers-title" class="visually-hidden">Ofertas relâmpago</h1>
+      <p class="visually-hidden">Produtos de qualidade com descontos por tempo limitado.</p>
       <div
         class="offer-countdown"
         aria-live="off"
         role="timer"
         [attr.aria-label]="'As ofertas mudam em ' + flashOfferCountdown()"
       >
-        <strong>As ofertas mudam em</strong>
         <div class="offer-countdown__digits" aria-hidden="true">
           @for (part of countdownParts(); track $index) {
             <div>
@@ -36,8 +27,8 @@
             </div>
           }
         </div>
-        <button type="button" (click)="scrollToProducts()">
-          Aproveite antes que acabe! <span aria-hidden="true">◴</span>
+        <button type="button" aria-label="Aproveitar ofertas relâmpago" (click)="scrollToProducts()">
+          Aproveite antes que acabe! <span aria-hidden="true">→</span>
         </button>
       </div>
     </header>
@@ -80,7 +71,10 @@
         [attr.aria-pressed]="selectedCategory() === 'Todos' && selectedOfferTab() === 'all'"
         (click)="selectOfferTab('all')"
       >
-        <span class="offer-tabs__bolt" aria-hidden="true">ϟ</span>Ofertas relâmpago
+        <svg class="offer-tabs__bolt" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M19 2 6 18h9l-2 12 13-17h-9l2-11Z" />
+        </svg>
+        Ofertas relâmpago
       </button>
       <button
         type="button"
@@ -88,7 +82,11 @@
         [attr.aria-pressed]="selectedCategory() === 'Todos' && selectedOfferTab() === 'popular'"
         (click)="selectOfferTab('popular')"
       >
-        <span aria-hidden="true">🔥</span>Mais vendidas
+        <svg class="offer-tabs__flame" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M17 2c1 7-5 9-4 14-3-1-4-4-4-6C4 15 4 20 6 25c2 4 6 6 10 6 7 0 12-5 12-12 0-5-3-9-6-12 0 5-2 7-5 8 1-4 0-9 0-13Z" />
+          <path d="M16 20c-3 3-4 5-4 7 1 2 3 3 5 3 3 0 5-2 5-5 0-2-1-4-3-6 0 3-1 4-3 5v-4Z" />
+        </svg>
+        Mais vendidas
       </button>
       @for (category of offerCategories; track category) {
         <button
@@ -721,79 +719,6 @@
         </div>
 
         @if (offersOnly()) {
-          <section class="offer-banners" aria-label="Mais vantagens para o seu campo">
-            <article class="offer-productivity">
-              <div class="offer-productivity__art">
-                <img
-                  src="assets/images/offers/productivity.png"
-                  alt=""
-                  width="1672"
-                  height="941"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="offer-banner-copy visually-hidden">
-                <h2>Mais produtividade para o seu dia a dia!</h2>
-                <p>Aproveite as ofertas e equipe o seu campo com qualidade e economia.</p>
-                <p>
-                  Entrega em todo o Brasil, produtos das melhores marcas do agro, compra segura e
-                  suporte especializado.
-                </p>
-              </div>
-              <div class="offer-banner-actions">
-                <button
-                  class="offer-banner-action"
-                  type="button"
-                  (click)="showAllOffers()"
-                  aria-controls="catalog-results"
-                >
-                  <svg class="offer-banner-action__icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                  </svg>
-                  <span class="offer-banner-action__label">Ver todas as ofertas</span>
-                  <svg class="offer-banner-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h14m-6-6 6 6-6 6" />
-                  </svg>
-                </button>
-              </div>
-            </article>
-            <article class="offer-specials">
-              <div class="offer-specials__art">
-                <img
-                  src="assets/images/offers/specials.png"
-                  alt=""
-                  width="1448"
-                  height="1086"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="offer-banner-copy visually-hidden">
-                <h2>Ofertas que impulsionam o campo</h2>
-                <p>Equipamentos, insumos e muito mais com preços especiais por tempo limitado.</p>
-              </div>
-              <div class="offer-banner-actions">
-                <button
-                  class="offer-banner-action offer-banner-action--primary"
-                  type="button"
-                  (click)="scrollToProducts()"
-                  aria-controls="catalog-results"
-                >
-                  <svg class="offer-banner-action__icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 7h12l2 14H4L6 7ZM9 7V6a3 3 0 0 1 6 0v1" />
-                  </svg>
-                  <span class="offer-banner-action__label">Aproveitar agora</span>
-                  <svg class="offer-banner-action__arrow" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h14m-6-6 6 6-6 6" />
-                  </svg>
-                </button>
-              </div>
-            </article>
-          </section>
           @if (cartFeedback()) {
             <div class="offer-cart-feedback" role="status">
               <span>{{ cartFeedback() }}</span

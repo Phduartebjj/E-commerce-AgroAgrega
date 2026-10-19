@@ -82,7 +82,6 @@ export class StoreBenefitsComponent {
     exclusive: 'm16 2 11 5v8c0 7-11 14-11 14S5 22 5 15V7Z',
   };
   readonly selectedBenefitCategory = signal<'all' | AgroPlusBenefitCategory>('all');
-  readonly monthlyPurchaseValue = signal(500);
   readonly subscriptionPrice = 20.9;
   readonly benefitFilters: Array<{
     id: 'all' | AgroPlusBenefitCategory;
@@ -208,17 +207,6 @@ export class StoreBenefitsComponent {
     );
 
     return currentIndex >= 0 ? currentIndex + 1 : 1;
-  }
-
-  get estimatedMonthlyAdvantage(): number {
-    const purchaseBenefit = this.monthlyPurchaseValue() * 0.2;
-    const eligibleShippingReference = 39.9;
-
-    return Math.max(0, purchaseBenefit + eligibleShippingReference - this.subscriptionPrice);
-  }
-
-  get estimatedYearlyAdvantage(): number {
-    return this.estimatedMonthlyAdvantage * 12;
   }
 
   get visibleCoupons(): CouponModel[] {
@@ -432,13 +420,6 @@ export class StoreBenefitsComponent {
     );
     const nextIndex = (currentIndex + direction + benefits.length) % benefits.length;
     this.selectedBenefitId.set(benefits[nextIndex].id);
-  }
-
-  updateMonthlyPurchaseValue(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const value = Number(input.value);
-    if (!Number.isFinite(value)) return;
-    this.monthlyPurchaseValue.set(Math.min(2000, Math.max(100, Math.round(value / 50) * 50)));
   }
 
   scrollToBenefits(): void {

@@ -368,185 +368,6 @@
   width: 100%;
   height: auto;
 }
-.plus-savings {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr) minmax(0, 0.82fr);
-  align-items: center;
-  gap: 24px;
-  margin-top: 22px;
-  padding: 24px 26px;
-  border-radius: 20px;
-  background: #fff;
-}
-.plus-savings__controls h2 {
-  max-width: 370px;
-  font-size: clamp(1.45rem, 2.3vw, 2.05rem);
-}
-.plus-savings__controls > p {
-  margin: 12px 0 30px;
-  color: #7c8680;
-  font-size: 0.84rem;
-  line-height: 1.55;
-}
-.plus-savings__controls label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  color: #284e3b;
-  font-size: 0.75rem;
-  font-weight: 800;
-}
-.plus-savings__controls output {
-  flex: 0 0 auto;
-  min-width: 115px;
-  padding: 9px 12px;
-  border: 1px solid #dce5df;
-  border-radius: 7px;
-  background: #fff;
-  font-size: 1.04rem;
-  text-align: center;
-}
-.plus-savings__controls input {
-  display: block;
-  width: 100%;
-  height: 11px;
-  margin: 18px 0 0;
-  border: 0;
-  border-radius: 999px;
-  appearance: none;
-  background: linear-gradient(
-    to right,
-    #38a75b 0 var(--range-progress),
-    #e6ebee var(--range-progress) 100%
-  );
-  cursor: pointer;
-}
-.plus-savings__controls input::-webkit-slider-thumb {
-  width: 25px;
-  height: 25px;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  appearance: none;
-  background: #b5e958;
-  box-shadow: 0 2px 5px #36553135;
-}
-.plus-savings__controls input::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  background: #b5e958;
-  box-shadow: 0 2px 5px #36553135;
-}
-.plus-savings__scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
-  color: #8c9990;
-  font-size: 0.65rem;
-}
-.plus-savings__result {
-  padding: 22px 20px 16px;
-  border-radius: 17px;
-  background: linear-gradient(145deg, #edf8e2, #e0f3d1);
-}
-.plus-savings__result .plus-kicker {
-  font-size: 0.59rem;
-  letter-spacing: 0.08em;
-}
-.plus-savings__total {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 6px 0 12px;
-}
-.plus-savings__total strong {
-  color: #073c2b;
-  font-size: clamp(1.85rem, 3.25vw, 3.1rem);
-  font-weight: 900;
-  letter-spacing: -0.065em;
-  line-height: 1.2;
-}
-.plus-savings__total > span {
-  color: #758769;
-  font-size: 0.7rem;
-}
-.plus-savings__result dl {
-  margin: 0;
-  border-top: 1px solid #c8dfbc;
-}
-.plus-savings__result dl > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 7px 0;
-  border-bottom: 1px solid #d1e4c7;
-  font-size: 0.66rem;
-}
-.plus-savings__result dt {
-  color: #74846d;
-}
-.plus-savings__result dd {
-  flex: 0 0 auto;
-  margin: 0;
-  color: #244b36;
-  font-weight: 800;
-}
-.plus-savings__year {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: #d1eea7;
-}
-.plus-savings__year-icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #074633;
-  color: #c7f667;
-}
-.plus-savings__year-icon svg {
-  width: 25px;
-  height: 25px;
-}
-.plus-savings__year p {
-  margin: 0;
-  color: #30502d;
-  font-size: 0.67rem;
-  line-height: 1.3;
-}
-.plus-savings__year strong {
-  display: block;
-  color: #103c24;
-  font-size: clamp(1rem, 1.65vw, 1.55rem);
-  font-weight: 900;
-}
-.plus-savings__result > small {
-  display: block;
-  margin-top: 10px;
-  color: #70836a;
-  font-size: 0.59rem;
-  line-height: 1.4;
-}
-.plus-savings__mascot {
-  min-width: 0;
-  margin-inline: -16px;
-}
-.plus-savings__mascot img {
-  width: 112%;
-  max-width: none;
-  height: auto;
-}
 .plus-proof {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -689,10 +510,6 @@
   .plus-benefit-card__summary {
     font-size: 0.76rem;
   }
-  .plus-savings {
-    gap: 18px;
-    padding: 20px;
-  }
   .plus-proof {
     padding: 16px;
     gap: 10px;
@@ -722,12 +539,6 @@
   }
   .plus-benefit-card__summary {
     font-size: 0.86rem;
-  }
-  .plus-savings {
-    grid-template-columns: 1fr 1fr;
-  }
-  .plus-savings__mascot {
-    display: none;
   }
   .plus-proof {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -981,60 +792,6 @@
     color: #c5d8c9;
     font-size: 0.94rem;
     line-height: 1.5;
-  }
-  .plus-savings {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    margin-top: 20px;
-    padding: 23px;
-  }
-  .plus-savings__controls h2 {
-    font-size: 1.95rem;
-  }
-  .plus-savings__controls > p {
-    font-size: 0.94rem;
-    margin-bottom: 25px;
-  }
-  .plus-savings__controls label {
-    font-size: 0.82rem;
-  }
-  .plus-savings__controls output {
-    min-width: 105px;
-  }
-  .plus-savings__scale {
-    font-size: 0.73rem;
-  }
-  .plus-savings__result {
-    padding: 22px;
-  }
-  .plus-savings__result .plus-kicker {
-    font-size: 0.7rem;
-  }
-  .plus-savings__total strong {
-    font-size: 3rem;
-  }
-  .plus-savings__total > span {
-    font-size: 0.86rem;
-  }
-  .plus-savings__result dl > div {
-    font-size: 0.82rem;
-  }
-  .plus-savings__year p {
-    font-size: 0.83rem;
-  }
-  .plus-savings__year strong {
-    font-size: 1.8rem;
-  }
-  .plus-savings__result > small {
-    font-size: 0.72rem;
-  }
-  .plus-savings__mascot {
-    display: block;
-    width: min(100%, 310px);
-    margin: -8px auto -8px;
-  }
-  .plus-savings__mascot img {
-    width: 100%;
   }
   .plus-proof {
     gap: 17px 12px;
