@@ -88,7 +88,6 @@
                 }
               </div>
             </div>
-          </div>
 
           <section class="trust-strip" aria-label="Benefícios da compra">
             <div>
@@ -108,104 +107,17 @@
               <p><strong>Benefícios Agro+</strong><small>Vantagens para membros</small></p>
             </div>
           </section>
-
-          <div class="product-hero__details">
-            <section class="content-section product-overview" aria-labelledby="overview-title">
-              <span class="section-kicker">Resumo do produto</span>
-              <h2 id="overview-title">Informação para comprar com confiança</h2>
-              <div class="highlight-grid">
-                @for (highlight of productHighlights; track highlight; let index = $index) {
-                  <article>
-                    <span>{{ index + 1 }}</span>
-                    <p>{{ highlight }}</p>
-                  </article>
-                }
-              </div>
-            </section>
-
-            <section
-              class="content-section"
-              id="specifications"
-              aria-labelledby="specifications-title"
-            >
-              <span class="section-kicker">Ficha completa</span>
-              <h2 id="specifications-title">Características do produto</h2>
-              <div class="specification-table">
-                @for (
-                  specification of productSpecifications;
-                  track specification.label;
-                  let index = $index
-                ) {
-                  <div [class.specification-row--alternate]="index % 2 === 0">
-                    <span>{{ specification.label }}</span>
-                    <strong>{{ specification.value }}</strong>
-                  </div>
-                }
-              </div>
-            </section>
-
-            <section
-              class="content-section description-section"
-              aria-labelledby="description-title"
-            >
-              <span class="section-kicker">Conheça melhor</span>
-              <h2 id="description-title">Descrição completa</h2>
-              @for (paragraph of productDescriptionParagraphs; track paragraph) {
-                <p>{{ paragraph }}</p>
-              }
-              <aside>
-                <strong>Orientação importante</strong>
-                <p>{{ categoryProfile.care }} {{ categoryProfile.support }}</p>
-              </aside>
-            </section>
-
-            <section class="content-section questions-section" aria-labelledby="questions-title">
-              <span class="section-kicker">Tire suas dúvidas</span>
-              <h2 id="questions-title">Perguntas sobre o produto</h2>
-              <div class="question-form">
-                <input
-                  type="text"
-                  [(ngModel)]="questionText"
-                  maxlength="180"
-                  placeholder="Digite sua pergunta..."
-                  aria-label="Pergunta sobre o produto"
-                  (keydown.enter)="submitQuestion()"
-                />
-                <button
-                  type="button"
-                  class="commerce-action commerce-action--form question-action"
-                  aria-label="Perguntar sobre o produto"
-                  (click)="submitQuestion()"
-                  [disabled]="!questionText.trim()"
-                >
-                  <span class="commerce-action__icon" aria-hidden="true">?</span>
-                  <span class="commerce-action__copy">
-                    <strong>Perguntar</strong>
-                    <small>Resposta da equipe</small>
-                  </span>
-                  <span class="commerce-action__arrow" aria-hidden="true">→</span>
-                </button>
-              </div>
-              @if (questionFeedback) {
-                <p class="question-feedback" role="status">✓ {{ questionFeedback }}</p>
-              }
-              <div class="question-list">
-                @for (item of questions; track item.question) {
-                  <article>
-                    <h3><span>P</span>{{ item.question }}</h3>
-                    <p><span>R</span>{{ item.answer }}</p>
-                  </article>
-                }
-              </div>
-            </section>
           </div>
+
         </div>
 
         <aside class="purchase-panel">
-          <a routerLink="/products" class="back-to-products">← Voltar ao catálogo</a>
-
+          <div class="product-badges">
+            <span>✦ Destaque da categoria</span>
+            <span>✓ Compra protegida</span>
+          </div>
           <div class="product-meta">
-            <span>{{ product.category }}</span>
+            <span>{{ brandLabel }}</span>
             <span>ID do produto: {{ product.id }}</span>
           </div>
 
@@ -213,28 +125,34 @@
 
           <div class="product-reputation">
             <a
-              href="#reviews"
+              [routerLink]="[]"
+              fragment="reviews"
+              (click)="selectSection('reviews')"
               [attr.aria-label]="'Avaliação ' + product.rating.toFixed(1) + ' de 5'"
             >
-              <strong>{{ product.rating.toFixed(1) }}</strong>
               <span class="stars" aria-hidden="true">
                 @for (star of [1, 2, 3, 4, 5]; track star) {
                   <span [class.filled]="star - 0.5 <= product.rating">★</span>
                 }
               </span>
-              <span>{{ reviewCount }} avaliações</span>
+              <strong>{{ product.rating.toFixed(1) }}</strong>
+              <span>({{ reviewCount }} avaliações)</span>
             </a>
-            <span>{{ soldCount }} vendidos</span>
+            <span>SKU: {{ product.id }}</span>
           </div>
 
+          <p class="purchase-summary">{{ product.description }} Indicado para {{ categoryProfile.application }}.</p>
+
           <div class="product-price-block">
+            <div class="product-price-row">
+              <strong class="product-price">{{ product.price | precoFormatado }}</strong>
             @if (product.originalPrice) {
               <div class="previous-price">
+                <span>{{ discountPercent }}% OFF</span>
                 <s>{{ product.originalPrice | precoFormatado }}</s>
-                <span>Economize {{ discountPercent }}%</span>
               </div>
             }
-            <strong class="product-price">{{ product.price | precoFormatado }}</strong>
+            </div>
             <span class="installments"
               >em até 10x de {{ installmentValue | precoFormatado }} sem juros</span
             >
@@ -244,22 +162,13 @@
             </a>
           </div>
 
-          <section class="quick-facts" aria-labelledby="quick-facts-title">
-            <h2 id="quick-facts-title">O que você precisa saber</h2>
-            <ul>
-              @for (highlight of productHighlights.slice(0, 3); track highlight) {
-                <li>{{ highlight }}</li>
-              }
-            </ul>
-            <a href="#specifications">Ver características completas</a>
-          </section>
-
           <div class="delivery-card">
             <span class="delivery-icon" aria-hidden="true"></span>
             <div>
-              <strong>Entrega para todo o Brasil</strong>
-              <span>Prazo e valor calculados no carrinho</span>
+              <strong>Frete e prazo de entrega</strong>
+              <span>Calculados na finalização da compra</span>
             </div>
+            <a routerLink="/cart">Ver no carrinho <span aria-hidden="true">›</span></a>
           </div>
 
           <div class="stock-line">
@@ -267,8 +176,8 @@
             <span>{{ stockQuantity }} unidades para envio</span>
           </div>
 
+          <div class="purchase-actions">
           <div class="product-quantity">
-            <span>Quantidade</span>
             <div class="quantity-control">
               <button
                 type="button"
@@ -285,27 +194,32 @@
             </div>
           </div>
 
-          <a routerLink="/cart" class="buy-now" (click)="addToCart()">Comprar agora</a>
           <button
             type="button"
             class="commerce-action commerce-action--cart add-to-cart"
             aria-label="Adicionar ao carrinho"
             (click)="addToCart()"
           >
-            <span class="commerce-action__icon" aria-hidden="true">+</span>
+            <span class="commerce-action__icon" aria-hidden="true">🛒</span>
             <span class="commerce-action__copy">
               <strong>Adicionar ao carrinho</strong>
-              <small>Guarde este item e finalize quando quiser</small>
             </span>
             <span class="commerce-action__arrow" aria-hidden="true">→</span>
           </button>
+          </div>
+          <a routerLink="/cart" class="buy-now" (click)="addToCart()">Comprar agora →</a>
 
           <div class="purchase-protection">
             <span class="protection-icon" aria-hidden="true">✓</span>
             <p>
-              <strong>Compra protegida</strong> Acompanhe seu pedido e conte com nosso atendimento.
+              <strong>Compra 100% segura</strong> Ambiente seguro e criptografado.
             </p>
           </div>
+
+          <div class="payment-preview" aria-label="Formas de pagamento">
+            <span>◆ Pix</span><span>▥ Boleto</span><span>VISA</span><span>●●</span>
+          </div>
+          <a class="payment-preview__link" routerLink="/cart">Ver todas as formas de pagamento <span aria-hidden="true">›</span></a>
 
           <div class="seller-card">
             <span class="seller-logo">
@@ -317,12 +231,13 @@
               />
             </span>
             <div>
-              <small>Vendido por</small>
-              <strong>{{ sellerName }}</strong>
-              <span>Parceiro verificado AgroAgrega</span>
+              <strong>Vendido por {{ sellerName }}</strong>
+              <span>Qualidade e confiança do campo para o campo.</span>
             </div>
           </div>
 
+          <details class="purchase-more">
+            <summary>Informações da loja, garantias e produtos relacionados</summary>
           <div class="seller-assurances" aria-label="Garantias desta compra">
             <div class="seller-assurance">
               <span class="seller-assurance__icon" aria-hidden="true">↩</span>
@@ -494,8 +409,74 @@
               }
             </div>
           </section>
+          </details>
         </aside>
       </section>
+
+      <nav class="product-section-nav" aria-label="Informações do produto">
+        <a [routerLink]="[]" fragment="description" (click)="selectSection('description')" [class.active]="activeSection === 'description'">Descrição</a>
+        <a [routerLink]="[]" fragment="specifications" (click)="selectSection('specifications')" [class.active]="activeSection === 'specifications'">Características</a>
+        <a [routerLink]="[]" fragment="benefits" (click)="selectSection('benefits')" [class.active]="activeSection === 'benefits'">Benefícios</a>
+        <a [routerLink]="[]" fragment="application" (click)="selectSection('application')" [class.active]="activeSection === 'application'">Aplicação</a>
+        <a [routerLink]="[]" fragment="reviews" (click)="selectSection('reviews')" [class.active]="activeSection === 'reviews'">Avaliações ({{ reviewCount }})</a>
+        <a [routerLink]="[]" fragment="questions" (click)="selectSection('questions')" [class.active]="activeSection === 'questions'">Dúvidas</a>
+      </nav>
+      <div class="product-hero__details">
+        <section
+          class="content-section description-section"
+          id="description"
+          aria-labelledby="description-title"
+        >
+          <h2 id="description-title">Descrição do produto</h2>
+          @for (paragraph of productDescriptionParagraphs; track paragraph) {
+            <p>{{ paragraph }}</p>
+          }
+          <aside class="product-indication">
+            <strong>Indicado para</strong>
+            <p>{{ categoryProfile.application }}.</p>
+          </aside>
+        </section>
+
+        <section class="content-section specifications-section" id="specifications" aria-labelledby="specifications-title">
+          <h2 id="specifications-title">Características técnicas</h2>
+          <div class="specification-table">
+            @for (specification of productSpecifications; track specification.label; let index = $index) {
+              <div [class.specification-row--alternate]="index % 2 === 0">
+                <span>{{ specification.label }}</span>
+                <strong>{{ specification.value }}</strong>
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="content-section product-overview" id="benefits" aria-labelledby="overview-title">
+          <h2 id="overview-title">Benefícios do produto</h2>
+          <div class="highlight-grid">
+            @for (highlight of productHighlights; track highlight; let index = $index) {
+              <article>
+                <span aria-hidden="true">{{ ['✦', '↗', '✓', '◇'][index] }}</span>
+                <p>{{ highlight }}</p>
+              </article>
+            }
+          </div>
+        </section>
+
+        <section class="content-section application-section" id="application" aria-labelledby="application-title">
+          <div class="application-section__steps">
+            <h2 id="application-title">Modo de uso e aplicação</h2>
+            <ol>
+              <li><span>1</span><p><strong>Preparação</strong>Confira a embalagem e as recomendações do fabricante.</p></li>
+              <li><span>2</span><p><strong>Aplicação</strong>Indicado para {{ categoryProfile.application }}.</p></li>
+              <li><span>3</span><p><strong>Cuidados</strong>{{ categoryProfile.care }}</p></li>
+            </ol>
+          </div>
+          <aside>
+            <strong>Orientação importante</strong>
+            <p>{{ categoryProfile.support }}</p>
+          </aside>
+        </section>
+      </div>
+
 
       <div class="product-content">
         <div class="product-content__main">
@@ -595,6 +576,46 @@
               }
             </div>
           </section>
+            <section class="content-section questions-section" id="questions" aria-labelledby="questions-title">
+              <span class="section-kicker">Tire suas dúvidas</span>
+              <h2 id="questions-title">Perguntas sobre o produto</h2>
+              <div class="question-form">
+                <input
+                  type="text"
+                  [(ngModel)]="questionText"
+                  maxlength="180"
+                  placeholder="Digite sua pergunta..."
+                  aria-label="Pergunta sobre o produto"
+                  (keydown.enter)="submitQuestion()"
+                />
+                <button
+                  type="button"
+                  class="commerce-action commerce-action--form question-action"
+                  aria-label="Perguntar sobre o produto"
+                  (click)="submitQuestion()"
+                  [disabled]="!questionText.trim()"
+                >
+                  <span class="commerce-action__icon" aria-hidden="true">?</span>
+                  <span class="commerce-action__copy">
+                    <strong>Perguntar</strong>
+                    <small>Resposta da equipe</small>
+                  </span>
+                  <span class="commerce-action__arrow" aria-hidden="true">→</span>
+                </button>
+              </div>
+              @if (questionFeedback) {
+                <p class="question-feedback" role="status">✓ {{ questionFeedback }}</p>
+              }
+              <div class="question-list">
+                @for (item of questions; track item.question) {
+                  <article>
+                    <h3><span>P</span>{{ item.question }}</h3>
+                    <p><span>R</span>{{ item.answer }}</p>
+                  </article>
+                }
+              </div>
+            </section>
+
         </div>
 
         <aside class="product-content__aside">

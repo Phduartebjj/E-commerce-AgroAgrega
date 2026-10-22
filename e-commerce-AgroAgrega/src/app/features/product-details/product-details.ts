@@ -38,6 +38,8 @@ interface GalleryView {
   label: string;
 }
 
+type ProductSection = 'description' | 'specifications' | 'benefits' | 'application' | 'reviews' | 'questions';
+
 interface CategoryDetailProfile {
   application: string;
   benefit: string;
@@ -100,7 +102,7 @@ export class ProductDetails implements OnInit {
   selectedImageIndex = 0;
   imageUnavailable = false;
   zoomOpen = false;
-  activeTab: 'details' | 'reviews' = 'details';
+  activeSection: ProductSection = 'description';
   reviews: ProductReview[] = [];
   questions: ProductQuestion[] = [];
   selectedRating = 0;
@@ -115,7 +117,9 @@ export class ProductDetails implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.id = params.get('id');
+      const nextId = params.get('id');
+      if (nextId === this.id && this.product) return;
+      this.id = nextId;
       this.product = this.productService
         .getProducts()()
         .find((product) => product.id === this.id);
@@ -123,6 +127,7 @@ export class ProductDetails implements OnInit {
       this.selectedImageIndex = 0;
       this.imageUnavailable = false;
       this.zoomOpen = false;
+      this.activeSection = 'description';
       this.questionText = '';
       this.questionFeedback = '';
       this.followingStore = false;
@@ -259,8 +264,9 @@ export class ProductDetails implements OnInit {
     return this.relatedProducts.slice(0, 3);
   }
 
-  selectTab(tab: 'details' | 'reviews'): void {
-    this.activeTab = tab;
+  selectSection(section: ProductSection): void {
+    this.activeSection = section;
+    setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 0);
   }
 
   selectImage(index: number): void {

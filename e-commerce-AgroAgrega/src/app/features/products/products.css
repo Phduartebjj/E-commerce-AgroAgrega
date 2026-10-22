@@ -503,6 +503,8 @@
   outline-offset: 3px;
 }
 .category-highlights {
+  max-width: 1140px;
+  margin-inline: auto;
   margin-bottom: 26px;
   padding: 24px 26px 30px;
   border-radius: 24px;
@@ -616,6 +618,37 @@
   font-size: 0.88rem;
   font-weight: 750;
   line-height: 1.2;
+}
+@media (min-width: 1081px) {
+  .category-highlights {
+    padding: 22px 24px 26px;
+  }
+  .category-highlights .section-heading {
+    margin-bottom: 18px;
+  }
+  .category-highlights .section-heading h2 {
+    font-size: clamp(1.3rem, 1.85vw, 1.85rem);
+  }
+  .category-highlights__heading-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .category-highlights .section-link {
+    font-size: 0.88rem;
+  }
+  .category-tiles {
+    gap: 12px;
+  }
+  .category-tile__label {
+    min-height: 60px;
+  }
+  .category-tile__icon {
+    width: 34px;
+    height: 34px;
+  }
+  .category-tile__label strong {
+    font-size: 0.82rem;
+  }
 }
 .products-toolbar {
   margin-bottom: 14px;

@@ -29,10 +29,8 @@ main.benefits-page.benefits-page--coupons {
   position: relative;
   overflow: hidden;
   width: 100%;
-  aspect-ratio: 5.15 / 1;
-  border-radius: 22px;
-  background: #075438;
-  box-shadow: 0 18px 46px rgba(10, 73, 48, 0.13);
+  aspect-ratio: 3.8 / 1;
+  background: transparent;
 }
 
 .coupon-showcase__hero img {
@@ -807,10 +805,6 @@ main.benefits-page.benefits-page--coupons {
     justify-content: flex-start;
   }
 
-  .coupon-showcase__hero {
-    aspect-ratio: 4.25 / 1;
-  }
-
   .coupon-content {
     left: auto;
     width: calc(100% - 32px);
@@ -851,6 +845,7 @@ main.benefits-page.benefits-page--coupons {
     height: clamp(190px, 42vw, 260px);
     aspect-ratio: auto;
     border-radius: 16px;
+    background: #075438;
   }
 
   .coupon-showcase__hero img {

@@ -313,17 +313,20 @@ describe('ProductDetails', () => {
     expect(paymentMethods?.nextElementSibling).toBe(purchaseRelated);
   });
 
-  it('deve preencher a coluna abaixo da galeria com as informações do produto', () => {
+  it('deve organizar galeria, compra e informações nas seções da página', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const heroMain = compiled.querySelector('.product-hero__main');
+    const details = compiled.querySelector('.product-hero__details');
 
     expect(heroMain?.querySelector('.gallery-panel')).toBeTruthy();
-    expect(heroMain?.querySelector('.trust-strip')).toBeTruthy();
-    expect(heroMain?.querySelector('.product-overview')).toBeTruthy();
-    expect(heroMain?.querySelector('#specifications')).toBeTruthy();
-    expect(heroMain?.querySelector('.description-section')).toBeTruthy();
-    expect(heroMain?.querySelector('.questions-section')).toBeTruthy();
-    expect(compiled.querySelector('.product-content .product-overview')).toBeNull();
+    expect(heroMain?.querySelector('.gallery-panel .trust-strip')).toBeTruthy();
+    expect(compiled.querySelector('.product-hero > .purchase-panel')).toBeTruthy();
+    expect(compiled.querySelectorAll('.product-section-nav a')).toHaveLength(6);
+    expect(details?.querySelector('.description-section')).toBeTruthy();
+    expect(details?.querySelector('#specifications')).toBeTruthy();
+    expect(details?.querySelector('.product-overview')).toBeTruthy();
+    expect(details?.querySelector('#application')).toBeTruthy();
+    expect(compiled.querySelector('.product-content__main #questions')).toBeTruthy();
   });
 
   it('deve chamar addCartItem com o produto e a quantidade atuais', () => {
