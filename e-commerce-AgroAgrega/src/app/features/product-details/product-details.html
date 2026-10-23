@@ -1,183 +1,244 @@
+<svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <symbol id="pd-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9" /></symbol>
+    <symbol id="pd-leaf" viewBox="0 0 24 24">
+      <path d="M4 20C0 7 10 3 21 3c0 13-8 19-15 13M4 21 17 8" />
+    </symbol>
+    <symbol id="pd-shield" viewBox="0 0 24 24">
+      <path d="m12 2 9 4v6c0 5-6 9-9 10-3-1-9-5-9-10V6zM8 12l3 3 5-6" />
+    </symbol>
+    <symbol id="pd-truck" viewBox="0 0 24 24">
+      <path d="M2 5h13v13H2zM15 10h4l3 4v4h-7" />
+      <circle cx="6" cy="19" r="2" />
+      <circle cx="18" cy="19" r="2" />
+    </symbol>
+    <symbol id="pd-headset" viewBox="0 0 24 24">
+      <path d="M4 13v-3a8 8 0 0 1 16 0v6c0 4-3 5-7 5" />
+      <rect x="2" y="11" width="4" height="7" rx="2" />
+      <rect x="18" y="11" width="4" height="7" rx="2" />
+      <path d="M11 21h3" />
+    </symbol>
+    <symbol id="pd-cart" viewBox="0 0 24 24">
+      <path d="M2 3h3l3 13h12l2-10H6M9 20h.01M19 20h.01" />
+      <circle cx="9" cy="20" r="1" />
+      <circle cx="19" cy="20" r="1" />
+    </symbol>
+    <symbol id="pd-search" viewBox="0 0 24 24">
+      <circle cx="10" cy="10" r="7" />
+      <path d="m15 15 6 6" />
+    </symbol>
+    <symbol id="pd-arrow" viewBox="0 0 24 24"><path d="M3 12h17m-6-6 6 6-6 6" /></symbol>
+    <symbol id="pd-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" /></symbol>
+    <symbol id="pd-doc" viewBox="0 0 24 24">
+      <path d="M5 2h10l4 4v16H5zM14 2v6h5M8 12h8M8 16h8" />
+    </symbol>
+    <symbol id="pd-list" viewBox="0 0 24 24">
+      <path d="M8 5h13M8 12h13M8 19h13M2 5h1M2 12h1M2 19h1" />
+    </symbol>
+    <symbol id="pd-check" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="m7 12 3 3 7-7" />
+    </symbol>
+    <symbol id="pd-star" viewBox="0 0 24 24">
+      <path d="m12 2 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" />
+    </symbol>
+    <symbol id="pd-help" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9 8a3 3 0 0 1 6 0c0 3-3 2-3 6M12 17h.01" />
+    </symbol>
+    <symbol id="pd-sprout" viewBox="0 0 24 24">
+      <path d="M12 22V9M12 13C3 14 2 8 3 4c6 0 10 2 9 9M12 9c0-6 4-8 10-7 0 6-3 10-10 7M6 22h12" />
+    </symbol>
+    <symbol id="pd-chart" viewBox="0 0 24 24">
+      <path d="M3 15h4v7H3zM10 9h4v13h-4zM17 2h4v20h-4z" />
+    </symbol>
+    <symbol id="pd-drop" viewBox="0 0 24 24">
+      <path d="M12 2c-3 5-8 10-8 14a8 8 0 0 0 16 0c0-4-5-9-8-14M8 15a4 4 0 0 0 4 5M2 6v3M22 6v3" />
+    </symbol>
+    <symbol id="pd-bucket" viewBox="0 0 24 24">
+      <path d="M3 6h18l-3 16H6zM2 5h20M7 5V3h10v2" />
+    </symbol>
+    <symbol id="pd-apply" viewBox="0 0 24 24">
+      <circle cx="7" cy="4" r="2" />
+      <path d="M4 22 6 12l-3 4M10 22 8 12V8l6 3 4-5M18 6l4-1M19 9l3 1M17 13l3 3M3 8h5" />
+    </symbol>
+    <symbol id="pd-bag" viewBox="0 0 24 24">
+      <path d="M4 7h16l1 14H3zM8 7V5a4 4 0 0 1 8 0v2" />
+    </symbol>
+    <symbol id="pd-award" viewBox="0 0 24 24">
+      <path d="m12 2 3 3 4 1 1 4 2 3-3 3-1 4-4 1-3 1-3-3-4-1-1-4-1-3 3-3 1-4zM12 7v6M12 16h.01" />
+    </symbol>
+    <symbol id="pd-trophy" viewBox="0 0 24 24">
+      <path
+        d="M7 3h10v6a5 5 0 0 1-10 0zM7 5H3v3a5 5 0 0 0 5 5M17 5h4v3a5 5 0 0 1-5 5M12 14v6M7 22h10"
+      />
+    </symbol>
+    <symbol id="pd-money" viewBox="0 0 24 24">
+      <rect x="2" y="5" width="20" height="14" rx="3" />
+      <path d="m12 8 5 4-5 4-5-4z" />
+    </symbol>
+  </defs>
+</svg>
 <main class="product-page">
   @if (product) {
     <div class="product-page__shell">
       <nav class="breadcrumb" aria-label="Navegação estrutural">
-        <a routerLink="/">Início</a>
-        <span aria-hidden="true">›</span>
-        <a routerLink="/products">Produtos</a>
-        <span aria-hidden="true">›</span>
+        <a routerLink="/" aria-label="Início"
+          ><svg class="icon"><use href="#pd-home" /></svg></a
+        ><span>›</span> <a routerLink="/products">Produtos</a><span>›</span>
         <a routerLink="/products" [queryParams]="{ category: product.category }">{{
-          product.category
-        }}</a>
-        <span aria-hidden="true">›</span>
+          displayCategory
+        }}</a
+        ><span>›</span>
+        @if (displaySubcategory) {
+          <a routerLink="/products" [queryParams]="{ search: displaySubcategory }">{{
+            displaySubcategory
+          }}</a
+          ><span>›</span>
+        }
         <strong>{{ product.title }}</strong>
       </nav>
 
       <section class="product-hero" aria-labelledby="product-title">
-        <div class="product-hero__main">
-          <div class="gallery-panel">
-            <div class="gallery-layout">
-              <div class="image-thumbnails" aria-label="Imagens do produto">
-                @for (view of galleryViews; track view.src; let index = $index) {
-                  <button
-                    type="button"
-                    class="thumbnail"
-                    [class.selected]="selectedImageIndex === index"
-                    (click)="selectImage(index)"
-                    [attr.aria-label]="view.label"
-                  >
-                    <img [src]="view.src" [alt]="''" width="76" height="76" />
-                    <span>{{ view.label }}</span>
-                  </button>
+        <div class="gallery-panel">
+          <div class="gallery-layout">
+            <div class="image-thumbnails" aria-label="Galeria do produto">
+              @for (view of galleryViews.slice(0, 2); track view.src; let i = $index) {
+                <button
+                  type="button"
+                  class="thumbnail"
+                  [class.selected]="selectedImageIndex === i"
+                  (click)="selectImage(i)"
+                  [attr.aria-label]="view.label"
+                  [attr.aria-pressed]="selectedImageIndex === i"
+                >
+                  <img [src]="view.src" [alt]="view.label" />
+                </button>
+              }
+              <button
+                type="button"
+                class="thumbnail presentation-thumb"
+                (click)="openModal('presentation')"
+                aria-label="Reproduzir apresentação do produto"
+              >
+                @if (isReferenceProduct) {
+                  <span class="reference-photo"></span>
+                } @else {
+                  <img [src]="selectedImage" alt="" />
                 }
-              </div>
-
-              <div class="main-image">
-                @if (galleryViews.length > 1) {
-                  <button
-                    type="button"
-                    class="image-navigation previous"
-                    (click)="previousImage()"
-                    aria-label="Imagem anterior"
-                  >
-                    ‹
-                  </button>
+                <span class="play-icon">▶</span>
+              </button>
+              <button
+                type="button"
+                class="thumbnail more-images"
+                (click)="openZoom()"
+                [attr.aria-label]="'Ver as ' + galleryViews.length + ' imagens'"
+              >
+                +{{ galleryViews.length }}
+              </button>
+            </div>
+            <div class="main-image">
+              <button
+                type="button"
+                class="gallery-visual"
+                (click)="openZoom()"
+                aria-label="Ampliar imagem do produto"
+              >
+                @if (isReferenceProduct && selectedImageIndex === 0) {
+                  <span
+                    class="reference-photo"
+                    role="img"
+                    [attr.aria-label]="product.title + ' em uma lavoura'"
+                  ></span>
+                } @else {
+                  <img [src]="selectedImage" [alt]="product.title" (error)="handleImageError()" />
                 }
-
-                @if (selectedGalleryView; as currentView) {
-                  @if (!imageUnavailable) {
-                    <button
-                      type="button"
-                      class="gallery-visual"
-                      (click)="openZoom()"
-                      [attr.aria-label]="'Ampliar ' + currentView.label.toLocaleLowerCase('pt-BR')"
-                    >
-                      <img
-                        [src]="currentView.src"
-                        [alt]="product.title + ' — ' + currentView.label"
-                        width="620"
-                        height="620"
-                        (error)="handleImageError()"
-                      />
-
-                      <span class="zoom-hint"
-                        ><span aria-hidden="true">⌕</span> Ampliar imagem</span
-                      >
-                    </button>
-                  } @else {
-                    <div
-                      class="image-fallback"
-                      role="img"
-                      [attr.aria-label]="'Imagem indisponível: ' + product.title"
-                    >
-                      <strong>AgroAgrega</strong>
-                      <span>Imagem em atualização</span>
-                    </div>
-                  }
-                }
-
-                @if (galleryViews.length > 1) {
-                  <button
-                    type="button"
-                    class="image-navigation next"
-                    (click)="nextImage()"
-                    aria-label="Próxima imagem"
-                  >
-                    ›
-                  </button>
-                }
-              </div>
+              </button>
+              <button
+                type="button"
+                class="image-navigation previous"
+                (click)="previousImage()"
+                aria-label="Imagem anterior"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                class="image-navigation next"
+                (click)="nextImage()"
+                aria-label="Próxima imagem"
+              >
+                ›
+              </button>
+              <button type="button" class="zoom-hint" (click)="openZoom()">
+                <svg class="icon"><use href="#pd-search" /></svg>Ampliar imagem
+              </button>
             </div>
-
-          <section class="trust-strip" aria-label="Benefícios da compra">
-            <div>
-              <span aria-hidden="true">✓</span>
-              <p><strong>Compra segura</strong><small>Pagamento protegido</small></p>
-            </div>
-            <div>
-              <span aria-hidden="true">↗</span>
-              <p><strong>Rastreamento</strong><small>Acompanhe cada etapa</small></p>
-            </div>
-            <div>
-              <span aria-hidden="true">◎</span>
-              <p><strong>Suporte especializado</strong><small>Ajuda para sua compra</small></p>
-            </div>
-            <div>
-              <span aria-hidden="true">+</span>
-              <p><strong>Benefícios Agro+</strong><small>Vantagens para membros</small></p>
-            </div>
-          </section>
           </div>
-
+          <div class="trust-strip">
+            <button type="button" (click)="openModal('payments')">
+              <span
+                ><svg class="icon"><use href="#pd-shield" /></svg
+              ></span>
+              <p><strong>Compra segura</strong><small>Seus dados protegidos</small></p>
+            </button>
+            <a routerLink="/orders"
+              ><span
+                ><svg class="icon"><use href="#pd-truck" /></svg
+              ></span>
+              <p><strong>Rastreamento</strong><small>Acompanhe seu pedido</small></p></a
+            >
+            <button type="button" (click)="openModal('support')">
+              <span
+                ><svg class="icon"><use href="#pd-headset" /></svg
+              ></span>
+              <p><strong>Suporte especializado</strong><small>Tire suas dúvidas</small></p>
+            </button>
+            <a routerLink="/agro-plus"
+              ><span
+                ><svg class="icon"><use href="#pd-leaf" /></svg
+              ></span>
+              <p><strong>Benefícios Agro+</strong><small>Mais vantagens</small></p></a
+            >
+          </div>
         </div>
 
         <aside class="purchase-panel">
           <div class="product-badges">
-            <span>✦ Destaque da categoria</span>
-            <span>✓ Compra protegida</span>
+            <span
+              ><svg class="icon"><use href="#pd-award" /></svg>Mais vendido</span
+            ><span
+              ><svg class="icon"><use href="#pd-trophy" /></svg>1º em
+              {{ displaySubcategory || displayCategory }}</span
+            >
           </div>
-          <div class="product-meta">
-            <span>{{ brandLabel }}</span>
-            <span>ID do produto: {{ product.id }}</span>
-          </div>
-
+          <span class="brand-label">{{ displayBrand }}</span>
           <h1 id="product-title">{{ product.title }}</h1>
-
           <div class="product-reputation">
-            <a
-              [routerLink]="[]"
-              fragment="reviews"
-              (click)="selectSection('reviews')"
-              [attr.aria-label]="'Avaliação ' + product.rating.toFixed(1) + ' de 5'"
-            >
-              <span class="stars" aria-hidden="true">
-                @for (star of [1, 2, 3, 4, 5]; track star) {
-                  <span [class.filled]="star - 0.5 <= product.rating">★</span>
-                }
-              </span>
-              <strong>{{ product.rating.toFixed(1) }}</strong>
-              <span>({{ reviewCount }} avaliações)</span>
-            </a>
-            <span>SKU: {{ product.id }}</span>
+            <button type="button" (click)="openModal('reviews')" aria-label="Ler avaliações">
+              <span class="stars">★★★★<span>★</span></span
+              ><b>{{ reviewAverage.toFixed(1) }}</b>
+              <span>({{ displayReviewCount }} avaliações)</span>
+            </button>
+            <span class="sku">SKU: {{ displaySku }}</span>
           </div>
-
-          <p class="purchase-summary">{{ product.description }} Indicado para {{ categoryProfile.application }}.</p>
-
-          <div class="product-price-block">
-            <div class="product-price-row">
-              <strong class="product-price">{{ product.price | precoFormatado }}</strong>
-            @if (product.originalPrice) {
-              <div class="previous-price">
-                <span>{{ discountPercent }}% OFF</span>
-                <s>{{ product.originalPrice | precoFormatado }}</s>
-              </div>
+          <p class="purchase-summary">{{ displaySummary }}</p>
+          <div class="product-price-row">
+            <strong class="product-price">{{ formatMoney(product.price) }}</strong>
+            @if (displayOriginalPrice) {
+              <span class="discount">{{ isReferenceProduct ? 12 : discountPercent }}% OFF</span
+              ><s>{{ formatMoney(displayOriginalPrice) }}</s>
             }
-            </div>
-            <span class="installments"
-              >em até 10x de {{ installmentValue | precoFormatado }} sem juros</span
-            >
-            <a routerLink="/coupons" class="coupon-callout">
-              <span aria-hidden="true">%</span>
-              Veja os cupons disponíveis
-            </a>
           </div>
-
-          <div class="delivery-card">
-            <span class="delivery-icon" aria-hidden="true"></span>
-            <div>
-              <strong>Frete e prazo de entrega</strong>
-              <span>Calculados na finalização da compra</span>
-            </div>
-            <a routerLink="/cart">Ver no carrinho <span aria-hidden="true">›</span></a>
-          </div>
-
-          <div class="stock-line">
-            <strong>Estoque disponível</strong>
-            <span>{{ stockQuantity }} unidades para envio</span>
-          </div>
-
+          <p class="installments">
+            ou em até {{ displayInstallments }}x de {{ formatMoney(displayInstallmentValue) }} sem
+            juros
+          </p>
+          <button type="button" class="delivery-card" (click)="openModal('shipping')">
+            <svg class="icon"><use href="#pd-truck" /></svg><strong>Frete e prazo de entrega</strong
+            ><span>Calcular pelo seu CEP</span><b>›</b>
+          </button>
           <div class="purchase-actions">
-          <div class="product-quantity">
             <div class="quantity-control">
               <button
                 type="button"
@@ -185,342 +246,352 @@
                 [disabled]="quantity === 1"
                 aria-label="Diminuir quantidade"
               >
-                −
-              </button>
-              <span>{{ quantity }}</span>
-              <button type="button" (click)="increaseQuantity()" aria-label="Aumentar quantidade">
+                −</button
+              ><span>{{ quantity }}</span
+              ><button type="button" (click)="increaseQuantity()" aria-label="Aumentar quantidade">
                 +
               </button>
             </div>
+            <button type="button" class="add-to-cart" (click)="addToCart()">
+              <svg class="icon"><use href="#pd-cart" /></svg>Adicionar ao carrinho
+            </button>
           </div>
-
-          <button
-            type="button"
-            class="commerce-action commerce-action--cart add-to-cart"
-            aria-label="Adicionar ao carrinho"
-            (click)="addToCart()"
-          >
-            <span class="commerce-action__icon" aria-hidden="true">🛒</span>
-            <span class="commerce-action__copy">
-              <strong>Adicionar ao carrinho</strong>
-            </span>
-            <span class="commerce-action__arrow" aria-hidden="true">→</span>
+          <button type="button" class="purchase-protection" (click)="openModal('payments')">
+            <svg class="icon"><use href="#pd-shield" /></svg>
+            <p><strong>Compra 100% segura</strong><span>Ambiente seguro e criptografado</span></p>
           </button>
+          <div class="payment-preview">
+            <button type="button" (click)="openModal('payments')" aria-label="Pagamento por Pix">
+              <span class="pix-mark">❖</span>PIX
+            </button>
+            <button type="button" (click)="openModal('payments')" aria-label="Pagamento por boleto">
+              <span class="barcode"></span>
+            </button>
+            <button type="button" (click)="openModal('payments')" aria-label="Pagamento Visa">
+              <b class="visa">VISA</b>
+            </button>
+            <button type="button" (click)="openModal('payments')" aria-label="Pagamento Mastercard">
+              <span class="mastercard"></span>
+            </button>
+            <button
+              type="button"
+              (click)="openModal('payments')"
+              aria-label="Outras formas de pagamento"
+            >
+              <svg class="icon"><use href="#pd-money" /></svg>
+            </button>
           </div>
-          <a routerLink="/cart" class="buy-now" (click)="addToCart()">Comprar agora →</a>
-
-          <div class="purchase-protection">
-            <span class="protection-icon" aria-hidden="true">✓</span>
+          <button type="button" class="payment-preview__link" (click)="openModal('payments')">
+            Ver todas as formas de pagamento <span>›</span>
+          </button>
+          <a class="seller-card" routerLink="/products"
+            ><svg class="icon"><use href="#pd-sprout" /></svg>
             <p>
-              <strong>Compra 100% segura</strong> Ambiente seguro e criptografado.
-            </p>
-          </div>
-
-          <div class="payment-preview" aria-label="Formas de pagamento">
-            <span>◆ Pix</span><span>▥ Boleto</span><span>VISA</span><span>●●</span>
-          </div>
-          <a class="payment-preview__link" routerLink="/cart">Ver todas as formas de pagamento <span aria-hidden="true">›</span></a>
-
-          <div class="seller-card">
-            <span class="seller-logo">
-              <img
-                [src]="sellerLogo"
-                [alt]="brandLabel + ' — loja parceira'"
-                width="48"
-                height="48"
-              />
-            </span>
-            <div>
-              <strong>Vendido por {{ sellerName }}</strong>
-              <span>Qualidade e confiança do campo para o campo.</span>
-            </div>
-          </div>
-
-          <details class="purchase-more">
-            <summary>Informações da loja, garantias e produtos relacionados</summary>
-          <div class="seller-assurances" aria-label="Garantias desta compra">
-            <div class="seller-assurance">
-              <span class="seller-assurance__icon" aria-hidden="true">↩</span>
-              <p>
-                <strong>Devolução grátis</strong>
-                <small>Você tem 30 dias após o recebimento para devolver o produto.</small>
-              </p>
-            </div>
-            <div class="seller-assurance">
-              <span class="seller-assurance__icon" aria-hidden="true">✓</span>
-              <p>
-                <strong>Compra Garantida</strong>
-                <small>Receba o produto esperado ou devolvemos o seu dinheiro.</small>
-              </p>
-            </div>
-            <div class="seller-assurance">
-              <span
-                class="seller-assurance__icon seller-assurance__icon--warranty"
-                aria-hidden="true"
-                >12</span
-              >
-              <p>
-                <strong>12 meses de garantia</strong>
-                <small>Cobertura de fábrica para comprar com mais tranquilidade.</small>
-              </p>
-            </div>
-          </div>
-
-          <section class="partner-store-profile" aria-labelledby="partner-store-title">
-            <header class="partner-store-profile__header">
-              <span class="seller-logo seller-logo--large">
-                <img
-                  [src]="sellerLogo"
-                  [alt]="'Logo da loja ' + brandLabel"
-                  width="50"
-                  height="50"
-                />
-              </span>
-              <div class="partner-store-profile__identity">
-                <small>Loja parceira verificada</small>
-                <h2 id="partner-store-title">
-                  {{ brandLabel }} <span class="verified-store" title="Loja verificada">✓</span>
-                </h2>
-                <span>{{ sellerFollowers }} seguidores · {{ sellerCatalogSize }} produtos</span>
-              </div>
-              <button
-                type="button"
-                class="commerce-action commerce-action--compact store-follow-button"
-                [class.store-follow-button--active]="followingStore"
-                [attr.aria-pressed]="followingStore"
-                (click)="toggleStoreFollow()"
-              >
-                <span class="commerce-action__copy">
-                  <strong>{{ followingStore ? 'Seguindo loja' : 'Seguir loja' }}</strong>
-                </span>
-              </button>
-            </header>
-
-            <div class="partner-tier">
-              <span class="partner-tier__medal" aria-hidden="true">★</span>
-              <p>
-                <strong>Parceiro AgroAgrega Ouro</strong>
-                <small>Uma das lojas mais bem avaliadas do catálogo.</small>
-              </p>
-            </div>
-
-            <div class="partner-store-metrics" aria-label="Indicadores da loja">
-              <p>
-                <strong>{{ soldCount }}+</strong><small>vendas</small>
-              </p>
-              <p><strong>Ótimo</strong><small>atendimento</small></p>
-              <p><strong>No prazo</strong><small>nas entregas</small></p>
-            </div>
-
-            <a
-              class="commerce-action commerce-action--compact partner-store-cta"
-              routerLink="/products"
-              [queryParams]="{ search: brandLabel }"
-            >
-              <span class="commerce-action__icon" aria-hidden="true">↗</span>
-              <span class="commerce-action__copy">
-                <strong>Visitar loja parceira</strong>
-                <small>Veja todos os produtos desta loja</small>
-              </span>
-              <span class="commerce-action__arrow" aria-hidden="true">→</span>
-            </a>
-          </section>
-
-          <section class="payment-methods-card" aria-labelledby="payment-methods-title">
-            <header>
-              <span class="payment-methods-card__icon" aria-hidden="true"></span>
-              <div>
-                <small>Pagamento protegido</small>
-                <h2 id="payment-methods-title">Meios de pagamento</h2>
-              </div>
-            </header>
-            <div class="payment-method-group">
-              <strong>Cartões de crédito</strong>
-              <div class="payment-brands" aria-label="Bandeiras aceitas">
-                <span>VISA</span><span>mastercard</span><span>elo</span>
-              </div>
-            </div>
-            <div class="payment-options">
-              <span><b aria-hidden="true">◆</b> Pix</span>
-              <span><b aria-hidden="true">▤</b> Boleto</span>
-            </div>
-            <a routerLink="/cart"
-              >Confira as condições no carrinho <span aria-hidden="true">→</span></a
-            >
-          </section>
-
-          <section class="purchase-related-products" aria-labelledby="purchase-related-title">
-            <header class="purchase-related-products__heading">
-              <div>
-                <small>Escolhidos para você</small>
-                <h2 id="purchase-related-title">Produtos relacionados</h2>
-              </div>
-              <a routerLink="/products" [queryParams]="{ category: product.category }">Ver todos</a>
-            </header>
-
-            <div class="purchase-related-products__list">
-              @for (related of sidebarRelatedProducts; track related.id) {
-                <article class="purchase-related-card">
-                  <a
-                    class="purchase-related-card__image"
-                    [routerLink]="['/products', related.id]"
-                    [attr.aria-label]="'Ver ' + related.title"
-                  >
-                    <img
-                      [src]="related.images[0]"
-                      [alt]="related.title"
-                      loading="lazy"
-                      decoding="async"
-                      width="92"
-                      height="92"
-                    />
-                  </a>
-
-                  <div class="purchase-related-card__content">
-                    <span class="purchase-related-card__category">{{ related.category }}</span>
-                    <a [routerLink]="['/products', related.id]">
-                      <h3>{{ related.title }}</h3>
-                    </a>
-
-                    @if (related.originalPrice; as originalPrice) {
-                      <p class="purchase-related-card__discount">
-                        <strong
-                          >{{ calculateRelatedDiscount(related.price, originalPrice) }}% OFF</strong
-                        >
-                        <s>{{ originalPrice | precoFormatado }}</s>
-                      </p>
-                    }
-
-                    <p class="purchase-related-card__price">
-                      <strong>{{ related.price | precoFormatado }}</strong>
-                      <small>{{ getRelatedSalesLabel(related.weeklySales) }}</small>
-                    </p>
-                    <p class="purchase-related-card__pix">
-                      {{ calculateRelatedPixPrice(related.price) | precoFormatado }} no Pix
-                    </p>
-                    <p class="purchase-related-card__delivery">
-                      <span class="purchase-related-card__full" aria-label="Entrega Full">
-                        <span aria-hidden="true">⚡</span><strong>FULL</strong>
-                      </span>
-                      {{ relatedDeliveryLabel }}
-                    </p>
-                  </div>
-                </article>
-              }
-            </div>
-          </section>
-          </details>
+              <strong>Vendido e entregue por AgroAgrega</strong
+              ><span>Qualidade e confiança do campo para o campo.</span>
+            </p></a
+          >
         </aside>
       </section>
 
       <nav class="product-section-nav" aria-label="Informações do produto">
-        <a [routerLink]="[]" fragment="description" (click)="selectSection('description')" [class.active]="activeSection === 'description'">Descrição</a>
-        <a [routerLink]="[]" fragment="specifications" (click)="selectSection('specifications')" [class.active]="activeSection === 'specifications'">Características</a>
-        <a [routerLink]="[]" fragment="benefits" (click)="selectSection('benefits')" [class.active]="activeSection === 'benefits'">Benefícios</a>
-        <a [routerLink]="[]" fragment="application" (click)="selectSection('application')" [class.active]="activeSection === 'application'">Aplicação</a>
-        <a [routerLink]="[]" fragment="reviews" (click)="selectSection('reviews')" [class.active]="activeSection === 'reviews'">Avaliações ({{ reviewCount }})</a>
-        <a [routerLink]="[]" fragment="questions" (click)="selectSection('questions')" [class.active]="activeSection === 'questions'">Dúvidas</a>
-      </nav>
-      <div class="product-hero__details">
-        <section
-          class="content-section description-section"
-          id="description"
-          aria-labelledby="description-title"
-        >
-          <h2 id="description-title">Descrição do produto</h2>
-          @for (paragraph of productDescriptionParagraphs; track paragraph) {
-            <p>{{ paragraph }}</p>
-          }
-          <aside class="product-indication">
-            <strong>Indicado para</strong>
-            <p>{{ categoryProfile.application }}.</p>
-          </aside>
-        </section>
-
-        <section class="content-section specifications-section" id="specifications" aria-labelledby="specifications-title">
-          <h2 id="specifications-title">Características técnicas</h2>
-          <div class="specification-table">
-            @for (specification of productSpecifications; track specification.label; let index = $index) {
-              <div [class.specification-row--alternate]="index % 2 === 0">
-                <span>{{ specification.label }}</span>
-                <strong>{{ specification.value }}</strong>
-              </div>
-            }
-          </div>
-        </section>
-
-        <section class="content-section product-overview" id="benefits" aria-labelledby="overview-title">
-          <h2 id="overview-title">Benefícios do produto</h2>
-          <div class="highlight-grid">
-            @for (highlight of productHighlights; track highlight; let index = $index) {
-              <article>
-                <span aria-hidden="true">{{ ['✦', '↗', '✓', '◇'][index] }}</span>
-                <p>{{ highlight }}</p>
-              </article>
-            }
-          </div>
-        </section>
-
-        <section class="content-section application-section" id="application" aria-labelledby="application-title">
-          <div class="application-section__steps">
-            <h2 id="application-title">Modo de uso e aplicação</h2>
-            <ol>
-              <li><span>1</span><p><strong>Preparação</strong>Confira a embalagem e as recomendações do fabricante.</p></li>
-              <li><span>2</span><p><strong>Aplicação</strong>Indicado para {{ categoryProfile.application }}.</p></li>
-              <li><span>3</span><p><strong>Cuidados</strong>{{ categoryProfile.care }}</p></li>
-            </ol>
-          </div>
-          <aside>
-            <strong>Orientação importante</strong>
-            <p>{{ categoryProfile.support }}</p>
-          </aside>
-        </section>
-      </div>
-
-
-      <div class="product-content">
-        <div class="product-content__main">
-          <section
-            class="content-section reviews-section"
-            id="reviews"
-            aria-labelledby="reviews-title"
+        @for (
+          item of [
+            { id: 'description', label: 'Descrição', icon: 'doc' },
+            { id: 'specifications', label: 'Características', icon: 'list' },
+            { id: 'benefits', label: 'Benefícios', icon: 'check' },
+            { id: 'application', label: 'Aplicação', icon: 'leaf' },
+            { id: 'reviews', label: 'Avaliações (' + displayReviewCount + ')', icon: 'star' },
+            { id: 'questions', label: 'Dúvidas', icon: 'help' },
+          ];
+          track item.id
+        ) {
+          <button
+            type="button"
+            [class.active]="activeSection === item.id"
+            (click)="selectSection($any(item.id))"
+            [attr.aria-current]="activeSection === item.id ? 'location' : null"
           >
-            <span class="section-kicker">Experiência de compra</span>
-            <h2 id="reviews-title">Avaliações do produto</h2>
+            <svg class="icon"><use [attr.href]="'#pd-' + item.icon" /></svg>{{ item.label }}
+          </button>
+        }
+      </nav>
 
-            <div class="reviews-dashboard">
-              <div class="rating-score">
-                <strong>{{ reviewAverage.toFixed(1) }}</strong>
-                <div class="rating-stars" aria-hidden="true">
-                  @for (star of [1, 2, 3, 4, 5]; track star) {
-                    <span [class.filled]="star - 0.5 <= reviewAverage">★</span>
-                  }
+      <section class="product-information">
+        <div class="description-column">
+          <section id="description" class="description-section">
+            <h2>Descrição do produto</h2>
+            <span class="heading-line"></span>
+            <p>{{ displayDescription }}</p>
+            <div class="product-indication">
+              <svg class="icon"><use href="#pd-award" /></svg>
+              <p>
+                <strong>Indicado para</strong><span>{{ displayIndication }}</span>
+              </p>
+            </div>
+          </section>
+          <section id="benefits" class="product-overview">
+            <h2>Benefícios do produto</h2>
+            <div class="highlight-grid">
+              @for (benefit of displayBenefits; track benefit; let i = $index) {
+                <div>
+                  <svg class="icon">
+                    <use [attr.href]="'#pd-' + ['sprout', 'chart', 'drop', 'shield'][i]" /></svg
+                  ><span>{{ benefit }}</span>
                 </div>
-                <span>{{ reviewCount }} avaliações</span>
+              }
+            </div>
+          </section>
+        </div>
+        <section id="specifications" class="specifications-section">
+          <h2>Características técnicas</h2>
+          <dl>
+            @for (spec of displaySpecifications; track spec.label) {
+              <div>
+                <dt>{{ spec.label }}</dt>
+                <dd>{{ spec.value }}</dd>
               </div>
+            }
+          </dl>
+        </section>
+      </section>
 
-              <div class="rating-bars">
-                @for (star of [5, 4, 3, 2, 1]; track star) {
-                  <div class="rating-row">
-                    <span>{{ star }} ★</span>
-                    <div class="rating-bar">
-                      <span [style.width.%]="getRatingPercentage(star)"></span>
-                    </div>
-                    <small>{{ getRatingCount(star) }}</small>
-                  </div>
+      <section class="application-section" id="application">
+        <div>
+          <h2>Modo de uso e aplicação</h2>
+          <ol>
+            @for (step of displayApplicationSteps; track step.title; let i = $index) {
+              <li>
+                <b>{{ i + 1 }}</b
+                ><svg class="icon">
+                  <use [attr.href]="'#pd-' + ['bucket', 'apply', 'sprout'][i]" />
+                </svg>
+                <p>
+                  <strong>{{ step.title }}</strong
+                  ><span>{{ step.text }}</span>
+                </p>
+              </li>
+            }
+          </ol>
+        </div>
+        <aside>
+          <b class="info-symbol">i</b>
+          <div>
+            <strong>Orientação importante</strong>
+            <p>
+              Para melhores resultados, siga as recomendações técnicas de um profissional habilitado
+              e as orientações do rótulo do produto.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <div class="feedback-grid">
+        <section id="reviews" class="reviews-section">
+          <h2>Avaliações dos clientes</h2>
+          <div class="rating-summary">
+            <div class="rating-total">
+              <strong>{{ reviewAverage.toFixed(1) }}</strong
+              ><span class="stars">★★★★<span>★</span></span
+              ><span>{{ displayReviewCount }} avaliações</span>
+            </div>
+            <div class="rating-bars">
+              @for (star of [5, 4, 3, 2, 1]; track star) {
+                <div>
+                  <span>{{ star }} ★</span>
+                  <div><i [style.width.%]="getRatingPercentage(star)"></i></div>
+                  <span>{{ getRatingPercentage(star).toFixed(0) }}%</span>
+                </div>
+              }
+            </div>
+          </div>
+          <button type="button" class="all-reviews" (click)="openModal('reviews')">
+            Ver todas as avaliações <svg class="icon"><use href="#pd-arrow" /></svg>
+          </button>
+        </section>
+        <section id="questions" class="questions-section">
+          <h2>Perguntas sobre o produto</h2>
+          <form class="question-form" (ngSubmit)="submitQuestion()">
+            <label
+              ><svg class="icon"><use href="#pd-search" /></svg
+              ><input
+                [(ngModel)]="questionText"
+                name="question"
+                placeholder="Digite sua pergunta..."
+                aria-label="Sua pergunta"
+                maxlength="300"
+                required /></label
+            ><button type="submit">
+              <svg class="icon"><use href="#pd-headset" /></svg>Perguntar
+            </button>
+          </form>
+          @if (questionFeedback) {
+            <p class="form-feedback" role="status">{{ questionFeedback }}</p>
+          }
+          <div class="question-list">
+            @for (question of questions; track $index; let i = $index) {
+              <div>
+                <button
+                  type="button"
+                  (click)="toggleQuestion(i)"
+                  [attr.aria-expanded]="openQuestionIndex === i"
+                >
+                  <b>?</b><span>{{ question.question }}</span
+                  ><span class="question-chevron" [class.expanded]="openQuestionIndex === i"
+                    >⌄</span
+                  >
+                </button>
+                @if (openQuestionIndex === i) {
+                  <p>{{ question.answer }}</p>
                 }
               </div>
-            </div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
 
-            <div class="review-form">
-              <h3>Avalie este produto</h3>
-              <div class="rating-selector">
-                <span>Sua nota</span>
-                <div class="selectable-stars">
+    @if (zoomOpen) {
+      <div class="modal-backdrop" (click)="closeZoom()">
+        <section
+          class="dialog gallery-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Galeria ampliada"
+          (click)="$event.stopPropagation()"
+        >
+          <button
+            class="modal-close"
+            type="button"
+            (click)="closeZoom()"
+            aria-label="Fechar galeria"
+          >
+            ×
+          </button>
+          <div class="zoom-stage">
+            @if (isReferenceProduct && selectedImageIndex === 0) {
+              <div class="reference-photo"></div>
+            } @else {
+              <img [src]="selectedImage" [alt]="product.title" />
+            }
+          </div>
+          <div class="zoom-controls">
+            <button type="button" (click)="previousImage()" aria-label="Imagem anterior">‹</button
+            ><span>{{ selectedImageIndex + 1 }} / {{ galleryViews.length }}</span
+            ><button type="button" (click)="nextImage()" aria-label="Próxima imagem">›</button>
+          </div>
+          <div class="modal-thumbnails">
+            @for (view of galleryViews; track view.src; let i = $index) {
+              <button
+                type="button"
+                (click)="selectImage(i)"
+                [class.selected]="selectedImageIndex === i"
+                [attr.aria-label]="view.label"
+              >
+                <img [src]="view.src" alt="" />
+              </button>
+            }
+          </div>
+        </section>
+      </div>
+    }
+    @if (modal) {
+      <div class="modal-backdrop" (click)="closeModal()">
+        <section
+          class="dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="dialog-title"
+          (click)="$event.stopPropagation()"
+        >
+          <button type="button" class="modal-close" (click)="closeModal()" aria-label="Fechar">
+            ×
+          </button>
+          @switch (modal) {
+            @case ('shipping') {
+              <h2 id="dialog-title">Frete e prazo de entrega</h2>
+              <p>Informe seu CEP para consultar a entrega deste produto.</p>
+              <form class="modal-form" (ngSubmit)="calculateShipping()">
+                <label
+                  >CEP<input
+                    name="cep"
+                    [(ngModel)]="shippingCep"
+                    placeholder="00000-000"
+                    inputmode="numeric"
+                    maxlength="9"
+                    required /></label
+                ><button type="submit" class="primary-button" [disabled]="shippingLoading">
+                  {{ shippingLoading ? 'Consultando...' : 'Calcular entrega' }}
+                </button>
+              </form>
+              @if (shippingError) {
+                <p class="form-feedback" role="alert">{{ shippingError }}</p>
+              }
+              @if (shippingResult) {
+                <div class="shipping-result">
+                  <strong>{{ shippingResult.label }}</strong>
+                  <p>{{ shippingResult.description }}</p>
+                  <b>{{ formatMoney(shippingResult.price) }}</b>
+                </div>
+              }
+            }
+            @case ('payments') {
+              <h2 id="dialog-title">Formas de pagamento</h2>
+              <p>Confira as condições para {{ product.title }}.</p>
+              <div class="payment-detail">
+                <strong>Pix</strong
+                ><span>{{ formatMoney(product.price * 0.9) }} com 10% de desconto</span>
+              </div>
+              <div class="payment-detail">
+                <strong>Cartão de crédito</strong
+                ><span
+                  >{{ displayInstallments }}x de {{ formatMoney(displayInstallmentValue) }} sem
+                  juros</span
+                >
+              </div>
+              <div class="payment-detail">
+                <strong>Boleto bancário</strong
+                ><span>{{ formatMoney(product.price) }} à vista</span>
+              </div>
+              <p class="dialog-note">
+                As condições disponíveis para o pedido são confirmadas no checkout.
+              </p>
+              <a class="primary-button" routerLink="/cart" (click)="addToCart(); closeModal()"
+                >Continuar para o carrinho</a
+              >
+            }
+            @case ('support') {
+              <h2 id="dialog-title">Suporte especializado</h2>
+              <p>Tire suas dúvidas sobre o produto com o time AgroAgrega.</p>
+              <a class="primary-button" href="mailto:contato@agroagrega.com.br">Enviar e-mail</a
+              ><button
+                type="button"
+                class="secondary-button"
+                (click)="closeModal(); selectSection('questions')"
+              >
+                Fazer uma pergunta sobre o produto
+              </button>
+            }
+            @case ('reviews') {
+              <h2 id="dialog-title">Avaliações dos clientes</h2>
+              <p>{{ reviewAverage.toFixed(1) }} de 5 · {{ displayReviewCount }} avaliações</p>
+              <div class="review-list">
+                @for (review of reviews; track $index) {
+                  <article>
+                    <strong>{{ review.author }}</strong
+                    ><span class="stars">{{ '★'.repeat(review.stars) }}</span>
+                    <p>{{ review.text }}</p>
+                    <small>{{ review.createdAt }}</small>
+                  </article>
+                }
+              </div>
+              <form class="review-form" (ngSubmit)="submitReview()">
+                <h3>Avalie este produto</h3>
+                <div class="review-stars">
                   @for (star of [1, 2, 3, 4, 5]; track star) {
                     <button
                       type="button"
-                      [class.selected]="star <= selectedRating"
+                      [class.chosen]="selectedRating >= star"
                       (click)="selectRating(star)"
                       [attr.aria-label]="star + ' estrelas'"
                     >
@@ -528,193 +599,62 @@
                     </button>
                   }
                 </div>
-              </div>
-              <textarea
-                [(ngModel)]="reviewText"
-                maxlength="300"
-                rows="4"
-                placeholder="Conte como foi sua experiência com o produto..."
-              ></textarea>
-              <div class="review-form-footer">
-                <span>{{ reviewText.length }}/300</span>
-                <button
-                  type="button"
-                  class="commerce-action commerce-action--form review-action"
-                  aria-label="Enviar avaliação"
-                  (click)="submitReview()"
-                  [disabled]="selectedRating === 0 || !reviewText.trim()"
+                <textarea
+                  name="review"
+                  [(ngModel)]="reviewText"
+                  maxlength="300"
+                  placeholder="Conte sua experiência..."
+                  aria-label="Sua avaliação"
+                  required
+                ></textarea
+                ><button
+                  type="submit"
+                  class="primary-button"
+                  [disabled]="!selectedRating || !reviewText.trim()"
                 >
-                  <span class="commerce-action__icon" aria-hidden="true">★</span>
-                  <span class="commerce-action__copy">
-                    <strong>Enviar avaliação</strong>
-                    <small>Publicar experiência</small>
-                  </span>
-                  <span class="commerce-action__arrow" aria-hidden="true">→</span>
+                  Enviar avaliação
                 </button>
-              </div>
-            </div>
-
-            <div class="reviews-list">
-              @for (review of reviews; track $index) {
-                <article class="review-item">
-                  <div class="review-item__header">
-                    <div>
-                      <strong>{{ review.author }}</strong>
-                      @if (review.verified) {
-                        <span>Compra verificada</span>
-                      }
-                    </div>
-                    <small>{{ review.createdAt }}</small>
-                  </div>
-                  <div class="review-stars" aria-label="Avaliação de {{ review.stars }} estrelas">
-                    @for (star of [1, 2, 3, 4, 5]; track star) {
-                      <span [class.filled]="star <= review.stars">★</span>
-                    }
-                  </div>
-                  <p>{{ review.text }}</p>
-                </article>
-              }
-            </div>
-          </section>
-            <section class="content-section questions-section" id="questions" aria-labelledby="questions-title">
-              <span class="section-kicker">Tire suas dúvidas</span>
-              <h2 id="questions-title">Perguntas sobre o produto</h2>
-              <div class="question-form">
-                <input
-                  type="text"
-                  [(ngModel)]="questionText"
-                  maxlength="180"
-                  placeholder="Digite sua pergunta..."
-                  aria-label="Pergunta sobre o produto"
-                  (keydown.enter)="submitQuestion()"
-                />
-                <button
-                  type="button"
-                  class="commerce-action commerce-action--form question-action"
-                  aria-label="Perguntar sobre o produto"
-                  (click)="submitQuestion()"
-                  [disabled]="!questionText.trim()"
-                >
-                  <span class="commerce-action__icon" aria-hidden="true">?</span>
-                  <span class="commerce-action__copy">
-                    <strong>Perguntar</strong>
-                    <small>Resposta da equipe</small>
-                  </span>
-                  <span class="commerce-action__arrow" aria-hidden="true">→</span>
-                </button>
-              </div>
-              @if (questionFeedback) {
-                <p class="question-feedback" role="status">✓ {{ questionFeedback }}</p>
-              }
-              <div class="question-list">
-                @for (item of questions; track item.question) {
-                  <article>
-                    <h3><span>P</span>{{ item.question }}</h3>
-                    <p><span>R</span>{{ item.answer }}</p>
-                  </article>
+              </form>
+            }
+            @case ('presentation') {
+              <h2 id="dialog-title">Apresentação do produto</h2>
+              <div class="product-presentation" [class.paused]="!presentationPlaying">
+                @for (view of galleryViews; track view.src; let i = $index) {
+                  <img
+                    [src]="view.src"
+                    [alt]="view.label"
+                    [style.animation-delay.s]="i * 3"
+                    [style.animation-duration.s]="galleryViews.length * 3"
+                  />
                 }
               </div>
-            </section>
-
-        </div>
-
-        <aside class="product-content__aside">
-          <div class="aside-card">
-            <span class="seller-logo">
-              <img
-                [src]="sellerLogo"
-                [alt]="brandLabel + ' — loja parceira'"
-                width="48"
-                height="48"
-              />
-            </span>
-            <h2>{{ brandLabel }}</h2>
-            <p>Produtos selecionados para o campo com atendimento AgroAgrega.</p>
-            <a routerLink="/products" [queryParams]="{ search: brandLabel }"
-              >Ver produtos da marca</a
-            >
-          </div>
-          <div class="aside-card aside-card--green">
-            <span>Agro+</span>
-            <h2>Mais vantagens para sua produção</h2>
-            <p>Ative benefícios exclusivos e aproveite condições especiais.</p>
-            <a routerLink="/agro-plus">Conhecer o Agro+</a>
-          </div>
-        </aside>
-      </div>
-
-      <section class="related-section" aria-labelledby="related-title">
-        <div class="related-heading">
-          <div>
-            <span class="section-kicker">Continue explorando</span>
-            <h2 id="related-title">Quem viu este produto também comprou</h2>
-          </div>
-          <a routerLink="/products" [queryParams]="{ category: product.category }">Ver todos</a>
-        </div>
-        <div class="related-grid">
-          @for (related of relatedProducts; track related.id) {
-            <app-product-card [product]="related" />
+              <button
+                type="button"
+                class="primary-button"
+                (click)="presentationPlaying = !presentationPlaying"
+              >
+                {{ presentationPlaying ? 'Pausar apresentação' : 'Reproduzir apresentação' }}
+              </button>
+            }
           }
-        </div>
-      </section>
-    </div>
-
-    @if (zoomOpen && selectedGalleryView; as zoomView) {
-      <div
-        class="zoom-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Imagem ampliada do produto"
-        (click)="closeZoom()"
-      >
-        <button
-          type="button"
-          class="zoom-close"
-          (click)="closeZoom()"
-          aria-label="Fechar imagem ampliada"
-        >
-          ×
-        </button>
-        <button
-          type="button"
-          class="zoom-previous"
-          (click)="$event.stopPropagation(); previousImage()"
-          aria-label="Imagem anterior"
-        >
-          ‹
-        </button>
-        <figure (click)="$event.stopPropagation()">
-          <img [src]="zoomView.src" [alt]="product.title + ' ampliado'" />
-          <figcaption>{{ zoomView.label }}</figcaption>
-        </figure>
-        <button
-          type="button"
-          class="zoom-next"
-          (click)="$event.stopPropagation(); nextImage()"
-          aria-label="Próxima imagem"
-        >
-          ›
-        </button>
+        </section>
       </div>
     }
   } @else {
-    <section class="error-container">
-      <span aria-hidden="true">?</span>
+    <section class="not-found">
       <h1>Produto não encontrado</h1>
-      <p>O produto com ID {{ id }} não existe ou não está mais disponível.</p>
-      <a routerLink="/products">Voltar para produtos</a>
+      <a routerLink="/products">Voltar ao catálogo</a>
     </section>
   }
-
   <div class="cart-notifications" aria-live="polite">
     @for (notification of cartNotifications; track notification) {
-      <div class="cart-notification" role="status">
-        <span class="cart-notification-icon">✓</span>
+      <div role="status" class="cart-notification">
+        <svg class="icon"><use href="#pd-check" /></svg>
         <div>
           <strong>Produto adicionado</strong>
           <p>O item já está no seu carrinho.</p>
         </div>
-        <a routerLink="/cart">Ver carrinho</a>
+        <a routerLink="/cart">Ver carrinho →</a>
       </div>
     }
   </div>
