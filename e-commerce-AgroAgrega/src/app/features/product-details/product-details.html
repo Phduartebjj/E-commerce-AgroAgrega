@@ -252,7 +252,7 @@
                 +
               </button>
             </div>
-            <button type="button" class="add-to-cart" (click)="addToCart()">
+            <button type="button" class="add-to-cart neon-action" (click)="addToCart()">
               <svg class="icon"><use href="#pd-cart" /></svg>Adicionar ao carrinho
             </button>
           </div>
@@ -356,6 +356,77 @@
         </section>
       </section>
 
+      <section class="partner-section" aria-labelledby="partner-heading">
+        <div class="partner-assurance">
+          <h2 id="partner-heading">Loja parceira e garantias</h2>
+          <div class="partner-identity">
+            <span class="partner-avatar" aria-hidden="true">
+              <svg class="icon"><use href="#pd-sprout" /></svg>
+            </span>
+            <div>
+              <span class="partner-eyebrow">Vendido por</span>
+              <h3>{{ sellerName }}</h3>
+              <p>Parceiro da comunidade AgroAgrega</p>
+            </div>
+          </div>
+          <ul class="partner-guarantees">
+            <li>
+              <span class="guarantee-icon" aria-hidden="true"><svg class="icon"><use href="#pd-bag" /></svg></span>
+              <div><strong>Devolução grátis</strong><p>Até 30 dias para solicitar a devolução, conforme as condições da compra.</p></div>
+            </li>
+            <li>
+              <span class="guarantee-icon" aria-hidden="true"><svg class="icon"><use href="#pd-shield" /></svg></span>
+              <div><strong>Compra garantida</strong><p>Receba o produto que escolheu ou conte com nosso atendimento para resolver.</p></div>
+            </li>
+            <li>
+              <span class="guarantee-icon" aria-hidden="true"><svg class="icon"><use href="#pd-check" /></svg></span>
+              <div><strong>Garantia do fabricante</strong><p>Suporte para conferir a cobertura e as condições de garantia do seu produto.</p></div>
+            </li>
+          </ul>
+        </div>
+        <div class="partner-store-card">
+          <div class="partner-store-header">
+            <span class="partner-avatar" aria-hidden="true">
+              <svg class="icon"><use href="#pd-sprout" /></svg>
+            </span>
+            <div class="partner-store-name">
+              <span class="partner-eyebrow">Loja parceira verificada</span>
+              <h3>{{ brandLabel }} <svg class="icon verified-icon" aria-label="Verificada"><use href="#pd-check" /></svg></h3>
+              <p>{{ sellerFollowers }} seguidores · {{ sellerCatalogSize }} produtos</p>
+            </div>
+            <button
+              type="button"
+              class="follow-store-button"
+              [class.is-following]="followingStore"
+              [attr.aria-pressed]="followingStore"
+              (click)="toggleStoreFollow()"
+            >
+              <span aria-hidden="true">{{ followingStore ? '✓' : '+' }}</span>
+              {{ followingStore ? 'Seguindo' : 'Seguir loja' }}
+            </button>
+          </div>
+          <a class="partner-club" routerLink="/agro-plus">
+            <svg class="icon" aria-hidden="true"><use href="#pd-star" /></svg>
+            <div><strong>Parceiro AgroAgrega Clube</strong><span>Conheça os benefícios para quem vive o campo.</span></div>
+            <svg class="icon" aria-hidden="true"><use href="#pd-chevron" /></svg>
+          </a>
+          <dl class="partner-store-stats">
+            <div><dt>Produtos na loja</dt><dd>{{ sellerCatalogSize }}</dd></div>
+            <div><dt>Avaliação dos produtos</dt><dd><span class="partner-rating-star" aria-hidden="true">★</span> {{ sellerRating }}</dd></div>
+            <div><dt>Atendimento</dt><dd>Especializado</dd></div>
+          </dl>
+          <a
+            class="visit-store-link"
+            routerLink="/products"
+            [queryParams]="{ search: product.brand && product.brand !== 'none' ? product.brand : null }"
+          >
+            <span class="visit-store-icon" aria-hidden="true"><svg class="icon"><use href="#pd-leaf" /></svg></span>
+            <span><strong>Visitar loja parceira</strong><small>Veja todos os produtos desta loja</small></span>
+            <svg class="icon" aria-hidden="true"><use href="#pd-arrow" /></svg>
+          </a>
+        </div>
+      </section>
+
       <section class="application-section" id="application">
         <div>
           <h2>Modo de uso e aplicação</h2>
@@ -421,7 +492,7 @@
                 aria-label="Sua pergunta"
                 maxlength="300"
                 required /></label
-            ><button type="submit">
+            ><button type="submit" class="neon-action">
               <svg class="icon"><use href="#pd-headset" /></svg>Perguntar
             </button>
           </form>
@@ -449,6 +520,41 @@
           </div>
         </section>
       </div>
+
+      @if (sidebarRelatedProducts.length) {
+        <section class="related-section" aria-labelledby="related-heading">
+          <div class="related-section-header">
+            <div>
+              <span class="partner-eyebrow">Pensados para o seu campo</span>
+              <h2 id="related-heading">Produtos relacionados</h2>
+            </div>
+            <a routerLink="/products" [queryParams]="{ category: product.category }" class="view-related-link">
+              Ver todos <svg class="icon" aria-hidden="true"><use href="#pd-arrow" /></svg>
+            </a>
+          </div>
+          <div class="related-products-grid">
+            @for (related of sidebarRelatedProducts; track related.id) {
+              <a class="related-product" [routerLink]="['/products', related.id]" [attr.aria-label]="'Ver ' + related.title">
+                <div class="related-product-image">
+                  <img [src]="related.images[0]" [alt]="related.title" width="160" height="160" loading="lazy" decoding="async" />
+                </div>
+                <div class="related-product-content">
+                  <span class="related-product-category">{{ related.category }}</span>
+                  <h3>{{ related.title }}</h3>
+                  <span class="related-product-sales">{{ getRelatedSalesLabel(related.weeklySales) }}</span>
+                  @if (calculateRelatedDiscount(related.price, related.originalPrice); as discount) {
+                    <div class="related-product-discount"><s>{{ formatMoney(related.originalPrice!) }}</s><span>{{ discount }}% OFF</span></div>
+                  }
+                  <strong class="related-product-price">{{ formatMoney(related.price) }}</strong>
+                  <span class="related-product-pix"><b>{{ formatMoney(calculateRelatedPixPrice(related.price)) }}</b> no Pix</span>
+                  <span class="related-product-installments">ou 10x de {{ formatMoney(related.price / 10) }} sem juros</span>
+                </div>
+                <span class="related-product-delivery"><svg class="icon" aria-hidden="true"><use href="#pd-truck" /></svg>Consulte frete e prazo <svg class="icon" aria-hidden="true"><use href="#pd-chevron" /></svg></span>
+              </a>
+            }
+          </div>
+        </section>
+      }
     </div>
 
     @if (zoomOpen) {
@@ -510,13 +616,16 @@
           @switch (modal) {
             @case ('shipping') {
               <h2 id="dialog-title">Frete e prazo de entrega</h2>
-              <p>Informe seu CEP para consultar a entrega deste produto.</p>
-              <form class="modal-form" (ngSubmit)="calculateShipping()">
+              <p>Informe seu CEP para simular a entrega deste produto.</p>
+              <form class="modal-form" (ngSubmit)="calculateShipping()" [attr.aria-busy]="shippingLoading">
                 <label
                   >CEP<input
                     name="cep"
                     [(ngModel)]="shippingCep"
+                    (ngModelChange)="invalidateShipping()"
                     placeholder="00000-000"
+                    autocomplete="postal-code"
+                    aria-label="CEP de entrega"
                     inputmode="numeric"
                     maxlength="9"
                     required /></label
@@ -528,11 +637,23 @@
                 <p class="form-feedback" role="alert">{{ shippingError }}</p>
               }
               @if (shippingResult) {
-                <div class="shipping-result">
-                  <strong>{{ shippingResult.label }}</strong>
-                  <p>{{ shippingResult.description }}</p>
-                  <b>{{ formatMoney(shippingResult.price) }}</b>
-                </div>
+                <section aria-label="Opções de entrega" aria-live="polite">
+                  <p class="dialog-note">{{ shippingResult.destinationLabel }} · CEP {{ shippingCep }} · {{ shippingResult.quantity }} {{ shippingResult.quantity === 1 ? 'unidade' : 'unidades' }}</p>
+                  @for (option of shippingResult.options; track option.id) {
+                    <article class="shipping-result">
+                      <strong>{{ option.service }}</strong>
+                      <p>
+                        @if (option.deliveryDays.min !== option.deliveryDays.max) {
+                          De {{ option.deliveryDays.min }} a {{ option.deliveryDays.max }} dias úteis
+                        } @else {
+                          Até {{ option.deliveryDays.max }} {{ option.deliveryDays.max === 1 ? 'dia útil' : 'dias úteis' }}
+                        }
+                      </p>
+                      <b>{{ formatMoney(option.price) }}</b>
+                    </article>
+                  }
+                  <p class="dialog-note">Simulação calculada pela região de destino, quantidade e embalagem estimada. Não representa uma cotação de transportadora.</p>
+                </section>
               }
             }
             @case ('payments') {

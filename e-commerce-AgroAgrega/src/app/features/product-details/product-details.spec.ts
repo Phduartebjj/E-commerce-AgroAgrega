@@ -223,8 +223,11 @@ describe('ProductDetails', () => {
     component.shippingCep = '01001-000';
     component.calculateShipping();
     expect(cep.getCep).toHaveBeenCalledWith('01001000');
-    expect(component.shippingResult?.label).toContain('São Paulo');
-    expect(component.shippingResult?.description).toContain('Estimativa');
+    expect(component.shippingResult?.destinationLabel).toContain('São Paulo');
+    expect(component.shippingResult?.simulated).toBe(true);
+    expect(component.shippingResult?.originPostalCode).toBe('20211060');
+    expect(component.shippingResult?.options).toHaveLength(2);
+    expect(component.shippingResult!.options[0].price).toBeGreaterThan(0);
     expect(component.shippingLoading).toBe(false);
     expect(component.shippingError).toBe('');
   });
@@ -253,6 +256,70 @@ describe('ProductDetails', () => {
     expect(component.shippingLoading).toBe(false);
   });
 
+  it('mostra o resultado assíncrono e libera o botão sem outro clique na tela', async () => {
+    const response = new Subject<CepModel>();
+    cep.getCep.mockReturnValue(response);
+    component.openModal('shipping');
+    component.shippingCep = '01001000';
+    component.calculateShipping();
+    await fixture.whenStable();
+    expect(button('Consultando...').disabled).toBe(true);
+
+    response.next(address);
+    response.complete();
+    await fixture.whenStable();
+
+    const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
+    expect(dialog.textContent).toContain('Entrega econômica');
+    expect(dialog.textContent).toContain('Entrega expressa');
+    expect(dialog.textContent).toContain('São Paulo');
+    expect(dialog.querySelectorAll('.shipping-result')).toHaveLength(2);
+    expect(button('Calcular entrega').disabled).toBe(false);
+  });
+
+  it('mostra erro assíncrono e permite tentar novamente', async () => {
+    const response = new Subject<CepModel>();
+    cep.getCep.mockReturnValue(response);
+    component.openModal('shipping');
+    component.shippingCep = '01001000';
+    component.calculateShipping();
+    await fixture.whenStable();
+    response.error(new Error('Não foi possível consultar o CEP.'));
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain('Não foi possível');
+    expect(button('Calcular entrega').disabled).toBe(false);
+  });
+
+  it('cancela a consulta e limpa valores ao editar o CEP', async () => {
+    const response = new Subject<CepModel>();
+    cep.getCep.mockReturnValue(response);
+    component.openModal('shipping');
+    component.shippingCep = '01001000';
+    component.calculateShipping();
+    await fixture.whenStable();
+    const input = fixture.nativeElement.querySelector('input[name="cep"]') as HTMLInputElement;
+    input.value = '20211060';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await fixture.whenStable();
+    response.next(address);
+    expect(component.shippingResult).toBeNull();
+    expect(component.shippingLoading).toBe(false);
+    expect(response.observed).toBe(false);
+  });
+
+  it('recalcula pela quantidade atual sem manter uma cotação antiga', () => {
+    component.shippingCep = '01001000';
+    component.calculateShipping();
+    const firstPrice = component.shippingResult!.options[0].price;
+    component.increaseQuantity();
+    expect(component.shippingResult).toBeNull();
+    component.calculateShipping();
+    expect(component.shippingResult!.quantity).toBe(2);
+    expect(component.shippingResult!.options[0].price).toBeGreaterThan(firstPrice);
+    component.decreaseQuantity();
+    expect(component.shippingResult).toBeNull();
+  });
+
   it('altera a quantidade pelos botões e envia a escolha ao carrinho', () => {
     button('Aumentar quantidade').click();
     fixture.detectChanges();
@@ -267,6 +334,48 @@ describe('ProductDetails', () => {
     navigateTo(referenceId);
     component.addToCart();
     expect(cart.addCartItem).toHaveBeenCalledWith(expect.objectContaining({ id: referenceId, price: 112.43 }), 1);
+  });
+
+  it('permite seguir e deixar de seguir a loja pelo novo cartão', () => {
+    const follow = fixture.nativeElement.querySelector('.follow-store-button') as HTMLButtonElement;
+    expect(follow.textContent).toContain('Seguir loja');
+    expect(follow.getAttribute('aria-pressed')).toBe('false');
+    follow.click();
+    fixture.detectChanges();
+    expect(follow.textContent).toContain('Seguindo');
+    expect(follow.getAttribute('aria-pressed')).toBe('true');
+    follow.click();
+    fixture.detectChanges();
+    expect(follow.textContent).toContain('Seguir loja');
+    expect(component.followingStore).toBe(false);
+  });
+
+  it('abre o catálogo da loja e atualiza sua identidade ao trocar de produto', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('.visit-store-link')?.getAttribute('href')).toBe('/products?search=AgroSense');
+    expect(host.querySelector('.partner-club')?.getAttribute('href')).toBe('/agro-plus');
+    const nextProduct = TestBed.inject(ProductService).getProducts()()
+      .find((item) => item.brand === 'Biomatrix')!;
+    navigateTo(nextProduct.id);
+    expect(host.querySelector('.partner-store-name h3')?.textContent).toContain('Biomatrix');
+    expect(host.querySelector('.visit-store-link')?.getAttribute('href')).toBe('/products?search=Biomatrix');
+  });
+
+  it('mostra quatro relacionados da categoria atual com links para seus detalhes', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const cards = Array.from(host.querySelectorAll<HTMLAnchorElement>('.related-product'));
+    expect(cards).toHaveLength(4);
+    for (const [index, card] of cards.entries()) {
+      const related = component.sidebarRelatedProducts[index];
+      expect(related.id).not.toBe(component.product!.id);
+      expect(related.category).toBe(component.product!.category);
+      expect(card.getAttribute('href')).toBe(`/products/${related.id}`);
+      expect(card.querySelector('h3')?.textContent).toContain(related.title);
+      expect(card.querySelector('.related-product-price')?.textContent).toBe(component.formatMoney(related.price));
+    }
+    expect(host.querySelector('.view-related-link')?.getAttribute('href')).toContain('category=');
+    navigateTo(referenceId);
+    expect(host.querySelector('.related-product-category')?.textContent).toContain('Insumos');
   });
 
   it('mantém a quantidade mínima e rejeita compra inválida', () => {

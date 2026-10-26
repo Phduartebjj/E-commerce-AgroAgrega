@@ -1,3 +1,64 @@
+.neon-action {
+  position: relative;
+  isolation: isolate;
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+.neon-action::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: -2px;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--product-action-neon-angle),
+    rgba(124, 255, 24, 0.26) 0deg 244deg,
+    rgba(112, 239, 28, 0.58) 274deg,
+    #034507 305deg,
+    #fff2d8 323deg,
+    #1f6d03 340deg,
+    rgba(28, 195, 17, 0.26) 360deg
+  );
+  filter: drop-shadow(0 0 4px rgba(21, 101, 3, 0.88)) drop-shadow(0 0 10px rgba(19, 137, 41, 0.62));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+.neon-action:is(:hover, :focus-visible, :active):not(:disabled) {
+  box-shadow: 0 14px 26px -12px rgba(104, 179, 12, 0.55), 0 6px 14px rgba(26, 35, 29, 0.16);
+  transform: translateY(-2px);
+}
+.neon-action:is(:hover, :focus-visible, :active):not(:disabled)::after {
+  animation: product-action-neon-travel 1.7s linear infinite;
+  opacity: 1;
+}
+.neon-action:active:not(:disabled) {
+  transform: translateY(0);
+}
+@property --product-action-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes product-action-neon-travel {
+  to { --product-action-neon-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neon-action,
+  .neon-action::after {
+    transition: none;
+  }
+  .neon-action:is(:hover, :focus-visible, :active):not(:disabled) {
+    transform: none;
+  }
+  .neon-action:is(:hover, :focus-visible, :active):not(:disabled)::after {
+    animation: none;
+  }
+}
 .modal-backdrop {
   position: fixed;
   inset: 0;

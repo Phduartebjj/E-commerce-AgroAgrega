@@ -1,6 +1,6 @@
-import { Component, DestroyRef, HostListener, inject, Injector, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, HostListener, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { timeout } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -14,8 +14,8 @@ import {
   getFreeDeliveryLabel,
   getWeeklySalesLabel,
 } from '../../shared/utils/product-card-display';
-import { CepService } from '../../core/services/cep/cep';
-import { getDeliveryEstimate } from '../checkout/checkout';
+import { ShippingService } from '../../core/services/shipping/shipping.service';
+import { ShippingQuote } from '../../models/shipping';
 
 interface ProductReview {
   author: string;
@@ -119,16 +119,18 @@ const CATEGORY_DETAILS: Record<ProductCategory, CategoryDetailProfile> = {
   selector: 'app-product-details',
   imports: [RouterLink, FormsModule],
   templateUrl: './product-details.html',
-  styleUrls: ['./product-details.css', './product-details-actions.css'],
+  styleUrls: ['./product-details.css', './product-details-actions.css', './product-details-discovery.css'],
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
-  private readonly injector = inject(Injector);
+  private readonly shipping = inject(ShippingService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
   private dialogTrigger: HTMLElement | null = null;
   private shippingRequest = 0;
+  private shippingSubscription: Subscription | null = null;
 
   cartNotifications: number[] = [];
   private notificationId = 0;
@@ -156,7 +158,7 @@ export class ProductDetails implements OnInit {
   shippingCep = '';
   shippingLoading = false;
   shippingError = '';
-  shippingResult: { label: string; description: string; price: number } | null = null;
+  shippingResult: ShippingQuote | null = null;
   readonly calculateRelatedDiscount = calculateDiscountPercent;
   readonly calculateRelatedPixPrice = calculatePixPrice;
   readonly getRelatedSalesLabel = getWeeklySalesLabel;
@@ -184,11 +186,9 @@ export class ProductDetails implements OnInit {
       this.modal = null;
       this.showAllImages = false;
       this.openQuestionIndex = null;
-      this.shippingRequest += 1;
-      this.shippingLoading = false;
-      this.shippingError = '';
-      this.shippingResult = null;
+      this.invalidateShipping();
       this.loadProductExperience();
+      this.changeDetector.markForCheck();
     });
   }
 
@@ -245,36 +245,41 @@ export class ProductDetails implements OnInit {
 
   calculateShipping(): void {
     const cep = this.shippingCep.replace(/\D/g, '');
-    this.shippingError = '';
-    this.shippingResult = null;
-    const request = ++this.shippingRequest;
+    this.invalidateShipping();
+    const request = this.shippingRequest;
     if (!/^\d{8}$/.test(cep)) {
       this.shippingLoading = false;
       this.shippingError = 'Informe um CEP válido com 8 dígitos.';
       return;
     }
+    if (!this.product) return;
     this.shippingLoading = true;
-    this.injector.get(CepService).getCep(cep).pipe(timeout(10000), takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (address) => {
+    this.shippingSubscription = this.shipping.quote(this.product, this.quantity, cep)
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (quote) => {
         if (request !== this.shippingRequest) return;
         this.shippingLoading = false;
-        if (address.erro || !address.localidade || !address.uf) {
-          this.shippingError = 'CEP não encontrado. Confira os números e tente novamente.';
-          return;
-        }
         this.shippingCep = `${cep.slice(0, 5)}-${cep.slice(5)}`;
-        this.shippingResult = {
-          label: `Entrega padrão · ${address.localidade} – ${address.uf}`,
-          description: `${getDeliveryEstimate()}. Estimativa conforme a entrega padrão do checkout, sujeita à confirmação no pedido.`,
-          price: 0,
-        };
+        this.shippingResult = quote;
+        this.changeDetector.markForCheck();
       },
-      error: () => {
+      error: (error: Error) => {
         if (request !== this.shippingRequest) return;
         this.shippingLoading = false;
-        this.shippingError = 'Não foi possível consultar seu CEP agora. Tente novamente.';
+        this.shippingError = error.message || 'Não foi possível calcular o frete agora. Tente novamente.';
+        this.changeDetector.markForCheck();
       },
     });
+  }
+
+  invalidateShipping(): void {
+    this.shippingRequest += 1;
+    this.shippingSubscription?.unsubscribe();
+    this.shippingSubscription = null;
+    this.shippingLoading = false;
+    this.shippingError = '';
+    this.shippingResult = null;
+    this.changeDetector.markForCheck();
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -386,6 +391,15 @@ export class ProductDetails implements OnInit {
       .filter((item) => item.brand === this.product?.brand).length;
   }
 
+  get sellerRating(): string {
+    const products = this.productService.getProducts()()
+      .filter((item) => item.brand === this.product?.brand);
+    const average = products.length
+      ? products.reduce((total, item) => total + item.rating, 0) / products.length
+      : this.product?.rating ?? 0;
+    return average.toFixed(1).replace('.', ',');
+  }
+
   get productMeasure(): string {
     const match = this.product?.title.match(
       /\d+(?:[,.]\d+)?\s?(?:kg|g|l|ml|m²|m|cm|mm|w|v|cv|cc|peças|unidades|doses|setores|plantas|polegadas)/i,
@@ -424,7 +438,7 @@ export class ProductDetails implements OnInit {
   }
 
   get sidebarRelatedProducts(): ProductModel[] {
-    return this.relatedProducts.slice(0, 3);
+    return this.relatedProducts;
   }
 
   selectSection(section: ProductSection): void {
@@ -470,10 +484,14 @@ export class ProductDetails implements OnInit {
 
   increaseQuantity(): void {
     this.quantity += 1;
+    this.invalidateShipping();
   }
 
   decreaseQuantity(): void {
-    if (this.quantity > 1) this.quantity -= 1;
+    if (this.quantity > 1) {
+      this.quantity -= 1;
+      this.invalidateShipping();
+    }
   }
 
   addToCart(): void {

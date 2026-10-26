@@ -16,7 +16,7 @@ export const routes: Routes = [
 
   {
     path: 'products/:id',
-    data: { hideHeader: true, hideFooter: true },
+    data: { hideFooter: true },
     loadComponent: () =>
       import('./features/product-details/product-details').then((module) => module.ProductDetails),
   },
