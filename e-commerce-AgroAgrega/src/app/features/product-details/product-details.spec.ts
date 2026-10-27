@@ -352,12 +352,14 @@ describe('ProductDetails', () => {
 
   it('abre o catálogo da loja e atualiza sua identidade ao trocar de produto', () => {
     const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('.partner-avatar')?.getAttribute('src')).toBe('/assets/images/partner-stores/agrosense.png');
     expect(host.querySelector('.visit-store-link')?.getAttribute('href')).toBe('/products?search=AgroSense');
     expect(host.querySelector('.partner-club')?.getAttribute('href')).toBe('/agro-plus');
     const nextProduct = TestBed.inject(ProductService).getProducts()()
       .find((item) => item.brand === 'Biomatrix')!;
     navigateTo(nextProduct.id);
     expect(host.querySelector('.partner-store-name h3')?.textContent).toContain('Biomatrix');
+    expect(host.querySelector('.partner-avatar')?.getAttribute('src')).toBe('/assets/images/partner-stores/biomatrix.png');
     expect(host.querySelector('.visit-store-link')?.getAttribute('href')).toBe('/products?search=Biomatrix');
   });
 

@@ -610,13 +610,12 @@ h1 {
   padding: 1.1em;
   margin-top: 0.8em;
 }
-.seller-card > .icon {
-  color: #008e18;
+.seller-brand-icon {
+  display: block;
+  flex-shrink: 0;
   width: 2.4em;
   height: 2.4em;
-  border: 1px solid #92d760;
-  border-radius: 50%;
-  padding: 0.2em;
+  background: url('/assets/images/agroagrega-icon.webp') center / 160% no-repeat;
 }
 .product-section-nav {
   display: grid;

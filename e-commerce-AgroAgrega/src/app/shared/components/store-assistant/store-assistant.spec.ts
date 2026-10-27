@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
 
 import { Cart } from '../../../core/services/cart/cart.service';
 import { StoreAssistant } from './store-assistant';
+import { calculatePixPrice } from '../../utils/product-card-display';
 
 // Verifica a interação do assistente com ofertas, produtos e carrinho.
 describe('StoreAssistant', () => {
@@ -30,7 +31,7 @@ describe('StoreAssistant', () => {
     vi.unstubAllGlobals();
   });
 
-  it('opens a floating chat with the provided mascot', () => {
+  it('opens a floating chat with the mascot hidden until the agent finishes loading', () => {
     const launcher = fixture.nativeElement.querySelector(
       '.assistant-launcher',
     ) as HTMLButtonElement;
@@ -38,9 +39,8 @@ describe('StoreAssistant', () => {
     launcher.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('.assistant-header img')?.getAttribute('src')).toBe(
-      'assets/images/assistant/tourino-header.png',
-    );
+    expect(fixture.nativeElement.querySelector('.assistant-header img')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.assistant-close')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.assistant-message--welcome')).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Tourino');
   });
@@ -52,17 +52,22 @@ describe('StoreAssistant', () => {
 
     expect(component.isStarting()).toBe(true);
     expect(host.querySelector('.assistant-startup')?.textContent).toContain('Iniciando o Tourino');
+    expect(host.querySelector('.assistant-header img')).toBeNull();
     expect(host.querySelector('.assistant-composer')?.hasAttribute('inert')).toBe(true);
 
     vi.advanceTimersByTime(4999);
     fixture.detectChanges();
     expect(component.isStarting()).toBe(true);
+    expect(host.querySelector('.assistant-header img')).toBeNull();
 
     vi.advanceTimersByTime(1);
     fixture.detectChanges();
     expect(component.isStarting()).toBe(false);
     expect(component.isIntroducing()).toBe(true);
     expect(host.querySelector('.assistant-startup')).toBeNull();
+    expect(host.querySelector('.assistant-header img')?.getAttribute('src')).toBe(
+      'assets/images/assistant/tourino-header.png',
+    );
 
     vi.advanceTimersByTime(350);
     fixture.detectChanges();
@@ -191,5 +196,122 @@ describe('StoreAssistant', () => {
     expect(component.isTyping()).toBe(false);
     expect(component.messages().at(-1)?.showCoupons).toBe(true);
     expect(component.messages().at(-1)?.text).toContain('Confira os cupons');
+  });
+
+  describe('conversas com contexto', () => {
+    beforeEach(() => {
+      component.open.set(true);
+      fixture.detectChanges();
+      vi.advanceTimersByTime(5000);
+      fixture.detectChanges();
+    });
+
+    function ask(message: string) {
+      component.submitPrompt(message);
+      vi.advanceTimersByTime(4000);
+      fixture.detectChanges();
+      return component.messages().at(-1)!;
+    }
+
+    it('pesquisa por orçamento e mantém a categoria ao refinar o preço', () => {
+      const initial = ask('Quero irrigação até R$ 800');
+      expect(cart.isEmpty()).toBe(true);
+      expect(initial.products?.length).toBeGreaterThan(0);
+      const narrowed = ask('E até R$ 300?');
+      expect(narrowed.products?.length).toBeGreaterThan(0);
+      expect(narrowed.products!.every((product) => product.category === 'Irrigação' && product.price <= 300)).toBe(true);
+      const sorted = ask('Mostre opções mais baratas');
+      expect(sorted.products!.map((product) => product.price)).toEqual([...sorted.products!].sort((a, b) => a.price - b.price).map((product) => product.price));
+      expect(sorted.products!.every((product) => product.price <= 300)).toBe(true);
+    });
+
+    it('compara as opções citadas, calcula o Pix e adiciona a escolha correta', () => {
+      const found = ask('Buscar irrigação');
+      const second = found.products![1];
+      const comparison = ask('Compare o primeiro com o segundo');
+      expect(comparison.comparison).toBe(true);
+      expect(comparison.products?.map((product) => product.id)).toEqual(found.products!.slice(0, 2).map((product) => product.id));
+      expect(fixture.nativeElement.querySelectorAll('.assistant-comparison-values')).toHaveLength(2);
+      const payment = ask('Quanto fica o segundo no Pix?');
+      expect(payment.text).toContain(component.price(calculatePixPrice(second.price)));
+      expect(payment.products?.[0].id).toBe(second.id);
+      expect(payment.optionNumbers).toEqual([2]);
+      ask('Adicionar 1 do segundo');
+      expect(cart.getCartItems()()[0].product.id).toBe(second.id);
+      expect(cart.getCartItems()()[0].quantity).toBe(1);
+      ask('Quero 2 desse');
+      expect(cart.getCartItems()()).toHaveLength(1);
+      expect(cart.getCartItems()()[0].product.id).toBe(second.id);
+      expect(cart.getCartItems()()[0].quantity).toBe(3);
+      ask('Mais 2');
+      expect(cart.getCartItems()()[0].quantity).toBe(5);
+    });
+
+    it('pede a escolha quando a ação pode corresponder a vários produtos', () => {
+      const reply = ask('Adicionar 2 sementes ao carrinho');
+      expect(reply.products!.length).toBeGreaterThan(1);
+      expect(cart.isEmpty()).toBe(true);
+      const selected = reply.products![1];
+      ask('O segundo');
+      expect(cart.getCartItems()()[0].product.id).toBe(selected.id);
+      expect(cart.getCartItems()()[0].quantity).toBe(2);
+      ask('O primeiro');
+      expect(cart.totalCartItens()).toBe(2);
+    });
+
+    it('cancela uma ação pendente sem alterar o carrinho ao selecionar depois', () => {
+      ask('Adicionar 2 sementes');
+      ask('Cancelar');
+      ask('O segundo');
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('lembra a lista original depois de explicar uma das opções', () => {
+      const initial = ask('Buscar irrigação');
+      ask('Fale sobre o segundo');
+      const third = ask('Fale sobre o terceiro');
+      expect(third.products?.[0].id).toBe(initial.products![2].id);
+      expect(third.optionNumbers).toEqual([3]);
+    });
+
+    it('não substitui um número de opção inexistente pelo produto em foco', () => {
+      ask('Buscar roçadeira');
+      ask('Fale sobre o primeiro');
+      ask('Adicionar 1 da opção 4');
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('usa o produto aberto na página quando não há uma busca anterior', () => {
+      vi.spyOn(TestBed.inject(Router), 'url', 'get').mockReturnValue('/products/1dsoifjasdf-1234-5678-90ab-cdefghijklmn');
+      const reply = ask('Quanto fica no Pix?');
+      expect(reply.products?.[0].title).toContain('Estação Meteorológica');
+      expect(reply.text).toContain('10x');
+    });
+
+    it('não inventa resultados nem ignora um orçamento impossível', () => {
+      const reply = ask('Quero irrigação até R$ 1');
+      expect(reply.products).toBeUndefined();
+      expect(reply.text).toContain('Não encontrei');
+      expect(reply.replyOptions?.length).toBeGreaterThan(0);
+      expect(cart.isEmpty()).toBe(true);
+      const invalid = ask('Buscar ferramentas entre R$ 500 e R$ 100');
+      expect(invalid.text).toContain('mínimo ficou maior');
+    });
+
+    it.each(['Adicionar 100 roçadeiras', 'Adicionar -2 roçadeiras', 'Adicionar 0 roçadeiras'])('rejeita a quantidade inválida em “%s”', (message) => {
+      const reply = ask(message);
+      expect(reply.text).toContain('1 e 99');
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('oferece próximos passos que continuam a conversa', () => {
+      const result = ask('Buscar roçadeiras');
+      expect(result.replyOptions?.length).toBeGreaterThan(0);
+      expect(fixture.nativeElement.querySelector('.assistant-reply-options')).not.toBeNull();
+      const details = result.replyOptions!.find((option) => option.label === 'Detalhes do primeiro')!;
+      const reply = ask(details.prompt);
+      expect(reply.products?.[0].id).toBe(result.products?.[0].id);
+      expect(reply.text).toContain('Preço:');
+    });
   });
 });

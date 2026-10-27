@@ -27,14 +27,16 @@
     role="dialog"
     aria-label="Assistente AgroAgrega Tourino"
   >
-    <header class="assistant-header">
-      <img
-        src="assets/images/assistant/tourino-header.png"
-        alt="Assistente AgroAgrega Tourino, seu guia para o cultivo"
-        width="2203"
-        height="714"
-        decoding="async"
-      />
+    <header class="assistant-header" [class.assistant-header--loading]="isStarting()">
+      @if (!isStarting()) {
+        <img
+          src="assets/images/assistant/tourino-header.png"
+          alt="Assistente AgroAgrega Tourino, seu guia para o cultivo"
+          width="2203"
+          height="714"
+          decoding="async"
+        />
+      }
       <button
         class="assistant-close"
         type="button"
@@ -123,7 +125,8 @@
           @if (message.products?.length) {
             <div class="assistant-product-list">
               @for (product of message.products; track product.id) {
-                <div class="assistant-product">
+                <div class="assistant-product" [class.assistant-product--comparison]="message.comparison">
+                  <span class="assistant-product__index" [attr.aria-label]="'Opção ' + (message.optionNumbers?.[$index] ?? $index + 1)">{{ message.optionNumbers?.[$index] ?? $index + 1 }}</span>
                   <a
                     [routerLink]="['/products', product.id]"
                     (click)="close()"
@@ -145,6 +148,14 @@
                         · Oferta-relâmpago
                       }
                     </small>
+                    @if (message.comparison) {
+                      <dl class="assistant-comparison-values">
+                        <div><dt>No Pix</dt><dd>{{ price(pixPrice(product.price)) }}</dd></div>
+                        <div><dt>10x sem juros</dt><dd>{{ price(installmentPrice(product.price)) }}</dd></div>
+                        <div><dt>Avaliação</dt><dd>{{ product.rating.toFixed(1) }}/5</dd></div>
+                      </dl>
+                      <p class="assistant-product-purpose">{{ product.description }}</p>
+                    }
                   </div>
                   <button
                     type="button"
@@ -230,6 +241,13 @@
               (click)="close()"
               >{{ message.link.label }} <span aria-hidden="true">→</span></a
             >
+          }
+          @if (message.replyOptions?.length) {
+            <nav class="assistant-reply-options" aria-label="Continuar conversa">
+              @for (option of message.replyOptions; track option.prompt) {
+                <button type="button" [disabled]="isTyping()" (click)="submitPrompt(option.prompt)">{{ option.label }}</button>
+              }
+            </nav>
           }
         </article>
       }
@@ -322,8 +340,7 @@
       </button>
     </form>
     <p class="assistant-note">
-      <span aria-hidden="true">✦</span> Tourino pode te ajudar a encontrar tudo o que precisa no
-      catálogo da AgroAgrega.
+      <span aria-hidden="true">✦</span> Tourino recomenda produtos com base nas informações do catálogo da AgroAgrega.
     </p>
   </section>
 }

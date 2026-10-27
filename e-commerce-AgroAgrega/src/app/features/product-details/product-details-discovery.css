@@ -23,20 +23,12 @@
   gap: 1em;
 }
 .partner-avatar {
-  display: grid;
-  place-items: center;
+  display: block;
   flex: 0 0 auto;
   width: 4.2em;
   height: 4.2em;
-  border: 1px solid #cfe3cb;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff, #ebf6e6 65%, #d7eacb);
-  box-shadow: 0 3px 8px #1650300b;
-  color: #167442;
-}
-.partner-avatar .icon {
-  width: 2.4em;
-  height: 2.4em;
+  object-fit: contain;
+  border-radius: 0.7em;
 }
 .partner-eyebrow {
   display: block;

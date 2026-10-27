@@ -52,7 +52,7 @@
     <symbol id="pd-chart" viewBox="0 0 24 24">
       <path d="M3 15h4v7H3zM10 9h4v13h-4zM17 2h4v20h-4z" />
     </symbol>
-    <symbol id="pd-drop" viewBox="0 0 24 24">
+    <symbol id="pd-drop" viewBox="0 0 24 26">
       <path d="M12 2c-3 5-8 10-8 14a8 8 0 0 0 16 0c0-4-5-9-8-14M8 15a4 4 0 0 0 4 5M2 6v3M22 6v3" />
     </symbol>
     <symbol id="pd-bucket" viewBox="0 0 24 24">
@@ -285,7 +285,7 @@
             Ver todas as formas de pagamento <span>›</span>
           </button>
           <a class="seller-card" routerLink="/products"
-            ><svg class="icon"><use href="#pd-sprout" /></svg>
+            ><span class="seller-brand-icon" aria-hidden="true"></span>
             <p>
               <strong>Vendido e entregue por AgroAgrega</strong
               ><span>Qualidade e confiança do campo para o campo.</span>
@@ -360,9 +360,7 @@
         <div class="partner-assurance">
           <h2 id="partner-heading">Loja parceira e garantias</h2>
           <div class="partner-identity">
-            <span class="partner-avatar" aria-hidden="true">
-              <svg class="icon"><use href="#pd-sprout" /></svg>
-            </span>
+            <img class="partner-avatar" [src]="sellerLogo" alt="" width="56" height="56" loading="lazy" decoding="async" />
             <div>
               <span class="partner-eyebrow">Vendido por</span>
               <h3>{{ sellerName }}</h3>
@@ -386,9 +384,7 @@
         </div>
         <div class="partner-store-card">
           <div class="partner-store-header">
-            <span class="partner-avatar" aria-hidden="true">
-              <svg class="icon"><use href="#pd-sprout" /></svg>
-            </span>
+            <img class="partner-avatar" [src]="sellerLogo" alt="" width="56" height="56" loading="lazy" decoding="async" />
             <div class="partner-store-name">
               <span class="partner-eyebrow">Loja parceira verificada</span>
               <h3>{{ brandLabel }} <svg class="icon verified-icon" aria-label="Verificada"><use href="#pd-check" /></svg></h3>

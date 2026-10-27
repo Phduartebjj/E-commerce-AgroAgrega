@@ -146,10 +146,10 @@
   height: 42px;
   box-sizing: border-box;
   flex: 0 0 42px;
-  padding: 6px;
+  padding: 0;
   border: 1px solid #d7e8d8;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #fbfef9, #e7f4df);
+  border-radius: 10px;
+  background: #fff;
   object-fit: contain;
   box-shadow: 0 4px 12px rgba(22, 91, 57, 0.08);
 }
