@@ -188,6 +188,8 @@ function similarWord(first: string, second: string): boolean {
 }
 
 export function findAssistantProducts(products: ProductModel[], query: string, limit = 4, allowTypos = false): ProductModel[] {
+  const exact = products.filter((product) => normalizeAssistantText(product.title) === normalizeAssistantText(query));
+  if (exact.length) return exact.slice(0, limit);
   const alternatives = normalizeAssistantText(query).split(/\s+(?:ou|e)\s+/);
   if (alternatives.length > 1 && alternatives.every((part) => /\b(?:semente|sementes|adubo|adubos|fertilizante|fertilizantes|ferramentas|irrigacao|pecuaria)\b/.test(part))) {
     const unique = new Map(alternatives.flatMap((part) => findAssistantProducts(products, part, limit, allowTypos)).map((product) => [product.id, product]));
@@ -208,6 +210,7 @@ export function findAssistantProducts(products: ProductModel[], query: string, l
       const categoryWords = category.split(' ').map(stem);
       const descriptionWords = description.split(' ').map(stem);
       const match = (word: string, candidates: string[]) => candidates.some((candidate) => {
+        if (candidate === word) return true;
         if (candidate.length < 3 && !/^\d+$/.test(candidate)) return false;
         const synonyms = SYNONYMS.find((group) => group.map(stem).includes(word))?.map(stem) ?? [word];
         return synonyms.some((term) => candidate.startsWith(term) || term.startsWith(candidate) ||

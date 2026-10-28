@@ -11,6 +11,7 @@ export class ProductService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly baseProducts = signal<ProductModel[]>(productsItems);
   private readonly catalogDate = signal(new Date());
+  private readonly storageKey = 'agroagrega-catalog-v1';
   private refreshTimer?: ReturnType<typeof setTimeout>;
   private readonly products = computed(() =>
     applyDailyFlashOffers(this.baseProducts(), this.catalogDate()),
@@ -18,6 +19,13 @@ export class ProductService {
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(this.storageKey) ?? 'null');
+        if (Array.isArray(saved) && saved.every((product) => typeof product.id === 'string' &&
+          typeof product.title === 'string' && Number.isFinite(product.price) && Array.isArray(product.images))) {
+          this.baseProducts.set(saved);
+        }
+      } catch { /* Keep the bundled catalog if local data is unavailable. */ }
       this.scheduleNextDailyRefresh();
       this.destroyRef.onDestroy(() => clearTimeout(this.refreshTimer));
     }
@@ -33,6 +41,29 @@ export class ProductService {
 
   getProductById(id: string): ProductModel | undefined {
     return this.products().find((product) => product.id === id);
+  }
+
+  getBaseProductById(id: string): ProductModel | undefined {
+    return this.baseProducts().find((product) => product.id === id);
+  }
+
+  saveProduct(product: ProductModel): boolean {
+    if (!product.title.trim() || !Number.isFinite(product.price) || product.price <= 0 ||
+        !this.getProductCategories().includes(product.category)) return false;
+    const entry = { ...product, title: product.title.trim(), price: Math.round(product.price * 100) / 100 };
+    const exists = this.baseProducts().some((item) => item.id === entry.id);
+    this.baseProducts.update((items) => exists ? items.map((item) => item.id === entry.id ? entry : item) : [...items, entry]);
+    this.persistCatalog();
+    return true;
+  }
+
+  deleteProduct(id: string): void {
+    this.baseProducts.update((items) => items.filter((item) => item.id !== id));
+    this.persistCatalog();
+  }
+
+  private persistCatalog(): void {
+    if (isPlatformBrowser(this.platformId)) localStorage.setItem(this.storageKey, JSON.stringify(this.baseProducts()));
   }
 
   getProductCategories(): ProductCategory[] {
@@ -66,6 +97,7 @@ export class ProductService {
         };
       }),
     );
+    this.persistCatalog();
   }
 
   private scheduleNextDailyRefresh(): void {

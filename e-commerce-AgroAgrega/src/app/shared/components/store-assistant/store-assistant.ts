@@ -285,8 +285,7 @@ export class StoreAssistant {
   applyCoupon(code: string): void {
     if (this.isTyping()) return;
     const previous = this.currentCoupon()?.code;
-    this.cart.applyCoupon(code);
-    if (!this.cart.coupon()) {
+    if (!this.couponCatalog.find(code)) {
       this.append({
         role: 'assistant',
         text: 'Este cupom venceu ou não está disponível. Confira os cupons de hoje:',
@@ -294,6 +293,7 @@ export class StoreAssistant {
       });
       return;
     }
+    this.cart.applyCoupon(code);
     if (previous !== this.currentCoupon()?.code) {
       this.cartUndo = { type: 'coupon', code: previous, expectedState: this.cartFingerprint() };
     }
@@ -504,7 +504,8 @@ export class StoreAssistant {
 
   private askAboutProduct(type: ProductQuestion, query: string): void {
     const feature = type === 'details' && isAssistantFeatureQuestion(query);
-    const matches = this.contextProducts(feature && !hasAssistantReference(query) ? '' : query);
+    const namedFeature = feature ? normalizeAssistantText(query).match(/(?:voltagem|tensao|potencia|capacidade|peso|alcance)\s+(?:do|da|de)\s+(.+)$/)?.[1] : undefined;
+    const matches = this.contextProducts(namedFeature ?? ((feature || type === 'explain') && !hasAssistantReference(query) ? '' : query));
     if (matches.length === 1) {
       this.answerProductQuestion(type, matches[0], query);
       return;
@@ -544,16 +545,24 @@ export class StoreAssistant {
 
   private searchCatalog(message: string, recommend = false): void {
     const text = normalizeAssistantText(message);
-    const relativeBudget = /mais barat[oa]\w* (?:que|do que)/.test(text);
+    const relativeBudget = /(?:mais barat[oa]\w*|menos car[oa]\w*) (?:que|do que)/.test(text);
     let request: AssistantCatalogRequest;
     if (relativeBudget) {
-      const reference = this.contextProducts(message);
+      const reference = this.contextProducts(text.replace(/^.*?(?:mais barat[oa]\w*|menos car[oa]\w*) (?:que|do que)\s*/, ''));
       if (reference.length !== 1) {
         this.append({ role: 'assistant', text: 'Mais barato que qual produto? Diga, por exemplo, “mais barato que o segundo”.' });
         return;
       }
       request = { ...(this.lastCatalogRequest ?? { query: '', category: reference[0].category }),
         maxPrice: Math.round((reference[0].price - 0.01) * 100) / 100, sort: 'cheapest' };
+    } else if (/\b(?:dessa|desta|mesma) marca\b/.test(text)) {
+      const reference = this.contextProducts('');
+      if (reference.length !== 1 || !reference[0].brand) {
+        this.append({ role: 'assistant', text: 'Qual marca você prefere? Diga o nome da marca ou escolha um produto primeiro.' });
+        return;
+      }
+      const brandedMessage = message.replace(/(?:dessa|desta|mesma) marca/i, reference[0].brand);
+      request = mergeAssistantCatalogRequest(this.lastCatalogRequest, parseAssistantCatalogRequest(brandedMessage), brandedMessage);
     } else {
       request = mergeAssistantCatalogRequest(this.lastCatalogRequest, parseAssistantCatalogRequest(message), message);
     }
@@ -580,7 +589,7 @@ export class StoreAssistant {
       this.lastFocusedProductId = undefined;
       this.append({
         role: 'assistant',
-        text: `Não encontrei produtos${request.query ? ` para “${request.query}”` : ''}${request.maxPrice !== undefined ? ` até ${this.price(request.maxPrice)}` : ''}${request.minPrice !== undefined ? ` a partir de ${this.price(request.minPrice)}` : ''}. Podemos ampliar o orçamento ou tentar outra descrição.`,
+        text: `Não encontrei produtos${request.query ? ` para “${request.query}”` : ''}${this.describeFilters(request) ? ` com esses critérios: ${this.describeFilters(request)}` : ''}. Podemos ajustar os filtros ou tentar outra descrição.`,
         replyOptions: [
           ...(request.maxPrice !== undefined || request.minPrice !== undefined ? [{ label: 'Sem limite de preço', prompt: 'Sem limite de preço' }] : []),
           { label: 'Nova busca', prompt: 'Recomeçar busca' },
@@ -682,16 +691,17 @@ export class StoreAssistant {
     const forPurpose = purpose ? searchAssistantCatalog(selected, parseAssistantCatalogRequest(purpose)) : [];
     const purposeAdvice = forPurpose.length === 1
       ? ` Para “${purpose}”, ${forPurpose[0].title} é a opção cuja descrição corresponde à busca: ${forPurpose[0].description}` : '';
+    const preserveNumbers = selected.every((product) => this.lastResults.some((entry) => entry.id === product.id));
     this.append({
       role: 'assistant',
       text: `Comparei preço, avaliação e finalidade descrita no catálogo. ${cheapest.title} tem o menor preço: ${this.price(cheapest.price)}${mostExpensive.price > cheapest.price ? `, ${this.price(mostExpensive.price - cheapest.price)} abaixo da opção mais cara` : ''}. A maior nota entre essas opções é ${highestRated.rating.toFixed(1).replace('.', ',')}/5, de ${highestRated.title}.${purposeAdvice} ${new Set(selected.map((product) => product.category)).size > 1 ? 'Esses produtos pertencem a categorias diferentes; confira a finalidade antes de escolher pelo preço.' : 'Confira qual finalidade combina com o seu uso.'}`,
       products: selected,
       comparison: true,
       preserveResultContext: true,
-      replyOptions: [
-        { label: 'Detalhes do primeiro', prompt: 'Fale sobre o primeiro' },
-        { label: 'Detalhes do segundo', prompt: 'Fale sobre o segundo' },
-      ],
+      replyOptions: selected.slice(0, 2).map((product, index) => {
+        const number = preserveNumbers ? this.lastResults.findIndex((entry) => entry.id === product.id) + 1 : index + 1;
+        return { label: `Detalhes da opção ${number}`, prompt: `Fale sobre a opção ${number}` };
+      }),
     });
   }
 
@@ -767,8 +777,47 @@ export class StoreAssistant {
     }
   }
 
+  private cartFingerprint(): string {
+    return JSON.stringify({
+      user: this.auth.currentUserId(),
+      coupon: this.currentCoupon()?.code,
+      items: this.cartItems().map((item) => ({ id: item.product.id, quantity: item.quantity,
+        price: item.product.price, selected: this.cart.isProductSelected(item.product.id) })),
+    });
+  }
+
+  private undoCartChange(): void {
+    const previous = this.cartUndo;
+    if (!previous) {
+      this.append({ role: 'assistant', text: 'Ainda não há uma alteração minha para desfazer nesta conversa.' });
+      return;
+    }
+    this.cartUndo = undefined;
+    if (previous.expectedState !== this.cartFingerprint()) {
+      this.append({ role: 'assistant', text: 'O carrinho mudou depois da minha última alteração. Confira os itens atuais e diga o que deseja ajustar.', showCart: true });
+      return;
+    }
+    if (previous.type === 'coupon') {
+      if (previous.code && !this.couponCatalog.find(previous.code)) {
+        this.append({ role: 'assistant', text: 'O cupom anterior não está mais disponível. Mantive o cupom atual; você pode escolher outro entre os cupons de hoje.', showCoupons: true });
+        return;
+      }
+      if (previous.code) this.cart.applyCoupon(previous.code);
+      else this.cart.removeCoupon();
+    } else {
+      const exists = this.cartItems().some((item) => item.product.id === previous.product.id);
+      if (previous.quantity === 0) this.cart.removeCartItem(previous.product);
+      else if (exists) this.cart.setItemQuantity(previous.product.id, previous.quantity);
+      else this.cart.addCartItem(previous.product, previous.quantity);
+      if (previous.quantity > 0) this.cart.setProductSelected(previous.product.id, previous.selected);
+    }
+    this.append({ role: 'assistant', text: 'Desfiz minha última alteração. Confira o carrinho atualizado:', showCart: true,
+      link: { label: 'Ver carrinho', path: '/cart' } });
+  }
+
   private actOnProduct(product: ProductModel, action: ProductAction, quantity: number): void {
     this.pendingProductAction = undefined;
+    this.pendingQuestion = undefined;
     this.lastFocusedProductId = product.id;
     if (action !== 'remove' && (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99)) {
       this.append({ role: 'assistant', text: 'A quantidade deve ficar entre 1 e 99 unidades.' });
@@ -783,6 +832,9 @@ export class StoreAssistant {
       product = latest;
     }
     const item = this.cartItems().find((entry) => entry.product.id === product.id);
+    const previousItem = { type: 'item' as const, product: item?.product ?? product,
+      quantity: item?.quantity ?? 0, selected: this.cart.isProductSelected(product.id) };
+    const replyOptions = [{ label: 'Desfazer', prompt: 'Desfazer última alteração' }];
 
     if (action === 'add') {
       if ((item?.quantity ?? 0) + quantity > 99) {
@@ -793,9 +845,11 @@ export class StoreAssistant {
         return;
       }
       this.cart.addCartItem(product, quantity);
+      this.cartUndo = { ...previousItem, expectedState: this.cartFingerprint() };
       this.append({
         role: 'assistant',
         text: `${quantity} ${quantity === 1 ? 'unidade adicionada' : 'unidades adicionadas'}: ${product.title}. Agora seu carrinho tem ${this.cartCount()} ${this.cartCount() === 1 ? 'item' : 'itens'}.`,
+        replyOptions,
         link: { label: 'Ver carrinho', path: '/cart' },
       });
       return;
@@ -808,9 +862,11 @@ export class StoreAssistant {
 
     if (action === 'remove') {
       this.cart.removeCartItem(item.product);
+      this.cartUndo = { ...previousItem, expectedState: this.cartFingerprint() };
       this.append({
         role: 'assistant',
         text: `${product.title} foi removido do carrinho.`,
+        replyOptions,
         link: { label: 'Ver carrinho', path: '/cart' },
       });
       return;
@@ -827,9 +883,11 @@ export class StoreAssistant {
       });
       return;
     }
+    if (nextQuantity !== previousItem.quantity) this.cartUndo = { ...previousItem, expectedState: this.cartFingerprint() };
     this.append({
       role: 'assistant',
       text: `Quantidade de ${product.title} atualizada para ${nextQuantity}.`,
+      replyOptions: nextQuantity !== previousItem.quantity ? replyOptions : undefined,
       link: { label: 'Ver carrinho', path: '/cart' },
     });
   }
@@ -837,7 +895,9 @@ export class StoreAssistant {
   private append(message: Omit<ChatMessage, 'id'>): void {
     if (message.role === 'assistant' && message.products?.length) {
       const products = message.products;
-      if (!message.preserveResultContext || !this.lastResults.length) this.lastResults = products;
+      if (!message.preserveResultContext || !products.every((product) => this.lastResults.some((entry) => entry.id === product.id))) {
+        this.lastResults = products;
+      }
       message = {
         ...message,
         optionNumbers: products.map((product, index) => {

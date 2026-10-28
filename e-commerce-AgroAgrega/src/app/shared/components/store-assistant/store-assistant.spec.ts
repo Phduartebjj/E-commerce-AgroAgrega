@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import { Cart } from '../../../core/services/cart/cart.service';
 import { StoreAssistant } from './store-assistant';
 import { calculatePixPrice } from '../../utils/product-card-display';
+import { Auth } from '../../../core/services/auth/auth.service';
 
 // Verifica a interação do assistente com ofertas, produtos e carrinho.
 describe('StoreAssistant', () => {
@@ -312,6 +313,136 @@ describe('StoreAssistant', () => {
       const reply = ask(details.prompt);
       expect(reply.products?.[0].id).toBe(result.products?.[0].id);
       expect(reply.text).toContain('Preço:');
+    });
+
+    it('refina exclusões, marca e nota sem perder o orçamento ou mudar o carrinho', () => {
+      ask('Buscar insumos até R$ 800');
+      const excluded = ask('Não quero sementes');
+      expect(excluded.products!.length).toBeGreaterThan(0);
+      expect(excluded.products!.every((product) => product.category === 'Insumos' && !/sementes/i.test(product.title) && product.price <= 800)).toBe(true);
+      ask('Só MultiGrão');
+      const rated = ask('Com nota mínima 4,5');
+      expect(rated.products, rated.text).toBeDefined();
+      expect(rated.products!.length).toBeGreaterThan(0);
+      expect(rated.products!.every((product) => product.brand === 'MultiGrão' && product.rating >= 4.5 && product.price <= 800 && !/sementes/i.test(product.title))).toBe(true);
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('mostra outras opções sem repetir e aplica a seleção à lista mais recente', () => {
+      const initial = ask('Buscar irrigação até R$ 5000');
+      const firstIds = initial.products!.map((product) => product.id);
+      const next = ask('Outras opções');
+      expect(next.products!.length).toBeGreaterThan(0);
+      expect(next.products!.every((product) => !firstIds.includes(product.id) && product.category === 'Irrigação' && product.price <= 5000)).toBe(true);
+      ask('Adicionar 1 do primeiro');
+      expect(cart.getCartItems()()[0].product.id).toBe(next.products![0].id);
+    });
+
+    it('limpa o limite pela sugestão após uma busca sem resultados e reinicia o assunto', () => {
+      const empty = ask('Buscar irrigação até R$ 1');
+      const broadened = ask(empty.replyOptions!.find((option) => option.label === 'Sem limite de preço')!.prompt);
+      expect(broadened.products!.length).toBeGreaterThan(0);
+      expect(broadened.products!.every((product) => product.category === 'Irrigação')).toBe(true);
+      ask('Recomeçar busca');
+      const reset = ask('Buscar ferramentas');
+      expect(reset.products!.every((product) => product.category === 'Ferramentas')).toBe(true);
+    });
+
+    it('refina o preço em relação ao produto em foco, e não ao mais barato da lista', () => {
+      const initial = ask('Buscar irrigação');
+      const mostExpensive = [...initial.products!].sort((a, b) => b.price - a.price)[0];
+      ask(`Fale sobre a opção ${initial.products!.indexOf(mostExpensive) + 1}`);
+      const cheaper = ask('Mais barato que esse');
+      expect(cheaper.products!.length).toBeGreaterThan(0);
+      expect(cheaper.products!.every((product) => product.price < mostExpensive.price && product.category === 'Irrigação')).toBe(true);
+      expect(cheaper.text).toContain(component.price(Math.round((mostExpensive.price - 0.01) * 100) / 100));
+    });
+
+    it('explica critérios e continua uma pergunta de pagamento após escolher a opção', () => {
+      const initial = ask('Recomende irrigação até R$ 800');
+      const reason = ask('Por que o segundo?');
+      expect(reason.products![0].id).toBe(initial.products![1].id);
+      expect(reason.text).toContain(initial.products![1].description);
+      expect(reason.text).toContain('atende à sua busca');
+      ask('Buscar irrigação');
+      const question = ask('Quanto fica no Pix?');
+      expect(question.text).toContain('De qual produto');
+      const selected = question.products![1];
+      const payment = ask('O segundo');
+      expect(payment.text).toContain(component.price(calculatePixPrice(selected.price)));
+      expect(payment.text).toContain('10x');
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('confirma características com evidência e admite quando a informação não existe', () => {
+      ask('Buscar bomba submersa solar');
+      const solar = ask('É solar?');
+      expect(solar.text).toContain('Alimentação solar: o catálogo informa');
+      expect(solar.text).toContain('750 W');
+      const bluetooth = ask('Tem bluetooth?');
+      expect(bluetooth.text).toContain('Bluetooth: não está informada');
+      expect(bluetooth.products![0].id).toBe(solar.products![0].id);
+    });
+
+    it('aceita o nome do produto para concluir uma ação ambígua', () => {
+      const pending = ask('Adicionar 2 sementes');
+      const selected = pending.products![1];
+      ask(selected.title);
+      expect(cart.getCartItems()()).toHaveLength(1);
+      expect(cart.getCartItems()()[0].product.id).toBe(selected.id);
+      expect(cart.getCartItems()()[0].quantity).toBe(2);
+    });
+
+    it('desfaz inclusão, alteração e remoção preservando quantidades anteriores', () => {
+      ask('Adicionar 2 roçadeiras');
+      ask('Desfazer');
+      expect(cart.isEmpty()).toBe(true);
+      ask('Adicionar 2 roçadeiras');
+      ask('Mais 2');
+      expect(cart.totalCartItens()).toBe(4);
+      ask('Desfazer');
+      expect(cart.totalCartItens()).toBe(2);
+      const product = cart.getCartItems()()[0].product;
+      cart.setProductSelected(product.id, false);
+      ask('Remover roçadeira');
+      ask('Desfazer');
+      expect(cart.totalCartItens()).toBe(2);
+      expect(cart.isProductSelected(product.id)).toBe(false);
+      expect(ask('Desfazer').text).toContain('não há uma alteração');
+    });
+
+    it('desfaz cupom e preserva o cupom atual em tentativa inválida', () => {
+      ask('Aplicar cupom CAMPO15');
+      component.applyCoupon('INEXISTENTE');
+      vi.advanceTimersByTime(4000);
+      expect(cart.coupon()?.code).toBe('CAMPO15');
+      ask('Desfazer');
+      expect(cart.coupon()).toBeNull();
+    });
+
+    it('não sobrescreve mudanças externas ao desfazer', () => {
+      ask('Adicionar 2 roçadeiras');
+      const product = cart.getCartItems()()[0].product;
+      cart.setItemQuantity(product.id, 5);
+      const reply = ask('Desfazer');
+      expect(reply.text).toContain('carrinho mudou');
+      expect(cart.totalCartItens()).toBe(5);
+    });
+
+    it('não aplica o desfazer de uma conta em outra conta', () => {
+      ask('Adicionar 2 roçadeiras');
+      TestBed.inject(Auth).currentUserId.set('outro-usuario');
+      const reply = ask('Desfazer');
+      expect(reply.text).toContain('carrinho mudou');
+    });
+
+    it('compara todas as quatro opções e mantém a numeração após comparar um subconjunto', () => {
+      const initial = ask('Buscar irrigação');
+      expect(ask('Compare todos').products).toHaveLength(4);
+      const comparison = ask('Compare o segundo com o quarto');
+      expect(comparison.products!.map((product) => product.id)).toEqual([initial.products![1].id, initial.products![3].id]);
+      expect(comparison.optionNumbers).toEqual([2, 4]);
+      expect(ask('Fale sobre o terceiro').products![0].id).toBe(initial.products![2].id);
     });
   });
 });

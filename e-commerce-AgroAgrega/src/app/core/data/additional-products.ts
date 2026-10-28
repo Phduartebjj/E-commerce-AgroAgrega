@@ -16,6 +16,7 @@ function createProduct(
     category,
     title,
     price,
+    ...(id === 40 ? { originalPrice: 128.9 } : {}),
     description,
     images: [
       `/assets/images/generated-products/product-${id.toString().padStart(3, '0')}.webp`,
@@ -319,7 +320,7 @@ export const additionalProducts: ProductModel[] = [
     40,
     'Insumos',
     'Adubo Foliar Completo com Micronutrientes 5 L',
-    149.9,
+    112.43,
     'Nutrição foliar balanceada para apoiar o desenvolvimento vegetativo e a produtividade.',
     4.6,
     'AgroSense',

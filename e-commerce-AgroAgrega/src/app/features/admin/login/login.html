@@ -6,7 +6,7 @@
     </div>
     <p class="subtitle">Painel Administrativo</p>
 
-    <form>
+    <form (ngSubmit)="onSubmit()">
       <div class="campo">
         <label for="usuario">Usuário</label>
         <input id="usuario" type="text" name="usuario" [(ngModel)]="usuario" required autofocus />
@@ -21,7 +21,7 @@
         <p class="erro">Usuário ou senha inválidos.</p>
       }
 
-      <button type="submit" (click)="onSubmit()">Entrar</button>
+      <button type="submit">Entrar</button>
     </form>
   </div>
 </div>

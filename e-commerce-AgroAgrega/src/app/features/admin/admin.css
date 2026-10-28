@@ -89,6 +89,7 @@
 }
 .admin-content {
   flex: 1;
+  min-width: 0;
   padding: 32px 40px;
   overflow-y: auto;
 }
@@ -455,7 +456,7 @@ textarea.form-input {
   background: #fff;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  overflow: hidden;
+  overflow-x: auto;
   box-shadow: 0 4px 16px rgba(15, 60, 43, 0.08);
 }
 
@@ -694,6 +695,23 @@ textarea.form-input {
 
   .admin-content {
     padding: 20px;
+  }
+
+  .dashboard-grid,
+  .settings-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .metric-card,
+  .product-form,
+  .products-list,
+  .search-input {
+    min-width: 0;
+  }
+
+  .modal-content {
+    max-height: 85dvh;
+    overflow-y: auto;
   }
 
   .section-header h2 {

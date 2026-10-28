@@ -556,3 +556,13 @@
     order: 1;
   }
 }
+@media (max-width: 760px) {
+  .flash-offers-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 26px;
+    gap: 22px;
+  }
+  .flash-offers-clock { min-height: 140px; }
+  .flash-offers-hero h1 { font-size: 2.5rem; }
+}

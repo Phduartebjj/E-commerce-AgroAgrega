@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AddressService } from '@core/services/address/address.service';
@@ -20,6 +21,9 @@ export class MinhaConta {
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly addressService = inject(AddressService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly profileError = signal('');
   readonly avatar = inject(AvatarService);
 
   userName = this.auth.getName();
@@ -79,6 +83,7 @@ export class MinhaConta {
   }
 
   editProfile(): void {
+    this.profileError.set('');
     this.editingProfile = true;
   }
 
@@ -122,7 +127,10 @@ export class MinhaConta {
     if (!name) return;
 
     const result = this.auth.updateProfile(name, email);
-    if (!result.res) return;
+    if (!result.res) {
+      this.profileError.set(result.message || 'Não foi possível salvar os dados. Tente novamente.');
+      return;
+    }
 
     this.userName = name;
     this.userEmail = email;
@@ -175,8 +183,10 @@ export class MinhaConta {
       return;
     }
 
-    this.cepService.getCep(cep).subscribe({
+    this.cepService.getCep(cep).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (dados) => {
+        if (this.addressForm.controls.cep.value.replace(/\D/g, '') !== cep) return;
+        this.changeDetector.markForCheck();
         if (dados.erro) {
           this.addressForm.controls.cep.setErrors({ invalidCep: true });
           return;
@@ -191,7 +201,9 @@ export class MinhaConta {
         });
       },
       error: () => {
+        if (this.addressForm.controls.cep.value.replace(/\D/g, '') !== cep) return;
         this.addressForm.controls.cep.setErrors({ invalidCep: true });
+        this.changeDetector.markForCheck();
       },
     });
   }

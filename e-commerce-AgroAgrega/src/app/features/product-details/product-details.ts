@@ -172,9 +172,6 @@ export class ProductDetails implements OnInit {
       this.product = this.productService
         .getProducts()()
         .find((product) => product.id === this.id);
-      if (this.isReferenceProduct && this.product) {
-        this.product = { ...this.product, price: REFERENCE_PRODUCT.price, originalPrice: REFERENCE_PRODUCT.originalPrice, rating: REFERENCE_PRODUCT.rating };
-      }
       this.quantity = 1;
       this.selectedImageIndex = 0;
       this.imageUnavailable = false;

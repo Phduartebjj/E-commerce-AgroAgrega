@@ -140,6 +140,10 @@ export class OrderService {
     });
   }
 
+  updateOrderStatus(orderId: string, status: OrderStatus): void {
+    this.orders.update((orders) => orders.map((order) => order.id === orderId ? { ...order, status } : order));
+  }
+
   updateOrderStatusByMercadoPagoId(
     mercadoPagoOrderId: string,
     status: OrderStatus,

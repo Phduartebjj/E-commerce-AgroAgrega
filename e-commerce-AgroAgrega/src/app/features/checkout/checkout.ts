@@ -1,72 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, ElementRef, inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, ElementRef, inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
-
-const bwipjs = {
-  toCanvas(
-    canvas: HTMLCanvasElement,
-    options: {
-      bcid: string;
-      text: string;
-      scale?: number;
-      padding?: number;
-      backgroundcolor?: string;
-      barcolor?: string;
-      height?: number;
-    },
-  ): void {
-    const scale = options.scale ?? 2;
-    const padding = options.padding ?? 0;
-    const context = canvas.getContext('2d');
-
-    if (!context) {
-      throw new Error('Canvas is not supported');
-    }
-
-    const isQrCode = options.bcid === 'qrcode';
-    const size = isQrCode ? 29 : options.text.length * 11;
-
-    canvas.width = size * scale + padding * 2;
-    canvas.height =
-      (isQrCode ? size : (options.height ?? 16)) * scale + padding * 2;
-
-    context.fillStyle = `#${options.backgroundcolor ?? 'FFFFFF'}`;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    context.fillStyle = `#${options.barcolor ?? '000000'}`;
-
-    if (isQrCode) {
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-          const index = (x + y * size) % options.text.length;
-
-          if ((options.text.charCodeAt(index) + x * 3 + y * 7) % 5 < 2) {
-            context.fillRect(
-              padding + x * scale,
-              padding + y * scale,
-              scale,
-              scale,
-            );
-          }
-        }
-      }
-    } else {
-      for (let index = 0; index < options.text.length * 8; index++) {
-        if (
-          (options.text.charCodeAt(index % options.text.length) + index) % 3 !==
-          0
-        ) {
-          context.fillRect(
-            padding + index * scale,
-            padding,
-            scale,
-            (options.height ?? 16) * scale,
-          );
-        }
-      }
-    }
-  },
-};
 
 import { Cart } from '../../core/services/cart/cart.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
@@ -103,6 +39,11 @@ export class CheckoutComponent {
   private auth = inject(Auth);
   private readonly addressService = inject(AddressService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly demoPayments = !this.paymentApiService.enabled;
+  submitting = false;
+  checkoutError = '';
 
   readonly PaymentMethod = OrderPaymentMethod;
   readonly router = inject(Router);
@@ -286,6 +227,7 @@ export class CheckoutComponent {
     'RO',
     'RR',
     'SC',
+    'SP',
     'SE',
     'TO',
   ];
@@ -301,6 +243,8 @@ export class CheckoutComponent {
 
     this.cepService.getCep(cepLimpo).subscribe({
       next: (dados) => {
+        if (this.checkoutForm.controls.cep.value.replace(/\D/g, '') !== cepLimpo) return;
+        this.changeDetector.markForCheck();
         if (dados.erro) {
           this.checkoutForm.controls.cep.setErrors({
             invalidCep: true,
@@ -318,7 +262,9 @@ export class CheckoutComponent {
       },
 
       error: (erro) => {
-        console.error('Erro ao buscar CEP:', erro);
+        if (this.checkoutForm.controls.cep.value.replace(/\D/g, '') !== cepLimpo) return;
+        this.checkoutError = 'Não foi possível consultar o CEP. Preencha o endereço manualmente ou tente novamente.';
+        this.changeDetector.markForCheck();
       },
     });
   }
@@ -361,11 +307,13 @@ export class CheckoutComponent {
 
     if (isCard) {
       cardFields.forEach((control) => {
+        control.enable();
         control.addValidators(Validators.required);
         control.updateValueAndValidity();
       });
     } else {
       cardFields.forEach((control) => {
+        control.disable();
         control.removeValidators(Validators.required);
         control.updateValueAndValidity();
       });
@@ -415,6 +363,7 @@ export class CheckoutComponent {
       this.paymentCodeFeedback =
         'Não foi possível copiar. Selecione o código manualmente.';
     }
+    this.changeDetector.markForCheck();
   }
 
   private generatePixCode(): void {
@@ -456,7 +405,7 @@ export class CheckoutComponent {
     this.renderBoletoBarcode();
   }
 
-  private renderPixQrCode(): void {
+  private async renderPixQrCode(): Promise<void> {
     if (
       !isPlatformBrowser(this.platformId) ||
       !this.pixCanvas ||
@@ -466,6 +415,8 @@ export class CheckoutComponent {
     }
 
     try {
+      const { default: bwipjs } = await import('@bwip-js/browser');
+      if (!this.pixCanvas || this.destroyRef.destroyed) return;
       bwipjs.toCanvas(this.pixCanvas, {
         bcid: 'qrcode',
         text: this.pixCopyPasteCode,
@@ -480,7 +431,7 @@ export class CheckoutComponent {
     }
   }
 
-  private renderBoletoBarcode(): void {
+  private async renderBoletoBarcode(): Promise<void> {
     if (
       !isPlatformBrowser(this.platformId) ||
       !this.boletoCanvas ||
@@ -490,6 +441,8 @@ export class CheckoutComponent {
     }
 
     try {
+      const { default: bwipjs } = await import('@bwip-js/browser');
+      if (!this.boletoCanvas || this.destroyRef.destroyed) return;
       bwipjs.toCanvas(this.boletoCanvas, {
         bcid: 'code128',
         text: this.boletoBarcodeValue,
@@ -518,6 +471,12 @@ export class CheckoutComponent {
   }
 
   finishOrder(): void {
+    if (this.submitting) return;
+    this.checkoutError = '';
+    if (!this.checkoutItems().length) {
+      this.checkoutError = 'Selecione pelo menos um produto no carrinho antes de finalizar.';
+      return;
+    }
     this.cart.refreshCouponValidity();
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
@@ -551,9 +510,14 @@ export class CheckoutComponent {
       this.auth.getName() ||
       'Cliente';
 
-    if (paymentMethod === OrderPaymentMethod.CreditCard) {
+    if (paymentMethod === OrderPaymentMethod.CreditCard && !this.demoPayments) {
+      this.submitting = true;
       this.paymentApiService
         .criarPedidoTeste(this.totalValue)
+        .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => {
+          this.submitting = false;
+          this.changeDetector.markForCheck();
+        }))
         .subscribe({
           next: (payment) => {
             this.orderService.createOrder(
@@ -575,10 +539,7 @@ export class CheckoutComponent {
           },
 
           error: (error) => {
-            console.error(
-              'Erro ao iniciar pagamento:',
-              error,
-            );
+            this.checkoutError = 'Não foi possível iniciar o pagamento. Seu carrinho foi preservado. Tente novamente.';
           },
         });
 
@@ -586,6 +547,7 @@ export class CheckoutComponent {
     }
 
     if (
+      this.demoPayments ||
       paymentMethod === OrderPaymentMethod.Pix ||
       paymentMethod === OrderPaymentMethod.Boleto
     ) {

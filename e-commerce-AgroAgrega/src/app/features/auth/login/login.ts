@@ -9,6 +9,7 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
+  DestroyRef,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,6 +30,8 @@ export class Login implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly ngZone = inject(NgZone);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly googleUnavailable = signal(false);
 
   readonly showPassword = signal(false);
 
@@ -51,7 +54,21 @@ export class Login implements AfterViewInit {
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    setTimeout(() => this.initGoogleLogin());
+    const script = document.querySelector<HTMLScriptElement>('script[src="https://accounts.google.com/gsi/client"]');
+    const initialize = () => this.initGoogleLogin();
+    const unavailable = () => this.googleUnavailable.set(true);
+    script?.addEventListener('load', initialize);
+    script?.addEventListener('error', unavailable);
+    const timer = setTimeout(initialize);
+    const timeout = setTimeout(() => {
+      if (typeof google === 'undefined' || !google.accounts?.id) unavailable();
+    }, 5000);
+    this.destroyRef.onDestroy(() => {
+      clearTimeout(timer);
+      clearTimeout(timeout);
+      script?.removeEventListener('load', initialize);
+      script?.removeEventListener('error', unavailable);
+    });
   }
 
   private initGoogleLogin(): void {
@@ -62,10 +79,10 @@ export class Login implements AfterViewInit {
       return;
     }
 
-    if (!google?.accounts?.id) {
-      console.error('Google Identity Services não carregado');
+    if (typeof google === 'undefined' || !google.accounts?.id) {
       return;
     }
+    this.googleUnavailable.set(false);
 
     google.accounts.id.initialize({
       client_id: '740887151146-vhcosdbujqt0iigquqecnj9b1b94pnl3.apps.googleusercontent.com',
@@ -83,14 +100,12 @@ export class Login implements AfterViewInit {
       size: 'large',
       text: 'signin_with',
       shape: 'rectangular',
-      width: 1200,
+      width: Math.min(400, googleButton.clientWidth || 320),
       locale: 'pt-BR',
     });
   }
 
   private handleGoogleLogin(response: any): void {
-    console.log('Resposta Google:', response);
-
     const credential = response?.credential;
 
     if (!credential) {
@@ -101,8 +116,6 @@ export class Login implements AfterViewInit {
       return;
     }
 
-    console.log('Google ID token:', credential);
-
     try {
       // Decodifica os dados do usuário contidos no token do Google
       const payload = jwtDecode<{
@@ -110,8 +123,6 @@ export class Login implements AfterViewInit {
         name: string;
         email: string;
       }>(credential);
-
-      console.log('Dados do usuário autenticado no Google:', payload);
 
       // Registra a sessão no AuthService
       this.auth.loginWithGoogle({

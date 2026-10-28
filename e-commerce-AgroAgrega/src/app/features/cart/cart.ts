@@ -5,7 +5,7 @@ import { CartItemModel } from '../../models/cartItem';
 import { ProductModel } from '../../models/product';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { RouterLink } from '@angular/router';
-import { productsItems } from '@core/data/products';
+import { ProductService } from '../../core/services/product/product.service';
 import { ProductCardComponent } from '../products/product-card/product-card';
 import { getPartnerStoreLogo } from '../../shared/constants/partner-stores';
 
@@ -22,6 +22,7 @@ interface CartGroup {
 })
 export class CartComponent {
   private readonly cart = inject(Cart);
+  private readonly products = inject(ProductService).getProducts();
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly cartItems = this.cart.getCartItems();
@@ -56,7 +57,7 @@ export class CartComponent {
 
   readonly recommendations = computed(() => {
     const cartIds = new Set(this.cartItems().map((item) => item.product.id));
-    return productsItems.filter((product) => !cartIds.has(product.id)).slice(0, 4);
+    return this.products().filter((product) => !cartIds.has(product.id)).slice(0, 4);
   });
 
   addProduct(product: ProductModel): void {

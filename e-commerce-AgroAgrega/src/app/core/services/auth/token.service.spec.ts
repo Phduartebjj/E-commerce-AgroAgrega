@@ -51,4 +51,13 @@ describe('TokenAuth', () => {
     expect(service.getName()).toBe('');
     expect(service.getEmail()).toBe('');
   });
+
+  it('preserva nomes Unicode e lê o token depois de outros cookies', () => {
+    document.cookie = 'preferencia=verde; path=/';
+    service.setToken({ id: 'unicode', name: 'Ana 🌱 李', email: 'ana@example.test' });
+    localStorage.removeItem('auth_session');
+    expect(service.getName()).toBe('Ana 🌱 李');
+    expect(service.checkToken()).toBe(true);
+    document.cookie = 'preferencia=; max-age=0; path=/';
+  });
 });

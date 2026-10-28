@@ -431,6 +431,7 @@
         </label>
 
         <div class="form-actions">
+          @if (profileError()) { <p class="errorMessage" role="alert">{{ profileError() }}</p> }
           <button type="submit" class="btn btn--primary">Salvar</button>
 
           <button type="button" class="btn btn--ghost" (click)="cancelEdit()">Cancelar</button>

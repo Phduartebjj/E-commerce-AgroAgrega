@@ -62,6 +62,7 @@ export class Orders {
   }
 
   private syncPendingPayments(): void {
+    if (!this.paymentApiService.enabled) return;
     const pendingOrders = this.orders().filter(
       (order) =>
         order.status === OrderStatus.Pending &&

@@ -227,6 +227,9 @@
         <div class="social-row">
           <div id="google-btn"></div>
         </div>
+        @if (googleUnavailable()) {
+          <p class="field__error" role="status">O login com Google está indisponível agora. Entre com seu e-mail e senha.</p>
+        }
 
         <p class="register-line">
           Ainda não tem conta?

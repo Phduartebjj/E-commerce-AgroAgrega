@@ -59,7 +59,7 @@ describe('WeatherService', () => {
       },
     });
 
-    expect(error?.message).toContain(coordinate);
+    expect(error?.message.toLowerCase()).toContain(coordinate);
     httpTesting.expectNone('https://api.open-meteo.com/v1/forecast');
   });
 });
