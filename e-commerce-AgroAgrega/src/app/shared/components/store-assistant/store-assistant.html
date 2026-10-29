@@ -1,21 +1,3 @@
-<button
-  class="assistant-launcher"
-  type="button"
-  aria-label="{{ open() ? 'Fechar' : 'Abrir' }} assistente AgroAgrega"
-  aria-controls="agro-assistant-panel"
-  [attr.aria-expanded]="open()"
-  (click)="toggle()"
->
-  <img
-    class="assistant-launcher-art"
-    src="assets/images/catalog/assistant.png"
-    alt=""
-    width="1672"
-    height="941"
-    decoding="async"
-  />
-</button>
-
 @if (open()) {
   <div class="assistant-entry" aria-hidden="true">
     <img src="/assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />

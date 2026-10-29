@@ -1,0 +1,88 @@
+.coupon-showcase .coupon-content {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+
+.coupon-showcase .coupon-results {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  min-width: 0;
+}
+
+.coupon-results__heading { padding: 12px 4px; }
+.coupon-groups { display: grid; gap: 28px; }
+.coupon-group {
+  padding: 24px;
+  border-radius: 14px;
+  background: #f1f5f2;
+  min-width: 0;
+}
+.coupon-group__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.coupon-group__heading h3 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.7rem); letter-spacing: -.025em; }
+.coupon-group__heading > span { color: #527163; font-size: .82rem; white-space: nowrap; }
+.coupon-group .coupon-showcase-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.coupon-ticket {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  border: 1px solid #e0e7e2;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 3px #133e2410;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.coupon-ticket:is(:hover, :focus-within) { border-color: #96c5aa; box-shadow: 0 5px 16px #133e2414; }
+.coupon-ticket__main { display: flex; gap: 15px; padding: 22px 20px 18px; flex: 1; }
+.coupon-ticket__icon {
+  display: grid; place-items: center; flex: 0 0 48px; width: 48px; height: 48px;
+  border: 1px solid #e1e9e2; border-radius: 50%; color: #147747; background: #f9fcf8;
+}
+.coupon-ticket__icon svg { width: 27px; height: 27px; }
+.coupon-ticket--member .coupon-ticket__icon { background: #f1facf; color: #597b17; }
+.coupon-ticket__copy { min-width: 0; }
+.coupon-ticket h4 { margin: 0 0 6px; color: #123d2b; font-size: 1.08rem; line-height: 1.35; font-weight: 750; }
+.coupon-ticket p { margin: 0; color: #64786c; font-size: .83rem; line-height: 1.5; }
+.coupon-ticket code { display: block; margin-top: 9px; color: #266246; font-family: inherit; font-weight: 700; font-size: .72rem; line-height: 1.5; overflow-wrap: anywhere; }
+.coupon-ticket .coupon-details-button { display: block; margin-top: 4px; font-size: .74rem; text-align: left; }
+.coupon-ticket__details { padding: 0 20px 18px; }
+.coupon-ticket__details p + p { margin-top: 8px; }
+.coupon-ticket__footer {
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-inline: 18px; padding: 16px 0; border-top: 1px dashed #d7e2da;
+}
+.coupon-ticket__footer::before, .coupon-ticket__footer::after {
+  position: absolute; top: -9px; width: 16px; height: 16px; border-radius: 50%;
+  border: 1px solid #e0e7e2; background: #f1f5f2; content: ''; clip-path: inset(0 0 0 50%);
+}
+.coupon-ticket__footer::before { left: -27px; }
+.coupon-ticket__footer::after { right: -27px; transform: rotate(180deg); }
+.coupon-ticket .coupon-validity { display: flex; align-items: center; gap: 5px; color: #738278; font-size: .72rem; line-height: 1.5; }
+.coupon-validity svg { width: 15px; height: 15px; flex: 0 0 15px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+.coupon-ticket .coupon-apply { min-height: 40px; flex: 0 0 auto; border-radius: 6px; padding: 8px 14px; box-shadow: none; }
+.coupon-showcase .coupon-aside { position: static; display: grid; grid-template-columns: minmax(0, 1fr); }
+.coupon-showcase .coupon-how header { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1100px) {
+  .coupon-group .coupon-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .coupon-showcase .coupon-content { width: 100%; }
+  .coupon-group { padding: 16px; }
+  .coupon-group__heading { gap: 8px; margin-bottom: 16px; }
+  .coupon-group .coupon-showcase-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .coupon-showcase .coupon-aside { grid-template-columns: minmax(0, 1fr); }
+  .coupon-ticket__main { padding: 18px 16px; gap: 12px; }
+  .coupon-ticket__icon { flex-basis: 40px; width: 40px; height: 40px; }
+  .coupon-ticket h4 { font-size: 1rem; }
+  .coupon-ticket__footer { flex-wrap: wrap; }
+  .coupon-ticket__footer .coupon-apply { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .coupon-ticket { transition: none; } }

@@ -7,40 +7,8 @@
   font-family: inherit;
 }
 
-.assistant-launcher,
 .assistant-panel {
   pointer-events: auto;
-}
-
-.assistant-launcher {
-  position: relative;
-  display: block;
-  width: 220px;
-  aspect-ratio: 1672 / 480;
-  overflow: hidden;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  filter: drop-shadow(0 5px 8px #063a3629);
-  transition: transform 180ms ease;
-}
-
-.assistant-launcher:hover {
-  transform: translateY(-3px);
-}
-
-.assistant-launcher-art {
-  position: absolute;
-  top: -42%;
-  left: 0;
-  width: 100%;
-  height: auto;
-}
-
-:host:has(.assistant-panel) .assistant-launcher {
-  visibility: hidden;
-  opacity: 0;
 }
 
 .assistant-entry {
@@ -834,7 +802,6 @@
   font-size: 1.2rem;
 }
 
-.assistant-launcher:focus-visible,
 .assistant-panel button:focus-visible,
 .assistant-panel a:focus-visible,
 .assistant-composer label:focus-within {
@@ -848,9 +815,6 @@
     bottom: max(10px, env(safe-area-inset-bottom));
   }
 
-  .assistant-launcher {
-    width: 176px;
-  }
 
   .assistant-panel {
     width: min(380px, calc(100vw - 20px));
@@ -884,9 +848,6 @@
   }
   .assistant-panel {
     animation: none;
-  }
-  .assistant-launcher {
-    transition: none;
   }
   .assistant-typing__dots i,
   .assistant-cursor,

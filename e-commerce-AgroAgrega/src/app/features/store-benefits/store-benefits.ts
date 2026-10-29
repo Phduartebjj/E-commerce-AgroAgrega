@@ -7,7 +7,6 @@ import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
 import { CouponService } from '@core/services/coupon/coupon.service';
 import { CouponModel } from '@models/coupon';
-import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { CouponShowcaseStylesComponent } from './coupon-showcase-styles';
 
 type StoreBenefitMode = 'coupons' | 'agroPlus';
@@ -38,7 +37,6 @@ export class StoreBenefitsComponent {
   private readonly router = inject(Router);
   private readonly cart = inject(Cart);
   readonly auth = inject(Auth);
-  readonly assistant = inject(StoreAssistantState);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly mode = (this.route.snapshot.data['storeBenefitMode'] ?? 'coupons') as StoreBenefitMode;
@@ -237,6 +235,21 @@ export class StoreBenefitsComponent {
       });
   }
 
+  get couponGroups(): Array<{ id: string; title: string; coupons: CouponModel[] }> {
+    const groups = [
+      { id: 'recommended', title: 'Recomendados', campaigns: ['BEMVINDO10'] },
+      { id: 'inputs', title: 'Insumos e cultivo', campaigns: ['AGRO20', 'SAFRA12', 'RAIZ10', 'CULTIVO12', 'COLHEITA15'] },
+      { id: 'tools', title: 'Ferramentas e equipamentos', campaigns: ['EQUIPA10', 'TRATOR10', 'PRECISAO12'] },
+      { id: 'irrigation', title: 'Irrigação', campaigns: ['AGUA8'] },
+      { id: 'livestock', title: 'Pecuária', campaigns: ['CAMPO15', 'PASTO8'] },
+    ];
+    const visible = this.visibleCoupons;
+    return groups.map((group) => ({
+      id: group.id, title: group.title,
+      coupons: visible.filter((coupon) => group.campaigns.includes(this.couponCampaign(coupon))),
+    })).filter((group) => group.coupons.length > 0);
+  }
+
   constructor() {
     this.agroPlusActive.set(this.readAgroPlusMembership());
     effect(() => {
@@ -341,10 +354,6 @@ export class StoreBenefitsComponent {
 
   toggleCouponDetails(code: string): void {
     this.expandedCouponCode.update((current) => (current === code ? null : code));
-  }
-
-  openCouponSupport(): void {
-    this.assistant.show();
   }
 
   applyCoupon(coupon: CouponModel): void {

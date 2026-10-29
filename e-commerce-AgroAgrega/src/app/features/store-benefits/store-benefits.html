@@ -105,39 +105,42 @@
             </div>
           </header>
 
-          <div class="coupon-showcase-grid">
-            @for (coupon of visibleCoupons; track coupon.code) {
-              <article
-                class="coupon-showcase-card"
-                [class.coupon-showcase-card--member]="isAgroPlusCoupon(coupon)"
-              >
-                <div class="coupon-showcase-card__discount">
-                  <strong>{{ coupon.discountPercentage }}%</strong>
-                  <span>de desconto</span>
-                  <i aria-hidden="true">{{ couponCampaign(coupon) === 'AGUA8' ? '●' : '❧' }}</i>
-                </div>
-
-                <div class="coupon-showcase-card__body">
-                  <div class="coupon-showcase-card__copy">
-                    <span class="coupon-showcase-card__label">{{ couponTitle(coupon) }}</span>
-                    <h3>{{ coupon.code }}</h3>
-                    <p>{{ couponDescription(coupon) }}</p>
-                    <small
-                      ><span aria-hidden="true">🛒</span> {{ couponApplicability(coupon) }}</small
-                    >
-                    <small class="coupon-validity">Válido hoje até 23h59 (Brasília)</small>
-                    @if (expandedCouponCode() === coupon.code) {
-                      <p class="coupon-showcase-card__details">
-                        Use um cupom por pedido. O desconto válido será calculado automaticamente no
-                        carrinho, conforme os itens participantes.
-                      </p>
-                    }
-                  </div>
-
-                  <div class="coupon-showcase-card__actions">
-                    @if (couponBadge(coupon); as badge) {
-                      <span class="coupon-badge">{{ badge }}</span>
-                    }
+          <div class="coupon-groups">
+            @for (group of couponGroups; track group.id) {
+              <section class="coupon-group" [attr.aria-labelledby]="'coupon-group-' + group.id">
+                <header class="coupon-group__heading">
+                  <h3 [id]="'coupon-group-' + group.id">{{ group.title }}</h3>
+                  <span>{{ group.coupons.length }} {{ group.coupons.length === 1 ? 'cupom' : 'cupons' }}</span>
+                </header>
+                <div class="coupon-showcase-grid">
+                  @for (coupon of group.coupons; track coupon.code) {
+                    <article class="coupon-ticket" [class.coupon-ticket--member]="isAgroPlusCoupon(coupon)">
+                      <div class="coupon-ticket__main">
+                        <span class="coupon-ticket__icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 7h14l1 14H4L5 7ZM8 8V6a4 4 0 0 1 8 0v2M9 14l6-3M9 11h.01M15 14h.01" />
+                          </svg>
+                        </span>
+                        <div class="coupon-ticket__copy">
+                          <h4>{{ coupon.discountPercentage }}% OFF · {{ couponTitle(coupon) }}</h4>
+                          <p>{{ couponApplicability(coupon) }}</p>
+                          <code>{{ coupon.code }}</code>
+                          <button class="coupon-details-button" type="button"
+                            [attr.aria-expanded]="expandedCouponCode() === coupon.code"
+                            [attr.aria-controls]="'coupon-details-' + coupon.code"
+                            (click)="toggleCouponDetails(coupon.code)">
+                            Ver detalhes <span aria-hidden="true">{{ expandedCouponCode() === coupon.code ? '⌃' : '⌄' }}</span>
+                          </button>
+                        </div>
+                      </div>
+                      @if (expandedCouponCode() === coupon.code) {
+                        <div class="coupon-ticket__details" [id]="'coupon-details-' + coupon.code">
+                          <p>{{ couponDescription(coupon) }}</p>
+                          <p>Use um cupom por pedido. O desconto válido será calculado automaticamente no carrinho, conforme os itens participantes.</p>
+                        </div>
+                      }
+                      <footer class="coupon-ticket__footer">
+                        <small class="coupon-validity"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5" /><path d="M10 5v5l3 2" /></svg>Válido hoje até 23h59 (Brasília)</small>
                     <button
                       type="button"
                       class="coupon-apply"
@@ -149,23 +152,14 @@
                       } @else if (isAgroPlusCoupon(coupon) && !agroPlusActive()) {
                         Conhecer Agro+
                       } @else {
-                        Aplicar cupom
+                        Aplicar
                       }
                     </button>
-                    <button
-                      type="button"
-                      class="coupon-details-button"
-                      [attr.aria-expanded]="expandedCouponCode() === coupon.code"
-                      (click)="toggleCouponDetails(coupon.code)"
-                    >
-                      Ver detalhes
-                      <span aria-hidden="true">{{
-                        expandedCouponCode() === coupon.code ? '⌃' : '⌄'
-                      }}</span>
-                    </button>
-                  </div>
+                      </footer>
+                    </article>
+                  }
                 </div>
-              </article>
+              </section>
             } @empty {
               <div class="coupon-empty-state" role="status">
                 <span aria-hidden="true">%</span>
@@ -185,21 +179,7 @@
           }
         </section>
 
-        <aside class="coupon-aside" aria-label="Ajuda e resumo de benefícios">
-          <article class="coupon-help-card">
-            <img
-              src="/assets/images/coupons/coupons-help-team.png"
-              alt="Precisa de ajuda para escolher o melhor cupom? Nosso time e o Touro AgroAgrega estão prontos para te ajudar a economizar ainda mais!"
-              width="1619"
-              height="971"
-              loading="lazy"
-              decoding="async"
-            />
-            <button type="button" class="coupon-help-button" (click)="openCouponSupport()">
-              <span class="coupon-help-button__label">Falar com o time AgroAgrega</span>
-            </button>
-          </article>
-
+        <aside class="coupon-aside" aria-label="Resumo de benefícios">
           <article class="coupon-benefits-summary">
             <header>
               <h2>Seus benefícios</h2>
@@ -242,12 +222,6 @@
             <h2 id="how-coupons-work-new">Como usar seus cupons</h2>
             <p>É rápido e fácil garantir mais economia na sua compra.</p>
           </div>
-          <img
-            src="/assets/images/coupons/coupons-tip.png"
-            alt="Dica do Touro: você pode aplicar cupons e conferir o maior desconto no carrinho"
-            loading="lazy"
-            decoding="async"
-          />
         </header>
         <ol>
           <li>

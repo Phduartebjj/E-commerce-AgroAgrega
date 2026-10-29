@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 
 import { Cart } from '../../../core/services/cart/cart.service';
 import { StoreAssistant } from './store-assistant';
+import { StoreAssistantState } from './store-assistant-state';
 import { calculatePixPrice } from '../../utils/product-card-display';
 import { Auth } from '../../../core/services/auth/auth.service';
 
@@ -33,11 +34,8 @@ describe('StoreAssistant', () => {
   });
 
   it('opens a floating chat with the mascot hidden until the agent finishes loading', () => {
-    const launcher = fixture.nativeElement.querySelector(
-      '.assistant-launcher',
-    ) as HTMLButtonElement;
-    expect(launcher.getAttribute('aria-expanded')).toBe('false');
-    launcher.click();
+    expect(fixture.nativeElement.querySelector('.assistant-launcher')).toBeNull();
+    TestBed.inject(StoreAssistantState).show();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.assistant-header img')).toBeNull();
@@ -48,7 +46,7 @@ describe('StoreAssistant', () => {
 
   it('loads the assistant before typing the welcome and each shortcut in order', () => {
     const host = fixture.nativeElement as HTMLElement;
-    host.querySelector<HTMLButtonElement>('.assistant-launcher')?.click();
+    TestBed.inject(StoreAssistantState).show();
     fixture.detectChanges();
 
     expect(component.isStarting()).toBe(true);

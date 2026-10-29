@@ -811,6 +811,21 @@
   font-weight: 800;
 }
 
+.conteudo-do-menu .menu-link--tourino {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-link--tourino:focus-visible {
+  outline: 2px solid #168448;
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
 .menu-icon {
   position: relative;
   display: inline-grid;

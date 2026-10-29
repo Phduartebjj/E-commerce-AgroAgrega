@@ -42,8 +42,7 @@
 
   transition:
     border-color 260ms ease,
-    box-shadow 360ms ease,
-    transform 360ms cubic-bezier(0.2, 0.9, 0.25, 1.25);
+    box-shadow 260ms ease;
 }
 
 .card::after {
@@ -51,21 +50,12 @@
   z-index: 2;
   inset: -2px;
   padding: 2px;
-  border-radius: 20px;
+  border-radius: inherit;
   content: '';
 
-  background: conic-gradient(
-    from var(--about-neon-angle),
-    rgba(89, 112, 255, 0.2) 0deg 230deg,
-    rgba(94, 92, 230, 0.62) 265deg,
-    #5b5bd6 300deg,
-    #9fa8ff 320deg,
-    #7c83ff 340deg,
-    rgba(89, 112, 255, 0.2) 360deg
-  );
+  background: linear-gradient(135deg, #b9e7ff, #7dd3fc 45%, #9cddff);
 
-  filter: drop-shadow(0 0 5px rgba(91, 91, 214, 0.55))
-    drop-shadow(0 0 12px rgba(124, 131, 255, 0.32));
+  filter: drop-shadow(0 0 4px rgba(125, 211, 252, 0.3));
 
   mask:
     linear-gradient(#000 0 0) content-box,
@@ -81,26 +71,21 @@
 
   opacity: 0;
   pointer-events: none;
-  transition: opacity 160ms ease;
+  transition: opacity 260ms ease;
 }
 
 .card:hover,
 .card:focus-within {
   z-index: 2;
-  border-color: rgba(91, 91, 214, 0.45);
+  border-color: #7dd3fc;
 
   box-shadow:
-    0 24px 42px -18px rgba(91, 91, 214, 0.28),
-    0 12px 24px rgba(34, 41, 70, 0.16);
-
-  animation: about-card-pop 620ms cubic-bezier(0.2, 0.88, 0.25, 1) both;
-
-  transform: translateY(-8px) scale(1.02);
+    0 18px 24px -12px rgba(56, 189, 248, 0.48),
+    0 6px 16px rgba(125, 211, 252, 0.2);
 }
 
 .card:hover::after,
 .card:focus-within::after {
-  animation: about-neon-travel 1.7s linear infinite;
   opacity: 1;
 }
 
@@ -121,12 +106,6 @@
 
   object-fit: cover;
 
-  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.card:hover .foto,
-.card:focus-within .foto {
-  transform: scale(1.035);
 }
 
 .card-content {
@@ -287,7 +266,7 @@
 }
 
 .social-link:focus-visible {
-  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline: 3px solid rgba(56, 189, 248, 0.5);
   outline-offset: 3px;
 }
 
@@ -371,40 +350,6 @@
   }
 }
 
-@keyframes about-card-pop {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-
-  44% {
-    transform: translateY(-13px) scale(1.04);
-  }
-
-  68% {
-    transform: translateY(-5px) scale(1.012);
-  }
-
-  84% {
-    transform: translateY(-9px) scale(1.028);
-  }
-
-  100% {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-@property --about-neon-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes about-neon-travel {
-  to {
-    --about-neon-angle: 360deg;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .card,
   .card::after,
@@ -413,9 +358,4 @@
     transition-duration: 0.01ms !important;
   }
 
-  .card:hover,
-  .card:focus-within {
-    animation: none;
-    transform: none;
-  }
 }

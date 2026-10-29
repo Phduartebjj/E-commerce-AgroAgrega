@@ -6,6 +6,7 @@ import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
 import { ProductModel } from '@models/product';
 import { Header } from './header';
+import { StoreAssistantState } from '../store-assistant/store-assistant-state';
 
 // Verifica busca, atalhos, menu da conta e indicadores do cabeçalho.
 describe('Header', () => {
@@ -40,6 +41,16 @@ describe('Header', () => {
     expect(component).toBeTruthy();
   });
 
+  it('abre o Tourino pelo botão imediatamente depois de Ofertas', () => {
+    const button = fixture.nativeElement.querySelector('.menu-link--tourino') as HTMLButtonElement;
+    expect(button.previousElementSibling?.textContent).toContain('Ofertas');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    button.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(StoreAssistantState).open()).toBe(true);
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+  });
+
   it('should submit the pill search with the Buscar button or Enter', () => {
     const router = TestBed.inject(Router);
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
@@ -70,8 +81,8 @@ describe('Header', () => {
     const links = host.querySelectorAll('.conteudo-do-menu .menu-link');
     const icons = host.querySelectorAll('.conteudo-do-menu .menu-icon');
 
-    expect(links).toHaveLength(9);
-    expect(icons).toHaveLength(9);
+    expect(links).toHaveLength(10);
+    expect(icons).toHaveLength(10);
     expect(host.textContent).toContain('Cupons');
     expect(host.textContent).toContain('Agro+');
     expect(host.textContent).toContain('Ofertas');

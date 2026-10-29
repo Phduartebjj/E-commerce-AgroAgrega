@@ -5,6 +5,7 @@ import { Auth } from '@core/services/auth/auth.service';
 import { AvatarService } from '@core/services/avatar/avatar.service';
 import { FavoritesService } from '@core/services/favorites/favorites.service';
 import { FavoritesComponent } from '../favorites/favorites.component';
+import { StoreAssistantState } from '../store-assistant/store-assistant-state';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +19,7 @@ export class Header {
   private readonly favoritesService = inject(FavoritesService);
   private readonly auth = inject(Auth);
   readonly avatar = inject(AvatarService);
+  readonly assistant = inject(StoreAssistantState);
 
   readonly favoritesOpen = signal(false);
   readonly accountMenuOpen = signal(false);
