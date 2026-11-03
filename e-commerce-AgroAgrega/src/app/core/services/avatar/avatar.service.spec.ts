@@ -47,7 +47,7 @@ describe('AvatarService', () => {
   });
 
   it('should fall back to the producer when a saved avatar is no longer available', () => {
-    localStorage.setItem('agroagrega-avatar-user-1', 'tractor');
+    localStorage.setItem('agroagrega-avatar-user-1', 'waving-full');
     const service = TestBed.inject(AvatarService);
     TestBed.tick();
 

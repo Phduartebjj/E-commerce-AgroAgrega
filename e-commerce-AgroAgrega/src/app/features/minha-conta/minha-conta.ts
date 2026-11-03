@@ -33,6 +33,7 @@ export class MinhaConta {
   readonly photoLoading = signal(false);
   readonly photoMessage = signal('');
   readonly photoError = signal('');
+  readonly activeSection = signal<'profile' | 'addresses' | 'benefits' | 'security' | 'notifications'>('profile');
   notificationsOpen = false;
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;

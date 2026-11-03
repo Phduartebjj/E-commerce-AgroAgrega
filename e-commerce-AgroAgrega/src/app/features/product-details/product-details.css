@@ -60,7 +60,9 @@ textarea:focus-visible {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: url('/assets/images/product-detail/reference.png') top center/100% auto no-repeat;
+  background:
+    radial-gradient(ellipse 9vw 7vw at top left, #c3eaf4 75%, transparent 100%),
+    url('/assets/images/product-detail/reference.png') top center/100% auto no-repeat;
   mask-image: linear-gradient(90deg, #000 0%, #000 2%, transparent 4%, transparent 96%, #000 99%);
   pointer-events: none;
 }
@@ -336,6 +338,7 @@ h1 {
 }
 .product-reputation {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.7em;
@@ -345,6 +348,9 @@ h1 {
 }
 .product-reputation button {
   display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
   align-items: center;
   gap: 0.5em;
   border: 0;
@@ -366,6 +372,11 @@ h1 {
   background-clip: text;
 }
 .sku {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: 0.95em;
   color: #004d29;
   background: #ebf7ec;

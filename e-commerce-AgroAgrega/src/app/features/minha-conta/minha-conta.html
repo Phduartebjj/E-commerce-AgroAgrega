@@ -118,8 +118,10 @@
     <nav class="account-nav" aria-label="Seções da minha conta">
       <button
         type="button"
-        class="account-nav__item account-nav__item--active"
-        (click)="avatarSection.scrollIntoView({ block: 'start' })"
+        class="account-nav__item"
+        [class.account-nav__item--active]="activeSection() === 'profile'"
+        [attr.aria-current]="activeSection() === 'profile' ? 'true' : null"
+        (click)="activeSection.set('profile'); avatarSection.scrollIntoView({ block: 'start' })"
       >
         <svg
           class="icon"
@@ -138,7 +140,9 @@
       <button
         type="button"
         class="account-nav__item"
-        (click)="addressSection.scrollIntoView({ block: 'start' })"
+        [class.account-nav__item--active]="activeSection() === 'addresses'"
+        [attr.aria-current]="activeSection() === 'addresses' ? 'true' : null"
+        (click)="activeSection.set('addresses'); addressSection.scrollIntoView({ block: 'start' })"
       >
         <svg
           class="icon"
@@ -155,6 +159,9 @@
         ><span><strong>Endereços</strong><small>Seus endereços</small></span>
       </button>
       <a class="account-nav__item" routerLink="/agro-plus"
+        [class.account-nav__item--active]="activeSection() === 'benefits'"
+        [attr.aria-current]="activeSection() === 'benefits' ? 'true' : null"
+        (click)="activeSection.set('benefits')"
         ><svg
           class="icon"
           viewBox="0 0 24 24"
@@ -172,7 +179,9 @@
       <button
         type="button"
         class="account-nav__item"
-        (click)="securitySection.scrollIntoView({ block: 'start' })"
+        [class.account-nav__item--active]="activeSection() === 'security'"
+        [attr.aria-current]="activeSection() === 'security' ? 'true' : null"
+        (click)="activeSection.set('security'); securitySection.scrollIntoView({ block: 'start' })"
       >
         <svg
           class="icon"
@@ -196,7 +205,9 @@
         class="account-nav__item"
         [attr.aria-expanded]="notificationsOpen"
         aria-controls="account-notifications"
-        (click)="notificationsOpen = !notificationsOpen"
+        [class.account-nav__item--active]="activeSection() === 'notifications'"
+        [attr.aria-current]="activeSection() === 'notifications' ? 'true' : null"
+        (click)="activeSection.set('notifications'); notificationsOpen = !notificationsOpen"
       >
         <svg
           class="icon"

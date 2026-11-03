@@ -115,27 +115,6 @@
                   <img [src]="view.src" [alt]="view.label" />
                 </button>
               }
-              <button
-                type="button"
-                class="thumbnail presentation-thumb"
-                (click)="openModal('presentation')"
-                aria-label="Reproduzir apresentação do produto"
-              >
-                @if (isReferenceProduct) {
-                  <span class="reference-photo"></span>
-                } @else {
-                  <img [src]="selectedImage" alt="" />
-                }
-                <span class="play-icon">▶</span>
-              </button>
-              <button
-                type="button"
-                class="thumbnail more-images"
-                (click)="openZoom()"
-                [attr.aria-label]="'Ver as ' + galleryViews.length + ' imagens'"
-              >
-                +{{ galleryViews.length }}
-              </button>
             </div>
             <div class="main-image">
               <button

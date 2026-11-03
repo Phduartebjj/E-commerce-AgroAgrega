@@ -64,16 +64,16 @@ describe('MinhaConta', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the 22 mascot images and update the profile when a new one is chosen', async () => {
+  it('should render the remaining 12 mascot images and update the profile when a new one is chosen', async () => {
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.querySelectorAll('.avatar-options button')).toHaveLength(22);
-    expect(host.querySelectorAll('.avatar-options img.avatar-art')).toHaveLength(22);
-    const option = host.querySelector('[data-avatar="hat-tip"]')!.closest('button')!;
+    expect(host.querySelectorAll('.avatar-options button')).toHaveLength(12);
+    expect(host.querySelectorAll('.avatar-options img.avatar-art')).toHaveLength(12);
+    const option = host.querySelector('[data-avatar="confident"]')!.closest('button')!;
     option.click();
     await fixture.whenStable();
     expect(option.getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector('.profile-avatar--current img')?.getAttribute('src')).toBe(
-      '/assets/images/avatars/hat-tip.png',
+      '/assets/images/avatars/confident.png',
     );
   });
 

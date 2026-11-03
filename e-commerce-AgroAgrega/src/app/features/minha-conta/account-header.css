@@ -1,11 +1,13 @@
-/* Match the original 2048 × 768 artwork without stretching or masking it. */
+/* Fill the page width while keeping the artwork and profile controls in proportion. */
 .account-hero {
   position: relative;
   isolation: isolate;
   container-type: inline-size;
   aspect-ratio: 8 / 3;
+  width: 100cqw;
+  justify-self: center;
   min-width: 0;
-  margin: 0 -22px -6px;
+  margin: 0 0 -6px;
 }
 .hero-art {
   position: absolute;
@@ -226,7 +228,8 @@
   left: 0;
   border-left: 1px solid #dce7e4;
 }
-.account-nav__item:nth-child(2)::before {
+.account-nav__item--active::before,
+.account-nav__item--active + .account-nav__item::before {
   display: none;
 }
 .account-nav__item > .icon {
@@ -259,11 +262,6 @@
 }
 .account-nav__item:not(.account-nav__item--active):hover {
   background: #edf6f0;
-}
-@media (max-width: 1000px) {
-  .account-hero {
-    margin: 0 -14px -6px;
-  }
 }
 @media (max-width: 760px) {
   .account-hero {

@@ -57,7 +57,7 @@ export class CartComponent {
 
   readonly recommendations = computed(() => {
     const cartIds = new Set(this.cartItems().map((item) => item.product.id));
-    return this.products().filter((product) => !cartIds.has(product.id)).slice(0, 4);
+    return this.products().filter((product) => !cartIds.has(product.id)).slice(0, 5);
   });
 
   addProduct(product: ProductModel): void {

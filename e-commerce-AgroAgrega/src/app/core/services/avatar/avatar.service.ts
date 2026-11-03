@@ -22,20 +22,6 @@ const AVATAR_OPTIONS = [
   { id: 'joyful', label: 'Alegria', image: '/assets/images/avatars/joyful.png' },
   { id: 'welcoming', label: 'Acolhedor', image: '/assets/images/avatars/welcoming.png' },
   { id: 'confident', label: 'Confiante', image: '/assets/images/avatars/confident.png' },
-  {
-    id: 'classic-portrait',
-    label: 'Clássico',
-    image: '/assets/images/avatars/classic-portrait.png',
-  },
-  { id: 'waving-full', label: 'Acenando', image: '/assets/images/avatars/waving-full.png' },
-  { id: 'thumbs-up-full', label: 'Tudo certo', image: '/assets/images/avatars/thumbs-up-full.png' },
-  { id: 'pointing-full', label: 'É com você', image: '/assets/images/avatars/pointing-full.png' },
-  { id: 'victory', label: 'Vitória', image: '/assets/images/avatars/victory.png' },
-  { id: 'thinking-full', label: 'Refletindo', image: '/assets/images/avatars/thinking-full.png' },
-  { id: 'open-arms', label: 'Abraço', image: '/assets/images/avatars/open-arms.png' },
-  { id: 'hat-tip', label: 'Saudação', image: '/assets/images/avatars/hat-tip.png' },
-  { id: 'hands-on-hips', label: 'Determinado', image: '/assets/images/avatars/hands-on-hips.png' },
-  { id: 'arms-crossed', label: 'Tranquilo', image: '/assets/images/avatars/arms-crossed.png' },
 ] as const satisfies readonly AvatarOption[];
 
 export type AvatarId = (typeof AVATAR_OPTIONS)[number]['id'];

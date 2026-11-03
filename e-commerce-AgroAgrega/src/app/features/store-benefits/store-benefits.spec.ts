@@ -104,7 +104,7 @@ describe('StoreBenefitsComponent', () => {
     const imageSources = Array.from(
       host.querySelectorAll<HTMLImageElement>('.coupon-showcase img'),
     ).map((image) => image.getAttribute('src'));
-    expect(imageSources).toEqual(['/assets/images/coupons/coupons-hero-new.png']);
+    expect(imageSources).toEqual([]);
     expect(host.querySelector('.coupon-help-card')).toBeNull();
   });
 
