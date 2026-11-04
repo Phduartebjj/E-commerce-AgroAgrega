@@ -127,6 +127,8 @@
   right: 16%;
   height: 2px;
   background: #38a868;
+  transform-origin: left center;
+  animation: tracking-line-reveal 1200ms cubic-bezier(.22, .61, .36, 1) 180ms both;
 }
 
 .tracking-step {
@@ -137,7 +139,11 @@
   align-items: center;
   gap: 7px;
   text-align: center;
+  animation: tracking-step-reveal 480ms ease-out var(--tracking-delay, 0ms) both;
 }
+
+.tracking-step:nth-of-type(3) { --tracking-delay: 480ms; }
+.tracking-step:nth-of-type(4) { --tracking-delay: 960ms; }
 
 .step-icon {
   display: grid;
@@ -149,6 +155,27 @@
   background: #fff;
   color: #168046;
   font-weight: 700;
+  animation: tracking-icon-glow 900ms ease-out var(--tracking-delay, 0ms) both;
+}
+
+@keyframes tracking-line-reveal {
+  from { transform: scaleX(0); opacity: .4; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes tracking-step-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tracking-icon-glow {
+  0% { transform: scale(.85); box-shadow: 0 0 0 0 #38a86838; }
+  45% { transform: scale(1.08); box-shadow: 0 0 0 7px #38a86820; }
+  100% { transform: scale(1); box-shadow: 0 0 0 12px #38a86800; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tracking-line, .tracking-step, .step-icon { animation: none; }
 }
 
 .tracking-step.current .step-icon {

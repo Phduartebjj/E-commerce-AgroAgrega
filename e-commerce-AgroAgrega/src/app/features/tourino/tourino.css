@@ -7,7 +7,6 @@
 h1 { margin: 12px 0; max-width: 850px; font-size: clamp(2rem, 3.4vw, 3.4rem); line-height: 1.12; letter-spacing: -.04em; }
 h1 span { color: #087641; }
 .page-heading p { color: #60766c; font-size: 1.05rem; line-height: 1.6; margin: 0; }
-.page-heading img { width: 140px; height: 140px; object-fit: contain; flex-shrink: 0; }
 .tourino-layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: start; }
 .help-panel { background: white; border: 1px solid #dfe9e2; border-radius: 24px; padding: 26px; }
 h2 { font-size: 1.45rem; margin: 12px 0; }
@@ -28,7 +27,6 @@ app-store-assistant { min-width: 0; }
 @media (max-width: 760px) {
   .tourino-page { width: calc(100% - 24px); padding: 20px 0 40px; }
   .page-heading { gap: 10px; margin: 24px 0; align-items: start; }
-  .page-heading img { width: 76px; height: 76px; }
   h1 { font-size: 1.85rem; }
   .page-heading p { font-size: .9rem; }
   .eyebrow { font-size: .65rem; }
