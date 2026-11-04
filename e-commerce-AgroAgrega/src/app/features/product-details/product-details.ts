@@ -1,11 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, HostListener, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { Cart } from '../../core/services/cart/cart.service';
 import { ProductService } from '../../core/services/product/product.service';
 import { ProductCategory, ProductModel } from '../../models/product';
-import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { getPartnerStoreLogo } from '../../shared/constants/partner-stores';
+import {
+  calculateDiscountPercent,
+  calculatePixPrice,
+  getFreeDeliveryLabel,
+  getWeeklySalesLabel,
+} from '../../shared/utils/product-card-display';
+import { ShippingService } from '../../core/services/shipping/shipping.service';
+import { ShippingQuote } from '../../models/shipping';
 
 interface ProductReview {
   author: string;
@@ -28,8 +38,42 @@ interface ProductSpecification {
 interface GalleryView {
   src: string;
   label: string;
-  mode: 'main' | 'detail' | 'context' | 'specification';
 }
+
+type ProductSection = 'description' | 'specifications' | 'benefits' | 'application' | 'reviews' | 'questions';
+type ProductModal = 'shipping' | 'payments' | 'reviews' | 'support' | 'tracking' | 'presentation';
+
+// Presentation supplied for this catalog entry; keep these values together so the
+// product card, purchase amount and reference layout cannot drift apart locally.
+const REFERENCE_PRODUCT = {
+  id: 'agro-040',
+  price: 112.43,
+  originalPrice: 128.9,
+  rating: 4.6,
+  reviewCount: 328,
+  brand: 'Nutrifoliar',
+  sku: '789456123789',
+  installments: 3,
+  summary: 'Nutrição foliar balanceada para o desenvolvimento vegetativo e reprodutivo das culturas. Indicado para manejo agrícola.',
+  description: 'Nutrição foliar balanceada para apoiar o desenvolvimento vegetativo e reprodutivo das culturas. Este item foi selecionado para oferecer mais produtividade e qualidade no campo, com micronutrientes essenciais que auxiliam na absorção dos nutrientes e no fortalecimento das plantas.',
+  indication: 'Soja, Milho, Algodão, Café, Citros e outras culturas.',
+  benefits: ['Desenvolvimento mais uniforme', 'Maior produtividade', 'Absorção eficiente', 'Resultados comprovados'],
+  specifications: [
+    { label: 'Marca', value: 'Nutrifoliar' },
+    { label: 'Apresentação', value: '5 L' },
+    { label: 'Categoria', value: 'Fertilizantes Foliares' },
+    { label: 'Concentração', value: 'Completo com Micronutrientes' },
+    { label: 'Aplicação', value: 'Via foliar' },
+    { label: 'Indicação', value: 'Uso agrícola' },
+    { label: 'Registro MAPA', value: 'Sim' },
+    { label: 'Código do produto', value: 'NF-5000' },
+  ],
+  applicationSteps: [
+    { title: 'Diluição', text: 'Seguir a recomendação do fabricante.' },
+    { title: 'Aplicação', text: 'Realizar via foliar, em horário adequado.' },
+    { title: 'Frequência', text: 'Conforme o manejo da cultura.' },
+  ],
+};
 
 interface CategoryDetailProfile {
   application: string;
@@ -73,14 +117,20 @@ const CATEGORY_DETAILS: Record<ProductCategory, CategoryDetailProfile> = {
 
 @Component({
   selector: 'app-product-details',
-  imports: [PrecoFormatadoPipe, RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule],
   templateUrl: './product-details.html',
-  styleUrl: './product-details.css',
+  styleUrls: ['./product-details.css', './product-details-actions.css', './product-details-discovery.css'],
 })
 export class ProductDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+  private readonly shipping = inject(ShippingService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  private dialogTrigger: HTMLElement | null = null;
+  private shippingRequest = 0;
+  private shippingSubscription: Subscription | null = null;
 
   cartNotifications: number[] = [];
   private notificationId = 0;
@@ -93,17 +143,32 @@ export class ProductDetails implements OnInit {
   selectedImageIndex = 0;
   imageUnavailable = false;
   zoomOpen = false;
-  activeTab: 'details' | 'reviews' = 'details';
+  activeSection: ProductSection = 'description';
   reviews: ProductReview[] = [];
   questions: ProductQuestion[] = [];
   selectedRating = 0;
   reviewText = '';
   questionText = '';
   questionFeedback = '';
+  followingStore = false;
+  modal: ProductModal | null = null;
+  presentationPlaying = true;
+  showAllImages = false;
+  openQuestionIndex: number | null = null;
+  shippingCep = '';
+  shippingLoading = false;
+  shippingError = '';
+  shippingResult: ShippingQuote | null = null;
+  readonly calculateRelatedDiscount = calculateDiscountPercent;
+  readonly calculateRelatedPixPrice = calculatePixPrice;
+  readonly getRelatedSalesLabel = getWeeklySalesLabel;
+  readonly relatedDeliveryLabel = getFreeDeliveryLabel();
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.id = params.get('id');
+      const nextId = params.get('id');
+      if (nextId === this.id && this.product) return;
+      this.id = nextId;
       this.product = this.productService
         .getProducts()()
         .find((product) => product.id === this.id);
@@ -111,9 +176,16 @@ export class ProductDetails implements OnInit {
       this.selectedImageIndex = 0;
       this.imageUnavailable = false;
       this.zoomOpen = false;
+      this.activeSection = 'description';
       this.questionText = '';
       this.questionFeedback = '';
+      this.followingStore = false;
+      this.modal = null;
+      this.showAllImages = false;
+      this.openQuestionIndex = null;
+      this.invalidateShipping();
       this.loadProductExperience();
+      this.changeDetector.markForCheck();
     });
   }
 
@@ -121,24 +193,123 @@ export class ProductDetails implements OnInit {
     return this.product === undefined;
   }
 
+  get isReferenceProduct(): boolean { return this.product?.id === REFERENCE_PRODUCT.id; }
+  get displayBrand(): string { return this.isReferenceProduct ? REFERENCE_PRODUCT.brand : this.brandLabel; }
+  get displaySku(): string { return this.isReferenceProduct ? REFERENCE_PRODUCT.sku : this.product?.id ?? ''; }
+  get displayCategory(): string { return this.isReferenceProduct ? 'Fertilizantes' : this.product?.category ?? ''; }
+  get displaySubcategory(): string { return this.isReferenceProduct ? 'Foliares' : ''; }
+  get displaySummary(): string { return this.isReferenceProduct ? REFERENCE_PRODUCT.summary : this.product?.description ?? ''; }
+  get displayOriginalPrice(): number | undefined { return this.product?.originalPrice; }
+  get displayInstallments(): number { return this.isReferenceProduct ? REFERENCE_PRODUCT.installments : 10; }
+  get displayInstallmentValue(): number { return (this.product?.price ?? 0) / this.displayInstallments; }
+  get displayDescription(): string { return this.isReferenceProduct ? REFERENCE_PRODUCT.description : this.productDescriptionParagraphs.join(' '); }
+  get displayIndication(): string { return this.isReferenceProduct ? REFERENCE_PRODUCT.indication : this.categoryProfile.application; }
+  get displayBenefits(): string[] { return this.isReferenceProduct ? REFERENCE_PRODUCT.benefits : ['Praticidade no campo', 'Manejo organizado', 'Uso eficiente', 'Suporte especializado']; }
+  get displaySpecifications(): ProductSpecification[] { return this.isReferenceProduct ? REFERENCE_PRODUCT.specifications : this.productSpecifications; }
+  get displayApplicationSteps(): { title: string; text: string }[] {
+    return this.isReferenceProduct ? REFERENCE_PRODUCT.applicationSteps : [
+      { title: 'Preparação', text: 'Leia as instruções do fabricante antes do uso.' },
+      { title: 'Aplicação', text: 'Utilize conforme o manual e a indicação do produto.' },
+      { title: 'Conservação', text: this.categoryProfile.care },
+    ];
+  }
+  get displayReviewCount(): number { return this.reviewCount; }
+
+  formatMoney(value: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  }
+
+  openModal(kind: ProductModal): void {
+    this.rememberDialogTrigger();
+    this.zoomOpen = false;
+    this.modal = kind;
+    this.presentationPlaying = true;
+    this.focusDialog();
+  }
+
+  closeModal(): void {
+    this.modal = null;
+    this.presentationPlaying = false;
+    this.dialogTrigger?.focus();
+  }
+
+  toggleGallery(): void { this.showAllImages = !this.showAllImages; }
+
+  toggleQuestion(index: number): void {
+    if (index < 0 || index >= this.questions.length) return;
+    this.openQuestionIndex = this.openQuestionIndex === index ? null : index;
+  }
+
+  calculateShipping(): void {
+    const cep = this.shippingCep.replace(/\D/g, '');
+    this.invalidateShipping();
+    const request = this.shippingRequest;
+    if (!/^\d{8}$/.test(cep)) {
+      this.shippingLoading = false;
+      this.shippingError = 'Informe um CEP válido com 8 dígitos.';
+      return;
+    }
+    if (!this.product) return;
+    this.shippingLoading = true;
+    this.shippingSubscription = this.shipping.quote(this.product, this.quantity, cep)
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (quote) => {
+        if (request !== this.shippingRequest) return;
+        this.shippingLoading = false;
+        this.shippingCep = `${cep.slice(0, 5)}-${cep.slice(5)}`;
+        this.shippingResult = quote;
+        this.changeDetector.markForCheck();
+      },
+      error: (error: Error) => {
+        if (request !== this.shippingRequest) return;
+        this.shippingLoading = false;
+        this.shippingError = error.message || 'Não foi possível calcular o frete agora. Tente novamente.';
+        this.changeDetector.markForCheck();
+      },
+    });
+  }
+
+  invalidateShipping(): void {
+    this.shippingRequest += 1;
+    this.shippingSubscription?.unsubscribe();
+    this.shippingSubscription = null;
+    this.shippingLoading = false;
+    this.shippingError = '';
+    this.shippingResult = null;
+    this.changeDetector.markForCheck();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onDialogKeydown(event: KeyboardEvent): void {
+    if (!this.modal && !this.zoomOpen) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (this.zoomOpen) this.closeZoom(); else this.closeModal();
+      return;
+    }
+    if (event.key !== 'Tab' || typeof document === 'undefined') return;
+    const elements = Array.from(document.querySelectorAll<HTMLElement>('.modal-backdrop .dialog button:not([disabled]), .modal-backdrop .dialog a[href], .modal-backdrop .dialog input, .modal-backdrop .dialog textarea')).filter((element) => element.getClientRects().length > 0);
+    const first = elements[0];
+    const last = elements[elements.length - 1];
+    if (!first) return;
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+
+  private rememberDialogTrigger(): void {
+    if (typeof document !== 'undefined') this.dialogTrigger = document.activeElement as HTMLElement;
+  }
+
+  private focusDialog(): void {
+    if (typeof document !== 'undefined') setTimeout(() => document.querySelector<HTMLElement>('.modal-backdrop .dialog .modal-close')?.focus(), 0);
+  }
+
   get galleryViews(): GalleryView[] {
     if (!this.product || this.product.images.length === 0) return [];
-
-    if (this.product.images.length > 1) {
-      return this.product.images.map((src, index) => ({
-        src,
-        label: `Imagem ${index + 1}`,
-        mode: index === 0 ? 'main' : 'detail',
-      }));
-    }
-
-    const src = this.product.images[0];
-    return [
-      { src, label: 'Vista principal', mode: 'main' },
-      { src, label: 'Detalhe ampliado', mode: 'detail' },
-      { src, label: 'Uso no campo', mode: 'context' },
-      { src, label: 'Ficha visual', mode: 'specification' },
-    ];
+    return [...new Set(this.product.images)].map((src, index) => ({
+      src,
+      label: index === 0 ? 'Foto principal' : `Outro ângulo ${index}`,
+    }));
   }
 
   get selectedGalleryView(): GalleryView | undefined {
@@ -198,6 +369,34 @@ export class ProductDetails implements OnInit {
     return `${this.brandLabel} • Loja parceira`;
   }
 
+  get sellerLogo(): string {
+    return getPartnerStoreLogo(this.product?.brand);
+  }
+
+  get sellerFollowers(): string {
+    const seed = [...this.brandLabel].reduce(
+      (total, character) => total + character.charCodeAt(0),
+      0,
+    );
+    return `+${(seed % 32) + 8},${seed % 10} mil`;
+  }
+
+  get sellerCatalogSize(): number {
+    if (!this.product) return 0;
+    return this.productService
+      .getProducts()()
+      .filter((item) => item.brand === this.product?.brand).length;
+  }
+
+  get sellerRating(): string {
+    const products = this.productService.getProducts()()
+      .filter((item) => item.brand === this.product?.brand);
+    const average = products.length
+      ? products.reduce((total, item) => total + item.rating, 0) / products.length
+      : this.product?.rating ?? 0;
+    return average.toFixed(1).replace('.', ',');
+  }
+
   get productMeasure(): string {
     const match = this.product?.title.match(
       /\d+(?:[,.]\d+)?\s?(?:kg|g|l|ml|m²|m|cm|mm|w|v|cv|cc|peças|unidades|doses|setores|plantas|polegadas)/i,
@@ -235,8 +434,13 @@ export class ProductDetails implements OnInit {
       .slice(0, 4);
   }
 
-  selectTab(tab: 'details' | 'reviews'): void {
-    this.activeTab = tab;
+  get sidebarRelatedProducts(): ProductModel[] {
+    return this.relatedProducts;
+  }
+
+  selectSection(section: ProductSection): void {
+    this.activeSection = section;
+    setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 0);
   }
 
   selectImage(index: number): void {
@@ -260,11 +464,15 @@ export class ProductDetails implements OnInit {
 
   openZoom(): void {
     if (!this.selectedImage || this.imageUnavailable) return;
+    this.rememberDialogTrigger();
+    this.modal = null;
     this.zoomOpen = true;
+    this.focusDialog();
   }
 
   closeZoom(): void {
     this.zoomOpen = false;
+    this.dialogTrigger?.focus();
   }
 
   handleImageError(): void {
@@ -273,10 +481,14 @@ export class ProductDetails implements OnInit {
 
   increaseQuantity(): void {
     this.quantity += 1;
+    this.invalidateShipping();
   }
 
   decreaseQuantity(): void {
-    if (this.quantity > 1) this.quantity -= 1;
+    if (this.quantity > 1) {
+      this.quantity -= 1;
+      this.invalidateShipping();
+    }
   }
 
   addToCart(): void {
@@ -285,9 +497,8 @@ export class ProductDetails implements OnInit {
     this.showCartNotification();
   }
 
-  addRelatedProduct(product: ProductModel): void {
-    this.cart.addCartItem(product);
-    this.showCartNotification();
+  toggleStoreFollow(): void {
+    this.followingStore = !this.followingStore;
   }
 
   selectRating(rating: number): void {
@@ -316,14 +527,22 @@ export class ProductDetails implements OnInit {
 
   submitQuestion(): void {
     const question = this.questionText.trim();
-    if (!question) return;
+    if (!this.product || !question || question.length > 300) return;
 
-    this.questions.unshift({
+    const entry = {
       question,
-      answer: 'Recebemos sua pergunta. Um especialista AgroAgrega responderá em breve.',
-    });
+      answer: 'Pergunta salva neste navegador. Para obter uma orientação técnica, fale com o suporte especializado ou consulte o fabricante.',
+    };
+    this.questions.unshift(entry);
+    this.openQuestionIndex = 0;
+    try {
+      const saved = this.readSavedQuestions();
+      localStorage.setItem(this.questionStorageKey, JSON.stringify([entry, ...saved].slice(0, 30)));
+      this.questionFeedback = 'Pergunta salva neste navegador.';
+    } catch {
+      this.questionFeedback = 'Pergunta adicionada nesta sessão. O navegador não permitiu salvá-la.';
+    }
     this.questionText = '';
-    this.questionFeedback = 'Pergunta enviada com sucesso.';
   }
 
   get reviewAverage(): number {
@@ -341,10 +560,10 @@ export class ProductDetails implements OnInit {
   }
 
   getRatingCount(stars: number): number {
-    if (!this.product) return 0;
+    if (!this.product || stars < 1 || stars > 5) return 0;
 
     const ratios =
-      this.product.rating >= 4.8
+      this.isReferenceProduct ? [0.01, 0.02, 0.07, 0.18, 0.72] : this.product.rating >= 4.8
         ? [0.01, 0.01, 0.03, 0.11, 0.84]
         : this.product.rating >= 4.5
           ? [0.01, 0.02, 0.06, 0.19, 0.72]
@@ -367,7 +586,7 @@ export class ProductDetails implements OnInit {
       return;
     }
 
-    this.baseReviewCount = Math.max(18, (this.product.weeklySales ?? 12) * 4);
+    this.baseReviewCount = this.isReferenceProduct ? REFERENCE_PRODUCT.reviewCount : Math.max(18, (this.product.weeklySales ?? 12) * 4);
     this.submittedReviewCount = 0;
 
     this.reviews = this.product.reviews?.length
@@ -395,7 +614,20 @@ export class ProductDetails implements OnInit {
           },
         ];
 
-    this.questions = [
+    const commonQuestions = this.isReferenceProduct ? [
+      {
+        question: 'Qual a dosagem recomendada para soja?',
+        answer: 'A dose depende do estágio da cultura e das condições da lavoura. Consulte o rótulo do fabricante e a recomendação de um profissional habilitado antes da aplicação.',
+      },
+      {
+        question: 'Pode ser aplicado com outros defensivos?',
+        answer: 'A compatibilidade deve ser confirmada pelo fabricante e pelo responsável técnico. Não misture produtos sem verificar as orientações dos respectivos rótulos.',
+      },
+      {
+        question: 'Tem indicação para milho?',
+        answer: 'O milho está entre as culturas indicadas nesta apresentação. Confira no rótulo a dose e a época de aplicação adequadas, com orientação técnica.',
+      },
+    ] : [
       {
         question: 'Para qual tipo de uso este produto é indicado?',
         answer: `É indicado para ${this.categoryProfile.application}. Confira também as orientações técnicas antes do uso.`,
@@ -405,6 +637,21 @@ export class ProductDetails implements OnInit {
         answer: this.categoryProfile.care,
       },
     ];
+    this.questions = [...this.readSavedQuestions(), ...commonQuestions];
+  }
+
+  private get questionStorageKey(): string {
+    return `agroagrega-product-questions:${this.product?.id ?? ''}`;
+  }
+
+  private readSavedQuestions(): ProductQuestion[] {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(this.questionStorageKey) ?? '[]');
+      if (!Array.isArray(saved)) return [];
+      return saved.filter((entry): entry is ProductQuestion => typeof entry?.question === 'string' && typeof entry?.answer === 'string').slice(0, 30);
+    } catch {
+      return [];
+    }
   }
 
   private showCartNotification(): void {

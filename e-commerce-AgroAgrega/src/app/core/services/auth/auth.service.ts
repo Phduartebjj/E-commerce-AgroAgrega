@@ -22,6 +22,26 @@ export class Auth {
     return this.Token.checkToken();
   }
 
+  loginWithGoogle(googleUser: { id: string; name: string; email: string }): void {
+    const existing = this.Storage.getUser(googleUser.email);
+    if (!existing) {
+      this.Storage.setUser({
+        id: googleUser.id,
+        name: googleUser.name,
+        email: googleUser.email,
+        password: '',
+      });
+    }
+
+    this.Token.setToken({
+      id: googleUser.id,
+      name: googleUser.name,
+      email: googleUser.email,
+    });
+
+    this.currentUserId.set(googleUser.id);
+  }
+
   login(email: string, password: string): boolean {
     const user = this.Storage.getUser(email);
     if (!user) return false;

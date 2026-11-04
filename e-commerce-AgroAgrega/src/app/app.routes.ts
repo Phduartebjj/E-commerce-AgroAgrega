@@ -16,8 +16,16 @@ export const routes: Routes = [
 
   {
     path: 'products/:id',
+    data: { hideFooter: true },
     loadComponent: () =>
       import('./features/product-details/product-details').then((module) => module.ProductDetails),
+  },
+
+  {
+    path: 'tourino',
+    title: 'Tourino | AgroAgrega',
+    data: { hideAssistant: true },
+    loadComponent: () => import('./features/tourino/tourino').then((module) => module.Tourino),
   },
 
   {

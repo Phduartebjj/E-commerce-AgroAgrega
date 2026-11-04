@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
 
+// Verifica se o componente raiz da aplicação é criado corretamente.
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({

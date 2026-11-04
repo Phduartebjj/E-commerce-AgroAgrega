@@ -383,12 +383,12 @@
         <div class="settings-card">
           <h3>Notificações</h3>
           <div class="toggle-item">
-            <label>Notificar sobre novos pedidos</label>
-            <input type="checkbox" checked />
+            <label for="notify-orders">Notificar sobre novos pedidos</label>
+            <input id="notify-orders" type="checkbox" [checked]="notificationPreferences().orders" (change)="setNotificationPreference('orders', $any($event.target).checked)" />
           </div>
           <div class="toggle-item">
-            <label>Notificar sobre promoções</label>
-            <input type="checkbox" checked />
+            <label for="notify-promotions">Notificar sobre promoções</label>
+            <input id="notify-promotions" type="checkbox" [checked]="notificationPreferences().promotions" (change)="setNotificationPreference('promotions', $any($event.target).checked)" />
           </div>
         </div>
 

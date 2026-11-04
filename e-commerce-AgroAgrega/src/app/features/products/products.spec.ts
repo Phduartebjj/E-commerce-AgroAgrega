@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { ProductsComponent } from './products';
+import { formatFlashOfferCountdown, ProductsComponent } from './products';
 
+// Verifica filtros, paginação, comparação e ofertas da listagem de produtos.
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
@@ -26,7 +27,7 @@ describe('ProductsComponent', () => {
     expect(component.selectedCategory()).toBe('Todos');
     expect(component.filteredProducts()).toHaveLength(52);
     expect(component.featuredProducts()).toHaveLength(8);
-    expect(component.visibleProducts()).toHaveLength(4);
+    expect(component.visibleProducts()).toHaveLength(5);
     expect(component.currentPage()).toBe(1);
     expect(component.totalPages()).toBe(5);
     expect(component.pageNumbers()).toEqual([1, 2, 3, 4, 5]);
@@ -35,7 +36,7 @@ describe('ProductsComponent', () => {
       ...component.featuredProducts().map((product) => product.id),
       ...component.visibleProducts().map((product) => product.id),
     ]);
-    expect(firstPageIds.size).toBe(12);
+    expect(firstPageIds.size).toBe(13);
 
     component.goToPage(2);
 
@@ -48,7 +49,7 @@ describe('ProductsComponent', () => {
     component.goToPage(5);
 
     expect(component.currentPage()).toBe(5);
-    expect(component.visibleProducts()).toHaveLength(4);
+    expect(component.visibleProducts()).toHaveLength(3);
 
     for (const invalidPage of [0, 6, 1.5, Number.NaN]) {
       component.goToPage(invalidPage);
@@ -80,8 +81,22 @@ describe('ProductsComponent', () => {
     expect(host.textContent).not.toContain('Carregar mais');
     expect(host.textContent).toContain('52 produtos encontrados');
     expect(featuredCards).toHaveLength(8);
+    expect(host.querySelectorAll('#catalog-product-grid app-product-card')).toHaveLength(5);
     expect(host.querySelectorAll('.carousel-controls button')).toHaveLength(2);
     expect(host.querySelector('#catalog-search-input')).toBeNull();
+  });
+
+  it('deve tornar funcionais os botões desenhados nos banners PNG', () => {
+    const scrollSpy = vi.spyOn(component, 'scrollToProducts').mockImplementation(() => undefined);
+    const assistantSpy = vi.spyOn(component.assistant, 'show');
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    host.querySelector<HTMLButtonElement>('.png-action--hero')?.click();
+    host.querySelector<HTMLButtonElement>('.png-action--support')?.click();
+
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
+    expect(assistantSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should expose active filters as individually removable chips', () => {
@@ -124,6 +139,12 @@ describe('ProductsComponent', () => {
     component.clearComparison();
     expect(component.comparedProducts()).toEqual([]);
     expect(component.comparisonOpen()).toBe(false);
+  });
+
+  it('deve exibir a contagem regressiva até a troca diária', () => {
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 21, 30, 15))).toBe('02:29:45');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 23, 59, 59))).toBe('00:00:01');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 16, 0, 0, 0))).toBe('24:00:00');
   });
 
   it('should render the floating comparison tray while products are selected', () => {

@@ -21,52 +21,63 @@
     }
     <div class="products-list" #productsList (scroll)="atualizarSetas()">
       @for (produto of produtos(); track produto.id) {
-  <article class="product-card">
+        <article class="product-card">
+          <a
+            class="product-card-link"
+            [routerLink]="['/products', produto.id]"
+            [attr.aria-label]="'Ver detalhes de ' + produto.title"
+          ></a>
 
-    <a
-      class="product-card-link"
-      [routerLink]="['/products', produto.id]"
-      [attr.aria-label]="'Ver detalhes de ' + produto.title"
-    ></a>
+          <div class="product-image">
+            <img
+              [src]="produto.images[0]"
+              [alt]="produto.title"
+              loading="lazy"
+              decoding="async"
+              width="180"
+              height="180"
+            />
+          </div>
 
-    <div class="product-image">
-      <img
-        [src]="produto.images[0]"
-        [alt]="produto.title"
-        loading="lazy"
-        decoding="async"
-        width="180"
-        height="180"
-      />
-    </div>
+          <span class="product-category">{{ produto.category }}</span>
+          <h3>{{ produto.title }}</h3>
 
-    <span class="product-category">
-      {{ produto.category }}
-    </span>
+          <div class="product-offer">
+            @if (produto.originalPrice; as originalPrice) {
+              <p class="product-discount">
+                <span> {{ calculateDiscountPercent(produto.price, originalPrice) }}% OFF </span>
+                <s>{{ originalPrice | precoFormatado }}</s>
+              </p>
+            }
 
-    <h3>
-      {{ produto.title }}
-    </h3>
+            <p class="product-main-price">
+              <strong>{{ produto.price | precoFormatado }}</strong>
+              <small>{{ getWeeklySalesLabel(produto.weeklySales) }}</small>
+            </p>
 
-    <strong class="product-price">
-      {{ produto.price | precoFormatado }}
-    </strong>
+            <p class="product-pix">
+              <strong>{{ calculatePixPrice(produto.price) | precoFormatado }}</strong>
+              <span>no Pix</span>
+            </p>
 
-    <button
-      class="add-cart-button"
-      [class.product-added]="produtoAdicionadoId() === produto.id"
-      type="button"
-      (click)="adicionarAoCarrinho(produto)"
-    >
-      @if (produtoAdicionadoId() === produto.id) {
-        Adicionado ✓
-      } @else {
-        Adicionar ao Carrinho
+            <p class="product-installment">
+              ou 10x de
+              <strong>{{ calculateInstallmentPrice(produto.price) | precoFormatado }}</strong>
+              sem juros
+            </p>
+
+            <p class="product-coupon">10% OFF no Pix</p>
+
+            <p class="product-delivery">
+              <span class="product-full-label" aria-label="Entrega Full">
+                <span aria-hidden="true">⚡</span>
+                <strong aria-hidden="true">FULL</strong>
+              </span>
+              <strong class="product-delivery-date">{{ freeDeliveryLabel }}</strong>
+            </p>
+          </div>
+        </article>
       }
-    </button>
-
-  </article>
-}
     </div>
 
     @if (podeRolarDireita()) {
