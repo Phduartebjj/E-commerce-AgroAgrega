@@ -20,6 +20,7 @@ export class App implements OnInit {
 
   mostrarHeader = signal(true);
   mostrarFooter = signal(true);
+  mostrarAssistant = signal(true);
 
   constructor(
     private router: Router,
@@ -52,5 +53,6 @@ export class App implements OnInit {
 
     this.mostrarHeader.set(!esconderHeader);
     this.mostrarFooter.set(!esconderFooter);
+    this.mostrarAssistant.set(!esconderHeader && !dadosDaRota['hideAssistant']);
   }
 }

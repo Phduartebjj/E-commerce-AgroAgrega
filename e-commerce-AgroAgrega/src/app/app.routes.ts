@@ -22,6 +22,13 @@ export const routes: Routes = [
   },
 
   {
+    path: 'tourino',
+    title: 'Tourino | AgroAgrega',
+    data: { hideAssistant: true },
+    loadComponent: () => import('./features/tourino/tourino').then((module) => module.Tourino),
+  },
+
+  {
     path: 'coupons',
     loadComponent: () =>
       import('./features/store-benefits/store-benefits').then(

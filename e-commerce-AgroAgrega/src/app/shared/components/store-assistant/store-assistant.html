@@ -1,16 +1,20 @@
 @if (open()) {
+  @if (!embedded()) {
   <div class="assistant-entry" aria-hidden="true">
     <img src="/assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />
     <strong>Agro<span>Agrega</span></strong>
   </div>
+  }
   <section
     id="agro-assistant-panel"
     class="assistant-panel"
-    role="dialog"
+    [attr.role]="embedded() ? 'region' : 'dialog'"
     aria-label="Assistente AgroAgrega Tourino"
   >
     <header class="assistant-header" [class.assistant-header--loading]="isStarting()">
-      @if (!isStarting()) {
+      @if (embedded()) {
+        <div class="assistant-page-heading"><img src="/assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div></div>
+      } @else if (!isStarting()) {
         <img
           src="assets/images/assistant/tourino-header.png"
           alt="Assistente AgroAgrega Tourino, seu guia para o cultivo"
@@ -19,6 +23,7 @@
           decoding="async"
         />
       }
+      @if (!embedded()) {
       <button
         class="assistant-close"
         type="button"
@@ -27,6 +32,7 @@
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
       </button>
+      }
     </header>
 
     @if (isStarting()) {

@@ -42,7 +42,8 @@
 
   transition:
     border-color 260ms ease,
-    box-shadow 260ms ease;
+    box-shadow 220ms ease,
+    transform 220ms ease;
 }
 
 .card::after {
@@ -53,9 +54,17 @@
   border-radius: inherit;
   content: '';
 
-  background: linear-gradient(135deg, #b9e7ff, #7dd3fc 45%, #9cddff);
+  background: conic-gradient(
+    from var(--team-neon-angle),
+    rgba(56, 189, 248, 0.26) 0deg 244deg,
+    rgba(56, 189, 248, 0.58) 274deg,
+    #075985 305deg,
+    #e0f2fe 323deg,
+    #0284c7 340deg,
+    rgba(14, 165, 233, 0.26) 360deg
+  );
 
-  filter: drop-shadow(0 0 4px rgba(125, 211, 252, 0.3));
+  filter: drop-shadow(0 0 4px rgba(2, 132, 199, 0.88)) drop-shadow(0 0 10px rgba(56, 189, 248, 0.62));
 
   mask:
     linear-gradient(#000 0 0) content-box,
@@ -80,12 +89,14 @@
   border-color: #7dd3fc;
 
   box-shadow:
-    0 18px 24px -12px rgba(56, 189, 248, 0.48),
-    0 6px 16px rgba(125, 211, 252, 0.2);
+    0 24px 42px -18px rgba(56, 189, 248, 0.525),
+    0 12px 24px rgba(26, 35, 45, 0.16);
+  transform: translateY(-4px);
 }
 
 .card:hover::after,
 .card:focus-within::after {
+  animation: team-neon-travel 1.7s linear infinite;
   opacity: 1;
 }
 
@@ -358,4 +369,17 @@
     transition-duration: 0.01ms !important;
   }
 
+}
+
+@property --team-neon-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes team-neon-travel {
+  to { --team-neon-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card::after { animation: none !important; }
+  .card:hover, .card:focus-within { transform: none; }
 }

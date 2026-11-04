@@ -6,7 +6,6 @@ import { Auth } from '@core/services/auth/auth.service';
 import { Cart } from '@core/services/cart/cart.service';
 import { ProductModel } from '@models/product';
 import { Header } from './header';
-import { StoreAssistantState } from '../store-assistant/store-assistant-state';
 
 // Verifica busca, atalhos, menu da conta e indicadores do cabeçalho.
 describe('Header', () => {
@@ -41,14 +40,10 @@ describe('Header', () => {
     expect(component).toBeTruthy();
   });
 
-  it('abre o Tourino pelo botão imediatamente depois de Ofertas', () => {
-    const button = fixture.nativeElement.querySelector('.menu-link--tourino') as HTMLButtonElement;
-    expect(button.previousElementSibling?.textContent).toContain('Ofertas');
-    expect(button.getAttribute('aria-expanded')).toBe('false');
-    button.click();
-    fixture.detectChanges();
-    expect(TestBed.inject(StoreAssistantState).open()).toBe(true);
-    expect(button.getAttribute('aria-expanded')).toBe('true');
+  it('links to the Tourino page immediately after offers', () => {
+    const link = fixture.nativeElement.querySelector('.menu-link--tourino') as HTMLAnchorElement;
+    expect(link.previousElementSibling?.textContent).toContain('Ofertas');
+    expect(link.getAttribute('href')).toBe('/tourino');
   });
 
   it('should submit the pill search with the Buscar button or Enter', () => {

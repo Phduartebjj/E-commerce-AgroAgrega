@@ -8,6 +8,7 @@ import {
   ViewChild,
   effect,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -62,8 +63,10 @@ interface ChatMessage {
   imports: [FormsModule, RouterLink],
   templateUrl: './store-assistant.html',
   styleUrl: './store-assistant.css',
+  host: { '[class.assistant-embedded]': 'embedded()' },
 })
 export class StoreAssistant {
+  readonly embedded = input(false);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
   private readonly auth = inject(Auth);
@@ -159,13 +162,13 @@ export class StoreAssistant {
         const startupTimer = setTimeout(() => {
           this.isStarting.set(false);
           this.focusTimer = setTimeout(() => {
-            if (this.open()) this.composer?.nativeElement.focus();
+            if (this.open() && !this.embedded()) this.composer?.nativeElement.focus();
           }, 50);
           this.scrollToLatest();
-          if (!reducedMotion && this.messages().length === 1) {
+          if (!this.embedded() && !reducedMotion && this.messages().length === 1) {
             this.startIntroduction();
           }
-        }, 5000);
+        }, this.embedded() ? 500 : 5000);
         onCleanup(() => {
           clearTimeout(startupTimer);
           clearTimeout(this.introTimer);
@@ -190,6 +193,7 @@ export class StoreAssistant {
   }
 
   close(): void {
+    if (this.embedded()) return;
     this.open.set(false);
   }
 

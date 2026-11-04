@@ -7,6 +7,52 @@
   font-family: inherit;
 }
 
+:host(.assistant-embedded) {
+  position: relative;
+  display: block;
+  inset: auto;
+  z-index: auto;
+  pointer-events: auto;
+}
+
+:host(.assistant-embedded) .assistant-panel {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 740px;
+  max-height: none;
+  border-radius: 24px;
+  box-shadow: 0 12px 36px #173d2d0a;
+  animation: none;
+}
+
+:host(.assistant-embedded) .assistant-header {
+  aspect-ratio: auto;
+  padding: 20px 24px;
+}
+.assistant-page-heading { display: flex; gap: 12px; align-items: center; color: white; }
+.assistant-page-heading img { width: 44px; height: 44px; border-radius: 50%; background: #ecf5db; }
+.assistant-page-heading strong { display: block; font-size: 1.08rem; }
+.assistant-page-heading span { display: block; margin-top: 4px; font-size: .78rem; color: #def1d8; }
+:host(.assistant-embedded) .assistant-messages { max-height: none; padding: 24px; gap: 16px; background: #f8fbf8; }
+:host(.assistant-embedded) .assistant-message { font-size: .95rem; line-height: 1.6; overflow-wrap: anywhere; }
+:host(.assistant-embedded) .assistant-suggestions { padding: 14px 24px; gap: 8px; }
+:host(.assistant-embedded) .assistant-suggestions strong { font-size: .78rem; }
+:host(.assistant-embedded) .assistant-composer { padding: 16px 24px 8px; gap: 10px; }
+:host(.assistant-embedded) .assistant-composer label { height: 50px; }
+:host(.assistant-embedded) .assistant-composer input { font-size: 1rem; }
+:host(.assistant-embedded) .assistant-composer > button { flex-basis: 50px; }
+:host(.assistant-embedded) .assistant-note { padding: 6px 24px 16px; font-size: .7rem; }
+@media (max-width: 760px) {
+  :host(.assistant-embedded) .assistant-panel { height: 700px; border-radius: 20px; }
+  :host(.assistant-embedded) .assistant-header { padding: 16px; }
+  :host(.assistant-embedded) .assistant-messages { padding: 14px; }
+  :host(.assistant-embedded) .assistant-suggestions { padding: 10px; }
+  :host(.assistant-embedded) .assistant-composer { padding: 12px 12px 6px; }
+  :host(.assistant-embedded) .assistant-note { padding: 6px 12px 12px; }
+  :host(.assistant-embedded) .assistant-suggestions strong { font-size: .7rem; }
+}
+
 .assistant-panel {
   pointer-events: auto;
 }
