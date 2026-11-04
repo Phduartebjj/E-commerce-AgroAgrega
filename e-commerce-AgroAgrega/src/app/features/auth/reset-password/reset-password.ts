@@ -1,20 +1,6 @@
-import {
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { Auth } from '@core/services/auth/auth.service';
 
@@ -30,7 +16,6 @@ import { Auth } from '@core/services/auth/auth.service';
 export class ResetPassword {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(Auth);
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   readonly showPassword = signal(false);

@@ -1,17 +1,28 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { BrandOption, ProductCategory, ProductModel } from '@models/product';
-import { Cart } from '@core/services/cart/cart.service';
 import { ProductService } from '../../core/services/product/product.service';
 import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
+import { StoreAssistantState } from '../../shared/components/store-assistant/store-assistant-state';
 import { ProductCardComponent } from './product-card/product-card';
 import { ProductComparisonComponent } from './product-comparison/product-comparison';
+import { OfferProductCardComponent } from './offer-product-card/offer-product-card';
 
 type CategoryFilter = ProductCategory | 'Todos';
 type CatalogSortOrder = 'mais_vendidos' | 'melhor_avaliados' | 'menor_preco' | 'maior_preco';
-type CatalogFilterType = 'category' | 'search' | 'brand' | 'rating' | 'price' | 'offers';
+type CatalogFilterType =
+  'category' | 'search' | 'brand' | 'rating' | 'price' | 'offers' | 'discount';
 
 interface CatalogFilterChip {
   key: string;
@@ -20,7 +31,17 @@ interface CatalogFilterChip {
   value?: string;
 }
 
+interface CatalogHeroSlide {
+  image: string;
+  label: string;
+  action: string;
+  queryParams: Record<string, string>;
+  original?: boolean;
+}
+
 const PRODUCTS_PER_PAGE = 12;
+const FIRST_PAGE_GRID_PRODUCTS = 5;
+const HERO_SLIDE_DURATION_MS = 6000;
 
 function normalizeCatalogText(value: string): string {
   return value
@@ -31,21 +52,95 @@ function normalizeCatalogText(value: string): string {
 
 @Component({
   selector: 'app-products',
-  imports: [ProductCardComponent, ProductComparisonComponent, RouterLink, PrecoFormatadoPipe],
+  imports: [
+    ProductCardComponent,
+    OfferProductCardComponent,
+    ProductComparisonComponent,
+    RouterLink,
+    PrecoFormatadoPipe,
+  ],
   templateUrl: './products.html',
-  styleUrl: './products.css',
+  styleUrls: ['./products.css', './offers-showcase.css'],
 })
 export class ProductsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
-  private readonly cart = inject(Cart);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
+  private countdownTimer?: ReturnType<typeof setInterval>;
+  private heroTimer?: ReturnType<typeof setTimeout>;
+  private heroPointerInside = false;
+  private heroFocusInside = false;
 
-  private readonly addedProductIds = signal<Set<string>>(new Set());
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
+  readonly assistant = inject(StoreAssistantState);
+  readonly heroSlides: readonly CatalogHeroSlide[] = [
+    {
+      image: 'assets/images/catalog/hero.png',
+      label: 'Tudo para o seu campo em um só lugar',
+      action: 'Ver produtos',
+      queryParams: {},
+      original: true,
+    },
+    {
+      image: 'assets/images/catalog/hero-irrigation.png',
+      label: 'Irrigação inteligente para crescer mais',
+      action: 'Ver soluções',
+      queryParams: { category: 'Irrigação' },
+    },
+    {
+      image: 'assets/images/catalog/hero-tools.png',
+      label: 'Ferramentas certas para o trabalho render mais',
+      action: 'Explorar ferramentas',
+      queryParams: { category: 'Ferramentas' },
+    },
+    {
+      image: 'assets/images/catalog/hero-livestock.png',
+      label: 'Pecuária com mais cuidado e desempenho',
+      action: 'Ver linha pecuária',
+      queryParams: { category: 'Pecuária' },
+    },
+    {
+      image: 'assets/images/catalog/hero-offers.png',
+      label: 'Ofertas especiais para o seu campo',
+      action: 'Aproveitar ofertas',
+      queryParams: { offers: 'true' },
+    },
+  ];
+  readonly activeHeroSlide = signal(0);
+  readonly featuredCategories: ProductCategory[] = [
+    'Agricultura de Precisão',
+    'Irrigação',
+    'Pecuária',
+    'Insumos',
+    'Ferramentas',
+  ];
+  readonly categoryArtwork: Record<ProductCategory, { imagePosition: number; icon: string }> = {
+    'Agricultura de Precisão': {
+      imagePosition: 3,
+      icon: 'M12 3v3m0 12v3M3 12h3m12 0h3M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
+    },
+    Irrigação: {
+      imagePosition: 21.8,
+      icon: 'M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13ZM9 15a3 3 0 0 0 3 3',
+    },
+    Pecuária: {
+      imagePosition: 40.6,
+      icon: 'M6 8 3 4 2 10l4 2v6l3 3h6l3-3v-6l4-2-1-6-3 4ZM9 13h.01M15 13h.01M9 18h6',
+    },
+    Ferramentas: {
+      imagePosition: 78.3,
+      icon: 'm14 6 4-4a6 6 0 0 1-7 8L4 21l-3-3 10-8a6 6 0 0 1 7-8l-4 4Z',
+    },
+    Insumos: {
+      imagePosition: 59.5,
+      icon: 'M12 22V10M12 16C4 16 2 11 3 5c6 0 9 4 9 11ZM12 11c0-6 4-9 10-9 0 6-4 10-10 9',
+    },
+  };
   readonly products = this.productService.getProducts();
   readonly productCategories = this.productService.getProductCategories();
   readonly categoryFilters: CategoryFilter[] = ['Todos', ...this.productCategories];
@@ -66,6 +161,26 @@ export class ProductsComponent {
 
   readonly searchTerm = computed(() => (this.queryParams().get('search') ?? '').trim());
   readonly offersOnly = computed(() => this.queryParams().get('offers') === 'true');
+  readonly offerCategories: ProductCategory[] = ['Insumos', 'Ferramentas', 'Irrigação', 'Pecuária'];
+  readonly selectedOfferTab = signal<'all' | 'popular' | 'ending'>('all');
+  readonly discountOnly = signal(false);
+  readonly cartFeedback = signal('');
+  readonly currentTime = signal(new Date());
+  readonly flashOfferProducts = computed(() =>
+    this.products().filter((product) => product.flashOffer),
+  );
+  readonly flashOfferDateLabel = computed(() =>
+    new Intl.DateTimeFormat('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+    }).format(this.currentTime()),
+  );
+  readonly flashOfferCountdown = computed(() => formatFlashOfferCountdown(this.currentTime()));
+  readonly countdownParts = computed(() => this.flashOfferCountdown().split(':'));
+  readonly highestFlashDiscount = computed(() =>
+    Math.max(...this.flashOfferProducts().map((product) => product.flashOfferDiscount ?? 0), 0),
+  );
   readonly viewMode = signal<'grid' | 'list'>('grid');
   readonly filtersOpen = signal(false);
   readonly selectedBrands = signal<BrandOption[]>([]);
@@ -100,6 +215,7 @@ export class ProductsComponent {
     if (this.offersOnly()) count += 1;
     if (this.minRating() > 0) count += 1;
     if (this.maxPriceFilter() < this.maxCatalogPrice()) count += 1;
+    if (this.offersOnly() && this.discountOnly()) count += 1;
 
     return count;
   });
@@ -118,7 +234,10 @@ export class ProductsComponent {
     }
 
     if (this.offersOnly()) {
-      chips.push({ key: 'offers', label: 'Ofertas', type: 'offers' });
+      chips.push({ key: 'offers', label: 'Ofertas relâmpago de hoje', type: 'offers' });
+      if (this.discountOnly()) {
+        chips.push({ key: 'discount', label: '20% de desconto ou mais', type: 'discount' });
+      }
     }
 
     for (const brand of this.selectedBrands()) {
@@ -144,10 +263,9 @@ export class ProductsComponent {
     return chips;
   });
 
-  readonly featuredProducts = computed(() =>
-    [...this.products()]
-      .sort((first, second) => (second.weeklySales ?? 0) - (first.weeklySales ?? 0))
-      .slice(0, 8),
+  readonly featuredProducts = this.productService.getDailyPopularProducts(8);
+  readonly visibleFilterChips = computed(() =>
+    this.activeFilterChips().filter((chip) => !this.offersOnly() || chip.type !== 'offers'),
   );
 
   private readonly featureProductsOnFirstPage = computed(
@@ -181,9 +299,10 @@ export class ProductsComponent {
     }
 
     if (this.offersOnly()) {
-      filtered = filtered.filter(
-        (product) => product.originalPrice !== undefined && product.originalPrice > product.price,
-      );
+      filtered = filtered.filter((product) => product.flashOffer);
+      if (this.discountOnly()) {
+        filtered = filtered.filter((product) => (product.flashOfferDiscount ?? 0) >= 20);
+      }
     }
 
     filtered = filtered.filter((product) => product.price <= maxPrice);
@@ -221,6 +340,11 @@ export class ProductsComponent {
 
   readonly resultsLabel = computed(() => {
     const count = this.filteredProducts().length;
+
+    if (this.offersOnly()) {
+      return `${count} ${count === 1 ? 'oferta relâmpago ativa' : 'ofertas relâmpago ativas'}`;
+    }
+
     return `${count} ${count === 1 ? 'produto encontrado' : 'produtos encontrados'}`;
   });
 
@@ -247,13 +371,11 @@ export class ProductsComponent {
 
   readonly visibleProducts = computed(() => {
     if (this.featureProductsOnFirstPage()) {
-      const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
-
       if (this.currentPage() === 1) {
-        return this.catalogGridProducts().slice(0, firstPageCapacity);
+        return this.catalogGridProducts().slice(0, FIRST_PAGE_GRID_PRODUCTS);
       }
 
-      const startIndex = firstPageCapacity + (this.currentPage() - 2) * PRODUCTS_PER_PAGE;
+      const startIndex = FIRST_PAGE_GRID_PRODUCTS + (this.currentPage() - 2) * PRODUCTS_PER_PAGE;
 
       return this.catalogGridProducts().slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
     }
@@ -272,6 +394,61 @@ export class ProductsComponent {
       this.queryParams();
       this.resetPagination();
     });
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.countdownTimer = setInterval(() => this.currentTime.set(new Date()), 1000);
+      const refreshHeroTimer = () => this.scheduleHeroAdvance();
+      const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+      document.addEventListener('visibilitychange', refreshHeroTimer);
+      motionPreference?.addEventListener?.('change', refreshHeroTimer);
+      this.scheduleHeroAdvance();
+      this.destroyRef.onDestroy(() => {
+        clearInterval(this.countdownTimer);
+        clearTimeout(this.heroTimer);
+        document.removeEventListener('visibilitychange', refreshHeroTimer);
+        motionPreference?.removeEventListener?.('change', refreshHeroTimer);
+      });
+    }
+  }
+
+  showHeroSlide(index: number): void {
+    if (!Number.isInteger(index)) return;
+    this.activeHeroSlide.set((index + this.heroSlides.length) % this.heroSlides.length);
+    this.scheduleHeroAdvance();
+  }
+
+  setHeroPointerInside(inside: boolean): void {
+    this.heroPointerInside = inside;
+    this.scheduleHeroAdvance();
+  }
+
+  setHeroFocusInside(inside: boolean): void {
+    this.heroFocusInside = inside;
+    this.scheduleHeroAdvance();
+  }
+
+  onHeroFocusOut(event: FocusEvent): void {
+    const hero = event.currentTarget as HTMLElement;
+    if (!hero.contains(event.relatedTarget as Node | null)) {
+      this.setHeroFocusInside(false);
+    }
+  }
+
+  private scheduleHeroAdvance(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    clearTimeout(this.heroTimer);
+    if (
+      this.heroPointerInside ||
+      this.heroFocusInside ||
+      document.hidden ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+    this.heroTimer = setTimeout(() => {
+      this.activeHeroSlide.update((index) => (index + 1) % this.heroSlides.length);
+      this.scheduleHeroAdvance();
+    }, HERO_SLIDE_DURATION_MS);
   }
 
   selectCategory(category: CategoryFilter): void {
@@ -292,22 +469,27 @@ export class ProductsComponent {
     });
   }
 
-  clearFilters(): void {
+  clearFilters(keepOffers = this.offersOnly()): void {
     this.selectedBrands.set([]);
     this.minRating.set(0);
     this.maxPriceFilter.set(this.maxCatalogPrice());
     this.sortOrder.set('mais_vendidos');
+    this.discountOnly.set(false);
+    this.selectedOfferTab.set('all');
     this.resetPagination();
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { category: null, search: null, offers: null },
+      queryParams: { category: null, search: null, offers: keepOffers ? 'true' : null },
       queryParamsHandling: 'merge',
     });
   }
 
   removeActiveFilter(filter: CatalogFilterChip): void {
     switch (filter.type) {
+      case 'discount':
+        this.discountOnly.set(false);
+        break;
       case 'category':
         this.selectCategory('Todos');
         return;
@@ -315,9 +497,7 @@ export class ProductsComponent {
         this.clearCatalogSearch();
         return;
       case 'brand':
-        this.selectedBrands.update((brands) =>
-          brands.filter((brand) => brand !== filter.value),
-        );
+        this.selectedBrands.update((brands) => brands.filter((brand) => brand !== filter.value));
         break;
       case 'rating':
         this.minRating.set(0);
@@ -335,23 +515,6 @@ export class ProductsComponent {
     }
 
     this.resetPagination();
-  }
-
-  isProductAdded(productId: string): boolean {
-    return this.addedProductIds().has(productId);
-  }
-
-  addProductToCart(product: ProductModel): void {
-    this.cart.addCartItem(product);
-    this.addedProductIds.update((ids) => new Set([...ids, product.id]));
-
-    setTimeout(() => {
-      this.addedProductIds.update((ids) => {
-        const newIds = new Set(ids);
-        newIds.delete(product.id);
-        return newIds;
-      });
-    }, 2000);
   }
 
   isProductCompared(productId: string): boolean {
@@ -422,8 +585,34 @@ export class ProductsComponent {
     });
   }
 
+  scrollToProducts(targetId = 'catalog-results'): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const target = document.getElementById(targetId);
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    target?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
   setViewMode(mode: 'grid' | 'list'): void {
     this.viewMode.set(mode);
+  }
+
+  selectOfferTab(tab: 'all' | 'popular' | 'ending'): void {
+    this.selectedOfferTab.set(tab);
+    if (tab === 'popular') this.sortOrder.set('mais_vendidos');
+    this.selectCategory('Todos');
+  }
+
+  routerToCatalog(): void {
+    this.clearFilters(false);
+  }
+
+  toggleOfferDiscount(event: Event): void {
+    this.discountOnly.set((event.target as HTMLInputElement).checked);
+    this.resetPagination();
+  }
+
+  onOfferAdded(product: ProductModel): void {
+    this.cartFeedback.set(`${product.title} adicionado ao carrinho.`);
   }
 
   updateMaxPrice(event: Event): void {
@@ -491,8 +680,7 @@ export class ProductsComponent {
       return Math.max(1, Math.ceil(gridProductCount / PRODUCTS_PER_PAGE));
     }
 
-    const firstPageCapacity = Math.max(0, PRODUCTS_PER_PAGE - this.featuredProducts().length);
-    const remainingProducts = Math.max(0, gridProductCount - firstPageCapacity);
+    const remainingProducts = Math.max(0, gridProductCount - FIRST_PAGE_GRID_PRODUCTS);
 
     return 1 + Math.ceil(remainingProducts / PRODUCTS_PER_PAGE);
   }
@@ -501,11 +689,21 @@ export class ProductsComponent {
     this.currentPage.set(1);
   }
 
-  private formatCurrency(value: number): string {
+  formatCurrency(value: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
       maximumFractionDigits: 2,
     }).format(value);
   }
+}
+
+export function formatFlashOfferCountdown(date: Date): string {
+  const nextDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+  const remainingSeconds = Math.max(0, Math.floor((nextDay.getTime() - date.getTime()) / 1000));
+  const hours = Math.floor(remainingSeconds / 3600);
+  const minutes = Math.floor((remainingSeconds % 3600) / 60);
+  const seconds = remainingSeconds % 60;
+
+  return [hours, minutes, seconds].map((value) => String(value).padStart(2, '0')).join(':');
 }

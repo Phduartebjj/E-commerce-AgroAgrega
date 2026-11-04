@@ -46,8 +46,8 @@ export class TokenAuth {
     };
 
 
-    const encHeader = btoa(JSON.stringify(header).toString());
-    const encPayload = btoa(JSON.stringify(payload)); 
+    const encHeader = crypt.enc.Base64url.stringify(crypt.enc.Utf8.parse(JSON.stringify(header)));
+    const encPayload = crypt.enc.Base64url.stringify(crypt.enc.Utf8.parse(JSON.stringify(payload)));
 
     const tokenData = `${encHeader}.${encPayload}`;
     const signature = crypt
@@ -62,6 +62,7 @@ export class TokenAuth {
     const cookie = document.cookie
       .trim()
       .split(';')
+      .map((value) => value.trim())
       .find((c) => c.startsWith(`${this.key}=`));
 
     return cookie ? cookie.substring(`${this.key}=`.length) : null;
@@ -71,7 +72,12 @@ export class TokenAuth {
     const token = this.getToken();
     if (token && this.checkToken()) {
       const payload = token.split('.')[1];
-      return JSON.parse(atob(payload));
+      try {
+        return JSON.parse(crypt.enc.Utf8.stringify(crypt.enc.Base64url.parse(payload)));
+      } catch {
+        // Read sessions created by the earlier Latin-1 token format.
+        return JSON.parse(atob(payload));
+      }
     }
 
     return this.getSessionData();

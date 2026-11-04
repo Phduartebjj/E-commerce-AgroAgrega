@@ -3,6 +3,10 @@ import { productsItems } from './core/data/products';
 import { additionalProducts } from './core/data/additional-products';
 
 export const serverRoutes: ServerRoute[] = [
+  // Account data and demo sessions are stored in the browser, never on the server.
+  ...['admin', 'checkout', 'account', 'orders', 'orders/:id'].map((path): ServerRoute => ({
+    path, renderMode: RenderMode.Client,
+  })),
   {
     path: 'products/:id',
     renderMode: RenderMode.Prerender,
@@ -11,10 +15,6 @@ export const serverRoutes: ServerRoute[] = [
       return all.map((p) => ({ id: p.id }));
     },
     fallback: PrerenderFallback.Client,
-  },
-  {
-    path: 'orders/:id',
-    renderMode: RenderMode.Client,
   },
   {
     path: '**',

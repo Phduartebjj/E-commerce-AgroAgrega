@@ -30,6 +30,7 @@ export class OrderService {
 
       this.orders.set(this.getStorageOrders());
     });
+
     effect(() => {
       const userId = this.auth.currentUserId();
       const orders = this.orders();
@@ -119,6 +120,7 @@ export class OrderService {
     if (!img.startsWith('http')) {
       img = img.replace(/^\/+/, '');
     }
+
     return img;
   }
 
@@ -126,8 +128,34 @@ export class OrderService {
     this.orders.update((orders) => {
       return orders.map((order) => {
         if (order.id === orderId) {
-          return { ...order, status: OrderStatus.Cancelled };
+          return {
+            ...order,
+            status: OrderStatus.Cancelled,
+          };
         }
+
+        return order;
+      });
+    });
+  }
+
+  updateOrderStatus(orderId: string, status: OrderStatus): void {
+    this.orders.update((orders) => orders.map((order) => order.id === orderId ? { ...order, status } : order));
+  }
+
+  updateOrderStatusByMercadoPagoId(
+    mercadoPagoOrderId: string,
+    status: OrderStatus,
+  ): void {
+    this.orders.update((orders) => {
+      return orders.map((order) => {
+        if (order.mercadoPagoOrderId === mercadoPagoOrderId) {
+          return {
+            ...order,
+            status,
+          };
+        }
+
         return order;
       });
     });
@@ -142,6 +170,7 @@ export class OrderService {
     paymentMethod: OrderPaymentMethod,
     address: AddressModel,
     status: OrderStatus = OrderStatus.Pending,
+    mercadoPagoOrderId?: string,
   ): void {
     const userId = this.auth.currentUserId();
 
@@ -152,6 +181,7 @@ export class OrderService {
 
     const newOrder: OrderModel = {
       id: globalThis.crypto.randomUUID(),
+      mercadoPagoOrderId,
       userId,
       customerName,
       items: cartItem.map((item) => ({
@@ -173,6 +203,5 @@ export class OrderService {
     };
 
     this.orders.update((orders) => [...orders, newOrder]);
-    const key = this.getStorageKey();
   }
 }

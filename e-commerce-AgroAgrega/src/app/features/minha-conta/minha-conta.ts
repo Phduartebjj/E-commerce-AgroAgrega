@@ -1,10 +1,11 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AddressService } from '@core/services/address/address.service';
 import { Auth } from '@core/services/auth/auth.service';
+import { AvatarId, AvatarService } from '@core/services/avatar/avatar.service';
 import { CepService } from '@core/services/cep/cep';
-import { OrderService } from '@core/services/order/order.service';
 import { AddressModel } from '@models/address.model';
 import { errorMessages } from '@shared/constants/form-error-messages';
 
@@ -12,31 +13,34 @@ import { errorMessages } from '@shared/constants/form-error-messages';
   selector: 'app-minha-conta',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './minha-conta.html',
-  styleUrl: './minha-conta.css',
+  styleUrls: ['./minha-conta.css', './account-header.css'],
 })
 export class MinhaConta {
   private readonly auth = inject(Auth);
-  private readonly orderService = inject(OrderService);
   private readonly cepService = inject(CepService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly addressService = inject(AddressService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly profileError = signal('');
+  readonly avatar = inject(AvatarService);
 
   userName = this.auth.getName();
   userEmail = this.auth.getEmail();
   userAddresses: AddressModel[] = [];
   editingProfile = false;
+  readonly photoLoading = signal(false);
+  readonly photoMessage = signal('');
+  readonly photoError = signal('');
+  readonly activeSection = signal<'profile' | 'addresses' | 'benefits' | 'security' | 'notifications'>('profile');
+  notificationsOpen = false;
   isAddressFormOpen = false;
   editingAddressIndex: number | null = null;
 
-  protected readonly recentOrders = computed(() => {
-    const userId = this.auth.currentUserId();
-
-    if (!userId) {
-      return [];
-    }
-    return this.orderService.getOrdersByUserId(userId);
-  });
+  get firstName(): string {
+    return this.userName.trim().split(/\s+/)[0] || 'produtor';
+  }
 
   readonly profileForm = this.formBuilder.nonNullable.group({
     name: [this.userName, [Validators.required, Validators.minLength(3)]],
@@ -80,7 +84,40 @@ export class MinhaConta {
   }
 
   editProfile(): void {
+    this.profileError.set('');
     this.editingProfile = true;
+  }
+
+  selectAvatar(avatarId: AvatarId): void {
+    this.photoError.set('');
+    try {
+      this.avatar.selectAvatar(avatarId);
+      this.photoMessage.set('Avatar atualizado!');
+    } catch {
+      this.photoError.set('Não foi possível salvar o avatar neste dispositivo. Tente novamente.');
+    }
+  }
+
+  async onPhotoSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || this.photoLoading()) return;
+    this.photoError.set('');
+    this.photoMessage.set('');
+    this.photoLoading.set(true);
+    try {
+      await this.avatar.selectPhoto(file);
+      this.photoMessage.set('Foto de perfil atualizada! Ela fica salva neste dispositivo.');
+    } catch (error) {
+      this.photoError.set(
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível carregar a foto. Tente novamente.',
+      );
+    } finally {
+      this.photoLoading.set(false);
+    }
   }
 
   saveProfile(): void {
@@ -91,7 +128,10 @@ export class MinhaConta {
     if (!name) return;
 
     const result = this.auth.updateProfile(name, email);
-    if (!result.res) return;
+    if (!result.res) {
+      this.profileError.set(result.message || 'Não foi possível salvar os dados. Tente novamente.');
+      return;
+    }
 
     this.userName = name;
     this.userEmail = email;
@@ -144,8 +184,10 @@ export class MinhaConta {
       return;
     }
 
-    this.cepService.getCep(cep).subscribe({
+    this.cepService.getCep(cep).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (dados) => {
+        if (this.addressForm.controls.cep.value.replace(/\D/g, '') !== cep) return;
+        this.changeDetector.markForCheck();
         if (dados.erro) {
           this.addressForm.controls.cep.setErrors({ invalidCep: true });
           return;
@@ -160,7 +202,9 @@ export class MinhaConta {
         });
       },
       error: () => {
+        if (this.addressForm.controls.cep.value.replace(/\D/g, '') !== cep) return;
         this.addressForm.controls.cep.setErrors({ invalidCep: true });
+        this.changeDetector.markForCheck();
       },
     });
   }

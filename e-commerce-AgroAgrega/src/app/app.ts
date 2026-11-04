@@ -7,10 +7,11 @@ import { filter } from 'rxjs';
 import { Header } from './shared/components/header/header';
 
 import { Footer } from './shared/components/footer/footer';
+import { StoreAssistant } from './shared/components/store-assistant/store-assistant';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, Footer, StoreAssistant],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -19,6 +20,7 @@ export class App implements OnInit {
 
   mostrarHeader = signal(true);
   mostrarFooter = signal(true);
+  mostrarAssistant = signal(true);
 
   constructor(
     private router: Router,
@@ -51,5 +53,6 @@ export class App implements OnInit {
 
     this.mostrarHeader.set(!esconderHeader);
     this.mostrarFooter.set(!esconderFooter);
+    this.mostrarAssistant.set(!esconderHeader && !dadosDaRota['hideAssistant']);
   }
 }

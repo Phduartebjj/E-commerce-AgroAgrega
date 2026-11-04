@@ -3,6 +3,13 @@ import { UpperCasePipe } from '@angular/common';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { ProductModel } from '@models/product';
 import { RouterLink } from '@angular/router';
+import {
+  calculateDiscountPercent,
+  calculateInstallmentPrice,
+  calculatePixPrice,
+  getFreeDeliveryLabel,
+  getWeeklySalesLabel,
+} from '../../../shared/utils/product-card-display';
 @Component({
   selector: 'app-product-card',
   imports: [UpperCasePipe, PrecoFormatadoPipe, RouterLink],
@@ -12,29 +19,20 @@ import { RouterLink } from '@angular/router';
 export class ProductCardComponent {
   product = input.required<ProductModel>();
   compareSelected = input(false);
-  addToCart = output<ProductModel>();
   toggleCompare = output<ProductModel>();
 
-  adicionado = signal(false);
   imageUnavailable = signal(false);
-
-  adicionarAoCarrinho(): void {
-    this.addToCart.emit(this.product());
-    this.adicionado.set(true);
-
-    setTimeout(() => {
-      this.adicionado.set(false);
-    }, 2000);
-  }
+  readonly freeDeliveryLabel = getFreeDeliveryLabel();
+  readonly calculateInstallmentPrice = calculateInstallmentPrice;
+  readonly calculatePixPrice = calculatePixPrice;
+  readonly getWeeklySalesLabel = getWeeklySalesLabel;
 
   handleImageError(): void {
     this.imageUnavailable.set(true);
   }
 
   getDiscountPercent(product: ProductModel): number {
-    if (!product.originalPrice || product.originalPrice <= product.price) return 0;
-
-    return Math.round((1 - product.price / product.originalPrice) * 100);
+    return calculateDiscountPercent(product.price, product.originalPrice);
   }
 
   getStars(rating: number): boolean[] {

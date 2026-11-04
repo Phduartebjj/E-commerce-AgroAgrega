@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { Hero } from './hero';
 
+// Verifica se a seção principal da página inicial é criada corretamente.
 describe('Hero', () => {
   let component: Hero;
   let fixture: ComponentFixture<Hero>;

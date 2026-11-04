@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Benefits } from './benefits';
 
+// Verifica se o componente de benefícios é criado corretamente.
 describe('Benefits', () => {
   let component: Benefits;
   let fixture: ComponentFixture<Benefits>;
