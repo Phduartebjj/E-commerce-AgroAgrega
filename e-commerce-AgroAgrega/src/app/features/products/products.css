@@ -362,8 +362,8 @@
 }
 .featured-title__icon {
   flex: 0 0 auto;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 4rem;
+  height: 4rem;
   object-fit: contain;
 }
 .section-heading p {
@@ -1223,8 +1223,8 @@ input:focus-visible {
     gap: 5px;
   }
   .featured-title__icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 3.25rem;
+    height: 3.25rem;
   }
   .featured-heading-actions {
     flex-direction: column;

@@ -95,6 +95,8 @@ describe('ProductsComponent', () => {
 
     expect(icon?.getAttribute('src')).toBe('assets/images/highlights.png');
     expect(icon?.getAttribute('alt')).toBe('');
+    expect(icon?.getAttribute('width')).toBe('64');
+    expect(icon?.getAttribute('height')).toBe('64');
   });
 
   it('deve tornar funcionais os botões desenhados nos banners PNG', () => {
