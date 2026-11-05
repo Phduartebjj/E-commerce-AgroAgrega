@@ -19,8 +19,8 @@ function createProduct(
     ...(id === 40 ? { originalPrice: 128.9 } : {}),
     description,
     images: [
-      `/assets/images/generated-products/product-${id.toString().padStart(3, '0')}.webp`,
-      `/assets/images/generated-product-views/product-${id.toString().padStart(3, '0')}-angle.jpg`,
+      `assets/images/generated-products/product-${id.toString().padStart(3, '0')}.webp`,
+      `assets/images/generated-product-views/product-${id.toString().padStart(3, '0')}-angle.jpg`,
     ],
     rating,
     brand,
