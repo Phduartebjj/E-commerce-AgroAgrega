@@ -137,23 +137,24 @@
   }
 
   .hero {
-    min-height: clamp(500px, 115vw, 620px);
+    min-height: 0;
     border-radius: 16px;
     background-position: 62% center;
   }
 
   .hero-content {
-    min-height: clamp(500px, 115vw, 620px);
-    padding: clamp(28px, 8vw, 48px) clamp(20px, 7vw, 40px);
+    min-height: clamp(340px, 75vw, 420px);
+    padding: 28px 22px;
   }
 
   .hero-title {
-    font-size: clamp(2.4rem, 10vw, 3.2rem);
+    font-size: clamp(1.85rem, 6.5vw, 2.6rem);
+    line-height: 1.12;
   }
 
   .hero-description {
     max-width: 100%;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
 }
@@ -162,10 +163,13 @@
   .hero-etiqueta {
     font-size: 0.65rem;
     white-space: normal;
+    max-width: 100%;
+    box-sizing: border-box;
+    line-height: 1.35;
   }
 
   .hero-title {
-    font-size: clamp(2rem, 10vw, 2.4rem);
+    font-size: clamp(1.7rem, 7.5vw, 2.1rem);
   }
 
   .hero-actions {

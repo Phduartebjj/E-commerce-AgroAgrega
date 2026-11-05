@@ -1,6 +1,11 @@
 <main class="product-page" [class.product-page--offers]="offersOnly()" id="catalog-content">
   @if (offersOnly()) {
     <header class="offer-hero" aria-labelledby="offers-title">
+      <div class="offer-hero__mobile-copy" aria-hidden="true">
+        <span>⚡ Seleção diária</span>
+        <h2>Ofertas <strong>relâmpago</strong></h2>
+        <p>Produtos para o seu campo com descontos por tempo limitado.</p>
+      </div>
       <div class="offer-hero__canvas" aria-hidden="true">
         <img
           src="assets/images/offers/hero.png"
@@ -169,6 +174,7 @@
             [class.png-action--hero-livestock]="activeHeroSlide() === 3"
             routerLink="/products"
             [queryParams]="heroSlides[activeHeroSlide()].queryParams"
+            fragment="catalog-results"
           >
             <svg class="png-action__icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 7h12l2 14H4L6 7ZM9 7V6a3 3 0 0 1 6 0v1" />

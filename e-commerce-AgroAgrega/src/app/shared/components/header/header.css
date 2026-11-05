@@ -962,6 +962,7 @@
 
 @media (max-width: 1024px) {
   .cabecalho-principal {
+    position: relative;
     min-height: auto;
     width: calc(100% - 24px);
     padding: 18px 0 20px;
@@ -981,6 +982,18 @@
     margin-left: auto;
     gap: clamp(10px, 2vw, 18px);
   }
+
+  .account-menu-wrapper { position: static; }
+  .account-dropdown {
+    top: 76px;
+    right: 0;
+    width: min(330px, 100%);
+    box-sizing: border-box;
+    max-height: calc(100dvh - 150px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .account-dropdown::before { display: none; }
 
   .area-busca {
     order: 3;

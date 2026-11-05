@@ -15,6 +15,7 @@
   border-radius: 18px;
   background: transparent;
 }
+.offer-hero__mobile-copy { display: none; }
 .offer-hero__canvas {
   position: absolute;
   top: -25%;
@@ -389,12 +390,18 @@
     background: #06492f;
   }
   .offer-hero__canvas {
-    position: relative;
-    top: 0;
-    width: 100%;
-    aspect-ratio: 1.92;
-    overflow: hidden;
+    display: none;
   }
+  .offer-hero__mobile-copy {
+    display: block;
+    padding: 24px 20px 20px;
+    color: #fff;
+    background: radial-gradient(ellipse at top right, #138348, transparent 75%);
+  }
+  .offer-hero__mobile-copy > span { display: inline-block; padding: 6px 10px; border-radius: 99px; background: #dfff60; color: #06492f; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
+  .offer-hero__mobile-copy h2 { margin: 14px 0 10px; font-size: clamp(1.65rem, 7vw, 2.3rem); line-height: 1.1; }
+  .offer-hero__mobile-copy strong { color: #dfff60; }
+  .offer-hero__mobile-copy p { margin: 0; font-size: .9rem; line-height: 1.5; max-width: 40ch; }
   .offer-hero__canvas img {
     position: absolute;
     top: -18%;
@@ -463,7 +470,7 @@
   .offer-countdown button {
     position: static;
     width: 100%;
-    min-height: 40px;
+    min-height: 44px;
     height: auto;
     padding: 9px 12px;
     background: #075c36;

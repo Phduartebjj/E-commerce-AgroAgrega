@@ -425,17 +425,19 @@
   }
 
   .product-card {
-    flex-basis: min(260px, calc(100vw - 64px));
-    padding: 14px;
+    flex-basis: clamp(190px, 54vw, 230px);
+    box-sizing: border-box;
+    padding: 12px;
   }
 
   .product-image {
-    height: 150px;
+    height: 130px;
   }
 
   .carousel-button {
-    width: 38px;
-    height: 38px;
+    top: 86px;
+    width: 44px;
+    height: 44px;
     font-size: 1rem;
   }
 
@@ -473,16 +475,16 @@
   }
 
   .product-card {
-    flex-basis: calc(100vw - 48px);
+    flex-basis: clamp(190px, 54vw, 220px);
   }
 
   .product-image {
-    height: 165px;
+    height: 125px;
   }
 
   .carousel-button {
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
   }
 }
 
