@@ -1,4 +1,6 @@
-import { RenderMode, ServerRoute } from '@angular/ssr';
+import { RenderMode, ServerRoute, PrerenderFallback } from '@angular/ssr';
+import { productsItems } from './core/data/products';
+import { additionalProducts } from './core/data/additional-products';
 
 export const serverRoutes: ServerRoute[] = [
   // Account data and demo sessions are stored in the browser, never on the server.
@@ -7,7 +9,12 @@ export const serverRoutes: ServerRoute[] = [
   })),
   {
     path: 'products/:id',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Prerender,
+    async getPrerenderParams() {
+      const all = [...productsItems, ...additionalProducts];
+      return all.map((p) => ({ id: p.id }));
+    },
+    fallback: PrerenderFallback.Client,
   },
   {
     path: '**',
