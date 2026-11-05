@@ -5,10 +5,19 @@ import {
 } from './assistant-catalog';
 
 describe('Busca e contexto do Tourino', () => {
+  it('entende grupos de opções por ordem sem incluir os demais produtos', () => {
+    const options = productsItems.slice(0, 4);
+    expect(resolveAssistantReferences('Compare as duas primeiras opções', options)).toEqual(options.slice(0, 2));
+    expect(resolveAssistantReferences('Compare as últimas 3 opções', options)).toEqual(options.slice(-3));
+  });
   it.each([
     ['Irrigação até R$ 1.500,50', 1500.5],
     ['Quero ferramentas com orçamento de 1,5 mil reais', 1500],
     ['Procuro sensores por menos de 500 reais', 500],
+    ['Tenho 800 reais para irrigação', 800],
+    ['Posso gastar R$ 1.500,50 em ferramentas', 1500.5],
+    ['Meu orçamento é de 500 reais para ferramentas', 500],
+    ['Pretendo investir 1,5 mil em irrigação', 1500],
   ])('entende o orçamento em “%s”', (message, maxPrice) => {
     const request = parseAssistantCatalogRequest(message);
     expect(request.maxPrice).toBe(maxPrice);

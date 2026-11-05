@@ -13,7 +13,7 @@
   >
     <header class="assistant-header" [class.assistant-header--loading]="isStarting()">
       @if (embedded()) {
-        <div class="assistant-page-heading"><img src="/assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div></div>
+        <div class="assistant-page-heading"><img src="/assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div><button type="button" class="assistant-new-conversation" (click)="resetConversation()" [disabled]="isStarting()">Nova conversa</button></div>
       } @else if (!isStarting()) {
         <img
           src="assets/images/assistant/tourino-header.png"
@@ -55,6 +55,7 @@
       [attr.aria-live]="isIntroducing() ? 'off' : 'polite'"
       [attr.aria-busy]="isTyping()"
       [attr.inert]="isStarting() ? '' : null"
+      (scroll)="onMessageScroll()"
     >
       @for (message of messages(); track message.id) {
         <article
@@ -167,11 +168,28 @@
             </div>
           }
 
+          @if (message.shoppingPlan; as plan) {
+            <section class="assistant-shopping-plan" aria-label="Resumo da seleção">
+              <div><span>Total da seleção</span><strong>{{ price(plan.total) }}</strong></div>
+              @if (plan.budget !== undefined) {
+                <small>Orçamento: {{ price(plan.budget) }} · Restam {{ price(plan.budget - plan.total) }}</small>
+              }
+              <small>Uma unidade de cada produto. Valores sem cupom e frete.</small>
+              <button type="button" class="assistant-plan-add" [disabled]="isTyping() || plan.applied" (click)="addShoppingPlan(message)">
+                {{ plan.applied ? 'Seleção adicionada' : 'Adicionar seleção ao carrinho' }}
+              </button>
+            </section>
+          }
+
           @if (message.showCart) {
             <div class="assistant-cart">
               @for (item of cartItems(); track item.product.id) {
                 <div class="assistant-cart__item">
-                  <span>{{ item.product.title }}</span>
+                  <span>{{ item.product.title }}
+                    @if (!isCartItemSelected(item.product.id)) {
+                      <small class="assistant-unselected">Não selecionado para compra</small>
+                    }
+                  </span>
                   <div class="assistant-cart__controls">
                     <button
                       type="button"
@@ -201,7 +219,7 @@
               }
               @if (cartItems().length) {
                 <div class="assistant-cart__total">
-                  <span>Total</span><strong>{{ price(cartTotal()) }}</strong>
+                  <span>Total dos selecionados</span><strong>{{ price(selectedCartTotal()) }}</strong>
                 </div>
                 @if (currentCoupon()) {
                   <small>Cupom {{ currentCoupon()!.code }} aplicado</small>
@@ -240,6 +258,23 @@
         </article>
       }
     </div>
+
+    @if (hasNewMessages()) {
+      <button type="button" class="assistant-jump-latest" (click)="showLatestMessages()">Ver mensagens recentes ↓</button>
+    }
+
+    @if (isTyping() || taskProgress()) {
+      <div class="assistant-activity">
+        <span>{{ isTyping() ? processingLabel() : waitingForChoice() ? 'Aguardando sua escolha' : 'Continuando sua solicitação' }}</span>
+        @if (taskProgress(); as progress) {
+          <small>Etapa {{ progress.current }} de {{ progress.total }}</small>
+          <button type="button" (click)="stopSequence()">Parar próximas etapas</button>
+        }
+        @if (isTyping()) {
+          <button type="button" class="assistant-finish-response" (click)="finishResponse()">Mostrar resposta completa</button>
+        }
+      </div>
+    }
 
     @if (messages().length < 3) {
       <nav
@@ -311,17 +346,18 @@
           <path
             d="M16 29V13M16 23C4 24 2 12 4 6c8 0 12 7 12 17ZM16 15C16 5 22 3 29 3c0 9-5 14-13 12"
           /></svg
-        ><input
+        ><textarea
           #composer
           name="message"
-          type="text"
           [(ngModel)]="draft"
-          maxlength="240"
+          maxlength="1200"
+          rows="2"
+          (keydown)="onComposerKeydown($event)"
           autocomplete="off"
           placeholder="Digite sua dúvida ou peça um produto..."
           aria-label="Mensagem para o assistente"
-      /></label>
-      <button type="submit" [disabled]="!draft.trim() || isTyping()" aria-label="Enviar mensagem">
+      ></textarea></label>
+      <button type="submit" [disabled]="!draft.trim() || isStarting()" aria-label="Enviar mensagem">
         <svg viewBox="0 0 32 32" aria-hidden="true">
           <path d="M3 15 29 3l-9 26-5-10ZM15 19 29 3" />
         </svg>

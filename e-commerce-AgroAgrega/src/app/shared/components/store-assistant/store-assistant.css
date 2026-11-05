@@ -39,8 +39,8 @@
 :host(.assistant-embedded) .assistant-suggestions { padding: 14px 24px; gap: 8px; }
 :host(.assistant-embedded) .assistant-suggestions strong { font-size: .78rem; }
 :host(.assistant-embedded) .assistant-composer { padding: 16px 24px 8px; gap: 10px; }
-:host(.assistant-embedded) .assistant-composer label { height: 50px; }
-:host(.assistant-embedded) .assistant-composer input { font-size: 1rem; }
+:host(.assistant-embedded) .assistant-composer label { min-height: 62px; height: auto; }
+:host(.assistant-embedded) .assistant-composer textarea { font-size: 1rem; }
 :host(.assistant-embedded) .assistant-composer > button { flex-basis: 50px; }
 :host(.assistant-embedded) .assistant-note { padding: 6px 24px 16px; font-size: .7rem; }
 @media (max-width: 760px) {
@@ -772,7 +772,7 @@
   align-items: center;
   gap: 7px;
   min-width: 0;
-  height: 42px;
+  min-height: 54px;
   padding: 0 9px;
   border: 2px solid #4eaa3c;
   border-radius: 11px;
@@ -787,11 +787,14 @@
   stroke-width: 1.8;
 }
 
-.assistant-composer input {
+.assistant-composer textarea {
   flex: 1;
   min-width: 0;
-  height: 36px;
-  padding: 0;
+  min-height: 40px;
+  max-height: 120px;
+  padding: 6px 0;
+  resize: vertical;
+  line-height: 1.4;
   border: 0;
   outline: 0;
   background: transparent;
@@ -800,7 +803,7 @@
   font-size: 0.75rem;
 }
 
-.assistant-composer input::placeholder {
+.assistant-composer textarea::placeholder {
   color: #9a9da5;
 }
 
@@ -903,3 +906,33 @@
     animation: none;
   }
 }
+
+.assistant-new-conversation { margin-left: auto; padding: 9px 12px; border: 1px solid #b7dbc2; border-radius: 10px; color: #fff; background: #ffffff12; font: inherit; font-size: .75rem; cursor: pointer; }
+.assistant-new-conversation:hover { background: #ffffff25; }
+.assistant-activity { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 14px; flex: 0 0 auto; background: #edf7f1; border-top: 1px solid #d5e9dd; color: #236344; font-size: .75rem; }
+.assistant-activity > span { flex: 1 1 160px; }
+.assistant-activity small { font-weight: 700; }
+.assistant-activity button, .assistant-jump-latest { border: 1px solid #b8d8c3; background: #fff; color: #185638; border-radius: 9px; padding: 8px 10px; cursor: pointer; font: inherit; font-size: .75rem; }
+.assistant-jump-latest { align-self: center; flex: 0 0 auto; margin: 8px; box-shadow: 0 3px 12px #123b2420; }
+.assistant-shopping-plan { display: grid; gap: 8px; margin-top: 12px; padding: 14px; background: #edf7ed; border: 1px solid #c5dfc8; border-radius: 14px; }
+.assistant-shopping-plan > div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.assistant-shopping-plan strong { color: #087441; font-size: 1.1em; }
+.assistant-shopping-plan small { color: #49634f; line-height: 1.5; }
+.assistant-plan-add { border: 0; border-radius: 10px; padding: 12px; background: #087441; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+.assistant-plan-add:disabled { opacity: .6; cursor: default; }
+.assistant-message, .assistant-shopping-plan { animation: tourino-message-in 260ms ease-out both; }
+.assistant-product { animation: tourino-message-in 300ms ease-out both; }
+.assistant-product:nth-child(2) { animation-delay: 45ms; }
+.assistant-product:nth-child(3) { animation-delay: 90ms; }
+.assistant-panel button { transition: background-color 160ms, box-shadow 160ms, transform 160ms; }
+.assistant-panel button:active:enabled { transform: scale(.98); }
+.assistant-plan-add:hover:enabled { background: #095a36; box-shadow: 0 4px 12px #08744130; }
+.assistant-composer label { transition: border-color 180ms, box-shadow 180ms; }
+.assistant-composer label:focus-within { box-shadow: 0 0 0 4px #70be4820; }
+@keyframes tourino-message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .assistant-message, .assistant-product, .assistant-shopping-plan { animation: none; }
+  .assistant-panel button, .assistant-composer label { transition: none; }
+  .assistant-panel button:active:enabled { transform: none; }
+}
+@media (max-width: 480px) { .assistant-page-heading { flex-wrap: wrap; } .assistant-new-conversation { margin-left: 56px; } }

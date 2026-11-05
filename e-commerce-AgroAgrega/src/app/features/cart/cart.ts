@@ -7,6 +7,7 @@ import { PrecoFormatadoPipe } from '../../shared/pipes/preco-formatado-pipe';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../core/services/product/product.service';
 import { ProductCardComponent } from '../products/product-card/product-card';
+import { ProductComparisonComponent } from '../products/product-comparison/product-comparison';
 import { getPartnerStoreLogo } from '../../shared/constants/partner-stores';
 
 interface CartGroup {
@@ -16,7 +17,7 @@ interface CartGroup {
 
 @Component({
   selector: 'app-cart',
-  imports: [RouterLink, PrecoFormatadoPipe, ProductCardComponent],
+  imports: [RouterLink, PrecoFormatadoPipe, ProductCardComponent, ProductComparisonComponent],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
@@ -59,6 +60,68 @@ export class CartComponent {
     const cartIds = new Set(this.cartItems().map((item) => item.product.id));
     return this.products().filter((product) => !cartIds.has(product.id)).slice(0, 5);
   });
+
+  readonly comparedProductIds = signal<Set<string>>(new Set());
+  readonly comparisonOpen = signal(false);
+  readonly comparisonAnnouncement = signal('');
+  readonly comparedProducts = computed(() => this.products().filter(product => this.comparedProductIds().has(product.id)));
+
+  isProductCompared(productId: string): boolean {
+    return this.comparedProductIds().has(productId);
+  }
+
+  toggleProductComparison(product: ProductModel): void {
+    const currentIds = this.comparedProductIds();
+
+    if (currentIds.has(product.id)) {
+      this.removeComparedProduct(product.id);
+      return;
+    }
+
+    if (currentIds.size >= 3) {
+      this.comparisonAnnouncement.set('Você pode comparar até 3 produtos por vez.');
+      return;
+    }
+
+    this.comparedProductIds.set(new Set([...currentIds, product.id]));
+    this.comparisonAnnouncement.set(
+      `${product.title} foi adicionado à comparação. ${currentIds.size + 1} de 3 selecionados.`,
+    );
+  }
+
+  removeComparedProduct(productId: string): void {
+    const product = this.products().find((item) => item.id === productId);
+    const nextIds = new Set(this.comparedProductIds());
+    nextIds.delete(productId);
+    this.comparedProductIds.set(nextIds);
+
+    if (nextIds.size < 2) {
+      this.comparisonOpen.set(false);
+    }
+
+    this.comparisonAnnouncement.set(
+      product ? `${product.title} foi removido da comparação.` : 'Produto removido da comparação.',
+    );
+  }
+
+  clearComparison(): void {
+    this.comparedProductIds.set(new Set());
+    this.comparisonOpen.set(false);
+    this.comparisonAnnouncement.set('Seleção de comparação limpa.');
+  }
+
+  openComparison(): void {
+    if (this.comparedProducts().length < 2) {
+      this.comparisonAnnouncement.set('Selecione pelo menos 2 produtos para comparar.');
+      return;
+    }
+
+    this.comparisonOpen.set(true);
+  }
+
+  closeComparison(): void {
+    this.comparisonOpen.set(false);
+  }
 
   addProduct(product: ProductModel): void {
     this.cart.addCartItem(product);

@@ -7,6 +7,8 @@ import { StoreAssistant } from './store-assistant';
 import { StoreAssistantState } from './store-assistant-state';
 import { calculatePixPrice } from '../../utils/product-card-display';
 import { Auth } from '../../../core/services/auth/auth.service';
+import { OrderService } from '../../../core/services/order/order.service';
+import { OrderStatus, OrderPaymentMethod } from '../../../models/order';
 
 // Verifica a interação do assistente com ofertas, produtos e carrinho.
 describe('StoreAssistant', () => {
@@ -161,23 +163,143 @@ describe('StoreAssistant', () => {
     expect(host.querySelector('.assistant-coupons')).not.toBeNull();
   });
 
-  it('preserves the next draft and prevents overlapping replies while typing', () => {
+  it('accepts new messages while revealing a reply without losing the previous answer', () => {
     component.draft = 'Ver cupons';
     component.send();
     component.draft = 'Ver ofertas de hoje';
     component.send();
     component.submitPrompt('Meu carrinho');
     component.applyCoupon('CAMPO15');
-    expect(component.messages()).toHaveLength(3);
-    expect(component.draft).toBe('Ver ofertas de hoje');
+    expect(component.messages()).toHaveLength(7);
+    expect(component.draft).toBe('');
+    expect(component.messages()[2].showCoupons).toBe(true);
+    expect(component.messages()[4].products?.length).toBeGreaterThan(0);
+    expect(component.messages().filter(message => message.typing)).toHaveLength(1);
     expect(cart.coupon()).toBeNull();
 
     vi.advanceTimersByTime(4000);
-    component.send();
-    expect(component.draft).toBe('');
-    expect(component.messages()).toHaveLength(5);
+    expect(component.messages().at(-1)?.showCart).toBe(true);
+    expect(component.messages().some(message => message.typing)).toBe(false);
+  });
+
+  it('executes a search, comparison and quotation in order from one message', () => {
+    component.submitPrompt('Buscar irrigação até 800; compare o primeiro com o segundo; quanto ficam 2 unidades do segundo no Pix?');
+    vi.advanceTimersByTime(15000);
+    const replies = component.messages().filter(message => message.role === 'assistant' && message.id > 0);
+    expect(replies).toHaveLength(3);
+    expect(replies[0].products?.length).toBeGreaterThan(1);
+    expect(replies[1].comparison).toBe(true);
+    expect(replies[2].text).toContain('2 unidades');
+    expect(replies[2].products?.[0].id).toBe(replies[0].products?.[1].id);
+    expect(cart.isEmpty()).toBe(true);
+    expect(component.taskProgress()).toBeNull();
+  });
+
+  it('pauses a sequence for an ambiguous cart item and resumes after the choice', () => {
+    component.submitPrompt('Adicionar 2 sementes; quanto fica o carrinho no Pix?');
     vi.advanceTimersByTime(4000);
-    expect(component.messages().at(-1)?.products?.length).toBeGreaterThan(0);
+    const options = component.messages().at(-1)?.products;
+    expect(options!.length).toBeGreaterThan(1);
+    expect(cart.isEmpty()).toBe(true);
+    component.submitPrompt('O segundo');
+    vi.advanceTimersByTime(10000);
+    expect(cart.getCartItems()()[0].product.id).toBe(options![1].id);
+    expect(cart.totalCartItens()).toBe(2);
+    expect(component.messages().at(-1)?.text).toContain('Resumo dos 2 itens selecionados');
+  });
+
+  it('stops queued actions when the user stops or changes the request', () => {
+    component.submitPrompt('Buscar roçadeira; adicionar 1 roçadeira');
+    component.stopSequence();
+    vi.advanceTimersByTime(10000);
+    expect(cart.isEmpty()).toBe(true);
+    component.submitPrompt('Buscar roçadeira; adicionar 1 roçadeira');
+    component.submitPrompt('Ver cupons');
+    vi.advanceTimersByTime(10000);
+    expect(cart.isEmpty()).toBe(true);
+    expect(component.messages().at(-1)?.showCoupons).toBe(true);
+  });
+
+  it('applies the best available coupon only when asked and can undo it', () => {
+    component.submitPrompt('Adicionar 1 roçadeira; aplique o melhor cupom');
+    vi.advanceTimersByTime(10000);
+    const best = Math.max(...component.coupons.map(coupon => coupon.discountPercentage));
+    expect(cart.coupon()?.discountPercentage).toBe(best);
+    component.submitPrompt('Desfazer');
+    vi.advanceTimersByTime(4000);
+    expect(cart.coupon()).toBeNull();
+    expect(cart.totalCartItens()).toBe(1);
+  });
+
+  it('does not carry queued changes into another account', () => {
+    component.submitPrompt('Buscar roçadeira; adicionar 1 roçadeira');
+    component.finishResponse();
+    TestBed.inject(Auth).currentUserId.set('outra-conta');
+    vi.advanceTimersByTime(10000);
+    expect(cart.isEmpty()).toBe(true);
+    expect(component.taskProgress()).toBeNull();
+    expect(component.messages()).toHaveLength(1);
+  });
+
+  it('asks to shorten requests over three steps without executing any of them', () => {
+    component.submitPrompt('Adicionar 1 roçadeira; aplicar cupom CAMPO15; meu carrinho; ver cupons');
+    vi.advanceTimersByTime(15000);
+    expect(cart.isEmpty()).toBe(true);
+    expect(cart.coupon()).toBeNull();
+    expect(component.messages().at(-1)?.text).toContain('até 3 pedidos');
+  });
+
+  it('reveals the full message immediately when requested', () => {
+    component.submitPrompt('Ver cupons');
+    component.finishResponse();
+    expect(component.isTyping()).toBe(false);
+    expect(component.messages().at(-1)?.showCoupons).toBe(true);
+    vi.advanceTimersByTime(4000);
+    expect(component.messages()).toHaveLength(3);
+  });
+
+  it('adds a reviewed selection once and restores all quantities when undone', () => {
+    component.submitPrompt('Buscar irrigação');
+    vi.advanceTimersByTime(4000);
+    const products = component.messages().at(-1)!.products!.slice(0, 3);
+    cart.addCartItem(products[0], 2);
+    const plan = {
+      id: 999, role: 'assistant' as const, text: 'Seleção', products,
+      shoppingPlan: { productIds: products.map(product => product.id), total: Math.round(products.reduce((sum, product) => sum + product.price, 0) * 100) / 100 },
+    };
+    component.messages.update(messages => [...messages, plan]);
+    component.addShoppingPlan(plan);
+    vi.advanceTimersByTime(4000);
+    expect(cart.totalCartItens()).toBe(5);
+    component.addShoppingPlan(plan);
+    expect(cart.totalCartItens()).toBe(5);
+    component.submitPrompt('Desfazer');
+    vi.advanceTimersByTime(4000);
+    expect(cart.getCartItems()()).toHaveLength(1);
+    expect(cart.getCartItems()()[0].quantity).toBe(2);
+    expect(component.messages().find(message => message.id === 999)?.shoppingPlan?.applied).toBe(false);
+  });
+
+  it('validates the whole selection before changing the cart', () => {
+    component.submitPrompt('Buscar irrigação');
+    vi.advanceTimersByTime(4000);
+    const products = component.messages().at(-1)!.products!.slice(0, 2);
+    const plan = {
+      id: 999, role: 'assistant' as const, text: 'Seleção', products,
+      shoppingPlan: { productIds: products.map(product => product.id), total: Math.round(products.reduce((sum, product) => sum + product.price, 0) * 100) / 100 },
+    };
+    component.messages.update(messages => [...messages, plan]);
+    cart.addCartItem(products[1], 99);
+    component.addShoppingPlan(plan);
+    vi.advanceTimersByTime(4000);
+    expect(cart.totalCartItens()).toBe(99);
+    expect(cart.getCartItems()()).toHaveLength(1);
+    cart.removeCartItem(products[1]);
+    component.messages.update(messages => messages.map(message => message.id === 999 ? { ...plan, shoppingPlan: { ...plan.shoppingPlan, total: 1 } } : message));
+    component.addShoppingPlan(plan);
+    vi.advanceTimersByTime(4000);
+    expect(cart.isEmpty()).toBe(true);
+    expect(component.messages().at(-1)?.text).toContain('preços');
   });
 
   it('cancels the typing timer when the component is destroyed', () => {
@@ -431,7 +553,8 @@ describe('StoreAssistant', () => {
       ask('Adicionar 2 roçadeiras');
       TestBed.inject(Auth).currentUserId.set('outro-usuario');
       const reply = ask('Desfazer');
-      expect(reply.text).toContain('carrinho mudou');
+      expect(reply.text).toContain('Ainda não há');
+      expect(component.messages().some(message => message.text.includes('unidades adicionadas'))).toBe(false);
     });
 
     it('compara todas as quatro opções e mantém a numeração após comparar um subconjunto', () => {
@@ -441,6 +564,92 @@ describe('StoreAssistant', () => {
       expect(comparison.products!.map((product) => product.id)).toEqual([initial.products![1].id, initial.products![3].id]);
       expect(comparison.optionNumbers).toEqual([2, 4]);
       expect(ask('Fale sobre o terceiro').products![0].id).toBe(initial.products![2].id);
+    });
+
+    it('simula várias unidades e parcelas sem adicionar produtos', () => {
+      const options = ask('Buscar irrigação').products!;
+      const reply = ask('Quanto ficam 3 unidades do segundo em 3 parcelas?');
+      expect(reply.text).toContain('3 unidades');
+      expect(reply.text).toContain(component.price(options[1].price * 3));
+      expect(reply.text).toContain(`Em 3x: aproximadamente ${component.price(options[1].price)}`);
+      expect(reply.products?.[0].id).toBe(options[1].id);
+      expect(cart.isEmpty()).toBe(true);
+      expect(reply.replyOptions?.[0].prompt).toBe('Adicionar 3 desse');
+    });
+
+    it('preserva a quantidade ao pedir esclarecimento e valida limites', () => {
+      const options = ask('Buscar irrigação').products!;
+      expect(ask('Quanto ficam 2 unidades?').text).toContain('De qual produto');
+      expect(ask('O terceiro').text).toContain(component.price(options[2].price * 2));
+      for (const quantity of ['0', '-2', '100', '1,5']) {
+        expect(ask(`Quanto ficam ${quantity} unidades desse?`).text).toContain('entre 1 e 99');
+      }
+      expect(ask('Quanto fica esse em 24 parcelas?').text).toContain('1 a 10 parcelas');
+      expect(cart.isEmpty()).toBe(true);
+    });
+
+    it('calcula apenas os itens selecionados e sugere cupom sem aplicar sozinho', () => {
+      ask('Adicionar 2 roçadeiras');
+      ask('Adicionar 1 sementes de milho');
+      const first = cart.getCartItems()()[0];
+      cart.setProductSelected(first.product.id, false);
+      const expected = cart.selectedTotal();
+      const reply = ask('Meu carrinho cabe no orçamento de 500 reais?');
+      expect(reply.text).toContain(`Total: ${component.price(expected)}`);
+      expect(reply.text).toContain(`sobram ${component.price(500 - expected)}`);
+      expect(reply.text).toContain('economizaria mais');
+      expect(cart.coupon()).toBeNull();
+      expect(ask(reply.replyOptions![0].prompt).text).toContain('aplicado');
+      expect(cart.coupon()).not.toBeNull();
+      expect(ask('Qual o melhor cupom?').text).toContain('já é tão bom');
+    });
+
+    it('informa quando nenhum item está selecionado para compra', () => {
+      ask('Adicionar 1 roçadeira');
+      cart.setProductSelected(cart.getCartItems()()[0].product.id, false);
+      expect(ask('Quanto fica meu carrinho no Pix?').text).toContain('nenhum está selecionado');
+    });
+
+    it('retoma a conversa e as referências após recriar a página, inclusive durante a digitação', () => {
+      const products = ask('Buscar irrigação até 800 reais').products!;
+      component.submitPrompt('Fale sobre o segundo');
+      expect(component.isTyping()).toBe(true);
+      fixture.destroy();
+      fixture = TestBed.createComponent(StoreAssistant);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      expect(component.isTyping()).toBe(false);
+      expect(component.messages().at(-1)?.text).toContain(products[1].title);
+      expect(component.messages().at(-1)?.typing).not.toBe(true);
+      const reply = ask('Quanto ficam 2 desses no Pix?');
+      expect(reply.text).toContain(component.price(products[1].price * 2));
+      expect(cart.isEmpty()).toBe(true);
+      component.resetConversation();
+      expect(component.messages()).toHaveLength(1);
+      expect(ask('O segundo').products).toBeUndefined();
+    });
+
+    it('consulta somente os pedidos da conta atual e não inventa rastreio', () => {
+      expect(ask('Onde está meu pedido?').link?.path).toBe('/login');
+      const auth = TestBed.inject(Auth);
+      auth.currentUserId.set('order-owner');
+      fixture.detectChanges();
+      const orders = TestBed.inject(OrderService);
+      const readOrders = vi.spyOn(orders, 'getOrdersByUserId').mockReturnValue([{
+        id: 'order-123', userId: 'order-owner', customerName: 'Cliente', items: [], subtotal: 50,
+        total: 50, shipping: 0, discount: 0, status: OrderStatus.Confirmed,
+        paymentMethod: OrderPaymentMethod.Pix, createdAt: '2026-11-04T12:00:00Z',
+        address: {} as never,
+      }]);
+      const reply = ask('Status do pedido order-123');
+      expect(readOrders).toHaveBeenCalledWith('order-owner');
+      expect(reply.text).toContain('Status: Confirmado');
+      expect(reply.link?.path).toBe('/orders/order-123');
+      expect(ask('Status do pedido order-456').text).toContain('Não encontrei esse pedido');
+      auth.currentUserId.set(null);
+      fixture.detectChanges();
+      expect(component.messages()).toHaveLength(1);
+      expect(ask('Onde está meu pedido?').link?.path).toBe('/login');
     });
   });
 });

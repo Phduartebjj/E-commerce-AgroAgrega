@@ -12,10 +12,12 @@ import { StoreAssistantState } from '../../shared/components/store-assistant/sto
 })
 export class Tourino {
   readonly prompts = [
+    { title: 'Monte uma seleção', text: 'Combine até três produtos dentro de um orçamento total.', prompt: 'Monte uma seleção de ferramentas até R$ 1000' },
     { title: 'Encontre o produto ideal', text: 'Conte o que você precisa e quanto quer investir.', prompt: 'Quero encontrar produtos' },
-    { title: 'Compare antes de escolher', text: 'Veja opções e compare preços e características.', prompt: 'Compare sensores de umidade' },
-    { title: 'Aproveite os descontos', text: 'Confira os cupons disponíveis para sua compra.', prompt: 'Ver cupons' },
-    { title: 'Organize seu carrinho', text: 'Consulte seus itens e ajuste sua compra na conversa.', prompt: 'Quantos itens no carrinho?' },
+    { title: 'Pesquise e compare', text: 'Deixe o Tourino organizar as etapas da sua escolha.', prompt: 'Buscar irrigação até R$ 800; compare o primeiro com o segundo' },
+    { title: 'Aproveite os descontos', text: 'Veja qual cupom gera mais economia na sua compra.', prompt: 'Qual o melhor cupom para meu carrinho?' },
+    { title: 'Planeje sua compra', text: 'Confira o total, os descontos e o valor no Pix.', prompt: 'Quanto fica meu carrinho no Pix?' },
+    { title: 'Acompanhe seus pedidos', text: 'Consulte o status registrado na sua conta.', prompt: 'Qual o status dos meus pedidos?' },
   ];
 
   constructor() {

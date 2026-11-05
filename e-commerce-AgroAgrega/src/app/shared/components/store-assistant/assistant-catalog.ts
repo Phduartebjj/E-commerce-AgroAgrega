@@ -17,7 +17,7 @@ export interface AssistantCatalogRequest {
 
 const MONEY = '(?:r\\$\\s*)?(\\d+(?:[.,]\\d+)*)(?:\\s*(mil))?(?:\\s*(?:reais|real))?';
 const CONTEXT_WORDS = new Set('que serve funciona funcionar pix parcela parcelas parcelamento pagamento cartao boleto frete entrega prazo cep hoje tipo quantos quantas energia escolher'.split(' '));
-const STOP_WORDS = new Set(('a as ao aos agora algum alguma alguns algumas ate abaixo acima barato baratos barata baratas baixo boa bom buscar busque busca catalogo caro caros cara caras com como comprar conhecer consegue conseguir custo da das de desse dessa desses dessas deste desta detalhes diferenca dicas dia diga disso do dos e ela ele eles elas em encontrar encontre entre esse essa esses essas esta este eu favor fale fazer gostaria ha indique indica informacoes isso mais me melhor melhores menor menos meu meus minha minhas mostre mostrar muito na nas nao no nos o os opcao opcoes orcamento outra outras outro outros ou para pelo pelos pode podem poderia por preco preciso primeira primeiro produto produtos procure procurar procuro qual quais quanto quero recomenda recomende recomendacao recomendacoes saber segundo segunda seja sem so sobre sugere sugestao sugerir tambem tem tenho terceira terceiro tourino tudo um uma umas uns valor valores ver veja voce voces maximo minimo limite ate ajudar ajuda ajude uso fica fica'.split(' ')));
+const STOP_WORDS = new Set(('a as ao aos agora algum alguma alguns algumas ate abaixo acima disponivel disponiveis gastar investir barato baratos barata baratas baixo boa bom buscar busque busca catalogo caro caros cara caras com como comprar conhecer consegue conseguir custo da das de desse dessa desses dessas deste desta detalhes diferenca dicas dia diga disso do dos e ela ele eles elas em encontrar encontre entre esse essa esses essas esta este eu favor fale fazer gostaria ha indique indica informacoes isso mais me melhor melhores menor menos meu meus minha minhas mostre mostrar muito na nas nao no nos o os opcao opcoes orcamento outra outras outro outros ou para pelo pelos pode podem poderia por preco preciso primeira primeiro produto produtos procure procurar procuro qual quais quanto quero recomenda recomende recomendacao recomendacoes saber segundo segunda seja sem so sobre sugere sugestao sugerir tambem tem tenho terceira terceiro tourino tudo um uma umas uns valor valores ver veja voce voces maximo minimo limite ate ajudar ajuda ajude uso fica fica'.split(' ')));
 const FILTER_WORDS = new Set('apenas somente exclusivamente marca marcas loja lojas prefiro preferencia mas exceto excluindo nem'.split(' '));
 const BRANDS = [
   { name: 'AgroSense', pattern: /\bagro\s*sense\b/g },
@@ -85,7 +85,7 @@ export function parseAssistantCatalogRequest(message: string): AssistantCatalogR
     request.maxPrice = money(between[3], between[4]);
     text = text.replace(range, ' ');
   }
-  const maximum = new RegExp(`(?:ate|no maximo|abaixo de|menos de|orcamento(?: de)?|limite(?: de)?)\\s+${MONEY}`, 'i');
+  const maximum = new RegExp(`(?:ate|no maximo|abaixo de|menos de|orcamento(?: (?:e|eh))?(?: de)?|limite(?: de)?|(?:so )?tenho|posso gastar|pretendo gastar|quero gastar|posso investir|pretendo investir)\\s+${MONEY}`, 'i');
   const max = text.match(maximum);
   if (max) {
     request.maxPrice = money(max[1], max[2]);
@@ -173,6 +173,12 @@ export function searchAssistantCatalog(products: ProductModel[], request: Assist
 
 export function resolveAssistantReferences(query: string, products: ProductModel[]): ProductModel[] {
   const text = normalizeAssistantText(query);
+  const group = text.match(/\b(?:(duas|dois|tres|quatro|[2-4])\s+(primeir[oa]s|ultim[oa]s)|(primeir[oa]s|ultim[oa]s)\s+(duas|dois|tres|quatro|[2-4]))\b/);
+  if (group) {
+    const amount = group[1] ?? group[4];
+    const count = ({ duas: 2, dois: 2, tres: 3, quatro: 4 } as Record<string, number>)[amount] ?? Number(amount);
+    return (group[2] ?? group[3]).startsWith('ultim') ? products.slice(-count) : products.slice(0, count);
+  }
   const indexes: number[] = [];
   const ordinals = /\b(primeir[oa]|segund[oa]|terceir[oa]|quart[oa]|ultim[oa]|[1-4])\b/g;
   for (const match of text.matchAll(ordinals)) {

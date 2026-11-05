@@ -269,9 +269,19 @@
 
       <div class="recommendations__grid">
         @for (product of recommendations(); track product.id) {
-          <app-product-card [product]="product" />
+          <app-product-card [product]="product" [compareSelected]="isProductCompared(product.id)" (toggleCompare)="toggleProductComparison($event)" />
         }
       </div>
     </section>
   }
 </main>
+
+<app-product-comparison
+  [products]="comparedProducts()"
+  [open]="comparisonOpen()"
+  [announcement]="comparisonAnnouncement()"
+  (removeProduct)="removeComparedProduct($event)"
+  (clearProducts)="clearComparison()"
+  (openComparison)="openComparison()"
+  (closeComparison)="closeComparison()"
+/>

@@ -21,6 +21,10 @@ import { ProductService } from '../../../core/services/product/product.service';
 import { ProductModel } from '../../../models/product';
 import { calculateInstallmentPrice, calculatePixPrice } from '../../utils/product-card-display';
 import { StoreAssistantState } from './store-assistant-state';
+import { AssistantSession, ChatMessage, CartUndo, ProductAction, ProductQuestion } from './assistant-session';
+import { parseAssistantPaymentRequest } from './assistant-payment';
+import { buildAssistantShoppingPlan, detectAssistantShoppingPlan } from './assistant-workflows';
+import { OrderService } from '../../../core/services/order/order.service';
 import {
   findAssistantProducts,
   interpretAssistantMessage,
@@ -36,28 +40,6 @@ import {
 } from './assistant-catalog';
 import { answerAssistantFeatureQuestion, isAssistantFeatureQuestion } from './assistant-product-advice';
 
-type ProductAction = 'add' | 'remove' | 'increase' | 'decrease' | 'setQuantity';
-type ProductQuestion = 'payment' | 'shipping' | 'details' | 'explain';
-type CartUndo = ({ type: 'item'; product: ProductModel; quantity: number; selected: boolean }
-  | { type: 'coupon'; code?: string }) & { expectedState: string };
-
-interface ChatMessage {
-  id: number;
-  role: 'assistant' | 'user';
-  text: string;
-  typing?: boolean;
-  products?: ProductModel[];
-  productAction?: ProductAction;
-  quantity?: number;
-  showCart?: boolean;
-  showCoupons?: boolean;
-  comparison?: boolean;
-  preserveResultContext?: boolean;
-  optionNumbers?: number[];
-  replyOptions?: { label: string; prompt: string }[];
-  link?: { label: string; path: string; queryParams?: Record<string, string> };
-}
-
 @Component({
   selector: 'app-store-assistant',
   imports: [FormsModule, RouterLink],
@@ -69,7 +51,10 @@ export class StoreAssistant {
   readonly embedded = input(false);
   private readonly productService = inject(ProductService);
   private readonly cart = inject(Cart);
+  private readonly orders = inject(OrderService);
+  private readonly session = inject(AssistantSession);
   private readonly auth = inject(Auth);
+  private sessionOwner = this.auth.currentUserId();
   private readonly router = inject(Router);
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -88,7 +73,15 @@ export class StoreAssistant {
   private shownProductIds = new Set<string>();
   private cartUndo?: CartUndo;
 
-  @ViewChild('composer') private composer?: ElementRef<HTMLInputElement>;
+  private completedReply?: ChatMessage;
+  private nextTaskTimer?: ReturnType<typeof setTimeout>;
+  private pendingTasks: string[] = [];
+  readonly taskProgress = signal<{ current: number; total: number } | null>(null);
+  readonly processingLabel = signal('Tourino está respondendo');
+  readonly hasNewMessages = signal(false);
+  private followMessages = true;
+
+  @ViewChild('composer') private composer?: ElementRef<HTMLTextAreaElement>;
   @ViewChild('messageList') private messageList?: ElementRef<HTMLElement>;
 
   readonly open = inject(StoreAssistantState).open;
@@ -110,6 +103,8 @@ export class StoreAssistant {
   readonly cartItems = this.cart.getCartItems();
   readonly cartCount = this.cart.totalCartItens;
   readonly cartTotal = this.cart.total;
+  readonly selectedCartTotal = this.cart.selectedTotal;
+  readonly isCartItemSelected = (id: string) => this.cart.isProductSelected(id);
   readonly currentCoupon = this.cart.coupon;
   private readonly couponCatalog = inject(CouponService);
   get coupons() {
@@ -147,6 +142,10 @@ export class StoreAssistant {
   draft = '';
 
   constructor() {
+    this.restoreSession();
+    effect(() => {
+      this.syncSession();
+    });
     effect((onCleanup) => {
       if (this.open()) {
         this.isStarting.set(true);
@@ -184,7 +183,64 @@ export class StoreAssistant {
       clearTimeout(this.scrollTimer);
       clearTimeout(this.introTimer);
       clearTimeout(this.focusTimer);
+      clearTimeout(this.nextTaskTimer);
     });
+  }
+
+  private restoreSession(): void {
+    const saved = this.session.read(this.sessionOwner);
+    if (!saved) return;
+    this.messages.set(saved.messages);
+    this.nextMessageId = saved.nextMessageId;
+    this.lastResults = saved.lastResults;
+    this.lastFocusedProductId = saved.lastFocusedProductId;
+    this.lastCatalogRequest = saved.lastCatalogRequest;
+    this.pendingProductAction = saved.pendingProductAction;
+    this.pendingQuestion = saved.pendingQuestion;
+    this.shownProductIds = new Set(saved.shownProductIds);
+    this.cartUndo = saved.cartUndo;
+  }
+
+  private syncSession(): void {
+    const owner = this.auth.currentUserId();
+    if (owner !== this.sessionOwner) {
+      this.sessionOwner = owner;
+      this.resetConversation(false);
+      this.restoreSession();
+    }
+  }
+
+  private saveSession(messages = this.messages()): void {
+    this.session.save(this.sessionOwner, {
+      messages, nextMessageId: this.nextMessageId, lastResults: this.lastResults,
+      lastFocusedProductId: this.lastFocusedProductId, lastCatalogRequest: this.lastCatalogRequest,
+      pendingProductAction: this.pendingProductAction, pendingQuestion: this.pendingQuestion,
+      shownProductIds: [...this.shownProductIds], cartUndo: this.cartUndo,
+    });
+  }
+
+  resetConversation(save = true): void {
+    clearTimeout(this.typingTimer);
+    clearTimeout(this.introTimer);
+    clearTimeout(this.nextTaskTimer);
+    this.pendingTasks = [];
+    this.taskProgress.set(null);
+    this.completedReply = undefined;
+    this.hasNewMessages.set(false);
+    this.followMessages = true;
+    this.isTyping.set(false);
+    this.isIntroducing.set(false);
+    this.messages.set([{ id: 0, role: 'assistant', text: 'Como posso ajudar?' }]);
+    this.nextMessageId = 1;
+    this.lastResults = [];
+    this.lastFocusedProductId = undefined;
+    this.lastCatalogRequest = undefined;
+    this.pendingProductAction = undefined;
+    this.pendingQuestion = undefined;
+    this.shownProductIds.clear();
+    this.cartUndo = undefined;
+    this.draft = '';
+    if (save) this.saveSession();
   }
 
   toggle(): void {
@@ -194,6 +250,7 @@ export class StoreAssistant {
 
   close(): void {
     if (this.embedded()) return;
+    this.stopSequence();
     this.open.set(false);
   }
 
@@ -258,18 +315,97 @@ export class StoreAssistant {
   }
 
   send(): void {
-    const message = this.draft.trim().slice(0, 240);
-    if (!message || this.isTyping()) return;
+    const message = this.draft.trim().slice(0, 1200);
+    if (!message) return;
     this.draft = '';
     this.submitPrompt(message);
   }
 
   submitPrompt(message: string): void {
-    message = message.trim().slice(0, 240);
-    if (!message || this.isTyping()) return;
+    this.syncSession();
+    message = message.trim().slice(0, 1200);
+    if (!message) return;
+    const nextIntent = interpretAssistantMessage(message);
+    const continueChoice = !!(this.pendingProductAction || this.pendingQuestion) && this.pendingTasks.length > 0 &&
+      (nextIntent.type === 'select' || (nextIntent.type === 'search' && !/^(?:buscar|busque|procure|pesquise|quero|agora|mostre)\b/.test(normalizeAssistantText(message))));
+    if (!continueChoice) this.stopSequence();
+    this.finishResponse(false);
+    this.followMessages = true;
+    this.hasNewMessages.set(false);
     if (this.isIntroducing()) this.finishIntroduction();
     this.append({ role: 'user', text: message });
-    this.respond(message);
+    if (continueChoice) {
+      this.respond(message);
+      return;
+    }
+    const tasks = message.split(/\s*;\s*|\n+|\s+e depois\s+/i).map(task => task.trim()).filter(Boolean);
+    if (tasks.length > 3) {
+      this.append({ role: 'assistant', text: 'Consigo organizar até 3 pedidos por mensagem. Envie os três primeiros e continuamos em seguida.' });
+      return;
+    }
+    this.pendingTasks = tasks.slice(1);
+    this.taskProgress.set(tasks.length > 1 ? { current: 1, total: tasks.length } : null);
+    this.respond(tasks[0] ?? message);
+  }
+
+  onComposerKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      this.send();
+    }
+  }
+
+  finishResponse(continueSequence = true): void {
+    if (this.completedReply) {
+      clearTimeout(this.typingTimer);
+      const reply = this.completedReply;
+      this.messages.update(messages => messages.map(message => message.id === reply.id ? reply : message));
+      this.completedReply = undefined;
+      this.isTyping.set(false);
+      this.saveSession();
+      this.scrollToLatest();
+    }
+    if (continueSequence) this.scheduleNextTask();
+  }
+
+  stopSequence(): void {
+    clearTimeout(this.nextTaskTimer);
+    this.pendingTasks = [];
+    this.taskProgress.set(null);
+  }
+
+  waitingForChoice(): boolean {
+    return !!(this.pendingProductAction || this.pendingQuestion);
+  }
+
+  private scheduleNextTask(): void {
+    clearTimeout(this.nextTaskTimer);
+    if (this.pendingProductAction || this.pendingQuestion) return;
+    if (!this.pendingTasks.length) {
+      this.stopSequence();
+      return;
+    }
+    this.nextTaskTimer = setTimeout(() => {
+      this.syncSession();
+      if (this.isTyping()) return;
+      const next = this.pendingTasks.shift();
+      if (!next) return;
+      this.taskProgress.update(progress => progress ? { ...progress, current: progress.current + 1 } : null);
+      this.respond(next);
+    }, 180);
+  }
+
+  onMessageScroll(): void {
+    const list = this.messageList?.nativeElement;
+    if (!list) return;
+    this.followMessages = list.scrollHeight - list.scrollTop - list.clientHeight < 72;
+    if (this.followMessages) this.hasNewMessages.set(false);
+  }
+
+  showLatestMessages(): void {
+    this.followMessages = true;
+    this.hasNewMessages.set(false);
+    this.scrollToLatest();
   }
   addFromResult(product: ProductModel, action: ProductAction = 'add', quantity = 1): void {
     if (this.isTyping()) return;
@@ -317,6 +453,36 @@ export class StoreAssistant {
   readonly installmentPrice = calculateInstallmentPrice;
 
   private respond(message: string): void {
+    if (detectAssistantShoppingPlan(message)) {
+      this.pendingProductAction = undefined;
+      this.pendingQuestion = undefined;
+      const plan = buildAssistantShoppingPlan(this.products(), message, this.lastCatalogRequest);
+      this.lastCatalogRequest = plan.request;
+      if (!plan.products.length) {
+        this.append({ role: 'assistant', text: 'Não encontrei uma seleção dentro desses critérios. Tente aumentar o orçamento ou mudar o tipo de produto. Nenhum item foi adicionado ao carrinho.' });
+        return;
+      }
+      this.append({ role: 'assistant',
+        text: `Separei ${plan.products.length} ${plan.products.length === 1 ? 'produto' : 'produtos'} do catálogo${plan.budget !== undefined ? ` dentro do orçamento total de ${this.price(plan.budget)}` : ''}. Compare as opções abaixo antes de adicionar. Esta é uma sugestão de compra; não confirma compatibilidade técnica entre os itens.`,
+        products: plan.products,
+        shoppingPlan: { productIds: plan.products.map(product => product.id), total: plan.total, budget: plan.budget },
+        replyOptions: [{ label: 'Comparar seleção', prompt: 'Compare todos' }, { label: 'Explicar primeiro', prompt: 'Por que o primeiro?' }],
+      });
+      return;
+    }
+    if (/^(?:aplique|aplicar|use|usar|ative|ativar)\s+(?:automaticamente\s+)?(?:o\s+)?(?:melhor cupom|cupom (?:com (?:o )?)?maior desconto)\b/.test(normalizeAssistantText(message))) {
+      this.pendingProductAction = undefined;
+      this.pendingQuestion = undefined;
+      if (!this.cart.selectedItemsCount()) {
+        this.summarizeCart(message);
+        return;
+      }
+      this.couponCatalog.refresh();
+      const best = [...this.coupons].sort((a, b) => b.discountPercentage - a.discountPercentage)[0];
+      if (best && best.discountPercentage > (this.currentCoupon()?.discountPercentage ?? 0)) this.applyCoupon(best.code);
+      else this.summarizeCart(message);
+      return;
+    }
     const intent = interpretAssistantMessage(message);
     const products = this.products();
     const followUp = intent.type === 'select' || (intent.type === 'search' &&
@@ -346,9 +512,9 @@ export class StoreAssistant {
       case 'help':
         this.append({
           role: 'assistant',
-          text: 'Sou o Tourino! Posso encontrar produtos pelo uso, marca e orçamento, explicar minhas sugestões e comparar opções. Experimente “irrigação até R$ 300”, depois “outras opções” ou “por que o segundo?”. Também organizo seu carrinho e posso desfazer minha última alteração. O que você precisa para o seu campo?',
+          text: 'Sou o Tourino! Posso montar uma seleção dentro do seu orçamento, buscar por uso e marca, comparar produtos e calcular quantidades, Pix e parcelas. Experimente “monte uma seleção de ferramentas até R$ 1000” ou “buscar irrigação até R$ 800; compare o primeiro com o segundo”.\nTambém organizo seu carrinho, aplico o melhor cupom quando você pede, consulto seus pedidos e desfaço minha última alteração. Consigo seguir até três pedidos por mensagem e pauso quando preciso que você escolha um produto. A conversa continua quando você visita um produto e volta ao Tourino.',
           replyOptions: [
-            { label: 'Escolher irrigação', prompt: 'Recomende produtos para irrigação' },
+            { label: 'Montar seleção', prompt: 'Monte uma seleção de ferramentas até R$ 1000' },
             { label: 'Até R$ 200', prompt: 'Buscar produtos até R$ 200' },
             { label: 'Ofertas de hoje', prompt: 'Ver ofertas de hoje' },
           ],
@@ -417,21 +583,21 @@ export class StoreAssistant {
           link: { label: 'Ver catálogo', path: '/products' },
         });
         return;
+      case 'orders':
+        this.showOrders(intent.query);
+        return;
       case 'cart':
-        this.append({
-          role: 'assistant',
-          text: this.cartCount()
-            ? 'Este é seu carrinho agora. Você pode ajustar as quantidades aqui ou me dizer o que mudar.'
-            : 'Seu carrinho está vazio. Posso buscar algo para você adicionar.',
-          showCart: true,
-          link: { label: 'Abrir carrinho', path: '/cart' },
-        });
+        this.summarizeCart(message);
         return;
       case 'offers':
       case 'popular':
         this.searchCatalog(message);
         return;
       case 'coupons': {
+        if (/\b(?:melhor|maior|economizar|economia)\b/.test(normalizeAssistantText(message)) && this.cartCount()) {
+          this.summarizeCart(message);
+          return;
+        }
         const best = [...this.coupons].sort((a, b) => b.discountPercentage - a.discountPercentage)[0];
         this.append({
           role: 'assistant',
@@ -455,6 +621,7 @@ export class StoreAssistant {
         return;
       }
       case 'navigate':
+        this.stopSequence();
         void this.router.navigateByUrl(intent.path);
         this.append({
           role: 'assistant',
@@ -509,7 +676,8 @@ export class StoreAssistant {
   private askAboutProduct(type: ProductQuestion, query: string): void {
     const feature = type === 'details' && isAssistantFeatureQuestion(query);
     const namedFeature = feature ? normalizeAssistantText(query).match(/(?:voltagem|tensao|potencia|capacidade|peso|alcance)\s+(?:do|da|de)\s+(.+)$/)?.[1] : undefined;
-    const matches = this.contextProducts(namedFeature ?? ((feature || type === 'explain') && !hasAssistantReference(query) ? '' : query));
+    const payment = type === 'payment' ? parseAssistantPaymentRequest(query) : undefined;
+    const matches = this.contextProducts(payment?.query ?? namedFeature ?? ((feature || type === 'explain') && !hasAssistantReference(query) ? '' : query));
     if (matches.length === 1) {
       this.answerProductQuestion(type, matches[0], query);
       return;
@@ -530,7 +698,8 @@ export class StoreAssistant {
     if (type === 'shipping') {
       text = `Para consultar frete e prazo de ${product.title}, abra “Calcular pelo seu CEP” na página do produto. O destino, a quantidade e a embalagem entram no cálculo.`;
     } else if (type === 'payment') {
-      text = `${product.title}: ${this.price(product.price)}. No Pix, com 10% de desconto, fica ${this.price(calculatePixPrice(product.price))}. Parcelado: 10x de ${this.price(calculateInstallmentPrice(product.price))} sem juros.`;
+      this.quoteProduct(product, query);
+      return;
     } else if (type === 'explain') {
       const request = this.lastCatalogRequest;
       const matchesRequest = request && searchAssistantCatalog([product], request).length > 0;
@@ -710,16 +879,91 @@ export class StoreAssistant {
   }
 
   private explainPayment(query: string): void {
-    if (/\b(?:carrinho|total|tudo)\b/.test(normalizeAssistantText(query)) && this.cartCount()) {
-      this.append({
-        role: 'assistant',
-        text: `O total atual do carrinho é ${this.price(this.cartTotal())}${this.currentCoupon() ? `, com o cupom ${this.currentCoupon()!.code}` : ''}. Com os 10% de desconto no Pix exibidos pela loja, fica ${this.price(calculatePixPrice(this.cartTotal()))}. Confira o resumo do pedido para concluir sua escolha.`,
-        showCart: true,
-        link: { label: 'Conferir carrinho', path: '/cart' },
-      });
+    if (/\b(?:carrinho|total|tudo)\b/.test(normalizeAssistantText(query)) && !/\b(?:unidades?|desse|desses|dessa|dessas)\b/.test(normalizeAssistantText(query))) {
+      this.summarizeCart(query);
+      return;
+    }
+    const { quantity, installments } = parseAssistantPaymentRequest(query);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+      this.append({ role: 'assistant', text: 'Para calcular, informe uma quantidade inteira entre 1 e 99 unidades.' });
+      return;
+    }
+    if (installments < 1 || installments > 10) {
+      this.append({ role: 'assistant', text: 'A loja oferece de 1 a 10 parcelas. Diga em quantas parcelas você quer simular.' });
       return;
     }
     this.askAboutProduct('payment', query);
+  }
+
+  private quoteProduct(product: ProductModel, query: string): void {
+    const { quantity, installments } = parseAssistantPaymentRequest(query);
+    const total = Math.round(product.price * quantity * 100) / 100;
+    const pix = calculatePixPrice(total);
+    this.append({
+      role: 'assistant',
+      text: `${quantity} ${quantity === 1 ? 'unidade' : 'unidades'} de ${product.title}:\n${this.price(product.price)} por unidade × ${quantity} = ${this.price(total)}.\nNo Pix: ${this.price(pix)} (economia de ${this.price(total - pix)}).\nEm ${installments}x: aproximadamente ${this.price(total / installments)} por parcela, sem juros.\nValores sem cupom e frete.`,
+      products: [product], preserveResultContext: true,
+      replyOptions: [
+        { label: `Adicionar ${quantity}`, prompt: `Adicionar ${quantity} desse` },
+        { label: 'Comparar opções', prompt: 'Compare os dois' },
+      ],
+    });
+  }
+
+  private summarizeCart(query: string): void {
+    const count = this.cart.selectedItemsCount();
+    if (!count) {
+      this.append({ role: 'assistant', text: this.cartCount()
+        ? 'Seu carrinho tem produtos, mas nenhum está selecionado para a compra. Selecione os itens no carrinho para eu calcular os valores.'
+        : 'Seu carrinho está vazio. Diga o produto e o orçamento para eu ajudar na escolha.',
+        showCart: true, link: { label: 'Ver carrinho', path: '/cart' } });
+      return;
+    }
+    this.couponCatalog.refresh();
+    const total = this.cart.selectedTotal();
+    const subtotal = this.cart.selectedSubtotal();
+    const best = [...this.coupons].sort((a, b) => b.discountPercentage - a.discountPercentage)[0];
+    const bestDiscount = best ? subtotal * best.discountPercentage / 100 : 0;
+    const extraSavings = Math.max(0, bestDiscount - this.cart.selectedCouponDiscount());
+    const budget = parseAssistantCatalogRequest(query).maxPrice;
+    const comparedTotal = /\bpix\b/.test(normalizeAssistantText(query)) ? this.cart.selectedPixTotal() : total;
+    let budgetText = '';
+    if (budget !== undefined) {
+      const difference = Math.round((budget - comparedTotal) * 100) / 100;
+      budgetText = difference >= 0 ? `\nDentro do orçamento de ${this.price(budget)}: sobram ${this.price(difference)} antes do frete.`
+        : `\nO valor ultrapassa seu orçamento de ${this.price(budget)} em ${this.price(-difference)}, antes do frete.`;
+    }
+    const couponText = best && extraSavings >= .01
+      ? `\nO cupom ${best.code} (${best.discountPercentage}% OFF) economizaria mais ${this.price(extraSavings)} em relação ao total atual. Você pode aplicá-lo abaixo.`
+      : '\nSeu desconto atual já é tão bom quanto os cupons disponíveis para este cálculo.';
+    this.append({ role: 'assistant',
+      text: `Resumo dos ${count} itens selecionados para a compra:\nProdutos: ${this.price(subtotal)}.\nDesconto do cupom${this.currentCoupon() ? ` ${this.currentCoupon()!.code}` : ''}: ${this.price(this.cart.selectedCouponDiscount())}.\nTotal: ${this.price(total)}.\nNo Pix: ${this.price(this.cart.selectedPixTotal())}, com mais ${this.price(this.cart.selectedPixDiscount())} de economia.\nOu 10x de aproximadamente ${this.price(total / 10)} sem juros. Valores antes do frete.${budgetText}${couponText}`,
+      showCart: true,
+      replyOptions: best && extraSavings >= .01 ? [{ label: `Aplicar ${best.discountPercentage}% OFF`, prompt: `Aplicar cupom ${best.code}` }] : undefined,
+      link: { label: 'Conferir itens selecionados', path: '/cart' },
+    });
+  }
+
+  private showOrders(query: string): void {
+    const userId = this.auth.currentUserId();
+    if (!userId) {
+      this.append({ role: 'assistant', text: 'Entre na sua conta para eu consultar seus pedidos.', link: { label: 'Entrar na minha conta', path: '/login' } });
+      return;
+    }
+    const orders = this.orders.getOrdersByUserId(userId).sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+    const requestedId = query.match(/(?:pedido\s*#?|#)\s*([a-z0-9-]*\d[a-z0-9-]*)/i)?.[1];
+    const matches = requestedId ? orders.filter(order => order.id.toLowerCase() === requestedId.toLowerCase())
+      : /\bultimo\b/.test(normalizeAssistantText(query)) ? orders.slice(0, 1) : orders.slice(0, 3);
+    if (!matches.length) {
+      this.append({ role: 'assistant', text: requestedId ? 'Não encontrei esse pedido na sua conta. Confira o número em Meus pedidos.' : 'Ainda não encontrei pedidos nesta conta.', link: { label: 'Meus pedidos', path: '/orders' } });
+      return;
+    }
+    const date = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    this.append({ role: 'assistant',
+      text: 'Estas são as informações registradas na sua conta:\n' + matches.map(order => `Pedido #${order.id} · ${date.format(new Date(order.createdAt))}\nStatus: ${order.status}. Total: ${this.price(order.total)}.`).join('\n\n') + '\nAbra o pedido para conferir os detalhes. Não há localização da transportadora em tempo real nesta consulta.',
+      link: { label: matches.length === 1 ? 'Ver este pedido' : 'Ver todos os pedidos', path: matches.length === 1 ? `/orders/${matches[0].id}` : '/orders' },
+      replyOptions: matches.length > 1 ? matches.map(order => ({ label: `Pedido #${order.id}`, prompt: `Status do pedido ${order.id}` })) : undefined,
+    });
   }
 
   private handleProductAction(action: ProductAction, query: string, quantity: number): void {
@@ -790,6 +1034,40 @@ export class StoreAssistant {
     });
   }
 
+  addShoppingPlan(message: ChatMessage): void {
+    this.syncSession();
+    const current = this.messages().find(entry => entry.id === message.id);
+    const plan = current?.shoppingPlan;
+    if (!plan || plan.applied || this.isTyping()) return;
+    const ids = [...new Set(plan.productIds)];
+    const products = ids.map(id => this.products().find(product => product.id === id));
+    if (!ids.length || ids.length > 3 || products.some(product => !product)) {
+      this.append({ role: 'assistant', text: 'A seleção mudou no catálogo. Peça uma nova seleção para eu conferir os produtos disponíveis.' });
+      return;
+    }
+    const selection = products as ProductModel[];
+    const total = Math.round(selection.reduce((sum, product) => sum + product.price, 0) * 100) / 100;
+    if (total !== plan.total || (plan.budget !== undefined && total > plan.budget)) {
+      this.append({ role: 'assistant', text: 'Os preços dessa seleção mudaram. Monte uma nova seleção para revisar os valores antes de adicionar ao carrinho.', products: selection });
+      return;
+    }
+    const previousItems = selection.map(product => {
+      const item = this.cartItems().find(item => item.product.id === product.id);
+      return { product: item?.product ?? product, quantity: item?.quantity ?? 0, selected: this.cart.isProductSelected(product.id) };
+    });
+    if (previousItems.some(item => item.quantity >= 99)) {
+      this.append({ role: 'assistant', text: 'Um dos produtos já atingiu o limite de 99 unidades. Ajuste a quantidade no carrinho antes de adicionar a seleção.', showCart: true });
+      return;
+    }
+    for (const product of selection) this.cart.addCartItem(product, 1);
+    this.messages.update(messages => messages.map(entry => entry.id === current!.id
+      ? { ...entry, shoppingPlan: { ...plan, applied: true } } : entry));
+    this.cartUndo = { type: 'selection', items: previousItems, messageId: current!.id, expectedState: this.cartFingerprint() };
+    this.append({ role: 'assistant', text: `Adicionei uma unidade de cada um dos ${selection.length} produtos da seleção. Confira os itens e valores no carrinho.`, showCart: true,
+      replyOptions: [{ label: 'Desfazer seleção', prompt: 'Desfazer última alteração' }, { label: 'Aplicar melhor cupom', prompt: 'Aplique o melhor cupom' }],
+      link: { label: 'Ver carrinho', path: '/cart' } });
+  }
+
   private undoCartChange(): void {
     const previous = this.cartUndo;
     if (!previous) {
@@ -808,6 +1086,16 @@ export class StoreAssistant {
       }
       if (previous.code) this.cart.applyCoupon(previous.code);
       else this.cart.removeCoupon();
+    } else if (previous.type === 'selection') {
+      for (const item of previous.items) {
+        const exists = this.cartItems().some(entry => entry.product.id === item.product.id);
+        if (item.quantity === 0) this.cart.removeCartItem(item.product);
+        else if (exists) this.cart.setItemQuantity(item.product.id, item.quantity);
+        else this.cart.addCartItem(item.product, item.quantity);
+        if (item.quantity > 0) this.cart.setProductSelected(item.product.id, item.selected);
+      }
+      this.messages.update(messages => messages.map(message => message.id === previous.messageId && message.shoppingPlan
+        ? { ...message, shoppingPlan: { ...message.shoppingPlan, applied: false } } : message));
     } else {
       const exists = this.cartItems().some((item) => item.product.id === previous.product.id);
       if (previous.quantity === 0) this.cart.removeCartItem(previous.product);
@@ -912,10 +1200,12 @@ export class StoreAssistant {
       this.lastFocusedProductId = products.length === 1 ? products[0].id : undefined;
     }
     const id = this.nextMessageId++;
+    this.saveSession([...this.messages().slice(-39), { ...message, id }]);
     const reducedMotion = this.document.defaultView?.matchMedia?.(
       '(prefers-reduced-motion: reduce)',
     ).matches;
     if (message.role === 'assistant' && this.browser && !reducedMotion) {
+      this.completedReply = { ...message, id };
       this.isTyping.set(true);
       this.messages.update((current) => [
         ...current.slice(-39),
@@ -943,6 +1233,8 @@ export class StoreAssistant {
         if (complete) {
           this.isTyping.set(false);
           this.typingTimer = undefined;
+          this.completedReply = undefined;
+          this.scheduleNextTask();
         } else {
           this.typingTimer = setTimeout(typeNext, 24);
         }
@@ -952,13 +1244,15 @@ export class StoreAssistant {
     }
     this.messages.update((current) => [...current.slice(-39), { ...message, id }]);
     this.scrollToLatest();
+    if (message.role === 'assistant') this.scheduleNextTask();
   }
 
   private scrollToLatest(): void {
     clearTimeout(this.scrollTimer);
     this.scrollTimer = setTimeout(() => {
       const list = this.messageList?.nativeElement;
-      if (list) list.scrollTop = list.scrollHeight;
+      if (list && this.followMessages) list.scrollTop = list.scrollHeight;
+      else if (list) this.hasNewMessages.set(true);
     });
   }
 }

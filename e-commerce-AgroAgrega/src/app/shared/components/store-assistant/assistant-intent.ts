@@ -6,6 +6,7 @@ export type AssistantIntent =
   | { type: 'thanks' | 'cancel' | 'more' | 'undo' | 'reset' }
   | { type: 'select' | 'compare' | 'recommend' | 'payment' | 'shipping' | 'explain'; query: string }
   | { type: 'policy'; topic: 'returns' | 'warranty' }
+  | { type: 'orders'; query: string }
   | { type: 'counts' }
   | { type: 'stock' }
   | { type: 'cart' }
@@ -99,8 +100,11 @@ export function interpretAssistantMessage(message: string): AssistantIntent {
   if (/^(?:abrir|abra|ir para|acesse|acessar)\s+(?:o\s+)?catalogo$/.test(text)) {
     return { type: 'navigate', path: '/products', label: 'Abrir catálogo' };
   }
-  if (/^(?:abrir|abra|ir para|acesse|acessar|ver)\s+(?:meus?\s+)?pedidos?$/.test(text) || /\b(?:rastrear|rastreio|acompanhar pedido|onde esta meu pedido)\b/.test(text)) {
+  if (/^(?:abrir|abra|ir para|acesse|acessar|ver)\s+(?:meus?\s+)?pedidos?$/.test(text)) {
     return { type: 'navigate', path: '/orders', label: 'Ver pedidos' };
+  }
+  if (/\b(?:rastrear|rastreio|acompanhar (?:meu )?pedido|onde esta (?:meu|o) pedido|status (?:do|dos|de|desses|dos meus) pedidos?|meu ultimo pedido|meus pedidos)\b/.test(text)) {
+    return { type: 'orders', query: message };
   }
   if (/^(?:abrir|abra|ir para|acesse|acessar|ver)\s+(?:minha\s+)?conta$/.test(text)) {
     return { type: 'navigate', path: '/account', label: 'Abrir minha conta' };
@@ -144,11 +148,12 @@ export function interpretAssistantMessage(message: string): AssistantIntent {
     return { type: 'add', query, quantity };
   }
 
+  if (/^(?:quanto (?:custa[m]?|fica[m]?|daria|sai|saem|vou pagar)|(?:simule|simular|calcule|calcular) (?:o valor|o preco|o total|\d+ unidades?))\b/.test(text)) return { type: 'payment', query: message };
   if (/\b(?:comparar|compare|compara|comparacao|diferenca|qual (?:deles|desses|dessas|delas) (?:e |eh )?(?:melhor|compensa)|qual (?:compensa mais|vale mais a pena))\b/.test(text)) return { type: 'compare', query: text };
   if (/\b(?:devolucao|devolver|troca|trocar produto)\b/.test(text)) return { type: 'policy', topic: 'returns' };
   if (/\bgarantia\b/.test(text)) return { type: 'policy', topic: 'warranty' };
   if (/\b(?:frete|entrega|prazo|cep)\b/.test(text)) return { type: 'shipping', query: text };
-  if (/\b(?:pix|parcelas?|parcelamento|cartao|boleto|pagamento)\b/.test(text) && !/\b(?:buscar|busque|procuro|recomende|indique)\b/.test(text)) return { type: 'payment', query: text };
+  if (/\b(?:pix|parcelas?|parcelamento|cartao|boleto|pagamento)\b/.test(text) && !/\b(?:buscar|busque|procuro|recomende|indique)\b/.test(text)) return { type: 'payment', query: message };
   if (/\b(?:estoque|disponibilidade)\b/.test(text)) return { type: 'stock' };
   if (/\b(?:carrinho|meus itens|minhas compras)\b/.test(text)) return { type: 'cart' };
   if (isAssistantFeatureQuestion(text)) return { type: 'details', query: text };
