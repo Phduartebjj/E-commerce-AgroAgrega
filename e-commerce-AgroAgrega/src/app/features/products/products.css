@@ -579,7 +579,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 321 / 273;
-  background-image: url('/assets/images/catalog/categories-highlight.png');
+  background-image: url('../../assets/images/catalog/categories-highlight.png');
   background-repeat: no-repeat;
   background-size: 676.6% auto;
   background-position-y: 46.6%;

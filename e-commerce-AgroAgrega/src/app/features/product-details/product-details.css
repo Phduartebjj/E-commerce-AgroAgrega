@@ -62,7 +62,7 @@ textarea:focus-visible {
   inset: 0;
   background:
     radial-gradient(ellipse 9vw 7vw at top left, #c3eaf4 75%, transparent 100%),
-    url('/assets/images/product-detail/reference.png') top center/100% auto no-repeat;
+    url('../../assets/images/product-detail/reference.png') top center/100% auto no-repeat;
   mask-image: linear-gradient(90deg, #000 0%, #000 2%, transparent 4%, transparent 96%, #000 99%);
   pointer-events: none;
 }
@@ -184,7 +184,7 @@ textarea:focus-visible {
   display: block;
   position: absolute;
   inset: 0;
-  background-image: url('/assets/images/product-detail/reference.png');
+  background-image: url('../../assets/images/product-detail/reference.png');
   background-size: 218.8034% 370.9845%;
   background-position: 23.3813% 4.8757%;
   background-repeat: no-repeat;
@@ -627,7 +627,7 @@ h1 {
   flex-shrink: 0;
   width: 2.4em;
   height: 2.4em;
-  background: url('/assets/images/agroagrega-icon.webp') center / 160% no-repeat;
+  background: url('../../assets/images/agroagrega-icon.webp') center / 160% no-repeat;
 }
 .product-section-nav {
   display: grid;

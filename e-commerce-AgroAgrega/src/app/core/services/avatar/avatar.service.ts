@@ -10,18 +10,18 @@ export interface AvatarOption {
 }
 
 const AVATAR_OPTIONS = [
-  { id: 'farmer', label: 'Produtor', image: '/assets/images/avatars/farmer.png' },
-  { id: 'waving', label: 'Boas-vindas', image: '/assets/images/avatars/waving.png' },
-  { id: 'smiling', label: 'Sorridente', image: '/assets/images/avatars/smiling.png' },
-  { id: 'thumbs-up', label: 'Positivo', image: '/assets/images/avatars/thumbs-up.png' },
-  { id: 'pointing', label: 'Parceiro', image: '/assets/images/avatars/pointing.png' },
-  { id: 'celebrating', label: 'Comemorando', image: '/assets/images/avatars/celebrating.png' },
-  { id: 'thinking', label: 'Pensativo', image: '/assets/images/avatars/thinking.png' },
-  { id: 'winking', label: 'Piscadinha', image: '/assets/images/avatars/winking.png' },
-  { id: 'sunglasses', label: 'Estiloso', image: '/assets/images/avatars/sunglasses.png' },
-  { id: 'joyful', label: 'Alegria', image: '/assets/images/avatars/joyful.png' },
-  { id: 'welcoming', label: 'Acolhedor', image: '/assets/images/avatars/welcoming.png' },
-  { id: 'confident', label: 'Confiante', image: '/assets/images/avatars/confident.png' },
+  { id: 'farmer', label: 'Produtor', image: 'assets/images/avatars/farmer.png' },
+  { id: 'waving', label: 'Boas-vindas', image: 'assets/images/avatars/waving.png' },
+  { id: 'smiling', label: 'Sorridente', image: 'assets/images/avatars/smiling.png' },
+  { id: 'thumbs-up', label: 'Positivo', image: 'assets/images/avatars/thumbs-up.png' },
+  { id: 'pointing', label: 'Parceiro', image: 'assets/images/avatars/pointing.png' },
+  { id: 'celebrating', label: 'Comemorando', image: 'assets/images/avatars/celebrating.png' },
+  { id: 'thinking', label: 'Pensativo', image: 'assets/images/avatars/thinking.png' },
+  { id: 'winking', label: 'Piscadinha', image: 'assets/images/avatars/winking.png' },
+  { id: 'sunglasses', label: 'Estiloso', image: 'assets/images/avatars/sunglasses.png' },
+  { id: 'joyful', label: 'Alegria', image: 'assets/images/avatars/joyful.png' },
+  { id: 'welcoming', label: 'Acolhedor', image: 'assets/images/avatars/welcoming.png' },
+  { id: 'confident', label: 'Confiante', image: 'assets/images/avatars/confident.png' },
 ] as const satisfies readonly AvatarOption[];
 
 export type AvatarId = (typeof AVATAR_OPTIONS)[number]['id'];

@@ -73,7 +73,7 @@ describe('MinhaConta', () => {
     await fixture.whenStable();
     expect(option.getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector('.profile-avatar--current img')?.getAttribute('src')).toBe(
-      '/assets/images/avatars/confident.png',
+      'assets/images/avatars/confident.png',
     );
   });
 

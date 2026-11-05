@@ -1,7 +1,7 @@
 @if (open()) {
   @if (!embedded()) {
   <div class="assistant-entry" aria-hidden="true">
-    <img src="/assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />
+    <img src="assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />
     <strong>Agro<span>Agrega</span></strong>
   </div>
   }
@@ -13,7 +13,7 @@
   >
     <header class="assistant-header" [class.assistant-header--loading]="isStarting()">
       @if (embedded()) {
-        <div class="assistant-page-heading"><img src="/assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div></div>
+        <div class="assistant-page-heading"><img src="assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div></div>
       } @else if (!isStarting()) {
         <img
           src="assets/images/assistant/tourino-header.png"
@@ -38,7 +38,7 @@
     @if (isStarting()) {
       <div class="assistant-startup" role="status" aria-live="polite">
         <div class="assistant-startup__mark" aria-hidden="true">
-          <img src="/assets/images/agroagrega-icon.webp" alt="" width="56" height="56" />
+          <img src="assets/images/agroagrega-icon.webp" alt="" width="56" height="56" />
         </div>
         <strong>Iniciando o Tourino...</strong>
         <span>Preparando sua conversa</span>

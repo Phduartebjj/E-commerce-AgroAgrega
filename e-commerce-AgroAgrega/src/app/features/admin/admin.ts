@@ -219,7 +219,7 @@ export class AdminComponent implements OnInit {
     const saved = this.productService.saveProduct({
       id: `local-${crypto.randomUUID()}`, title: this.productName(), price: this.productPrice(),
       category: this.productCategory() as ProductCategory, description: this.productDescription(),
-      images: ['/assets/images/agroagrega-icon.webp'], rating: 0, reviews: [],
+      images: ['assets/images/agroagrega-icon.webp'], rating: 0, reviews: [],
     });
     if (!saved) return;
     this.clearProductForm();
