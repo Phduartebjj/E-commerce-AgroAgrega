@@ -86,6 +86,17 @@ describe('ProductsComponent', () => {
     expect(host.querySelector('#catalog-search-input')).toBeNull();
   });
 
+  it('deve usar a imagem local de Highlights ao lado dos produtos em destaque', () => {
+    fixture.detectChanges();
+
+    const icon = fixture.nativeElement.querySelector(
+      '.featured-title__icon',
+    ) as HTMLImageElement | null;
+
+    expect(icon?.getAttribute('src')).toBe('assets/images/highlights.png');
+    expect(icon?.getAttribute('alt')).toBe('');
+  });
+
   it('deve tornar funcionais os botões desenhados nos banners PNG', () => {
     const scrollSpy = vi.spyOn(component, 'scrollToProducts').mockImplementation(() => undefined);
     const assistantSpy = vi.spyOn(component.assistant, 'show');
