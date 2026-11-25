@@ -42,7 +42,7 @@ describe('AvatarService', () => {
     const service = TestBed.inject(AvatarService);
     TestBed.tick();
 
-    expect(service.selectedAvatar().image).toBe('/assets/images/avatars/waving.png');
+    expect(service.selectedAvatar().image).toBe('assets/images/avatars/waving.png');
     expect(service.isSelected('waving')).toBe(true);
   });
 
@@ -52,7 +52,7 @@ describe('AvatarService', () => {
     TestBed.tick();
 
     expect(service.selectedAvatar().id).toBe('farmer');
-    expect(service.selectedAvatar().image).toBe('/assets/images/avatars/farmer.png');
+    expect(service.selectedAvatar().image).toBe('assets/images/avatars/farmer.png');
   });
 
   it('should restore a saved photo and clear it when choosing an avatar', () => {

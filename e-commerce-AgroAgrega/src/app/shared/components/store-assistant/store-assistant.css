@@ -455,7 +455,7 @@
   align-self: stretch;
   min-height: 148px;
   overflow: hidden;
-  background: url('/assets/images/agro-assistant.png') 50% 10% / 265% auto no-repeat;
+  background: url('../../../assets/images/catalog/assistant.png') 50% 10% / 265% auto no-repeat;
 }
 
 .assistant-welcome-mascot::before {

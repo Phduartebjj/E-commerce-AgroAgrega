@@ -117,7 +117,7 @@ describe('Header', () => {
       price: 10,
       description: 'Produto de teste',
       category: 'Insumos',
-      images: ['/assets/images/test.webp'],
+      images: ['assets/images/test.webp'],
       rating: 5,
     };
 

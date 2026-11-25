@@ -360,8 +360,11 @@
   align-items: center;
   gap: 9px;
 }
-.featured-title > span {
-  font-size: 1.5rem;
+.featured-title__icon {
+  flex: 0 0 auto;
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
 }
 .section-heading p {
   margin: 2px 0 0;
@@ -579,7 +582,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 321 / 273;
-  background-image: url('/assets/images/catalog/categories-highlight.png');
+  background-image: url('../../assets/images/catalog/categories-highlight.png');
   background-repeat: no-repeat;
   background-size: 676.6% auto;
   background-position-y: 46.6%;
@@ -1219,8 +1222,9 @@ input:focus-visible {
   .featured-title {
     gap: 5px;
   }
-  .featured-title > span {
-    font-size: 1.25rem;
+  .featured-title__icon {
+    width: 3.25rem;
+    height: 3.25rem;
   }
   .featured-heading-actions {
     flex-direction: column;

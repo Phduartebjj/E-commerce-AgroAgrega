@@ -466,7 +466,7 @@
 .shipping-icon {
   width: 28px;
   height: 28px;
-  background: url('/assets/fonts/icones/truck.svg') center / 23px no-repeat;
+  background: url('../../assets/fonts/icones/truck.svg') center / 23px no-repeat;
 }
 
 .cart-group__shipping strong {
@@ -716,7 +716,7 @@
   height: 68px;
   margin-bottom: 16px;
   border-radius: 20px;
-  background: #eaf6eb url('/assets/fonts/icones/shop.svg') center / 30px no-repeat;
+  background: #eaf6eb url('../../assets/fonts/icones/shop.svg') center / 30px no-repeat;
 }
 
 .empty-cart h2 {
