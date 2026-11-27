@@ -26,7 +26,7 @@ describe('Register', () => {
     // O router é fornecido porque o template possui links com routerLink.
     return render(Register, {
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: 'login', component: Register }]),
         { provide: Auth, useValue: authMock },
       ],
     });
@@ -56,7 +56,7 @@ describe('Register', () => {
       screen.getByText('Informe seu e-mail.'),
     ).toBeTruthy();
     expect(
-      screen.getByText('A senha deve ter pelo menos 6 caracteres.'),
+      screen.getByText('Informe sua senha.'),
     ).toBeTruthy();
     expect(
       screen.getByText('Confirme sua senha.'),
@@ -131,5 +131,40 @@ describe('Register', () => {
       'ana@exemplo.com',
       'senha123',
     );
+  });
+
+  it('rejeita senhas diferentes e exibe falha no cadastro', async () => {
+    vi.mocked(authMock.register).mockReturnValue({
+      res: false,
+      message: 'Email Já Cadastrado!',
+    });
+
+    await renderRegister();
+    fireEvent.input(screen.getByLabelText('Nome completo'), {
+      target: { value: 'Cliente AgroAgrega' },
+    });
+    fireEvent.input(screen.getByLabelText('E-mail'), {
+      target: { value: 'cliente@example.com' },
+    });
+    fireEvent.input(screen.getByLabelText('Senha'), {
+      target: { value: '123456' },
+    });
+    fireEvent.input(screen.getByLabelText('Confirme sua senha'), {
+      target: { value: '654321' },
+    });
+    fireEvent.click(screen.getByRole('checkbox'));
+    const submitButton = screen.getByRole('button', {
+      name: /criar minha conta/i,
+    });
+    expect(submitButton.hasAttribute('disabled')).toBe(true);
+    expect(authMock.register).not.toHaveBeenCalled();
+
+    fireEvent.input(screen.getByLabelText('Confirme sua senha'), {
+      target: { value: '123456' },
+    });
+    expect(submitButton.hasAttribute('disabled')).toBe(false);
+    fireEvent.click(submitButton);
+
+    expect(screen.getByText('Email Já Cadastrado!')).toBeTruthy();
   });
 });

@@ -1,4 +1,5 @@
 import { ProductModel } from '@models/product';
+import { additionalProducts } from './additional-products';
 
 export const productsItems: ProductModel[] = [
   {
@@ -8,8 +9,9 @@ export const productsItems: ProductModel[] = [
     price: 2899.9,
     description:
       'Sistema completo com sensores de vento, chuva e umidade para monitoramento em campo.',
-    images: ['assets/images/products/agrosense-pro.jpg'],
+    images: ['/assets/images/generated-products/product-001.webp', '/assets/images/generated-product-views/product-001-angle.jpg'],
     rating: 4.9,
+    weeklySales: 38,
     brand: 'AgroSense',
     reviews: [
       {
@@ -33,9 +35,11 @@ export const productsItems: ProductModel[] = [
     category: 'Insumos',
     title: 'Sementes de milho híbrido SafraMax 5 kg',
     price: 189.9,
+    originalPrice: 229.9,
     description: 'Semente de alta produtividade com vigor e uniformidade no plantio.',
-    images: ['assets/images/products/milho-hibrido.jpg'],
+    images: ['/assets/images/generated-products/product-002.webp', '/assets/images/generated-product-views/product-002-angle.jpg'],
     rating: 4.7,
+    weeklySales: 97,
     brand: 'Biomatrix',
     reviews: [
       {
@@ -60,8 +64,9 @@ export const productsItems: ProductModel[] = [
     title: 'Sementes de capim braquiária Elite 10 kg',
     price: 269.9,
     description: 'Forragem de qualidade para pastejo contínuo e melhoramento do rebanho.',
-    images: ['assets/images/products/braquiaria.jpg'],
+    images: ['/assets/images/generated-products/product-003.webp', '/assets/images/generated-product-views/product-003-angle.jpg'],
     rating: 4.6,
+    weeklySales: 84,
     brand: 'MultiGrão',
     reviews: [
       {
@@ -85,9 +90,11 @@ export const productsItems: ProductModel[] = [
     category: 'Irrigação',
     title: 'Kit Irrigação por Gotejamento 500 m²',
     price: 749.9,
+    originalPrice: 899.9,
     description: 'Sistema eficiente para irrigação localizada, economizando água e energia.',
-    images: ['assets/images/products/gotejamento.jpg'],
+    images: ['/assets/images/generated-products/product-004.webp', '/assets/images/generated-product-views/product-004-angle.jpg'],
     rating: 4.8,
+    weeklySales: 73,
     brand: 'AgroSense',
     reviews: [
       {
@@ -111,9 +118,11 @@ export const productsItems: ProductModel[] = [
     category: 'Ferramentas',
     title: 'Roçadeira Profissional AgroForce 43 cc',
     price: 1199.9,
+    originalPrice: 1399.9,
     description: 'Potência para limpeza e manutenção em áreas agrícolas e rurais.',
-    images: ['assets/images/products/rocadeira.jpg'],
+    images: ['/assets/images/generated-products/product-005.webp', '/assets/images/generated-product-views/product-005-angle.jpg'],
     rating: 4.5,
+    weeklySales: 56,
     brand: 'AgroSense',
     reviews: [
       {
@@ -138,8 +147,9 @@ export const productsItems: ProductModel[] = [
     title: 'Bebedouro Automático para Bovinos 70 L',
     price: 489.9,
     description: 'Estrutura resistente com capacidade para manter água limpa e estável.',
-    images: ['assets/images/products/bebedouro-bovinos.jpg'],
+    images: ['/assets/images/generated-products/product-006.webp', '/assets/images/generated-product-views/product-006-angle.jpg'],
     rating: 4.4,
+    weeklySales: 41,
     brand: 'AgroSense',
     reviews: [
       {
@@ -164,8 +174,9 @@ export const productsItems: ProductModel[] = [
     title: 'Sensor de Umidade do Solo AgroSense',
     price: 399.9,
     description: 'Monitora a umidade do solo em tempo real para irrigação inteligente.',
-    images: ['assets/images/products/sensor-umidade.jpg'],
+    images: ['/assets/images/generated-products/product-007.webp', '/assets/images/generated-product-views/product-007-angle.jpg'],
     rating: 5,
+    weeklySales: 52,
     brand: 'SafraMax',
     reviews: [
       {
@@ -182,10 +193,12 @@ export const productsItems: ProductModel[] = [
     category: 'Irrigação',
     title: 'Bomba d’Água Solar 1,5 CV para Irrigação',
     price: 1699.9,
+    originalPrice: 1999.9,
     description: 'Solução sustentável para irrigação com autonomia energética solar.',
-    images: ['assets/images/products/bomba-solar.jpg'],
+    images: ['/assets/images/generated-products/product-008.webp', '/assets/images/generated-product-views/product-008-angle.jpg'],
     brand: 'AgroSense',
     rating: 4.7,
+    weeklySales: 35,
     reviews: [
       {
         id: 'rev-8-1',
@@ -208,9 +221,11 @@ export const productsItems: ProductModel[] = [
     category: 'Pecuária',
     title: 'Sal Mineral Proteinado Premium 25 kg',
     price: 139.9,
+    originalPrice: 169.9,
     description: 'Complemento nutricional para otimizar o desempenho e saúde do rebanho.',
-    images: ['assets/images/products/sal-mineral.jpg'],
+    images: ['/assets/images/generated-products/product-009.webp', '/assets/images/generated-product-views/product-009-angle.jpg'],
     rating: 4.3,
+    weeklySales: 89,
     brand: 'MultiGrão',
     reviews: [
       {
@@ -234,9 +249,11 @@ export const productsItems: ProductModel[] = [
     category: 'Ferramentas',
     title: 'Tesoura de Poda Profissional Inox',
     price: 89.9,
+    originalPrice: 109.9,
     description: 'Corte preciso e durabilidade para podas de plantas e árvores.',
-    images: ['assets/images/products/tesoura-poda.jpg'],
+    images: ['/assets/images/generated-products/product-010.webp', '/assets/images/generated-product-views/product-010-angle.jpg'],
     rating: 4.6,
+    weeklySales: 112,
     brand: 'AgroSense',
     reviews: [
       {
@@ -261,8 +278,9 @@ export const productsItems: ProductModel[] = [
     title: 'Fertilizante Granulado NPK 20-05-20 25 kg',
     price: 219.9,
     description: 'Fertilizante equilibrado para alta produtividade em diversas culturas.',
-    images: ['assets/images/products/fertilizante.jpg'],
+    images: ['/assets/images/generated-products/product-011.webp', '/assets/images/generated-product-views/product-011-angle.jpg'],
     rating: 4.8,
+    weeklySales: 102,
     brand: 'MultiGrão',
     reviews: [
       {
@@ -287,8 +305,9 @@ export const productsItems: ProductModel[] = [
     title: 'GPS Agrícola de Alta Precisão AgroNav',
     price: 3490,
     description: 'Georreferenciamento e navegação para operação agrícola com precisão.',
-    images: ['assets/images/products/gps-agricola.jpg'],
+    images: ['/assets/images/generated-products/product-012.webp', '/assets/images/generated-product-views/product-012-angle.jpg'],
     rating: 4.9,
+    weeklySales: 26,
     brand: 'AgroSense',
     reviews: [
       {
@@ -307,4 +326,5 @@ export const productsItems: ProductModel[] = [
       },
     ],
   },
+  ...additionalProducts,
 ];

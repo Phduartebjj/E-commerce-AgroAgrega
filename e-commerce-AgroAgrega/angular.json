@@ -31,8 +31,9 @@
               }
             ],
             "styles": ["src/styles.css"],
+            "baseHref": "/",
             "server": "src/main.server.ts",
-            "outputMode": "server",
+            "outputMode": "static",
             "security": {
               "allowedHosts": []
             },
@@ -45,8 +46,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "700kB",
+                  "maximumError": "1.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -71,6 +72,12 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "prebundle": false,
+            "allowedHosts": [
+              "monitoring-negotiations-raleigh-propecia.trycloudflare.com"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "e-commerce-AgroAgrega:build:production"

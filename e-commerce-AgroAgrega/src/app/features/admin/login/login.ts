@@ -14,7 +14,7 @@ export class AdminLoginComponent {
   usuario = '';
   senha = '';
   erro = false;
-
+  
   private auth = inject(AuthAdminService);
   private router = inject(Router);
 //   constructor(
@@ -24,8 +24,6 @@ export class AdminLoginComponent {
 
   onSubmit(): void {
     const sucesso = this.auth.LoginAdmin(this.usuario, this.senha);
-
-    console.log(sucesso);
     
     if (sucesso) {
       this.erro = false;

@@ -1,0 +1,334 @@
+@if (open()) {
+  @if (!embedded()) {
+  <div class="assistant-entry" aria-hidden="true">
+    <img src="/assets/images/agroagrega-icon.webp" alt="" width="36" height="36" />
+    <strong>Agro<span>Agrega</span></strong>
+  </div>
+  }
+  <section
+    id="agro-assistant-panel"
+    class="assistant-panel"
+    [attr.role]="embedded() ? 'region' : 'dialog'"
+    aria-label="Assistente AgroAgrega Tourino"
+  >
+    <header class="assistant-header" [class.assistant-header--loading]="isStarting()">
+      @if (embedded()) {
+        <div class="assistant-page-heading"><img src="/assets/images/avatars/farmer.png" alt="" width="44" height="44" /><div><strong>Converse com o Tourino</strong><span>Seu assistente de compras AgroAgrega</span></div></div>
+      } @else if (!isStarting()) {
+        <img
+          src="assets/images/assistant/tourino-header.png"
+          alt="Assistente AgroAgrega Tourino, seu guia para o cultivo"
+          width="2203"
+          height="714"
+          decoding="async"
+        />
+      }
+      @if (!embedded()) {
+      <button
+        class="assistant-close"
+        type="button"
+        aria-label="Fechar assistente"
+        (click)="close()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+      }
+    </header>
+
+    @if (isStarting()) {
+      <div class="assistant-startup" role="status" aria-live="polite">
+        <div class="assistant-startup__mark" aria-hidden="true">
+          <img src="/assets/images/agroagrega-icon.webp" alt="" width="56" height="56" />
+        </div>
+        <strong>Iniciando o Tourino...</strong>
+        <span>Preparando sua conversa</span>
+        <div class="assistant-startup__progress" aria-hidden="true"><span></span></div>
+      </div>
+    }
+
+    <p class="assistant-status" role="status">{{ isTyping() ? 'Tourino está digitando…' : '' }}</p>
+    <div
+      #messageList
+      class="assistant-messages"
+      role="log"
+      aria-label="Conversa com o assistente"
+      [attr.aria-live]="isIntroducing() ? 'off' : 'polite'"
+      [attr.aria-busy]="isTyping()"
+      [attr.inert]="isStarting() ? '' : null"
+    >
+      @for (message of messages(); track message.id) {
+        <article
+          class="assistant-message"
+          [class.assistant-message--welcome]="message.id === 0"
+          [class.assistant-message--user]="message.role === 'user'"
+          [class.assistant-message--typing]="message.typing"
+          [attr.aria-atomic]="message.role === 'assistant' ? 'true' : null"
+        >
+          @if (message.id === 0) {
+            <div class="assistant-welcome-copy">
+              <header>
+                <strong>Tourino</strong><time>{{ assistantTime() }}</time>
+              </header>
+              @if (isIntroducing()) {
+                <p>
+                  {{ introGreeting() }}
+                  @if (introPart() === 0) {
+                    <span class="assistant-intro-cursor" aria-hidden="true"></span>
+                  }
+                </p>
+                @if (introPart() >= 1) {
+                  <p>
+                    {{ introDescription() }}
+                    @if (introPart() === 1) {
+                      <span class="assistant-intro-cursor" aria-hidden="true"></span>
+                    }
+                  </p>
+                }
+              } @else {
+                <p>
+                  Olá! Sou o <strong>Tourino</strong>, assistente da <strong>AgroAgrega!</strong>
+                  <span aria-hidden="true">🌿</span>
+                </p>
+                <p>
+                  Posso te ajudar a encontrar produtos, ver ofertas e cupons, além de organizar seu
+                  carrinho. Como posso ajudar você hoje?
+                </p>
+              }
+            </div>
+            <span class="assistant-welcome-mascot" aria-hidden="true"></span>
+          } @else if (message.typing && !message.text) {
+            <div class="assistant-typing" aria-hidden="true">
+              <span>Tourino está digitando</span>
+              <span class="assistant-typing__dots"><i></i><i></i><i></i></span>
+            </div>
+          } @else {
+            <p>
+              {{ message.text }}
+              @if (message.typing) {
+                <span class="assistant-cursor" aria-hidden="true"></span>
+              }
+            </p>
+          }
+
+          @if (message.products?.length) {
+            <div class="assistant-product-list">
+              @for (product of message.products; track product.id) {
+                <div class="assistant-product" [class.assistant-product--comparison]="message.comparison">
+                  <span class="assistant-product__index" [attr.aria-label]="'Opção ' + (message.optionNumbers?.[$index] ?? $index + 1)">{{ message.optionNumbers?.[$index] ?? $index + 1 }}</span>
+                  <a
+                    [routerLink]="['/products', product.id]"
+                    (click)="close()"
+                    [attr.aria-label]="'Ver ' + product.title"
+                    ><img
+                      [src]="product.images[0]"
+                      [alt]="product.title"
+                      loading="lazy"
+                      width="48"
+                      height="48"
+                  /></a>
+                  <div class="assistant-product__text">
+                    <a [routerLink]="['/products', product.id]" (click)="close()">{{
+                      product.title
+                    }}</a
+                    ><small
+                      >{{ price(product.price) }}
+                      @if (product.flashOffer) {
+                        · Oferta-relâmpago
+                      }
+                    </small>
+                    @if (message.comparison) {
+                      <dl class="assistant-comparison-values">
+                        <div><dt>No Pix</dt><dd>{{ price(pixPrice(product.price)) }}</dd></div>
+                        <div><dt>10x sem juros</dt><dd>{{ price(installmentPrice(product.price)) }}</dd></div>
+                        <div><dt>Avaliação</dt><dd>{{ product.rating.toFixed(1) }}/5</dd></div>
+                      </dl>
+                      <p class="assistant-product-purpose">{{ product.description }}</p>
+                    }
+                  </div>
+                  <button
+                    type="button"
+                    class="assistant-product__add"
+                    [disabled]="isTyping()"
+                    [attr.aria-label]="
+                      (message.productAction === 'remove'
+                        ? 'Remover '
+                        : message.productAction
+                          ? 'Selecionar '
+                          : 'Adicionar ') + product.title
+                    "
+                    (click)="
+                      addFromResult(product, message.productAction ?? 'add', message.quantity ?? 1)
+                    "
+                  >
+                    {{ message.productAction === 'remove' ? '−' : '+' }}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          @if (message.showCart) {
+            <div class="assistant-cart">
+              @for (item of cartItems(); track item.product.id) {
+                <div class="assistant-cart__item">
+                  <span>{{ item.product.title }}</span>
+                  <div class="assistant-cart__controls">
+                    <button
+                      type="button"
+                      [attr.aria-label]="'Diminuir ' + item.product.title"
+                      (click)="changeCartQuantity(item.product, -1)"
+                    >
+                      −
+                    </button>
+                    <strong>{{ item.quantity }}</strong>
+                    <button
+                      type="button"
+                      [attr.aria-label]="'Aumentar ' + item.product.title"
+                      (click)="changeCartQuantity(item.product, 1)"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      class="assistant-cart__remove"
+                      [attr.aria-label]="'Remover ' + item.product.title"
+                      (click)="removeFromCart(item.product)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              }
+              @if (cartItems().length) {
+                <div class="assistant-cart__total">
+                  <span>Total</span><strong>{{ price(cartTotal()) }}</strong>
+                </div>
+                @if (currentCoupon()) {
+                  <small>Cupom {{ currentCoupon()!.code }} aplicado</small>
+                }
+              }
+            </div>
+          }
+
+          @if (message.showCoupons) {
+            <div class="assistant-coupons">
+              @for (coupon of coupons; track coupon.code) {
+                <button type="button" [disabled]="isTyping()" (click)="applyCoupon(coupon.code)">
+                  <strong>{{ coupon.code }}</strong
+                  ><span>{{ coupon.discountPercentage }}% OFF</span>
+                </button>
+              }
+            </div>
+          }
+
+          @if (message.link) {
+            <a
+              class="assistant-link"
+              [routerLink]="message.link.path"
+              [queryParams]="message.link.queryParams ?? null"
+              (click)="close()"
+              >{{ message.link.label }} <span aria-hidden="true">→</span></a
+            >
+          }
+          @if (message.replyOptions?.length) {
+            <nav class="assistant-reply-options" aria-label="Continuar conversa">
+              @for (option of message.replyOptions; track option.prompt) {
+                <button type="button" [disabled]="isTyping()" (click)="submitPrompt(option.prompt)">{{ option.label }}</button>
+              }
+            </nav>
+          }
+        </article>
+      }
+    </div>
+
+    @if (messages().length < 3) {
+      <nav
+        class="assistant-suggestions"
+        aria-label="Atalhos do Tourino"
+        [attr.inert]="isStarting() ? '' : null"
+      >
+        @for (suggestion of suggestions; track suggestion.label) {
+          <button
+            type="button"
+            [class.assistant-suggestion--wide]="$index > 2"
+            [class.assistant-suggestion--pending]="isIntroducing() && $index > introShortcutIndex()"
+            [disabled]="isTyping() || (isIntroducing() && $index > introShortcutIndex())"
+            [attr.aria-label]="suggestion.label"
+            (click)="submitPrompt(suggestion.prompt)"
+          >
+            <span
+              class="assistant-suggestion__icon"
+              [class.assistant-suggestion__icon--coupon]="suggestion.icon === 'coupon'"
+              aria-hidden="true"
+            >
+              @switch (suggestion.icon) {
+                @case ('search') {
+                  <svg viewBox="0 0 32 32">
+                    <circle cx="14" cy="14" r="8" />
+                    <path d="m20 20 8 8" />
+                  </svg>
+                }
+                @case ('offer') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M3 6h14l12 12-11 11L3 14Z" />
+                    <circle cx="10" cy="12" r="2" />
+                  </svg>
+                }
+                @case ('coupon') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M4 7h24v6a3 3 0 0 0 0 6v6H4v-6a3 3 0 0 0 0-6Z" />
+                    <path d="m11 21 10-10M12 11h.01M20 21h.01" />
+                  </svg>
+                }
+                @case ('cart') {
+                  <svg viewBox="0 0 32 32">
+                    <path d="M2 4h4l4 17h15l4-12H8M12 27h.01M24 27h.01" />
+                  </svg>
+                }
+                @default {
+                  <svg viewBox="0 0 32 32">
+                    <path
+                      d="M16 29V13M16 23C4 24 2 12 4 6c8 0 12 7 12 17ZM16 15C16 5 22 3 29 3c0 9-5 14-13 12"
+                    />
+                  </svg>
+                }
+              }
+            </span>
+            <strong
+              >{{ shortcutLabel($index, suggestion.label) }}
+              @if (isIntroducing() && $index === introShortcutIndex()) {
+                <span class="assistant-intro-cursor" aria-hidden="true"></span>
+              }</strong
+            ><span class="assistant-suggestion__arrow" aria-hidden="true">›</span>
+          </button>
+        }
+      </nav>
+    }
+
+    <form class="assistant-composer" [attr.inert]="isStarting() ? '' : null" (ngSubmit)="send()">
+      <label
+        ><svg viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            d="M16 29V13M16 23C4 24 2 12 4 6c8 0 12 7 12 17ZM16 15C16 5 22 3 29 3c0 9-5 14-13 12"
+          /></svg
+        ><input
+          #composer
+          name="message"
+          type="text"
+          [(ngModel)]="draft"
+          maxlength="240"
+          autocomplete="off"
+          placeholder="Digite sua dúvida ou peça um produto..."
+          aria-label="Mensagem para o assistente"
+      /></label>
+      <button type="submit" [disabled]="!draft.trim() || isTyping()" aria-label="Enviar mensagem">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M3 15 29 3l-9 26-5-10ZM15 19 29 3" />
+        </svg>
+      </button>
+    </form>
+    <p class="assistant-note">
+      <span aria-hidden="true">✦</span> Tourino recomenda produtos com base nas informações do catálogo da AgroAgrega.
+    </p>
+  </section>
+}

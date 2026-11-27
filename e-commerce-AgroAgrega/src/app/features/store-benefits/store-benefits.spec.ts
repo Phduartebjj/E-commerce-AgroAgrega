@@ -1,0 +1,146 @@
+import { signal, WritableSignal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { vi } from 'vitest';
+
+import { Auth } from '@core/services/auth/auth.service';
+import { Cart } from '@core/services/cart/cart.service';
+import { CouponModel } from '@models/coupon';
+import { StoreBenefitsComponent } from './store-benefits';
+
+// Verifica cupons, benefícios Agro+ e navegação entre benefícios da loja.
+describe('StoreBenefitsComponent', () => {
+  let component: StoreBenefitsComponent;
+  let fixture: ComponentFixture<StoreBenefitsComponent>;
+  let appliedCoupon: WritableSignal<CouponModel | null>;
+  let applyCoupon: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    appliedCoupon = signal<CouponModel | null>(null);
+    applyCoupon = vi.fn((code: string) => {
+      const coupon = component.coupons.find((item) => item.code === code) ?? null;
+      appliedCoupon.set(coupon);
+    });
+
+    await TestBed.configureTestingModule({
+      imports: [StoreBenefitsComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: Cart,
+          useValue: { coupon: appliedCoupon, applyCoupon },
+        },
+        {
+          provide: Auth,
+          useValue: {
+            isLoggedIn: () => false,
+            currentUserId: signal<string | null>(null),
+            getId: () => '',
+          },
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(StoreBenefitsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should render all coupons from the cart service catalog', () => {
+    const host = fixture.nativeElement as HTMLElement;
+
+    expect(host.querySelectorAll('.coupon-ticket')).toHaveLength(12);
+    expect(host.textContent).toContain('AGRO20');
+    expect(host.textContent).toContain('BEMVINDO10');
+    expect(host.textContent).toContain('CAMPO15');
+    expect(host.textContent).toContain('SAFRA12');
+    expect(host.textContent).toContain('EQUIPA10');
+    expect(host.textContent).toContain('AGUA8');
+    for (const coupon of component.coupons) {
+      expect(host.textContent).toContain(coupon.code);
+      expect(coupon.validOn).toBe(component.couponCatalog.day());
+    }
+    expect(host.textContent).toContain('Válido hoje até 23h59 (Brasília)');
+  });
+
+  it('should apply an available coupon directly to the cart', () => {
+    const welcomeCoupon = component.coupons.find((coupon) => coupon.campaignCode === 'BEMVINDO10')!;
+
+    component.applyCoupon(welcomeCoupon);
+
+    expect(applyCoupon).toHaveBeenCalledWith(welcomeCoupon.code);
+    expect(component.isCouponApplied(welcomeCoupon)).toBe(true);
+    expect(component.feedbackMessage()).toContain('aplicado');
+  });
+
+  it('organiza todos os cupons em grupos sem duplicá-los e mantém os filtros', () => {
+    expect(component.couponGroups[0].title).toBe('Recomendados');
+    const codes = component.couponGroups.flatMap((group) => group.coupons.map((coupon) => coupon.code));
+    expect(new Set(codes).size).toBe(component.coupons.length);
+    expect(codes).toHaveLength(component.coupons.length);
+    component.selectCouponFilter('tools');
+    expect(component.couponGroups.map((group) => group.id)).toEqual(['tools']);
+    component.couponSearch.set('não existe');
+    fixture.detectChanges();
+    expect(component.couponGroups).toEqual([]);
+    expect(fixture.nativeElement.querySelector('.coupon-empty-state')).not.toBeNull();
+  });
+
+  it('should filter and search the coupon catalog', () => {
+    component.selectCouponFilter('tools');
+    expect(component.visibleCoupons.map((coupon) => coupon.campaignCode)).toEqual([
+      'EQUIPA10',
+      'TRATOR10',
+      'PRECISAO12',
+    ]);
+
+    component.selectCouponFilter('all');
+    component.couponSearch.set('irrigação');
+    expect(component.visibleCoupons.map((coupon) => coupon.campaignCode)).toEqual(['AGUA8']);
+  });
+
+  it('mantém o banner de cupons sem as imagens de ajuda e dica removidas', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const imageSources = Array.from(
+      host.querySelectorAll<HTMLImageElement>('.coupon-showcase img'),
+    ).map((image) => image.getAttribute('src'));
+    expect(imageSources).toEqual([]);
+    expect(host.querySelector('.coupon-help-card')).toBeNull();
+  });
+
+  it('should send non-members to the Agro+ area for the exclusive coupon', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.applyCoupon(component.agroPlusCoupon);
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/agro-plus']);
+    expect(applyCoupon).not.toHaveBeenCalled();
+  });
+
+  it('should offer the eight Agro+ benefits from the new showcase', () => {
+    expect(component.agroPlusBenefits).toHaveLength(8);
+    expect(component.agroPlusBenefits.map((benefit) => benefit.id)).toEqual(
+      expect.arrayContaining(['cashback', 'shipping', 'points', 'support', 'partners', 'content']),
+    );
+  });
+
+  it('should update the highlighted benefit when it is selected', () => {
+    component.selectBenefit('shipping');
+
+    expect(component.selectedBenefitId()).toBe('shipping');
+    expect(component.selectedBenefit.title).toContain('Frete grátis');
+  });
+
+  it('should filter benefits and keep guided navigation inside the selected category', () => {
+    component.selectBenefitCategory('exclusive');
+
+    expect(component.visibleBenefits.every((benefit) => benefit.category === 'exclusive')).toBe(
+      true,
+    );
+    expect(component.selectedBenefit.category).toBe('exclusive');
+
+    component.showAdjacentBenefit(1);
+    expect(component.selectedBenefit.category).toBe('exclusive');
+  });
+});

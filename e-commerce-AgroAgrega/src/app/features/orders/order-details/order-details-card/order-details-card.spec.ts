@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OrderDetailsCard } from './order-details-card';
 
+// Verifica se o cartão de detalhes do pedido é criado corretamente.
 describe('OrderDetailsCard', () => {
   let component: OrderDetailsCard;
   let fixture: ComponentFixture<OrderDetailsCard>;
@@ -13,6 +14,14 @@ describe('OrderDetailsCard', () => {
 
     fixture = TestBed.createComponent(OrderDetailsCard);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('item', {
+      imgSrc: 'assets/images/products/milho-hibrido.jpg',
+      productId: 'product-1',
+      name: 'Produto de teste',
+      price: 10,
+      quantity: 2,
+      subtotal: 20,
+    });
     await fixture.whenStable();
   });
 

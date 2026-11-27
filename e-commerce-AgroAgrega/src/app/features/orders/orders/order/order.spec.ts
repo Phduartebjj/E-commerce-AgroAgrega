@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { OrderComponent } from './order';
 import { OrderStatus } from '../../../../models/order';
 
+// Verifica se cada item visual de pedido é criado corretamente.
 describe('OrderComponent', () => {
   let component: OrderComponent;
   let fixture: ComponentFixture<OrderComponent>;
@@ -10,6 +12,7 @@ describe('OrderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OrderComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OrderComponent);

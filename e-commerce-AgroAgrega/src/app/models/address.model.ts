@@ -1,4 +1,5 @@
 export interface AddressModel {
+  id:string;
   fullName: string;
   cep: string;
   address: string;
@@ -7,4 +8,5 @@ export interface AddressModel {
   city: string;
   state: string;
   complement?: string;
+  referencePoint?: string;
 }

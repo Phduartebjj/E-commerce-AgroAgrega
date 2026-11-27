@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductService } from '@core/services/product/product.service';
 import { OrderService } from '@core/services/order/order.service';
-import { ProductModel } from '@models/product';
+import { ProductCategory, ProductModel } from '@models/product';
+import { OrderStatus as StoreOrderStatus } from '@models/order';
 import { AuthAdminService } from '@core/services/auth/auth-admin.service';
 
 export type AdminTab = 'dashboard' | 'products' | 'orders' | 'clients' | 'settings';
@@ -37,40 +38,34 @@ export interface AdminClient {
   styleUrl: './admin.css',
 })
 export class AdminComponent implements OnInit {
-  // Signals
   activeTab = signal<AdminTab>('dashboard');
   orders = signal<AdminOrder[]>([]);
   clients = signal<AdminClient[]>([]);
   searchTerm = signal<string>('');
   selectedStatus = signal<'all' | OrderStatus>('all');
 
-  // Product form
   productName = signal<string>('');
   productPrice = signal<number>(0);
   productCategory = signal<string>('Agricultura de Precisão');
   productDescription = signal<string>('');
   editingProductId = signal<string | null>(null);
 
-  // Store profile
   storeName = signal<string>('AgroAgrega');
   storeEmail = signal<string>('contato@agroagrega.com.br');
   storePhone = signal<string>('(11) 99999-9999');
   storeCity = signal<string>('São Paulo, SP');
   
-  // Profile edit modal
   showProfileModal = signal<boolean>(false);
   editStoreName = signal<string>('');
   editStoreEmail = signal<string>('');
   editStorePhone = signal<string>('');
   editStoreCity = signal<string>('');
 
-  // Password modal
   showPasswordModal = signal<boolean>(false);
   currentPassword = signal<string>('');
   newPassword = signal<string>('');
   confirmPassword = signal<string>('');
 
-  // Computed values
   filteredOrders = computed(() => {
     const orders = this.orders();
     const status = this.selectedStatus();
@@ -131,9 +126,31 @@ export class AdminComponent implements OnInit {
     private orderService: OrderService,
   ) {}
 
+  readonly notificationPreferences = signal({ orders: true, promotions: true });
+
+  setNotificationPreference(key: 'orders' | 'promotions', enabled: boolean): void {
+    this.notificationPreferences.update((preferences) => ({ ...preferences, [key]: enabled }));
+    localStorage.setItem('agroagrega-admin-notifications', JSON.stringify(this.notificationPreferences()));
+  }
+
   ngOnInit(): void {
     this.syncOrdersFromService();
     this.clients.set(this.getMockClients());
+    try {
+      const preferences = JSON.parse(localStorage.getItem('agroagrega-admin-notifications') ?? 'null');
+      if (typeof preferences?.orders === 'boolean' && typeof preferences?.promotions === 'boolean') {
+        this.notificationPreferences.set(preferences);
+      }
+      const profile = JSON.parse(localStorage.getItem('agroagrega-admin-profile') ?? 'null');
+      if (profile) {
+        this.storeName.set(profile.name); this.storeEmail.set(profile.email);
+        this.storePhone.set(profile.phone); this.storeCity.set(profile.city);
+      }
+      const saved = JSON.parse(localStorage.getItem('agroagrega-admin-orders') ?? 'null');
+      if (Array.isArray(saved) && !this.orderService.getOrders()().length) {
+        this.orders.set(saved.map((order) => ({ ...order, date: new Date(order.date) })));
+      }
+    } catch { /* The initial demo data remains available. */ }
   }
 
   private syncOrdersFromService(): void {
@@ -168,14 +185,12 @@ export class AdminComponent implements OnInit {
     return map[status] ?? 'pending';
   }
 
-  // Tab navigation
   selectTab(tab: AdminTab): void {
     this.activeTab.set(tab);
     this.searchTerm.set('');
     this.selectedStatus.set('all');
   }
 
-  // Orders
   onStatusFilterChange(status: 'all' | OrderStatus): void {
     this.selectedStatus.set(status);
   }
@@ -185,24 +200,33 @@ export class AdminComponent implements OnInit {
   }
 
   updateOrderStatus(order: AdminOrder, newStatus: OrderStatus): void {
-    order.status = newStatus;
+    this.orders.update((orders) => orders.map((entry) => entry.id === order.id ? { ...entry, status: newStatus } : entry));
+    const statuses = { pending: StoreOrderStatus.Pending, processing: StoreOrderStatus.Confirmed,
+      shipped: StoreOrderStatus.Shipped, delivered: StoreOrderStatus.Delivered, cancelled: StoreOrderStatus.Cancelled };
+    this.orderService.updateOrderStatus(order.id, statuses[newStatus]);
+    localStorage.setItem('agroagrega-admin-orders', JSON.stringify(this.orders()));
   }
 
   statusBadgeClass(status: OrderStatus): string {
     return `badge badge--${status}`;
   }
 
-  // Products
   addProduct(): void {
     if (!this.productName() || this.productPrice() <= 0) {
       alert('Nome e preço obrigatórios!');
       return;
     }
-    // Mock add - would call productService in real app
+    const saved = this.productService.saveProduct({
+      id: `local-${crypto.randomUUID()}`, title: this.productName(), price: this.productPrice(),
+      category: this.productCategory() as ProductCategory, description: this.productDescription(),
+      images: ['/assets/images/agroagrega-icon.webp'], rating: 0, reviews: [],
+    });
+    if (!saved) return;
     this.clearProductForm();
   }
 
   editProduct(product: ProductModel): void {
+    product = this.productService.getBaseProductById(product.id) ?? product;
     this.editingProductId.set(product.id);
     this.productName.set(product.title);
     this.productPrice.set(product.price);
@@ -215,13 +239,18 @@ export class AdminComponent implements OnInit {
       alert('Nome e preço obrigatórios!');
       return;
     }
-    // Mock save - would call productService in real app
+
+    const existing = this.productService.getBaseProductById(this.editingProductId() ?? '');
+    if (!existing) return;
+    if (!this.productService.saveProduct({ ...existing, title: this.productName(), price: this.productPrice(),
+      category: this.productCategory() as ProductCategory, description: this.productDescription() })) return;
     this.clearProductForm();
   }
 
   deleteProduct(productId: string): void {
     if (confirm('Tem certeza que deseja deletar este produto?')) {
-      // Mock delete - would call productService in real app
+      this.productService.deleteProduct(productId);
+      if (this.editingProductId() === productId) this.clearProductForm();
     }
   }
 
@@ -233,7 +262,6 @@ export class AdminComponent implements OnInit {
     this.editingProductId.set(null);
   }
 
-  // Profile Management
   openProfileModal(): void {
     this.editStoreName.set(this.storeName());
     this.editStoreEmail.set(this.storeEmail());
@@ -255,6 +283,7 @@ export class AdminComponent implements OnInit {
     this.storeEmail.set(this.editStoreEmail());
     this.storePhone.set(this.editStorePhone());
     this.storeCity.set(this.editStoreCity());
+    localStorage.setItem('agroagrega-admin-profile', JSON.stringify({ name: this.storeName(), email: this.storeEmail(), phone: this.storePhone(), city: this.storeCity() }));
     this.showProfileModal.set(false);
     alert('✅ Perfil atualizado com sucesso!');
   }
@@ -280,11 +309,6 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    if (senhaAtual !== 'admin123') {
-      alert('Senha atual incorreta.');
-      return;
-    }
-
     if (novaSenha.length < 6) {
       alert('A nova senha deve ter pelo menos 6 caracteres.');
       return;
@@ -292,6 +316,11 @@ export class AdminComponent implements OnInit {
 
     if (novaSenha !== confirmacao) {
       alert('A confirmação da nova senha não confere.');
+      return;
+    }
+
+    if (!this.authAdminService.changePassword(senhaAtual, novaSenha)) {
+      alert('Senha atual incorreta. Entre novamente como administrador e tente outra vez.');
       return;
     }
 
@@ -306,10 +335,10 @@ export class AdminComponent implements OnInit {
 
     this.orders.set([]);
     this.clients.set([]);
+    localStorage.setItem('agroagrega-admin-orders', '[]');
     alert('✅ Histórico limpo com sucesso!');
   }
 
-  // Auth
   logout(): void {
     this.authAdminService.isLoggedIn = false;
     this.router.navigate(['/admin/login']);

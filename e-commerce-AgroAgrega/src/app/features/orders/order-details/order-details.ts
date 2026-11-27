@@ -8,7 +8,7 @@ import { ReceiptService } from '@core/services/receipt/receipt';
 
 @Component({
   selector: 'app-order-details',
-  imports: [DatePipe, PrecoFormatadoPipe, OrderDetailsCard],
+  imports: [DatePipe, PrecoFormatadoPipe, OrderDetailsCard, RouterLink],
   templateUrl: './order-details.html',
   styleUrl: './order-details.css',
 })
@@ -25,12 +25,16 @@ export class OrderDetails {
     this.receiptService.generateReceipt(order);
   }
 
+  cancelOrder(orderId: string) {
+    this.OrderService.cancelOrder(orderId);
+  }
+
   private readonly route = inject(ActivatedRoute);
 
   private readonly OrderService = inject(OrderService);
 
   readonly orderId = this.route.snapshot.paramMap.get('id');
-  
+
   readonly order = computed(() => {
     if (!this.orderId) {
       return undefined;

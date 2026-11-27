@@ -10,4 +10,9 @@ import { PrecoFormatadoPipe } from '@shared/pipes/preco-formatado-pipe';
 })
 export class OrderDetailsCard {
   item = input.required<OrderItemModel>();
+  imageUnavailable = false;
+
+  handleImageError(): void {
+    this.imageUnavailable = true;
+  }
 }

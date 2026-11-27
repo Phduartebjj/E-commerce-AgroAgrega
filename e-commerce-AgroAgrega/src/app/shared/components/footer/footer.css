@@ -48,29 +48,25 @@
 
   color: #d5ddd9;
   line-height: 1.6;
-  
 }
 
 .rodape-coluna {
   display: flex;
   flex-direction: column;
-  
 }
 
 .rodape-coluna h3 {
   margin: 0 0 22px;
 
   font-size: 17px;
-  
 }
-
-
 
 .rodape-coluna a {
   margin-bottom: 17px;
 
   color: #d5ddd9;
   text-decoration: none;
+  overflow-wrap: anywhere;
 
   transition: color 0.3s ease;
 }
@@ -84,6 +80,7 @@
 
   color: #d5ddd9;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .rodape-inferior {
@@ -105,6 +102,13 @@
 
   color: #d5ddd9;
   font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.logo:focus-visible,
+.rodape-coluna a:focus-visible {
+  outline: 3px solid #a6d64f;
+  outline-offset: 3px;
 }
 
 @media (max-width: 1024px) {
@@ -131,67 +135,42 @@
   .rodape-inferior {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
   }
 }
 
-.voltar-ao-topo {
-  width: 100%;
-  min-height: 52px;
+@media (max-width: 480px) {
+  .rodape {
+    padding: 32px 16px 92px;
+  }
 
-  border: 0;
+  .rodape-conteudo {
+    gap: 28px;
+  }
 
-  background-color: #0b4a3a;
-  color: var(--white);
+  .logo span {
+    font-size: 22px;
+  }
 
-  font-size: 0.9rem;
-  font-weight: 700;
+  .rodape-sobre p {
+    margin-top: 18px;
+  }
 
-  cursor: pointer;
+  .rodape-coluna h3 {
+    margin-bottom: 16px;
+  }
 
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
-}
+  .rodape-coluna a,
+  .rodape-coluna p {
+    margin-bottom: 12px;
+  }
 
-.voltar-ao-topo {
-  position: absolute;
+  .rodape-inferior {
+    margin-top: 30px;
+    padding-top: 22px;
+  }
 
-  top: -24px;
-  left: 50%;
-
-  width: 48px;
-  height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #e2e2e2;
-  border-radius: 50%;
-
-  background: var(--white);
-  color: var(--green-dark);
-
-  font-size: 1.3rem;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transform: translateX(-50%);
-
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.voltar-ao-topo:hover {
-  background-color: var(--green-dark);
-  color: var(--white);
-}
-
-.voltar-ao-topo:active {
-  transform: translateX(-50%) scale(0.92);
+  .rodape-inferior p {
+    font-size: 12px;
+  }
 }

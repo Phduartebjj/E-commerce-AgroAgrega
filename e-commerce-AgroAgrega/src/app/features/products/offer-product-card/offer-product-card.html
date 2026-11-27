@@ -1,0 +1,98 @@
+<article class="offer-card">
+  <div class="offer-card__visual">
+    <span class="offer-card__discount">-{{ discount() }}%</span>
+    <button
+      class="offer-card__favorite"
+      type="button"
+      [class.active]="favorites.isFavorite(product().id)"
+      [attr.aria-pressed]="favorites.isFavorite(product().id)"
+      [attr.aria-label]="
+        (favorites.isFavorite(product().id) ? 'Remover dos favoritos: ' : 'Favoritar: ') +
+        product().title
+      "
+      (click)="toggleFavorite()"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"
+        />
+      </svg>
+    </button>
+    <a [routerLink]="['/products', product().id]" [attr.aria-label]="'Ver ' + product().title">
+      @if (product().images[0] && !imageUnavailable()) {
+        <img
+          [src]="product().images[0]"
+          [alt]="product().title"
+          width="360"
+          height="360"
+          loading="lazy"
+          decoding="async"
+          (error)="imageUnavailable.set(true)"
+        />
+      } @else {
+        <span class="offer-card__fallback">AgroAgrega<small>Imagem em atualização</small></span>
+      }
+    </a>
+  </div>
+  <div class="offer-card__body">
+    <span class="offer-card__category">{{ product().category }}</span>
+    <a [routerLink]="['/products', product().id]"
+      ><h3>{{ product().title }}</h3></a
+    >
+    <div class="offer-card__rating" [attr.aria-label]="'Avaliação: ' + product().rating + ' de 5'">
+      <span class="offer-card__stars" aria-hidden="true">
+        @for (filled of stars(); track $index) {
+          <span [class.empty]="!filled">★</span>
+        }
+      </span>
+      <small
+        >{{ product().rating.toFixed(1).replace('.', ',') }}
+        @if (product().reviews?.length) {
+          ({{ product().reviews!.length }})
+        }
+      </small>
+    </div>
+    <div class="offer-card__price">
+      <s>{{ formatPrice(product().originalPrice ?? product().price) }}</s>
+      <strong>{{ formatPrice(product().price) }}</strong>
+    </div>
+    <p class="offer-card__savings">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6Zm-4 9 3 3 5-6" /></svg
+      ><span
+        >Você economiza<strong>{{ formatPrice(savings()) }} ({{ discount() }}%)</strong></span
+      >
+    </p>
+    <p class="offer-card__detail">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M2 4h12v14H2ZM14 9h4l4 5v4h-8M6 16a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm12 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+        /></svg
+      ><span>Consulte o frete no carrinho</span>
+    </p>
+    <p class="offer-card__detail">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h20v14H2ZM2 10h20M5 15h5" /></svg
+      ><span
+        >Em até <strong>10x de {{ formatPrice(installment()) }}</strong></span
+      >
+    </p>
+    <button
+      class="offer-card__add"
+      type="button"
+      (click)="addToCart()"
+      [attr.aria-label]="'Adicionar ' + product().title + ' ao carrinho'"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 3h3l3 12h11l3-9H6M10 20h.01M18 20h.01" /></svg
+      >{{ inCart() ? 'Adicionar mais' : 'Adicionar ao carrinho' }}
+    </button>
+    <button
+      class="offer-card__compare"
+      type="button"
+      [attr.aria-pressed]="compareSelected()"
+      (click)="toggleCompare.emit(product())"
+    >
+      {{ compareSelected() ? '✓ Selecionado para comparar' : '+ Comparar' }}
+    </button>
+  </div>
+</article>

@@ -1,0 +1,1186 @@
+:host {
+  display: block;
+  background: #f5f7f5;
+  color: #153c2b;
+}
+
+.benefits-page {
+  width: min(calc(100% - 32px), 1180px);
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: 42px 0 72px;
+}
+
+.benefits-hero {
+  position: relative;
+  min-height: 290px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: clamp(34px, 6vw, 70px);
+  border-radius: 28px;
+  box-shadow: 0 20px 45px rgba(12, 58, 38, 0.12);
+}
+
+.benefits-hero--coupons {
+  background: linear-gradient(125deg, #073d2e 0%, #086142 58%, #70b62d 140%);
+  color: #fff;
+}
+
+.benefits-hero::after {
+  position: absolute;
+  right: -80px;
+  bottom: -120px;
+  width: 360px;
+  height: 360px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  content: '';
+}
+
+.benefits-hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.benefits-hero h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.benefits-hero p {
+  max-width: 570px;
+  margin: 18px 0 0;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  line-height: 1.65;
+}
+
+.hero-symbol {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: grid;
+  width: clamp(120px, 17vw, 190px);
+  height: clamp(120px, 17vw, 190px);
+  place-items: center;
+  font-weight: 900;
+}
+
+.hero-symbol--ticket {
+  border: 3px dashed rgba(255, 255, 255, 0.75);
+  border-radius: 22px;
+  font-size: clamp(3rem, 8vw, 6rem);
+  transform: rotate(5deg);
+}
+
+.primary-action {
+  margin-top: auto;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: #176746;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.primary-action:hover {
+  transform: translateY(-2px);
+}
+
+.membership-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 28px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  font-weight: 800;
+}
+
+.membership-status > span,
+.feedback > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  place-items: center;
+  background: #16764e;
+  color: #fff;
+}
+
+.content-section {
+  padding: 56px 0 0;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+.section-heading h2,
+.how-it-works h2 {
+  margin: 0;
+  color: #143c2b;
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  letter-spacing: -0.025em;
+}
+
+.section-heading .eyebrow {
+  color: #5b7a68;
+}
+
+.text-link {
+  flex: 0 0 auto;
+  color: #176746;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.coupon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.coupon-card {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(125px, 34%) 1fr;
+  min-height: 250px;
+  border: 1px solid #dce5df;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(17, 60, 42, 0.06);
+}
+
+.coupon-card__discount {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  background: #e8f5e7;
+  color: #176746;
+  text-align: center;
+}
+
+.coupon-card--member .coupon-card__discount {
+  background: #e4f7a7;
+  color: #345c14;
+}
+
+.coupon-card__discount::before,
+.coupon-card__discount::after {
+  position: absolute;
+  right: -11px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f5f7f5;
+  content: '';
+}
+
+.coupon-card__discount::before {
+  top: -11px;
+}
+
+.coupon-card__discount::after {
+  bottom: -11px;
+}
+
+.coupon-card__discount strong {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.coupon-card__discount span {
+  margin-top: 7px;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.coupon-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 28px;
+}
+
+.coupon-card__label {
+  color: #648071;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.coupon-card h3 {
+  margin: 8px 0 10px;
+  color: #123d2a;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+}
+
+.coupon-card p,
+.member-coupon p,
+.how-it-works p {
+  margin: 0;
+  color: #617168;
+  line-height: 1.55;
+}
+
+.primary-action--applied {
+  background: #e6f3e9;
+  color: #176746;
+}
+
+.feedback {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 15px 18px;
+  border: 1px solid #b9dbc5;
+  border-radius: 14px;
+  background: #ecf8ef;
+  color: #174f36;
+}
+
+.feedback p {
+  flex: 1;
+  margin: 0;
+}
+
+.feedback a {
+  color: inherit;
+  font-weight: 800;
+}
+
+.how-it-works {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 54px;
+  padding: 32px;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.how-it-works h2 {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: 8px;
+}
+
+.how-it-works h3 {
+  margin: 12px 0 7px;
+}
+
+.step-number {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  place-items: center;
+  background: #dff0d5;
+  color: #176746;
+  font-weight: 900;
+}
+
+.benefits-disclaimer {
+  margin: 18px 4px 0;
+  color: #6d7d74;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.member-coupon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 28px;
+  padding: 28px 32px;
+  border: 1px solid #b7d969;
+  border-radius: 18px;
+  background: linear-gradient(100deg, #f4ffdc, #e8f9bf);
+}
+
+.member-coupon span {
+  color: #56703f;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.member-coupon strong {
+  display: block;
+  margin: 4px 0;
+  font-size: 1.8rem;
+  letter-spacing: 0.05em;
+}
+
+.agro-plus-benefits {
+  scroll-margin-top: 28px;
+  padding-top: 82px;
+}
+
+.agro-plus-section-heading {
+  width: min(760px, 100%);
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.agro-plus-section-heading .eyebrow,
+.agro-plus-flow .eyebrow,
+.agro-plus-offer .eyebrow,
+.agro-plus-faq .eyebrow {
+  color: #5d7e6b;
+}
+
+.agro-plus-section-heading h2,
+.agro-plus-flow h2,
+.agro-plus-offer h2,
+.agro-plus-faq h2 {
+  margin: 0;
+  color: #123d2a;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.agro-plus-section-heading > p {
+  margin: 16px auto 0;
+  color: #63736a;
+  line-height: 1.65;
+}
+
+.benefit-filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.benefit-filters button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #d4e1d8;
+  border-radius: 12px;
+  background: #fff;
+  color: #53685d;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.benefit-filters .benefit-filter--active {
+  border-color: #173f2e;
+  background: #173f2e;
+  color: #c9ff48;
+}
+
+.benefit-explorer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.benefit-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.benefit-card {
+  min-height: 198px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 13px;
+  padding: 20px;
+  border: 1px solid #dce7df;
+  border-radius: 18px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+  border-color: #aeca9e;
+  box-shadow: 0 14px 30px rgba(18, 61, 42, 0.08);
+}
+
+.benefit-card--active {
+  border-color: #6eaa38;
+  background: #f4faed;
+  box-shadow: inset 0 0 0 1px #6eaa38;
+}
+
+.benefit-card__icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  place-items: center;
+  background: #e7f5d9;
+  color: #356d1c;
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.benefit-card--active .benefit-card__icon {
+  background: #173f2e;
+  color: #c9ff48;
+}
+
+.benefit-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.benefit-card__copy small {
+  color: #718078;
+  font-size: 0.67rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.benefit-card__copy strong {
+  color: #173d2e;
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.benefit-card__copy > span {
+  color: #68766e;
+  font-size: 0.79rem;
+  line-height: 1.48;
+}
+
+.benefit-card__arrow {
+  color: #6d9e51;
+  font-weight: 900;
+}
+
+.benefit-spotlight {
+  position: sticky;
+  top: 22px;
+  overflow: hidden;
+  min-height: 616px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: 24px;
+  background: #122f25;
+  color: #fff;
+  box-shadow: 0 20px 44px rgba(10, 49, 34, 0.16);
+}
+
+.benefit-spotlight::before {
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(197, 255, 71, 0.08);
+  content: '';
+  filter: blur(4px);
+}
+
+.benefit-spotlight__copy {
+  position: relative;
+  z-index: 1;
+}
+
+.benefit-spotlight__label {
+  display: block;
+  color: #c9ff48;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.benefit-spotlight__stat {
+  display: block;
+  margin-top: 12px;
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.benefit-spotlight h3 {
+  margin: 18px 0 9px;
+  color: #eaf5ee;
+  font-size: 1.25rem;
+}
+
+.benefit-spotlight p {
+  margin: 0;
+  color: #bcd0c4;
+  line-height: 1.65;
+}
+
+.benefit-spotlight__navigation {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.benefit-spotlight__navigation button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(201, 255, 72, 0.34);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #c9ff48;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.benefit-spotlight__navigation span {
+  color: #9fb7a9;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.agro-plus-flow {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(32px, 7vw, 82px);
+  margin-top: 82px;
+  padding: clamp(34px, 6vw, 68px);
+  border-radius: 26px;
+  background: #e9f3e6;
+}
+
+.agro-plus-flow h2 {
+  font-size: clamp(1.75rem, 3.2vw, 2.7rem);
+}
+
+.agro-plus-flow ol {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agro-plus-flow li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 18px;
+  padding: 22px 0;
+  border-bottom: 1px solid #cbdccf;
+}
+
+.agro-plus-flow li:first-child {
+  padding-top: 0;
+}
+
+.agro-plus-flow li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.agro-plus-flow li > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  place-items: center;
+  background: #173f2e;
+  color: #c9ff48;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.agro-plus-flow strong {
+  color: #143c2b;
+  font-size: 1rem;
+}
+
+.agro-plus-flow p {
+  margin: 5px 0 0;
+  color: #607269;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.agro-plus-simulator {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  align-items: center;
+  gap: clamp(34px, 8vw, 96px);
+  margin-top: 32px;
+  padding: clamp(38px, 7vw, 74px);
+  border: 1px solid #d5e3d8;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(17, 60, 42, 0.07);
+}
+
+.agro-plus-simulator .eyebrow {
+  color: #548046;
+}
+
+.agro-plus-simulator h2 {
+  margin: 0;
+  color: #123d2a;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.agro-plus-simulator__controls > p {
+  margin: 16px 0 30px;
+  color: #63736a;
+  line-height: 1.6;
+}
+
+.agro-plus-simulator label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #264c3b;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.agro-plus-simulator output {
+  color: #286b45;
+  font-size: 1.1rem;
+}
+
+.agro-plus-simulator input[type='range'] {
+  width: 100%;
+  height: 8px;
+  margin-top: 18px;
+  border-radius: 999px;
+  background: #dcebd7;
+  accent-color: #4e8b27;
+  cursor: ew-resize;
+}
+
+.simulator-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: #819087;
+  font-size: 0.68rem;
+}
+
+.agro-plus-simulator__result {
+  display: flex;
+  flex-direction: column;
+  padding: 34px;
+  border-radius: 22px;
+  background: #eaf6df;
+  color: #153c2b;
+}
+
+.agro-plus-simulator__result > span {
+  color: #54715f;
+  font-size: 0.73rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.agro-plus-simulator__result > strong {
+  margin-top: 12px;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.agro-plus-simulator__result > small {
+  margin-top: 8px;
+  color: #60786a;
+}
+
+.simulator-yearly-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 28px;
+  padding: 15px 0;
+  border-top: 1px solid #c7ddbe;
+  border-bottom: 1px solid #c7ddbe;
+}
+
+.simulator-yearly-result span {
+  color: #5d7566;
+  font-size: 0.8rem;
+}
+
+.simulator-yearly-result b {
+  color: #286b45;
+  font-size: 1.15rem;
+}
+
+.agro-plus-simulator__result > p {
+  margin: 18px 0 0;
+  color: #657a6c;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.agro-plus-offer {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  align-items: center;
+  gap: clamp(36px, 8vw, 96px);
+  margin-top: 32px;
+  padding: clamp(38px, 7vw, 74px);
+  border-radius: 26px;
+  background: #153c2b;
+  color: #fff;
+}
+
+.agro-plus-offer::after {
+  position: absolute;
+  right: 18%;
+  bottom: -150px;
+  width: 320px;
+  height: 320px;
+  border: 1px solid rgba(201, 255, 72, 0.16);
+  border-radius: 50%;
+  content: '';
+}
+
+.agro-plus-offer .eyebrow {
+  color: #c9ff48;
+}
+
+.agro-plus-offer h2 {
+  color: #fff;
+}
+
+.agro-plus-offer ul {
+  display: grid;
+  gap: 12px;
+  margin: 25px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agro-plus-offer li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d9e8df;
+}
+
+.agro-plus-offer li span {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  place-items: center;
+  background: #c9ff48;
+  color: #173f2e;
+  font-size: 0.74rem;
+  font-weight: 950;
+}
+
+.agro-plus-offer__action {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  background: #fff;
+  color: #153c2b;
+  box-shadow: 0 18px 45px rgba(3, 29, 20, 0.24);
+}
+
+.agro-plus-offer__action > span {
+  color: #418020;
+  font-size: 1.25rem;
+  font-weight: 950;
+}
+
+.agro-plus-offer__action > strong {
+  margin-top: 12px;
+  font-size: 3.6rem;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.agro-plus-offer__action > small {
+  margin-top: 4px;
+  color: #6a796f;
+}
+
+.agro-plus-offer__action button {
+  width: 100%;
+  margin-top: 24px;
+  padding: 0 16px;
+  border: 0;
+  background: #c9ff48;
+  color: #173d2e;
+}
+
+.agro-plus-offer__action p {
+  margin: 11px 0 0;
+  color: #718078;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.agro-plus-faq {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 54px;
+  margin-top: 82px;
+}
+
+.agro-plus-faq h2 {
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+}
+
+.agro-plus-faq__list {
+  border-top: 1px solid #ccd8d0;
+}
+
+.agro-plus-faq details {
+  border-bottom: 1px solid #ccd8d0;
+}
+
+.agro-plus-faq summary {
+  position: relative;
+  padding: 22px 42px 22px 0;
+  color: #173d2e;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+.agro-plus-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.agro-plus-faq summary::after {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  color: #4c7f34;
+  font-size: 1.4rem;
+  content: '+';
+  transform: translateY(-50%);
+}
+
+.agro-plus-faq details[open] summary::after {
+  content: '−';
+}
+
+.agro-plus-faq details p {
+  margin: -7px 44px 22px 0;
+  color: #66756d;
+  line-height: 1.6;
+}
+
+.benefits-disclaimer--plus {
+  max-width: 920px;
+  margin: 44px auto 0;
+  text-align: center;
+}
+
+.member-coupon--plus {
+  margin-top: 32px;
+}
+
+@media (max-width: 760px) {
+  .benefits-page {
+    width: min(calc(100% - 24px), 1180px);
+    padding-top: 22px;
+  }
+
+  .benefits-hero {
+    min-height: auto;
+    padding: 34px 26px;
+  }
+
+  .hero-symbol {
+    display: none;
+  }
+
+  .coupon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .member-coupon {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .how-it-works {
+    grid-template-columns: 1fr;
+    padding: 26px;
+  }
+
+  .how-it-works h2 {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 980px) {
+  .agro-plus-hero__content {
+    width: min(720px, 86%);
+  }
+
+  .benefit-explorer,
+  .agro-plus-flow,
+  .agro-plus-faq {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-spotlight {
+    position: relative;
+    top: auto;
+    min-height: 580px;
+  }
+
+  .agro-plus-offer {
+    grid-template-columns: 1fr 270px;
+    gap: 34px;
+  }
+
+  .agro-plus-simulator {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .agro-plus-hero {
+    min-height: 620px;
+    align-items: flex-end;
+    padding: 34px 25px;
+  }
+
+  .agro-plus-hero__image {
+    object-position: 68% center;
+  }
+
+  .agro-plus-hero__shade {
+    background: linear-gradient(
+      0deg,
+      rgba(4, 31, 22, 0.98) 0%,
+      rgba(4, 31, 22, 0.78) 63%,
+      rgba(4, 31, 22, 0.22) 100%
+    );
+  }
+
+  .agro-plus-hero__content {
+    width: 100%;
+  }
+
+  .agro-plus-hero__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .agro-plus-primary-cta,
+  .agro-plus-secondary-cta {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .agro-plus-hero__proof {
+    gap: 9px;
+  }
+
+  .agro-plus-benefits,
+  .agro-plus-faq {
+    padding-top: 58px;
+  }
+
+  .benefit-filters {
+    overflow-x: auto;
+    justify-content: flex-start;
+    margin-right: -12px;
+    padding: 2px 12px 10px 0;
+    scrollbar-width: thin;
+  }
+
+  .benefit-filters button {
+    flex: 0 0 auto;
+  }
+
+  .benefit-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-card {
+    min-height: 0;
+  }
+
+  .benefit-spotlight {
+    min-height: 540px;
+  }
+
+  .agro-plus-flow {
+    margin-top: 58px;
+  }
+
+  .agro-plus-simulator {
+    padding: 34px 25px;
+  }
+
+  .agro-plus-simulator__result {
+    padding: 28px 24px;
+  }
+
+  .agro-plus-offer {
+    grid-template-columns: 1fr;
+    padding: 34px 25px;
+  }
+
+  .agro-plus-offer__action {
+    padding: 25px;
+  }
+
+  .agro-plus-faq {
+    gap: 22px;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 460px) {
+  .agro-plus-hero {
+    border-radius: 22px;
+  }
+
+  .agro-plus-hero__proof strong {
+    font-size: 1.05rem;
+  }
+
+  .agro-plus-hero__proof span {
+    font-size: 0.68rem;
+  }
+
+  .benefit-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    padding: 17px;
+  }
+
+  .benefit-card__icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .benefit-card__arrow {
+    display: none;
+  }
+
+  .benefit-spotlight {
+    min-height: 500px;
+    padding: 27px 23px;
+  }
+
+  .agro-orbit {
+    width: 260px;
+    margin-bottom: -34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .benefit-card,
+  .agro-plus-primary-cta,
+  .agro-plus-offer__action button {
+    transition: none;
+  }
+
+  .agro-orbit__ring--outer {
+    animation: none;
+  }
+}
+
+@media (max-width: 460px) {
+  .coupon-card {
+    grid-template-columns: 1fr;
+  }
+
+  .coupon-card__discount {
+    min-height: 110px;
+  }
+
+  .coupon-card__discount::before,
+  .coupon-card__discount::after {
+    top: auto;
+    right: auto;
+    bottom: -11px;
+  }
+
+  .coupon-card__discount::before {
+    left: -11px;
+  }
+
+  .coupon-card__discount::after {
+    right: -11px;
+  }
+}

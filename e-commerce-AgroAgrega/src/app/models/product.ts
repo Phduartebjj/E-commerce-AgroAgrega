@@ -10,6 +10,7 @@ export interface ProductModel {
   id: string;
   title: string;
   price: number;
+  originalPrice?: number;
   description: string;
   category: ProductCategory;
   images: string[];
@@ -17,6 +18,9 @@ export interface ProductModel {
   reviews?: ReviewModel[];
   weeklySales?: number;
   brand?: BrandOption;
+  flashOffer?: boolean;
+  flashOfferDiscount?: number;
+  flashOfferDate?: string;
 }
 
 export type ProductCategory =

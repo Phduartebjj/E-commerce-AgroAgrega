@@ -1,4 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, ElementRef, inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 
 import { Cart } from '../../core/services/cart/cart.service';
@@ -15,9 +18,12 @@ import {
 
 import { OrderService } from '@core/services/order/order.service';
 import { Auth } from '@core/services/auth/auth.service';
+import { PaymentApiService } from '@core/services/payment-api.service';
 import { CepService } from '@core/services/cep/cep';
-import { OrderPaymentMethod } from '@models/order';
+import { OrderPaymentMethod, OrderStatus } from '@models/order';
 import { AddressModel } from '@models/address.model';
+import { errorMessages } from '@shared/constants/form-error-messages';
+import { AddressService } from '@core/services/address/address.service';
 
 @Component({
   selector: 'app-checkout',
@@ -27,20 +33,97 @@ import { AddressModel } from '@models/address.model';
 })
 export class CheckoutComponent {
   private readonly cart = inject(Cart);
-  private readonly orderService = inject(OrderService);
-  private readonly auth = inject(Auth);
   private readonly cepService = inject(CepService);
+  private readonly orderService = inject(OrderService);
+  private readonly paymentApiService = inject(PaymentApiService);
+  private readonly auth = inject(Auth);
+  private readonly addressService = inject(AddressService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly demoPayments = !this.paymentApiService.enabled;
+  submitting = false;
+  checkoutError = '';
   readonly router = inject(Router);
 
   readonly PaymentMethod = OrderPaymentMethod;
 
-  readonly subTotal = this.cart.subtotal;
-  readonly discountValue = this.cart.discountValue;
+  readonly checkoutItems = this.cart.selectedCartItems;
+  readonly subTotal = this.cart.selectedSubtotal;
+  readonly discountValue = this.cart.selectedCouponDiscount;
+  readonly deliveryEstimate = getDeliveryEstimate();
+  readonly boletoDueDate = formatLongDate(addBusinessDays(new Date(), 3));
+
+  pixCopyPasteCode = '';
+  pixExpiresAt = '';
+  boletoBarcodeValue = '';
+  boletoDigitableLine = '';
+  paymentCodeFeedback = '';
+
+  private pixCanvas?: HTMLCanvasElement;
+  private boletoCanvas?: HTMLCanvasElement;
+
+  @ViewChild('pixCanvas')
+  set pixCanvasRef(element: ElementRef<HTMLCanvasElement> | undefined) {
+    this.pixCanvas = element?.nativeElement;
+    this.renderPixQrCode();
+  }
+
+  @ViewChild('boletoCanvas')
+  set boletoCanvasRef(element: ElementRef<HTMLCanvasElement> | undefined) {
+    this.boletoCanvas = element?.nativeElement;
+    this.renderBoletoBarcode();
+  }
+
+  savedAddresses: AddressModel[] = [];
+  selectedAddressId: string | null = null;
+
+  private loadSavedAddresses(): void {
+    const userId = this.auth.getId();
+
+    if (!userId) {
+      this.savedAddresses = [];
+      return;
+    }
+
+    this.savedAddresses = this.addressService.getAddresses(userId);
+  }
+
+  constructor() {
+    this.loadSavedAddresses();
+  }
+
+  selectSavedAddress(addressId: string): void {
+    const address = this.savedAddresses.find(
+      (address) => address.id === addressId,
+    );
+
+    if (!address) {
+      return;
+    }
+
+    this.selectedAddressId = address.id;
+
+    this.checkoutForm.patchValue({
+      fullName: address.fullName,
+      cep: address.cep,
+      address: address.address,
+      number: address.number,
+      neighborhood: address.neighborhood,
+      city: address.city,
+      state: address.state,
+      complement: address.complement ?? '',
+    });
+  }
 
   checkoutForm = new FormGroup({
     fullName: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3), nameNoSpecialChars],
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        nameNoSpecialChars,
+      ],
     }),
 
     cep: new FormControl('', {
@@ -90,6 +173,33 @@ export class CheckoutComponent {
     paymentMethod: new FormControl<OrderPaymentMethod | null>(null, {
       validators: [Validators.required],
     }),
+
+    cardName: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.minLength(3), nameNoSpecialChars],
+    }),
+
+    cardNumber: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardNumber],
+    }),
+
+    cardExpiration: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardExpiration],
+    }),
+
+    cardCvv: new FormControl('', {
+      nonNullable: true,
+      validators: [validCardCvv],
+    }),
+
+    cardCpf: new FormControl('', {
+      nonNullable: true,
+      validators: [validCpf],
+    }),
+
+    installments: new FormControl<number | null>(null),
   });
 
   states = [
@@ -133,6 +243,8 @@ export class CheckoutComponent {
 
     this.cepService.getCep(cepLimpo).subscribe({
       next: (dados) => {
+        if (this.checkoutForm.controls.cep.value.replace(/\D/g, '') !== cepLimpo) return;
+        this.changeDetector.markForCheck();
         if (dados.erro) {
           this.checkoutForm.controls.cep.setErrors({
             invalidCep: true,
@@ -150,28 +262,200 @@ export class CheckoutComponent {
       },
 
       error: (erro) => {
-        console.error('Erro ao buscar CEP:', erro);
+        if (this.checkoutForm.controls.cep.value.replace(/\D/g, '') !== cepLimpo) return;
+        this.checkoutError = 'Não foi possível consultar o CEP. Preencha o endereço manualmente ou tente novamente.';
+        this.changeDetector.markForCheck();
       },
     });
   }
 
   get paymentDiscountValue(): number {
-    return this.checkoutForm.controls.paymentMethod.value === OrderPaymentMethod.Pix
-      ? this.cart.subtotal() * 0.1
+    return this.checkoutForm.controls.paymentMethod.value ===
+      OrderPaymentMethod.Pix
+      ? this.cart.selectedPixDiscount()
       : 0;
   }
 
   get discountTotalValue(): number {
-    return this.cart.discountValue() + this.paymentDiscountValue;
+    return this.cart.selectedCouponDiscount() + this.paymentDiscountValue;
   }
 
   get totalValue(): number {
-    return this.cart.total() - this.paymentDiscountValue;
+    return this.cart.selectedTotal() - this.paymentDiscountValue;
   }
 
   selectPaymentMethod(paymentMethod: OrderPaymentMethod): void {
     this.checkoutForm.controls.paymentMethod.setValue(paymentMethod);
     this.checkoutForm.controls.paymentMethod.markAsTouched();
+
+    const cardFields = [
+      this.checkoutForm.controls.cardNumber,
+      this.checkoutForm.controls.cardExpiration,
+      this.checkoutForm.controls.cardCvv,
+      this.checkoutForm.controls.cardCpf,
+      this.checkoutForm.controls.cardName,
+    ];
+
+    const installments = this.checkoutForm.controls.installments;
+
+    const isCreditCard =
+      paymentMethod === OrderPaymentMethod.CreditCard;
+
+    const isCard =
+      paymentMethod === OrderPaymentMethod.CreditCard ||
+      paymentMethod === OrderPaymentMethod.DebitCard;
+
+    if (isCard) {
+      cardFields.forEach((control) => {
+        control.enable();
+        control.addValidators(Validators.required);
+        control.updateValueAndValidity();
+      });
+    } else {
+      cardFields.forEach((control) => {
+        control.disable();
+        control.removeValidators(Validators.required);
+        control.updateValueAndValidity();
+      });
+    }
+
+    if (isCreditCard) {
+      installments.addValidators(Validators.required);
+    } else {
+      installments.removeValidators(Validators.required);
+      installments.setValue(null);
+    }
+
+    installments.updateValueAndValidity();
+
+    if (paymentMethod === OrderPaymentMethod.Pix) {
+      this.generatePixCode();
+    } else if (paymentMethod === OrderPaymentMethod.Boleto) {
+      this.generateBoletoCode();
+    }
+  }
+
+  regeneratePaymentCode(): void {
+    const paymentMethod =
+      this.checkoutForm.controls.paymentMethod.value;
+
+    if (paymentMethod === OrderPaymentMethod.Pix) {
+      this.generatePixCode();
+    } else if (paymentMethod === OrderPaymentMethod.Boleto) {
+      this.generateBoletoCode();
+    }
+  }
+
+  async copyPaymentCode(
+    value: string,
+    label: string,
+  ): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
+      this.paymentCodeFeedback =
+        'Selecione e copie o código manualmente.';
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(value);
+      this.paymentCodeFeedback = `${label} copiado.`;
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível copiar. Selecione o código manualmente.';
+    }
+    this.changeDetector.markForCheck();
+  }
+
+  private generatePixCode(): void {
+    const now = new Date();
+    const expiresAt = new Date(
+      now.getTime() + 30 * 60 * 1000,
+    );
+
+    const reference = `AGPIX${now
+      .getTime()
+      .toString(36)
+      .toUpperCase()}${randomDigits(4)}`;
+
+    this.pixExpiresAt = new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(expiresAt);
+
+    this.pixCopyPasteCode = [
+      'AGROAGREGA',
+      'PIX-DEMONSTRACAO',
+      `REF=${reference}`,
+      `VALOR=${this.totalValue.toFixed(2)}`,
+      `EXPIRA=${expiresAt.toISOString()}`,
+    ].join('|');
+
+    this.paymentCodeFeedback = '';
+    this.renderPixQrCode();
+  }
+
+  private generateBoletoCode(): void {
+    const digits = randomDigits(47);
+
+    this.boletoBarcodeValue = digits.slice(0, 44);
+    this.boletoDigitableLine = formatDigitableLine(digits);
+    this.paymentCodeFeedback = '';
+    this.renderBoletoBarcode();
+  }
+
+  private async renderPixQrCode(): Promise<void> {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.pixCanvas ||
+      !this.pixCopyPasteCode
+    ) {
+      return;
+    }
+
+    try {
+      const { default: bwipjs } = await import('@bwip-js/browser');
+      if (!this.pixCanvas || this.destroyRef.destroyed) return;
+      bwipjs.toCanvas(this.pixCanvas, {
+        bcid: 'qrcode',
+        text: this.pixCopyPasteCode,
+        scale: 4,
+        padding: 10,
+        backgroundcolor: 'FFFFFF',
+        barcolor: '123C2C',
+      });
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível desenhar o QR Code neste navegador.';
+    }
+  }
+
+  private async renderBoletoBarcode(): Promise<void> {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.boletoCanvas ||
+      !this.boletoBarcodeValue
+    ) {
+      return;
+    }
+
+    try {
+      const { default: bwipjs } = await import('@bwip-js/browser');
+      if (!this.boletoCanvas || this.destroyRef.destroyed) return;
+      bwipjs.toCanvas(this.boletoCanvas, {
+        bcid: 'code128',
+        text: this.boletoBarcodeValue,
+        scale: 2,
+        height: 16,
+        padding: 8,
+        backgroundcolor: 'FFFFFF',
+        barcolor: '10271F',
+      });
+    } catch {
+      this.paymentCodeFeedback =
+        'Não foi possível desenhar o código de barras neste navegador.';
+    }
   }
 
   getErrorMessage(control: AbstractControl): string {
@@ -181,16 +465,26 @@ export class CheckoutComponent {
 
     const errorKey = Object.keys(control.errors)[0];
 
-    return errorMessages[errorKey as keyof typeof errorMessages] ?? '';
+    return (
+      errorMessages[errorKey as keyof typeof errorMessages] ?? ''
+    );
   }
 
   finishOrder(): void {
+    if (this.submitting) return;
+    this.checkoutError = '';
+    if (!this.checkoutItems().length) {
+      this.checkoutError = 'Selecione pelo menos um produto no carrinho antes de finalizar.';
+      return;
+    }
+    this.cart.refreshCouponValidity();
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       return;
     }
 
-    const paymentMethod = this.checkoutForm.controls.paymentMethod.value;
+    const paymentMethod =
+      this.checkoutForm.controls.paymentMethod.value;
 
     if (!paymentMethod) {
       this.checkoutForm.controls.paymentMethod.markAsTouched();
@@ -201,47 +495,97 @@ export class CheckoutComponent {
       this.checkoutForm.controls.fullName.value?.trim() || this.auth.getName() || 'Cliente';
 
     const address: AddressModel = {
+      id: globalThis.crypto.randomUUID(),
       fullName: customerName,
       cep: this.checkoutForm.controls.cep.value,
       address: this.checkoutForm.controls.address.value,
       number: this.checkoutForm.controls.number.value,
-      neighborhood: this.checkoutForm.controls.neighborhood.value,
+      neighborhood:
+        this.checkoutForm.controls.neighborhood.value,
       city: this.checkoutForm.controls.city.value,
       state: this.checkoutForm.controls.state.value,
-      complement: this.checkoutForm.controls.complement.value,
+      complement:
+        this.checkoutForm.controls.complement.value,
     };
 
-    this.orderService.createOrder(
-      this.cart.getCartItems()(),
-      customerName,
-      this.auth.getId() || crypto.randomUUID(),
-      this.cart.subtotal(),
-      this.discountTotalValue,
-      0,
-      paymentMethod,
-      address,
-    );
+    if (paymentMethod === OrderPaymentMethod.CreditCard && !this.demoPayments) {
+      this.submitting = true;
+      this.paymentApiService
+        .criarPedidoTeste(this.totalValue)
+        .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => {
+          this.submitting = false;
+          this.changeDetector.markForCheck();
+        }))
+        .subscribe({
+          next: (payment) => {
+            this.orderService.createOrder(
+              this.cart.selectedCartItems(),
+              customerName,
+              this.cart.selectedSubtotal(),
+              this.discountTotalValue,
+              0,
+              paymentMethod,
+              address,
+              OrderStatus.Pending,
+              payment.id,
+            );
+
+            this.cart.removeCoupon();
+            this.cart.removeSelectedItems();
+
+            window.location.href = payment.checkoutUrl;
+          },
+
+          error: () => {
+            this.checkoutError = 'Não foi possível iniciar o pagamento. Seu carrinho foi preservado. Tente novamente.';
+          },
+        });
+
+      return;
+    }
+
+    if (
+      this.demoPayments ||
+      paymentMethod === OrderPaymentMethod.Pix ||
+      paymentMethod === OrderPaymentMethod.Boleto
+    ) {
+      this.orderService.createOrder(
+        this.cart.selectedCartItems(),
+        customerName,
+        this.cart.selectedSubtotal(),
+        this.discountTotalValue,
+        0,
+        paymentMethod,
+        address,
+        OrderStatus.Confirmed,
+      );
+    } else {
+      this.orderService.createOrder(
+        this.cart.selectedCartItems(),
+        customerName,
+        this.cart.selectedSubtotal(),
+        this.discountTotalValue,
+        0,
+        paymentMethod,
+        address,
+      );
+    }
 
     this.cart.removeCoupon();
-    this.cart.cleanCartItem();
+    this.cart.removeSelectedItems();
 
     this.router.navigate(['/orders']);
   }
 }
 
-const errorMessages = {
-  required: 'Campo obrigatório',
-  minlength: 'Campo muito curto',
-  numberInvalid: 'Não pode conter números',
-  charsInvalid: 'Não pode conter caracteres especiais',
-  invalidCep: 'CEP inválido',
-  invalidPhone: 'Telefone inválido',
-};
-
-function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
+function nameNoSpecialChars(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(value)) {
     return { charsInvalid: true };
@@ -250,10 +594,14 @@ function nameNoSpecialChars(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validCep(control: AbstractControl): ValidationErrors | null {
+function validCep(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^\d{5}-?\d{3}$/.test(value)) {
     return { invalidCep: true };
@@ -262,10 +610,14 @@ function validCep(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function validPhone(control: AbstractControl): ValidationErrors | null {
+function validPhone(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (!/^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/.test(value)) {
     return { invalidPhone: true };
@@ -274,14 +626,244 @@ function validPhone(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-function nameNoNumbers(control: AbstractControl): ValidationErrors | null {
+function nameNoNumbers(
+  control: AbstractControl,
+): ValidationErrors | null {
   const value = control.value;
 
-  if (!value) return null;
+  if (!value) {
+    return null;
+  }
 
   if (/\d/.test(value)) {
     return { numberInvalid: true };
   }
 
   return null;
+}
+
+function validCardNumber(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value?.replace(/\D/g, '');
+
+  if (!value) {
+    return null;
+  }
+
+  if (value.length < 13 || value.length > 19) {
+    return { invalidCardNumber: true };
+  }
+
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let i = value.length - 1; i >= 0; i--) {
+    let digit = Number(value[i]);
+
+    if (shouldDouble) {
+      digit *= 2;
+
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+
+  return sum % 10 === 0
+    ? null
+    : { invalidCardNumber: true };
+}
+
+function validCardExpiration(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) {
+    return null;
+  }
+
+  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) {
+    return { invalidCardExpiration: true };
+  }
+
+  const [month, year] = value.split('/').map(Number);
+
+  const currentDate = new Date();
+
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear() % 100;
+
+  if (
+    year < currentYear ||
+    (year === currentYear && month < currentMonth)
+  ) {
+    return { expiredCard: true };
+  }
+
+  return null;
+}
+
+function validCardCvv(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value;
+
+  if (!value) {
+    return null;
+  }
+
+  if (!/^\d{3,4}$/.test(value)) {
+    return { invalidCardCvv: true };
+  }
+
+  return null;
+}
+
+function validCpf(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value?.replace(/\D/g, '');
+
+  if (!value) {
+    return null;
+  }
+
+  if (value.length !== 11) {
+    return { invalidCpf: true };
+  }
+
+  if (/^(\d)\1{10}$/.test(value)) {
+    return { invalidCpf: true };
+  }
+
+  let sum = 0;
+
+  for (let i = 0; i < 9; i++) {
+    sum += Number(value[i]) * (10 - i);
+  }
+
+  let digit = (sum * 10) % 11;
+
+  if (digit === 10) {
+    digit = 0;
+  }
+
+  if (digit !== Number(value[9])) {
+    return { invalidCpf: true };
+  }
+
+  sum = 0;
+
+  for (let i = 0; i < 10; i++) {
+    sum += Number(value[i]) * (11 - i);
+  }
+
+  digit = (sum * 10) % 11;
+
+  if (digit === 10) {
+    digit = 0;
+  }
+
+  if (digit !== Number(value[10])) {
+    return { invalidCpf: true };
+  }
+
+  return null;
+}
+
+function validInstallments(
+  control: AbstractControl,
+): ValidationErrors | null {
+  const value = control.value;
+
+  if (value === null || value === '') {
+    return null;
+  }
+
+  if (!Number.isInteger(value) || value < 1 || value > 12) {
+    return { invalidInstallments: true };
+  }
+
+  return null;
+}
+
+export function addBusinessDays(
+  startDate: Date,
+  businessDays: number,
+): Date {
+  const result = new Date(startDate);
+  let remainingDays = Math.max(
+    0,
+    Math.trunc(businessDays),
+  );
+
+  while (remainingDays > 0) {
+    result.setDate(result.getDate() + 1);
+
+    const dayOfWeek = result.getDay();
+
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      remainingDays -= 1;
+    }
+  }
+
+  return result;
+}
+
+export function formatLongDate(date: Date): string {
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
+
+export function getDeliveryEstimate(
+  startDate = new Date(),
+): string {
+  const firstDate = addBusinessDays(startDate, 5);
+  const lastDate = addBusinessDays(startDate, 8);
+
+  return `Receba entre ${formatLongDate(firstDate)} e ${formatLongDate(lastDate)}`;
+}
+
+export function formatDigitableLine(
+  digits: string,
+): string {
+  const normalizedDigits = digits
+    .replace(/\D/g, '')
+    .padEnd(47, '0')
+    .slice(0, 47);
+
+  return [
+    `${normalizedDigits.slice(0, 5)}.${normalizedDigits.slice(5, 10)}`,
+    `${normalizedDigits.slice(10, 15)}.${normalizedDigits.slice(15, 21)}`,
+    `${normalizedDigits.slice(21, 26)}.${normalizedDigits.slice(26, 32)}`,
+    normalizedDigits.slice(32, 33),
+    normalizedDigits.slice(33, 47),
+  ].join(' ');
+}
+
+function randomDigits(length: number): string {
+  const values = new Uint8Array(length);
+
+  if (
+    typeof crypto !== 'undefined' &&
+    crypto.getRandomValues
+  ) {
+    crypto.getRandomValues(values);
+  } else {
+    for (let index = 0; index < length; index += 1) {
+      values[index] = Math.floor(Math.random() * 256);
+    }
+  }
+
+  return Array.from(values, (value) =>
+    String(value % 10),
+  ).join('');
 }

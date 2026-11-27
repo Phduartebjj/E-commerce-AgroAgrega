@@ -3,6 +3,14 @@
   --page-background: #f3f7f5;
   --white: #ffffff;
 }
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/assets/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 *,
 *::before,
 *::after {
@@ -14,7 +22,7 @@ body {
 }
 body {
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Manrope', Arial, Helvetica, sans-serif;
   background-color: var(--page-background);
   overflow-x: hidden;
 }
@@ -47,7 +55,6 @@ img {
 
 html {
   min-width: 100%;
-  font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -69,5 +76,15 @@ html {
   html,
   body {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 840px) {
+  body:has(.comparison-tray) app-store-assistant {
+    bottom: max(148px, calc(130px + env(safe-area-inset-bottom)));
+  }
+
+  body:has(.comparison-tray) app-store-assistant .assistant-panel {
+    max-height: calc(100dvh - 245px);
   }
 }

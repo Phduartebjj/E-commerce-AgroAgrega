@@ -1,8 +1,8 @@
 <section class="product-carousel">
   <div class="carousel-header">
     <div>
-      <span class="carousel-label">{{label()}}</span>
-      <h2>{{(titulo)()}}</h2>
+      <span class="carousel-label">{{ label() }}</span>
+      <h2>{{ titulo() }}</h2>
     </div>
 
     <a routerLink="/products">Ver todos</a>
@@ -22,33 +22,60 @@
     <div class="products-list" #productsList (scroll)="atualizarSetas()">
       @for (produto of produtos(); track produto.id) {
         <article class="product-card">
-          <a [routerLink]="['/products', produto.id]">
-            <div class="product-image">
-              <img [src]="produto.images[0]" [alt]="produto.title" />
-            </div>
-          </a>
-          <span class="product-category">
-            {{ produto.category }}
-          </span>
-          <a [routerLink]="['/products', produto.id]">
-            <h3>{{ produto.title }}</h3>
-          </a>
-          <strong class="product-price">
-            {{ produto.price | precoFormatado }}
-          </strong>
+          <a
+            class="product-card-link"
+            [routerLink]="['/products', produto.id]"
+            [attr.aria-label]="'Ver detalhes de ' + produto.title"
+          ></a>
 
-          <button
-            class="add-cart-button"
-            [class.product-added]="produtoAdicionadoId() === produto.id"
-            type="button"
-            (click)="adicionarAoCarrinho(produto)"
-          >
-            @if (produtoAdicionadoId() === produto.id) {
-              Adicionado ✓
-            } @else {
-              Adicicionar ao Carrinho
+          <div class="product-image">
+            <img
+              [src]="produto.images[0]"
+              [alt]="produto.title"
+              loading="lazy"
+              decoding="async"
+              width="180"
+              height="180"
+            />
+          </div>
+
+          <span class="product-category">{{ produto.category }}</span>
+          <h3>{{ produto.title }}</h3>
+
+          <div class="product-offer">
+            @if (produto.originalPrice; as originalPrice) {
+              <p class="product-discount">
+                <span> {{ calculateDiscountPercent(produto.price, originalPrice) }}% OFF </span>
+                <s>{{ originalPrice | precoFormatado }}</s>
+              </p>
             }
-          </button>
+
+            <p class="product-main-price">
+              <strong>{{ produto.price | precoFormatado }}</strong>
+              <small>{{ getWeeklySalesLabel(produto.weeklySales) }}</small>
+            </p>
+
+            <p class="product-pix">
+              <strong>{{ calculatePixPrice(produto.price) | precoFormatado }}</strong>
+              <span>no Pix</span>
+            </p>
+
+            <p class="product-installment">
+              ou 10x de
+              <strong>{{ calculateInstallmentPrice(produto.price) | precoFormatado }}</strong>
+              sem juros
+            </p>
+
+            <p class="product-coupon">10% OFF no Pix</p>
+
+            <p class="product-delivery">
+              <span class="product-full-label" aria-label="Entrega Full">
+                <span aria-hidden="true">⚡</span>
+                <strong aria-hidden="true">FULL</strong>
+              </span>
+              <strong class="product-delivery-date">{{ freeDeliveryLabel }}</strong>
+            </p>
+          </div>
         </article>
       }
     </div>

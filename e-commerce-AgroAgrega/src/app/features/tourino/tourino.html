@@ -1,0 +1,30 @@
+<main class="tourino-page">
+  <nav class="breadcrumb" aria-label="Navegação estrutural">
+    <a routerLink="/">Home</a><span aria-hidden="true">›</span><span aria-current="page">Tourino</span>
+  </nav>
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">ASSISTENTE AGROAGREGA</span>
+      <h1>Seu parceiro no campo, <span>Tourino.</span></h1>
+      <p>Encontre produtos, compare opções e cuide da sua compra em uma só conversa.</p>
+    </div>
+  </header>
+  <div class="tourino-layout">
+    <aside class="help-panel" aria-labelledby="tourino-help-title">
+      <span class="eyebrow">VAMOS COMEÇAR?</span>
+      <h2 id="tourino-help-title">Como posso ajudar?</h2>
+      <p>Escolha uma sugestão ou escreva do seu jeito.</p>
+      <div class="prompt-list">
+        @for (item of prompts; track item.title) {
+          <button type="button" [disabled]="chat.isStarting() || chat.isTyping()" (click)="chat.submitPrompt(item.prompt)">
+            <span><strong>{{ item.title }}</strong><small>{{ item.text }}</small></span>
+            <span class="prompt-arrow" aria-hidden="true">↗</span>
+          </button>
+        }
+      </div>
+      <div class="help-tip"><strong>Uma dica para conversar</strong><p>Experimente: “Quero um kit de irrigação até R$ 800”. Quanto mais detalhes, melhor a seleção.</p></div>
+      <a class="catalog-link" routerLink="/products">Explorar o catálogo <span aria-hidden="true">→</span></a>
+    </aside>
+    <app-store-assistant #chat [embedded]="true" />
+  </div>
+</main>

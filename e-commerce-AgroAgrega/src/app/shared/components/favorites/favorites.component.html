@@ -6,7 +6,6 @@
     aria-label="Meus favoritos"
   >
 
-    <!-- HEADER -->
     <header class="favorites-header">
 
       <div>
@@ -21,12 +20,9 @@
     </header>
 
 
-    <!-- CONTEÚDO -->
     <div class="favorites-content">
 
       @if (favorites().length === 0) {
-
-        <!-- VAZIO -->
         <div class="favorites-empty">
 
           <div
@@ -47,7 +43,6 @@
 
       } @else {
 
-        <!-- PRODUTOS -->
         <div class="favorite-list">
 
           @for (
@@ -105,7 +100,6 @@
     </div>
 
 
-    <!-- FOOTER -->
     @if (favorites().length > 0) {
 
       <footer class="favorites-footer">

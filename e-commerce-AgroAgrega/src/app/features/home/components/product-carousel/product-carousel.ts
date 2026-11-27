@@ -1,17 +1,15 @@
 import { RouterLink } from '@angular/router';
-import {
-  Component,
-  inject,
-  ElementRef,
-  ViewChild,
-  signal,
-  AfterViewInit,
-  input,
-} from '@angular/core';
+import { Component, ElementRef, ViewChild, signal, AfterViewInit, input } from '@angular/core';
 
 import { PrecoFormatadoPipe } from '../../../../shared/pipes/preco-formatado-pipe';
-import { Cart } from '@core/services/cart/cart.service';
 import { ProductModel } from '@models/product';
+import {
+  calculateDiscountPercent,
+  calculateInstallmentPrice,
+  calculatePixPrice,
+  getFreeDeliveryLabel,
+  getWeeklySalesLabel,
+} from '../../../../shared/utils/product-card-display';
 
 @Component({
   selector: 'app-product-carousel',
@@ -22,11 +20,15 @@ import { ProductModel } from '@models/product';
 export class ProductCarousel implements AfterViewInit {
   produtos = input.required<ProductModel[]>();
 
-  titulo = input<string>('Produtos em destauqe');
+  titulo = input<string>('Produtos em destaque');
 
   label = input<string>('SELEÇÃO AGROAGREGA');
 
-  produtoAdicionadoId = signal<ProductModel['id'] | null>(null);
+  readonly freeDeliveryLabel = getFreeDeliveryLabel();
+  readonly calculateDiscountPercent = calculateDiscountPercent;
+  readonly calculateInstallmentPrice = calculateInstallmentPrice;
+  readonly calculatePixPrice = calculatePixPrice;
+  readonly getWeeklySalesLabel = getWeeklySalesLabel;
 
   ngAfterViewInit(): void {
     this.atualizarSetas();
@@ -35,25 +37,17 @@ export class ProductCarousel implements AfterViewInit {
   atualizarSetas(): void {
     const lista = this.productsList.nativeElement;
 
-    this.podeRolarEsquerda.set(lista.scrollLeft > 0);
+    const limite = 40;
+    const maxScroll = lista.scrollWidth - lista.clientWidth;
 
-    this.podeRolarDireita.set(lista.scrollLeft + lista.clientWidth < lista.scrollWidth - 1);
+    this.podeRolarEsquerda.set(lista.scrollLeft > limite);
+
+    this.podeRolarDireita.set(lista.scrollLeft < maxScroll - limite);
   }
   podeRolarEsquerda = signal(false);
   podeRolarDireita = signal(true);
   @ViewChild('productsList')
   productsList!: ElementRef<HTMLDivElement>;
-  private cart = inject(Cart);
-  adicionarAoCarrinho(produto: ProductModel): void {
-    this.cart.addCartItem(produto);
-
-    this.produtoAdicionadoId.set(produto.id);
-
-    setTimeout(() => {
-      this.produtoAdicionadoId.set(null);
-    }, 2000);
-  }
-
   rolarEsquerda(): void {
     this.productsList.nativeElement.scrollBy({
       left: -300,

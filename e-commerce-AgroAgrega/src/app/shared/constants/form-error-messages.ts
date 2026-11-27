@@ -1,0 +1,16 @@
+export const errorMessages = {
+  required: 'Campo obrigatório',
+  minlength: 'Campo muito curto',
+  pattern: 'Formato inválido',
+  email: 'E-mail inválido',
+  numberInvalid: 'Não pode conter números',
+  charsInvalid: 'Não pode conter caracteres especiais',
+  invalidCep: 'CEP inválido',
+  invalidPhone: 'Telefone inválido',
+  invalidCardNumber: 'Número do cartão inválido.',
+  invalidCardExpiration: 'Validade inválida.',
+  expiredCard: 'Cartão expirado.',
+  invalidCardCvv: 'CVV inválido.',
+  invalidCpf: 'CPF inválido.',
+  invalidInstallments: 'Número de parcelas inválido.',
+};

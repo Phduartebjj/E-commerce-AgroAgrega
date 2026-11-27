@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { ProductsComponent } from './products';
+import { formatFlashOfferCountdown, ProductsComponent } from './products';
 
+// Verifica filtros, paginação, comparação e ofertas da listagem de produtos.
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
@@ -18,8 +19,142 @@ describe('ProductsComponent', () => {
     await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('deve ser criado', () => {
     expect(component).toBeTruthy();
   });
-});
 
+  it('deve iniciar com todas as categorias e paginação numerada', () => {
+    expect(component.selectedCategory()).toBe('Todos');
+    expect(component.filteredProducts()).toHaveLength(52);
+    expect(component.featuredProducts()).toHaveLength(8);
+    expect(component.visibleProducts()).toHaveLength(5);
+    expect(component.currentPage()).toBe(1);
+    expect(component.totalPages()).toBe(5);
+    expect(component.pageNumbers()).toEqual([1, 2, 3, 4, 5]);
+
+    const firstPageIds = new Set([
+      ...component.featuredProducts().map((product) => product.id),
+      ...component.visibleProducts().map((product) => product.id),
+    ]);
+    expect(firstPageIds.size).toBe(13);
+
+    component.goToPage(2);
+
+    expect(component.currentPage()).toBe(2);
+    expect(component.visibleProducts()).toHaveLength(12);
+    expect(component.visibleProducts().some((product) => firstPageIds.has(product.id))).toBe(false);
+  });
+
+  it('deve manter uma página final parcial e rejeitar números de página inválidos', () => {
+    component.goToPage(5);
+
+    expect(component.currentPage()).toBe(5);
+    expect(component.visibleProducts()).toHaveLength(3);
+
+    for (const invalidPage of [0, 6, 1.5, Number.NaN]) {
+      component.goToPage(invalidPage);
+      expect(component.currentPage()).toBe(5);
+    }
+  });
+
+  it('deve reiniciar para a primeira página quando a ordenação mudar', () => {
+    component.goToPage(3);
+    expect(component.currentPage()).toBe(3);
+
+    component.updateSortOrder({ target: { value: 'menor_preco' } } as unknown as Event);
+
+    expect(component.currentPage()).toBe(1);
+  });
+
+  it('deve renderizar uma página atual e limites de navegação desativados', () => {
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    const currentButtons = host.querySelectorAll('[aria-current="page"]');
+    const navigationButtons = host.querySelectorAll<HTMLButtonElement>('.pagination-navigation');
+    const featuredCards = host.querySelectorAll('.featured-carousel .featured-card');
+
+    expect(currentButtons).toHaveLength(1);
+    expect(currentButtons[0].getAttribute('aria-label')).toBe('Página 1, atual');
+    expect(navigationButtons[0].disabled).toBe(true);
+    expect(navigationButtons[1].disabled).toBe(false);
+    expect(host.textContent).not.toContain('Carregar mais');
+    expect(host.textContent).toContain('52 produtos encontrados');
+    expect(featuredCards).toHaveLength(8);
+    expect(host.querySelectorAll('#catalog-product-grid app-product-card')).toHaveLength(5);
+    expect(host.querySelectorAll('.carousel-controls button')).toHaveLength(2);
+    expect(host.querySelector('#catalog-search-input')).toBeNull();
+  });
+
+  it('deve tornar funcionais os botões desenhados nos banners PNG', () => {
+    const scrollSpy = vi.spyOn(component, 'scrollToProducts').mockImplementation(() => undefined);
+    const assistantSpy = vi.spyOn(component.assistant, 'show');
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+    host.querySelector<HTMLButtonElement>('.png-action--hero')?.click();
+    host.querySelector<HTMLButtonElement>('.png-action--support')?.click();
+
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
+    expect(assistantSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should expose active filters as individually removable chips', () => {
+    component.selectedBrands.set(['AgroSense']);
+    component.setMinRating(4);
+    component.maxPriceFilter.set(500);
+
+    const chips = component.activeFilterChips();
+    expect(chips.map((chip) => chip.type)).toEqual(['brand', 'rating', 'price']);
+
+    const brandChip = chips.find((chip) => chip.type === 'brand');
+    expect(brandChip).toBeDefined();
+    component.removeActiveFilter(brandChip!);
+
+    expect(component.selectedBrands()).toEqual([]);
+    expect(component.activeFilterChips().some((chip) => chip.type === 'brand')).toBe(false);
+  });
+
+  it('should compare between two and three products and enforce the selection limit', () => {
+    const [first, second, third, fourth] = component.products();
+
+    component.toggleProductComparison(first);
+    component.openComparison();
+    expect(component.comparisonOpen()).toBe(false);
+
+    component.toggleProductComparison(second);
+    component.openComparison();
+    expect(component.comparisonOpen()).toBe(true);
+
+    component.toggleProductComparison(third);
+    component.toggleProductComparison(fourth);
+
+    expect(component.comparedProducts()).toHaveLength(3);
+    expect(component.isProductCompared(fourth.id)).toBe(false);
+    expect(component.comparisonAnnouncement()).toContain('até 3 produtos');
+
+    component.removeComparedProduct(first.id);
+    expect(component.comparedProducts()).toHaveLength(2);
+
+    component.clearComparison();
+    expect(component.comparedProducts()).toEqual([]);
+    expect(component.comparisonOpen()).toBe(false);
+  });
+
+  it('deve exibir a contagem regressiva até a troca diária', () => {
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 21, 30, 15))).toBe('02:29:45');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 15, 23, 59, 59))).toBe('00:00:01');
+    expect(formatFlashOfferCountdown(new Date(2026, 8, 16, 0, 0, 0))).toBe('24:00:00');
+  });
+
+  it('should render the floating comparison tray while products are selected', () => {
+    component.toggleProductComparison(component.products()[0]);
+    fixture.detectChanges();
+
+    const host = fixture.nativeElement as HTMLElement;
+
+    expect(host.querySelector('.catalog-shell')?.classList).toContain('has-comparison');
+    expect(host.querySelector('.comparison-tray')).not.toBeNull();
+    expect(host.textContent).toContain('1 de 3 selecionados');
+  });
+});
